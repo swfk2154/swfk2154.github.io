@@ -7,18 +7,19 @@ title: 大黑客的网站
 subtitle: '我是大黑客'
 description: '记录黑客的生活'
 keywords: 网络安全
-author: 小韩
+author: 小高
 language: zh-CN
 timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: http://example.com
-permalink: :year/:month/:day/:title/
+root: /
+permalink: :title/
 permalink_defaults:
-pretty_urls:
-  trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
-  trailing_html: true # Set to false to remove trailing '.html' from permalinks
+pretty_urls:  
+trailing_index: false # Set to false to remove trailing 'index.html' from permalinks  
+trailing_html: false # Set to false to remove trailing '.html' from permalinks
 
 # Directory
 source_dir: source
@@ -102,5 +103,5 @@ theme: landscape
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: git@github.com:316645564ha-sys/3168455564han-sys.github.io.git
+  repo: git@github.com:swfk2154/swfk2154.github.io.git
   branch: main
