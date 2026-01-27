@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>大黑客的网站</title>
+  <title>博客网站</title>
   
-  <subtitle>我是大黑客</subtitle>
+  <subtitle>我是黑客</subtitle>
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
