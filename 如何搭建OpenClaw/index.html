@@ -6,9 +6,13 @@
     <meta charset="utf-8">
     <meta name="keywords" content="如何搭建OpenClaw, 网络安全">
     <meta name="description" content="
-⚠️ 注意：以下内容是基于官方文档编写的，我让openclaw自己写的，部分命令我无法完全验证。如有错误，欢迎指出。
+⚠️ 注意：以下内容是我让openclaw自己写的综合了官方文档和中文社区教程编写，部分步骤经过实测验证。
 
-什么是 OpenClaw？OpenClaw 是一个自托管的 AI 助手网关，可以连接多个聊天平台（WhatsApp、T">
+
+参考来源：OpenClaw 官方文档、博客园 - 陈晓猛
+
+
+什么是 OpenClaw？OpenClaw 是一个自托管的 AI">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -409,82 +413,186 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <blockquote>
-<p>⚠️ <strong>注意</strong>：以下内容是<strong>基于官方文档编写的</strong>，我让openclaw自己写的，部分命令我无法完全验证。如有错误，欢迎指出。</p>
+<p>⚠️ <strong>注意</strong>：以下内容是我让openclaw自己写的综合了官方文档和中文社区教程编写，部分步骤经过实测验证。</p>
 </blockquote>
-<h2 id="什么是-OpenClaw？"><a href="#什么是-OpenClaw？" class="headerlink" title="什么是 OpenClaw？"></a>什么是 OpenClaw？</h2><p>OpenClaw 是一个<strong>自托管的 AI 助手网关</strong>，可以连接多个聊天平台（WhatsApp、Telegram、Discord、iMessage 等）到 AI 编程助手。你只需要在一台电脑上运行 Gateway，就能随时随地通过手机发消息跟 AI 对话。</p>
+<blockquote>
+<p>参考来源：OpenClaw 官方文档、博客园 - 陈晓猛</p>
+</blockquote>
+<hr>
+<h2 id="什么是-OpenClaw？"><a href="#什么是-OpenClaw？" class="headerlink" title="什么是 OpenClaw？"></a>什么是 OpenClaw？</h2><p>OpenClaw 是一个<strong>自托管的 AI 助手网关</strong>，可以连接多个聊天平台（WhatsApp、Telegram、Discord、飞书等）到 AI 编程助手。你只需要在一台电脑上运行 Gateway，就能随时随地通过手机发消息跟 AI 对话。</p>
 <p><strong>特点：</strong></p>
 <ul>
 <li>多平台支持：一个 Gateway 同时服务多个聊天软件</li>
 <li>自托管：数据掌握在自己手里</li>
 <li>支持语音和摄像头（需要配对手机节点）</li>
+<li>开源免费</li>
 </ul>
 <hr>
 <h2 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a>1. 环境准备</h2><h3 id="安装-Node-js"><a href="#安装-Node-js" class="headerlink" title="安装 Node.js"></a>安装 Node.js</h3><blockquote>
-<p>⚠️ <strong>Windows 用户注意</strong>：官方文档<strong>强烈建议在 WSL2 下运行</strong> OpenClaw，而不是直接在 Windows 上运行。</p>
+<p>⚠️ <strong>Windows 用户注意</strong>：官方文档建议在 <strong>WSL2</strong> 下运行 OpenClaw，Windows 原生支持相对不完善。</p>
 </blockquote>
-<p>OpenClaw 需要 Node.js 24（推荐）或 Node.js 22 LTS。</p>
+<p>OpenClaw 需要 <strong>Node.js 22+ LTS</strong>（推荐 Node.js 24）。</p>
 <p>下载安装：<a target="_blank" rel="noopener" href="https://nodejs.org/zh-cn">https://nodejs.org/zh-cn</a></p>
 <p>验证安装：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs bash"><span class="hljs-comment"># 查看 Node.js 版本</span>
+node -v
+<span class="hljs-comment"># 查看 npm 版本</span>
+npm -v</code></pre>
 
-<h3 id="更换-npm-镜像源（国内加速）"><a href="#更换-npm-镜像源（国内加速）" class="headerlink" title="更换 npm 镜像源（国内加速）"></a>更换 npm 镜像源（国内加速）</h3><blockquote>
-<p>⚠️ 如果你使用 WSL2，可以参考 <a href="/2026/01/29/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/">Hexo 博客教程</a> 里的换源方法。</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config <span class="built_in">set</span> registry https://registry.npmmirror.com</span><br></pre></td></tr></table></figure>
+<h3 id="更换-npm-镜像源（国内加速）"><a href="#更换-npm-镜像源（国内加速）" class="headerlink" title="更换 npm 镜像源（国内加速）"></a>更换 npm 镜像源（国内加速）</h3><pre><code class="hljs bash">npm config <span class="hljs-built_in">set</span> registry https://registry.npmmirror.com</code></pre>
 
 <hr>
-<h2 id="2-安装-OpenClaw"><a href="#2-安装-OpenClaw" class="headerlink" title="2. 安装 OpenClaw"></a>2. 安装 OpenClaw</h2><h3 id="Windows-PowerShell"><a href="#Windows-PowerShell" class="headerlink" title="Windows (PowerShell)"></a>Windows (PowerShell)</h3><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">iwr</span> <span class="literal">-useb</span> https://openclaw.ai/install.ps1 | <span class="built_in">iex</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-安装-OpenClaw"><a href="#2-安装-OpenClaw" class="headerlink" title="2. 安装 OpenClaw"></a>2. 安装 OpenClaw</h2><h3 id="方式一：PowerShell-一键脚本（新手推荐）"><a href="#方式一：PowerShell-一键脚本（新手推荐）" class="headerlink" title="方式一：PowerShell 一键脚本（新手推荐）"></a>方式一：PowerShell 一键脚本（新手推荐）</h3><h4 id="步骤-1：打开-PowerShell"><a href="#步骤-1：打开-PowerShell" class="headerlink" title="步骤 1：打开 PowerShell"></a>步骤 1：打开 PowerShell</h4><ul>
+<li>开始菜单搜索 <strong>PowerShell</strong> → 右键 → <strong>以管理员身份运行</strong></li>
+</ul>
+<h4 id="步骤-2：修改执行策略"><a href="#步骤-2：修改执行策略" class="headerlink" title="步骤 2：修改执行策略"></a>步骤 2：修改执行策略</h4><pre><code class="hljs powershell"><span class="hljs-comment"># 允许 PowerShell 执行本地脚本</span>
+<span class="hljs-built_in">Set-ExecutionPolicy</span> <span class="hljs-literal">-ExecutionPolicy</span> RemoteSigned <span class="hljs-literal">-Scope</span> CurrentUser</code></pre>
 
-<h3 id="macOS-Linux"><a href="#macOS-Linux" class="headerlink" title="macOS &#x2F; Linux"></a>macOS &#x2F; Linux</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://openclaw.ai/install.sh | bash</span><br></pre></td></tr></table></figure>
+<p>提示时输入 <code>Y</code> 并回车确认。</p>
+<h4 id="步骤-3：执行一键安装脚本"><a href="#步骤-3：执行一键安装脚本" class="headerlink" title="步骤 3：执行一键安装脚本"></a>步骤 3：执行一键安装脚本</h4><details>
+<summary>官方脚本（海外网络）</summary>
 
-<p>验证安装：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw --version</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs powershell"><span class="hljs-comment"># 一键安装 OpenClaw</span>
+<span class="hljs-built_in">iwr</span> <span class="hljs-literal">-useb</span> https://openclaw.ai/install.ps1 | <span class="hljs-built_in">iex</span></code></pre>
+
+</details>
+
+<details>
+<summary>国内加速脚本（推荐）</summary>
+
+<pre><code class="hljs powershell"><span class="hljs-comment"># 国内镜像加速</span>
+<span class="hljs-built_in">iwr</span> <span class="hljs-literal">-useb</span> https://<span class="hljs-built_in">open-claw</span>.org.cn/<span class="hljs-built_in">install-cn</span>.ps1 | <span class="hljs-built_in">iex</span></code></pre>
+
+</details>
 
 <blockquote>
-<p>⚠️ 如果提示 <code>openclaw not found</code>，可能需要把 npm 全局路径加入 PATH，或重启终端。</p>
+<p>⚠️ 首次运行可能会被安全软件拦截，建议临时关闭杀毒软件。</p>
 </blockquote>
-<hr>
-<h2 id="3-初始化配置"><a href="#3-初始化配置" class="headerlink" title="3. 初始化配置"></a>3. 初始化配置</h2><p>运行引导Wizard：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw onboard --install-daemon</span><br></pre></td></tr></table></figure>
+<h4 id="步骤-4：验证安装"><a href="#步骤-4：验证安装" class="headerlink" title="步骤 4：验证安装"></a>步骤 4：验证安装</h4><pre><code class="hljs bash"><span class="hljs-comment"># 查看 OpenClaw 版本</span>
+openclaw --version</code></pre>
 
-<p>这个命令会：</p>
+<h4 id="步骤-5：初始化配置"><a href="#步骤-5：初始化配置" class="headerlink" title="步骤 5：初始化配置"></a>步骤 5：初始化配置</h4><pre><code class="hljs bash">openclaw onboard --install-daemon</code></pre>
+
+<p>按提示选择：</p>
 <ul>
-<li>让你选择 AI 提供商（Pi、MiniMax 等）</li>
-<li>配置 Gateway 端口（默认 18789）</li>
-<li>可选：登录 WhatsApp、Telegram 等渠道</li>
+<li><strong>选择模型</strong>：推荐 MiniMax（M2.5）或 Kimi（国内可用的 AI）</li>
+<li><strong>选择端口</strong>：默认 18789</li>
+<li><strong>选择运行环境</strong>：推荐 Node</li>
 </ul>
-<hr>
-<h2 id="4-启动-Gateway"><a href="#4-启动-Gateway" class="headerlink" title="4. 启动 Gateway"></a>4. 启动 Gateway</h2><p>安装服务后，Gateway 应该已经在后台运行了。</p>
-<p>检查状态：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw gateway status</span><br></pre></td></tr></table></figure>
-
-<p>手动启动：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw gateway --port 18789</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="5-打开控制界面"><a href="#5-打开控制界面" class="headerlink" title="5. 打开控制界面"></a>5. 打开控制界面</h2><blockquote>
-<p>⚠️ 命令是 <code>openclaw dashboard</code>，不是 <code>openclaw control-ui</code>（这是我之前记错了）。</p>
+<blockquote>
+<p>💡 如果选择错误，可以按 <strong>ESC</strong> 键重新选择。</p>
 </blockquote>
-<p>在浏览器打开：<a target="_blank" rel="noopener" href="http://127.0.0.1:18789/">http://127.0.0.1:18789/</a></p>
-<p>这就是你的 AI 助手控制台，可以直接发消息对话。</p>
 <hr>
-<h2 id="6-配对手机（可选）"><a href="#6-配对手机（可选）" class="headerlink" title="6. 配对手机（可选）"></a>6. 配对手机（可选）</h2><p>如果你想用手机控制 AI 或者使用摄像头、语音功能：</p>
+<h3 id="方式二：npm-手动安装"><a href="#方式二：npm-手动安装" class="headerlink" title="方式二：npm 手动安装"></a>方式二：npm 手动安装</h3><p>如果一键脚本失败，可以手动安装：</p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 1. 配置国内镜像（加速下载）</span>
+npm config <span class="hljs-built_in">set</span> registry https://registry.npmmirror.com
+
+<span class="hljs-comment"># 2. 全局安装 OpenClaw</span>
+npm install -g openclaw@latest
+
+<span class="hljs-comment"># 3. 初始化配置</span>
+openclaw onboard --install-daemon</code></pre>
+
+<hr>
+<h3 id="方式三：WSL2-部署（官方推荐，最稳定）"><a href="#方式三：WSL2-部署（官方推荐，最稳定）" class="headerlink" title="方式三：WSL2 部署（官方推荐，最稳定）"></a>方式三：WSL2 部署（官方推荐，最稳定）</h3><h4 id="步骤-1：安装-WSL2"><a href="#步骤-1：安装-WSL2" class="headerlink" title="步骤 1：安装 WSL2"></a>步骤 1：安装 WSL2</h4><p>在管理员 PowerShell 中执行：</p>
+<pre><code class="hljs powershell"><span class="hljs-comment"># 一键安装 WSL2（会自动安装 Ubuntu）</span>
+wsl <span class="hljs-literal">--install</span></code></pre>
+
+<blockquote>
+<p>重启电脑后自动安装 Ubuntu，首次启动需设置用户名和密码。</p>
+</blockquote>
+<h4 id="步骤-2：在-WSL2-中安装依赖"><a href="#步骤-2：在-WSL2-中安装依赖" class="headerlink" title="步骤 2：在 WSL2 中安装依赖"></a>步骤 2：在 WSL2 中安装依赖</h4><p>打开 Ubuntu 终端，执行：</p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 更新系统软件包</span>
+<span class="hljs-built_in">sudo</span> apt update &amp;&amp; <span class="hljs-built_in">sudo</span> apt upgrade -y
+
+<span class="hljs-comment"># 安装 Node.js 22+</span>
+curl -fsSL https://deb.nodesource.com/setup_22.x | <span class="hljs-built_in">sudo</span> -E bash -
+<span class="hljs-built_in">sudo</span> apt install -y nodejs
+
+<span class="hljs-comment"># 验证安装</span>
+node --version
+npm --version</code></pre>
+
+<h4 id="步骤-3：安装-OpenClaw"><a href="#步骤-3：安装-OpenClaw" class="headerlink" title="步骤 3：安装 OpenClaw"></a>步骤 3：安装 OpenClaw</h4><pre><code class="hljs bash"><span class="hljs-comment"># 配置国内 npm 镜像</span>
+npm config <span class="hljs-built_in">set</span> registry https://registry.npmmirror.com
+
+<span class="hljs-comment"># 全局安装 OpenClaw</span>
+npm install -g openclaw@latest
+
+<span class="hljs-comment"># 初始化配置（安装守护进程）</span>
+openclaw onboard --install-daemon</code></pre>
+
+<hr>
+<h2 id="3-配置-AI-模型（以-MiniMax-为例）"><a href="#3-配置-AI-模型（以-MiniMax-为例）" class="headerlink" title="3. 配置 AI 模型（以 MiniMax 为例）"></a>3. 配置 AI 模型（以 MiniMax 为例）</h2><blockquote>
+<p>国内用户推荐使用 MiniMax，性价比高，稳定。</p>
+</blockquote>
+<h3 id="获取-MiniMax-API-Key"><a href="#获取-MiniMax-API-Key" class="headerlink" title="获取 MiniMax API Key"></a>获取 MiniMax API Key</h3><ol>
+<li>访问 <a target="_blank" rel="noopener" href="https://www.minimaxi.com/">https://www.minimaxi.com/</a> 注册账号</li>
+<li>完成实名认证</li>
+<li>进入「控制台」→「API 密钥」→ 创建新密钥</li>
+<li>复制密钥并<strong>妥善保存</strong>（只会显示一次！）</li>
+<li>充值余额（支持支付宝&#x2F;微信）</li>
+</ol>
+<h3 id="在-OpenClaw-中配置"><a href="#在-OpenClaw-中配置" class="headerlink" title="在 OpenClaw 中配置"></a>在 OpenClaw 中配置</h3><p>在初始化时选择 <strong>MiniMax M2.5 (CN)</strong>，然后粘贴 API Key 即可。</p>
+<hr>
+<h2 id="4-启动与使用"><a href="#4-启动与使用" class="headerlink" title="4. 启动与使用"></a>4. 启动与使用</h2><h3 id="启动-Gateway"><a href="#启动-Gateway" class="headerlink" title="启动 Gateway"></a>启动 Gateway</h3><pre><code class="hljs bash">openclaw gateway --port 18789</code></pre>
+
+<h3 id="访问控制面板"><a href="#访问控制面板" class="headerlink" title="访问控制面板"></a>访问控制面板</h3><p>浏览器打开：<a target="_blank" rel="noopener" href="http://127.0.0.1:18789/">http://127.0.0.1:18789/</a></p>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>openclaw gateway</code></td>
+<td>启动网关</td>
+</tr>
+<tr>
+<td><code>openclaw gateway status</code></td>
+<td>查看状态</td>
+</tr>
+<tr>
+<td><code>openclaw --help</code></td>
+<td>查看帮助</td>
+</tr>
+<tr>
+<td><code>openclaw configure</code></td>
+<td>重新配置</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="5-常见问题与解决"><a href="#5-常见问题与解决" class="headerlink" title="5. 常见问题与解决"></a>5. 常见问题与解决</h2><h3 id="❓-安装脚本报错"><a href="#❓-安装脚本报错" class="headerlink" title="❓ 安装脚本报错"></a>❓ 安装脚本报错</h3><ul>
+<li>确认以<strong>管理员身份</strong>运行 PowerShell</li>
+<li>执行 <code>Set-ExecutionPolicy RemoteSigned</code></li>
+<li>临时关闭杀毒&#x2F;安全软件</li>
+</ul>
+<h3 id="❓-node-npm-不是内部命令"><a href="#❓-node-npm-不是内部命令" class="headerlink" title="❓ node&#x2F;npm 不是内部命令"></a>❓ node&#x2F;npm 不是内部命令</h3><ul>
+<li>重启电脑</li>
+<li>或手动将 Node.js 添加到 PATH</li>
+</ul>
+<h3 id="❓-Gateway-启动失败"><a href="#❓-Gateway-启动失败" class="headerlink" title="❓ Gateway 启动失败"></a>❓ Gateway 启动失败</h3><ul>
+<li>检查 Node.js 版本（必须 ≥22）</li>
+<li>尝试重新初始化：<code>openclaw onboard</code></li>
+</ul>
+<h3 id="❓-端口被占用"><a href="#❓-端口被占用" class="headerlink" title="❓ 端口被占用"></a>❓ 端口被占用</h3><pre><code class="hljs bash">openclaw gateway --port 18790</code></pre>
+
+<hr>
+<h2 id="6-安全注意事项"><a href="#6-安全注意事项" class="headerlink" title="6. 安全注意事项"></a>6. 安全注意事项</h2><p>⚠️ 使用 OpenClaw 时请注意：</p>
 <ol>
-<li>在手机上下载 OpenClaw App（iOS&#x2F;Android）</li>
-<li>扫描网页上的配对二维码</li>
-<li>配对成功后，就能在手机上发消息给 AI 了</li>
+<li><strong>API Key 安全</strong>：不要泄露你的 API Key，定期检查用量</li>
+<li><strong>网络暴露</strong>：默认配置下 Gateway 可能暴露端口，建议仅内网使用</li>
+<li><strong>文件权限</strong>：AI 有权限执行删除命令，操作前仔细确认</li>
+<li><strong>插件安全</strong>：谨慎安装来源不明的 Skills 插件</li>
 </ol>
 <hr>
-<h2 id="7-连接更多渠道"><a href="#7-连接更多渠道" class="headerlink" title="7. 连接更多渠道"></a>7. 连接更多渠道</h2><h3 id="WhatsApp"><a href="#WhatsApp" class="headerlink" title="WhatsApp"></a>WhatsApp</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw channels login whatsapp</span><br></pre></td></tr></table></figure>
-
-<h3 id="Telegram"><a href="#Telegram" class="headerlink" title="Telegram"></a>Telegram</h3><p>需要在 @BotFather 创建一个机器人，获取 Token 后配置。</p>
-<hr>
-<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><p><strong>Q: 端口被占用？</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw gateway --port 18790</span><br></pre></td></tr></table></figure>
-
-<p><strong>Q: 想用更强的 AI 模型？</strong><br>可以在 onboard 时选择 MiniMax，或后续在配置文件中修改 <code>providers</code> 相关设置。</p>
-<hr>
 <p>快去试试搭建你的 AI 助手吧！ 🦞🐨</p>
+<p><strong>参考来源：</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://openclaw.ai/docs">OpenClaw 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/chenxiaomeng/p/19712272">博客园 - OpenClaw 安装教程</a></li>
+</ul>
 
                 
             </div>
@@ -740,8 +848,6 @@
 
 
 <!-- 代码块收缩 -->
-
-<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
 
 
 

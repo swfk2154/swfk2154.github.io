@@ -520,7 +520,10 @@
 <td>“不要超过 500 字”</td>
 </tr>
 </tbody></table>
-<h3 id="经典-Prompt-框架"><a href="#经典-Prompt-框架" class="headerlink" title="经典 Prompt 框架"></a>经典 Prompt 框架</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">你是 [角色]</span><br><span class="line">需要完成 [任务]</span><br><span class="line">背景信息：[背景]</span><br><span class="line">要求：[格式/限制]</span><br></pre></td></tr></table></figure>
+<h3 id="经典-Prompt-框架"><a href="#经典-Prompt-框架" class="headerlink" title="经典 Prompt 框架"></a>经典 Prompt 框架</h3><pre><code class="hljs plaintext">你是 [角色]
+需要完成 [任务]
+背景信息：[背景]
+要求：[格式/限制]</code></pre>
 
 <h3 id="常见-Prompt-技巧"><a href="#常见-Prompt-技巧" class="headerlink" title="常见 Prompt 技巧"></a>常见 Prompt 技巧</h3><ul>
 <li><strong>Few-shot</strong>：给几个例子，让 AI 模仿</li>
@@ -683,12 +686,12 @@
 <td>发送&#x2F;接收邮件</td>
 </tr>
 </tbody></table>
-<h3 id="Tool-怎么工作？"><a href="#Tool-怎么工作？" class="headerlink" title="Tool 怎么工作？"></a>Tool 怎么工作？</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户 → Agent → [判断需要什么工具] → 调用 Tool → 返回结果 → Agent 整理回答</span><br></pre></td></tr></table></figure>
+<h3 id="Tool-怎么工作？"><a href="#Tool-怎么工作？" class="headerlink" title="Tool 怎么工作？"></a>Tool 怎么工作？</h3><pre><code class="hljs plaintext">用户 → Agent → [判断需要什么工具] → 调用 Tool → 返回结果 → Agent 整理回答</code></pre>
 
 <hr>
 <h2 id="6-Workflow（工作流）"><a href="#6-Workflow（工作流）" class="headerlink" title="6. Workflow（工作流）"></a>6. Workflow（工作流）</h2><h3 id="是什么？-5"><a href="#是什么？-5" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Workflow</strong> &#x3D; <strong>工作流</strong>，是把多个步骤<strong>有序组织</strong>起来的自动化流程。</p>
 <p>如果说 Agent 是一个”全自动司机”，Workflow 更像是<strong>设计好的路线图</strong>——每一步该做什么都已规划好。</p>
-<h3 id="Workflow-的组成"><a href="#Workflow-的组成" class="headerlink" title="Workflow 的组成"></a>Workflow 的组成</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[输入] → [步骤1: 提取信息] → [步骤2: 调用API] → [步骤3: 整理输出] → [结果]</span><br></pre></td></tr></table></figure>
+<h3 id="Workflow-的组成"><a href="#Workflow-的组成" class="headerlink" title="Workflow 的组成"></a>Workflow 的组成</h3><pre><code class="hljs plaintext">[输入] → [步骤1: 提取信息] → [步骤2: 调用API] → [步骤3: 整理输出] → [结果]</code></pre>
 
 <h3 id="Agent-vs-Workflow"><a href="#Agent-vs-Workflow" class="headerlink" title="Agent vs Workflow"></a>Agent vs Workflow</h3><table>
 <thead>
@@ -737,7 +740,7 @@
 <li><strong>幻觉</strong>：可能编造不存在的信息</li>
 </ol>
 <p>RAG 通过<strong>让 AI 查阅参考资料</strong>来解决这些问题。</p>
-<h3 id="RAG-工作原理"><a href="#RAG-工作原理" class="headerlink" title="RAG 工作原理"></a>RAG 工作原理</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户问题 → [检索器] → 从知识库找相关资料 → [把资料 + 问题发给 LLM] → 生成答案</span><br></pre></td></tr></table></figure>
+<h3 id="RAG-工作原理"><a href="#RAG-工作原理" class="headerlink" title="RAG 工作原理"></a>RAG 工作原理</h3><pre><code class="hljs plaintext">用户问题 → [检索器] → 从知识库找相关资料 → [把资料 + 问题发给 LLM] → 生成答案</code></pre>
 
 <h3 id="RAG-高级方法"><a href="#RAG-高级方法" class="headerlink" title="RAG 高级方法"></a>RAG 高级方法</h3><ul>
 <li><strong>Parent Document Retrieval</strong>：先检索小块，如果多个小块指向同一父节点，则用父节点作为上下文</li>
@@ -790,7 +793,50 @@
 <li>FAISS</li>
 </ul>
 <hr>
-<h2 id="9-总结：它们之间的关系"><a href="#9-总结：它们之间的关系" class="headerlink" title="9. 总结：它们之间的关系"></a>9. 总结：它们之间的关系</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────┐</span><br><span class="line">│                    用户                          │</span><br><span class="line">└─────────────────┬───────────────────────────────┘</span><br><span class="line">                  │</span><br><span class="line">                  ▼</span><br><span class="line">┌─────────────────────────────────────────────────┐</span><br><span class="line">│              Prompt（提示词）                     │</span><br><span class="line">│    &quot;帮我分析这份报告，给出建议&quot;                   │</span><br><span class="line">└─────────────────┬───────────────────────────────┘</span><br><span class="line">                  │</span><br><span class="line">                  ▼</span><br><span class="line">┌─────────────────────────────────────────────────┐</span><br><span class="line">│              Context（上下文）                    │</span><br><span class="line">│    + 历史对话 + 检索到的资料                      │</span><br><span class="line">└─────────────────┬───────────────────────────────┘</span><br><span class="line">                  │</span><br><span class="line">                  ▼</span><br><span class="line">┌─────────────────────────────────────────────────┐</span><br><span class="line">│              Agent（智能体）                      │</span><br><span class="line">│  ┌─────────────────────────────────────────┐    │</span><br><span class="line">│  │  思考 → 规划 → 调用 Tool → 执行 → 反思  │    │</span><br><span class="line">│  └─────────────────────────────────────────┘    │</span><br><span class="line">│                     │                           │</span><br><span class="line">│           ┌────────┴────────┐                  │</span><br><span class="line">│           ▼                 ▼                   │</span><br><span class="line">│    ┌───────────┐    ┌───────────┐              │</span><br><span class="line">│    │  Workflow │    │    RAG    │              │</span><br><span class="line">│    │ (工作流)  │    │(检索增强) │              │</span><br><span class="line">│    └───────────┘    └─────┬─────┘              │</span><br><span class="line">│                           │                    │</span><br><span class="line">│                    ┌──────┴──────┐              │</span><br><span class="line">│                    ▼             ▼              │</span><br><span class="line">│             ┌──────────┐  ┌──────────┐         │</span><br><span class="line">│             │Embedding │  │  搜索/   │         │</span><br><span class="line">│             │ (向量)   │  │ 计算器   │         │</span><br><span class="line">│             └──────────┘  └──────────┘         │</span><br><span class="line">└─────────────────┬───────────────────────────────┘</span><br><span class="line">                  │</span><br><span class="line">                  ▼</span><br><span class="line">┌─────────────────────────────────────────────────┐</span><br><span class="line">│              LLM（大语言模型）                    │</span><br><span class="line">│         输入 Prompt → 输出回答                    │</span><br><span class="line">│              (消耗 Token)                        │</span><br><span class="line">└─────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<h2 id="9-总结：它们之间的关系"><a href="#9-总结：它们之间的关系" class="headerlink" title="9. 总结：它们之间的关系"></a>9. 总结：它们之间的关系</h2><pre><code class="hljs plaintext">┌─────────────────────────────────────────────────┐
+│                    用户                          │
+└─────────────────┬───────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────┐
+│              Prompt（提示词）                     │
+│    &quot;帮我分析这份报告，给出建议&quot;                   │
+└─────────────────┬───────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────┐
+│              Context（上下文）                    │
+│    + 历史对话 + 检索到的资料                      │
+└─────────────────┬───────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────┐
+│              Agent（智能体）                      │
+│  ┌─────────────────────────────────────────┐    │
+│  │  思考 → 规划 → 调用 Tool → 执行 → 反思  │    │
+│  └─────────────────────────────────────────┘    │
+│                     │                           │
+│           ┌────────┴────────┐                  │
+│           ▼                 ▼                   │
+│    ┌───────────┐    ┌───────────┐              │
+│    │  Workflow │    │    RAG    │              │
+│    │ (工作流)  │    │(检索增强) │              │
+│    └───────────┘    └─────┬─────┘              │
+│                           │                    │
+│                    ┌──────┴──────┐              │
+│                    ▼             ▼              │
+│             ┌──────────┐  ┌──────────┐         │
+│             │Embedding │  │  搜索/   │         │
+│             │ (向量)   │  │ 计算器   │         │
+│             └──────────┘  └──────────┘         │
+└─────────────────┬───────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────┐
+│              LLM（大语言模型）                    │
+│         输入 Prompt → 输出回答                    │
+│              (消耗 Token)                        │
+└─────────────────────────────────────────────────┘</code></pre>
 
 <hr>
 <h2 id="10-快速对比表"><a href="#10-快速对比表" class="headerlink" title="10. 快速对比表"></a>10. 快速对比表</h2><table>
@@ -843,11 +889,15 @@
 </tr>
 </tbody></table>
 <hr>
-<h2 id="11-实际应用场景"><a href="#11-实际应用场景" class="headerlink" title="11. 实际应用场景"></a>11. 实际应用场景</h2><h3 id="场景-1：智能客服"><a href="#场景-1：智能客服" class="headerlink" title="场景 1：智能客服"></a>场景 1：智能客服</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户问 → Agent 接收 → RAG 检索产品文档 → LLM 生成回答 → 返回给用户</span><br></pre></td></tr></table></figure>
+<h2 id="11-实际应用场景"><a href="#11-实际应用场景" class="headerlink" title="11. 实际应用场景"></a>11. 实际应用场景</h2><h3 id="场景-1：智能客服"><a href="#场景-1：智能客服" class="headerlink" title="场景 1：智能客服"></a>场景 1：智能客服</h3><pre><code class="hljs plaintext">用户问 → Agent 接收 → RAG 检索产品文档 → LLM 生成回答 → 返回给用户</code></pre>
 
-<h3 id="场景-2：编程助手"><a href="#场景-2：编程助手" class="headerlink" title="场景 2：编程助手"></a>场景 2：编程助手</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户说&quot;帮我写个排序算法&quot; → Agent 理解需求 → Tool 执行代码 → 返回结果</span><br></pre></td></tr></table></figure>
+<h3 id="场景-2：编程助手"><a href="#场景-2：编程助手" class="headerlink" title="场景 2：编程助手"></a>场景 2：编程助手</h3><pre><code class="hljs plaintext">用户说&quot;帮我写个排序算法&quot; → Agent 理解需求 → Tool 执行代码 → 返回结果</code></pre>
 
-<h3 id="场景-3：知识管理"><a href="#场景-3：知识管理" class="headerlink" title="场景 3：知识管理"></a>场景 3：知识管理</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">你问&quot;去年那个项目的方案是什么&quot; </span><br><span class="line">→ Embedding 把问题转成向量 </span><br><span class="line">→ 向量数据库搜索相似内容 </span><br><span class="line">→ RAG 把找到的文档给 LLM </span><br><span class="line">→ 生成答案</span><br></pre></td></tr></table></figure>
+<h3 id="场景-3：知识管理"><a href="#场景-3：知识管理" class="headerlink" title="场景 3：知识管理"></a>场景 3：知识管理</h3><pre><code class="hljs plaintext">你问&quot;去年那个项目的方案是什么&quot; 
+→ Embedding 把问题转成向量 
+→ 向量数据库搜索相似内容 
+→ RAG 把找到的文档给 LLM 
+→ 生成答案</code></pre>
 
 <hr>
 <p>希望这篇文章能帮你搞懂这些概念！有问题欢迎评论区交流 🐨</p>
@@ -1146,8 +1196,6 @@
 
 
 <!-- 代码块收缩 -->
-
-<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
 
 
 

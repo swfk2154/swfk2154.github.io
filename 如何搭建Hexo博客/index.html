@@ -9,10 +9,11 @@
 
 安装这个软件，会同时安装 node 和 npm这2个工具 
 验证一下是否安装成功
-12node -vnpm -v
+node -v
+npm -v
 
 如果能输出版本号就安装成功了
-2 安装 Hexo我">
+2 安装 Hexo我们">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -408,16 +409,17 @@
 <p><img src="/images/Node.png" alt="Node.js"></p>
 <p>安装这个软件，会同时安装 <code>node</code> 和 <code>npm</code>这2个工具 </p>
 <p>验证一下是否安装成功</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs bash">node -v
+npm -v</code></pre>
 
 <p>如果能输出版本号就安装成功了</p>
 <h2 id="2-安装-Hexo"><a href="#2-安装-Hexo" class="headerlink" title="2 安装 Hexo"></a>2 安装 Hexo</h2><p>我们这里安装的是 <code>hexo</code>客户端</p>
 <p>安装 <code>hexo</code> 需要使用 <code>npm</code> 命令，但是在国内使用 <code>npm</code> 安装软件，速度很慢</p>
 <p>给 <code>npm</code> 替换成国内的源，这样安装速度就会快很多了</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config <span class="built_in">set</span> registry https://registry.npmmirror.com </span><br></pre></td></tr></table></figure>
+<pre><code class="hljs bash">npm config <span class="hljs-built_in">set</span> registry https://registry.npmmirror.com</code></pre>
 
 <p>执行下面这条命令，使用 <code>npm</code> 安装 <code>hexo</code>客户端</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">npm install -g hexo-cli</code></pre>
 
 <p>安装好 <code>hexo</code> 以后，执行 <code>hexo init han</code> 初始化 <code>han </code>文件夹（自定义）</p>
 <p>然后 <code>cd han</code> 进入到文件夹，接着执行 <code>npm install</code> 命令安装依赖包</p>
@@ -428,11 +430,11 @@
 <p>3 <code>themes</code>：博客的主题配置文件，<code>hexo</code> 有一个默认主题，但不太好看，后面可以改成漂亮一些的主题</p>
 <p><img src="/images/vscode.png" alt="vscode"></p>
 <p>接着我们执行 <code>hexo generate</code> 和 <code>hexo server</code> 这2条命令，在本地把 <code>hexo</code> 服务跑起来</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">访问：http://localhost:4000/</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs bash">访问：http://localhost:4000/</code></pre>
 
 <p><img src="/images/Hexoys.png" alt="预览"></p>
 <h2 id="将博客托管到-GitHub-Pages"><a href="#将博客托管到-GitHub-Pages" class="headerlink" title="将博客托管到 GitHub Pages"></a>将博客托管到 GitHub Pages</h2><p>给<code>github</code> 配置 <code>ssh</code> 公私钥</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">⚠️：ssh-keygen -t rsa -C <span class="string">&quot;your-email@example.com&quot;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs bash">⚠️：ssh-keygen -t rsa -C <span class="hljs-string">&quot;your-email@example.com&quot;</span></code></pre>
 
 <p>生成的 <code>ssh</code> 公私钥 要指定 自己的 <code>github</code>邮箱</p>
 <p>把公钥放在<code>github</code>上</p>
@@ -642,16 +644,16 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/">
+                <a href="/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2(%E4%BC%98%E5%8C%96%E5%90%8E)/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="如何搭建Hexo博客">
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="如何搭建 Hexo 博客 - 完整教程">
                         
-                        <span class="card-title">如何搭建Hexo博客</span>
+                        <span class="card-title">如何搭建 Hexo 博客 - 完整教程</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -672,7 +674,22 @@
                         </span>
                     </div>
                 </div>
-
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Hexo/">
+                        <span class="chip bg-color">Hexo</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%8D%9A%E5%AE%A2/">
+                        <span class="chip bg-color">博客</span>
+                    </a>
+                    
+                    <a href="/tags/GitHub-Pages/">
+                        <span class="chip bg-color">GitHub Pages</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
@@ -700,8 +717,6 @@
 
 
 <!-- 代码块收缩 -->
-
-<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
 
 
 

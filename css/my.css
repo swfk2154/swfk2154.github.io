@@ -1,1 +1,106 @@
-/* Here is your custom css styles. */
+/* ===== 统一代码样式 - 全部使用代码块风格 ===== */
+
+/* ===== 1. 代码块 (pre) ===== */
+
+pre {
+    background: #1e1e1e !important;
+    border: 1px solid #3d3d3d !important;
+    border-radius: 6px !important;
+    padding: 16px 20px !important;
+    margin: 16px 0 !important;
+    overflow-x: auto !important;
+    font-family: 'Fira Code', 'JetBrains Mono', Consolas, Monaco, monospace !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    color: #d4d4d4 !important;
+}
+
+pre code {
+    background: transparent !important;
+    color: #d4d4d4 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+/* ===== 2. 行内代码 - 改成和代码块一样 ===== */
+
+/* 通用选择器，覆盖所有行内代码 */
+article code,
+.post-content code,
+.entry-content code,
+.md code,
+p code,
+span code,
+td code,
+th code,
+li code {
+    background: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    font-family: 'Fira Code', 'JetBrains Mono', Consolas, Monaco, monospace !important;
+    font-size: 0.9em !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    border: 1px solid #3d3d3d !important;
+    white-space: nowrap;
+}
+
+/* 额外的通用覆盖 */
+*:not(pre) > code {
+    background: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border: 1px solid #3d3d3d !important;
+}
+
+/* ===== 3. 复制按钮 ===== */
+
+.code_copy {
+    background: #2d2d2d !important;
+    color: #9cdcfe !important;
+    border: 1px solid #4d4d4d !important;
+    border-radius: 4px !important;
+    padding: 2px 8px !important;
+    font-size: 11px !important;
+    top: 6px !important;
+    right: 6px !important;
+    opacity: 0.5 !important;
+}
+
+.code_copy:hover {
+    background: #3d3d3d !important;
+    opacity: 1 !important;
+}
+
+/* ===== 4. 隐藏 macOS 窗口控制点 ===== */
+
+.code-area::after,
+.code-area::before {
+    display: none !important;
+}
+
+.code_theme,
+.code-theme-dark,
+.code-open-link,
+.code-original-close,
+.post-code-bg-img {
+    display: none !important;
+}
+
+/* ===== 5. 语法高亮 ===== */
+
+.hljs-keyword { color: #c586c0 !important; }
+.hljs-string { color: #ce9178 !important; }
+.hljs-number { color: #b5cea8 !important; }
+.hljs-comment { color: #6a9955 !important; font-style: italic; }
+.hljs-function { color: #dcdcaa !important; }
+.hljs-variable { color: #9cdcfe !important; }
+.hljs-attr { color: #9cdcfe !important; }
+
+/* ===== 6. 滚动条 ===== */
+
+pre::-webkit-scrollbar {
+    height: 6px;
+}
+pre::-webkit-scrollbar-thumb {
+    background: #4d4d4d;
+    border-radius: 3px;
+}
