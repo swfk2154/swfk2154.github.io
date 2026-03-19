@@ -4,13 +4,14 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="如何卸载OpenClaw, 网络安全">
+    <meta name="keywords" content="AI 入门必看！一篇文章搞懂 Agent、LLM、Prompt、Token、Tool、Workflow、RAG、Embedding、Context, 网络安全">
     <meta name="description" content="
-⚠️ 警告：卸载是一个不可逆的操作，请谨慎操作。
+⚠️ 更新说明：本文已根据权威资料更新，部分内容来自维基百科、IBM、AWS、Microsoft Azure 等官方文档。
 
 
-⚠️ 注意：以下内容是基于官方文档编写的，我让openclaw自己写的，卸载前请确保你了解每一步的作用。
-官方文档参考：https://openclaw.ai/docs/install">
+在 AI 时代，这些概念你是否经常听到但又似懂非懂？这篇文章帮你一次性搞懂！
+
+1. LLM（大语言模型）是什">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -22,7 +23,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>如何卸载OpenClaw | 博客网站</title>
+    <title>AI 入门必看！一篇文章搞懂 Agent、LLM、Prompt、Token、Tool、Workflow、RAG、Embedding、Context | 博客网站</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -340,12 +341,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">如何卸载OpenClaw</h1>
+                    <h1 class="description center-align post-title">AI 入门必看！一篇文章搞懂 Agent、LLM、Prompt、Token、Tool、Workflow、RAG、Embedding、Context</h1>
                 </div>
             </div>
         </div>
@@ -369,12 +370,20 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/OpenClaw/">
-                                <span class="chip bg-color">OpenClaw</span>
+                            <a href="/tags/AI/">
+                                <span class="chip bg-color">AI</span>
                             </a>
                         
-                            <a href="/tags/%E5%8D%B8%E8%BD%BD/">
-                                <span class="chip bg-color">卸载</span>
+                            <a href="/tags/Agent/">
+                                <span class="chip bg-color">Agent</span>
+                            </a>
+                        
+                            <a href="/tags/LLM/">
+                                <span class="chip bg-color">LLM</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%85%A5%E9%97%A8/">
+                                <span class="chip bg-color">入门</span>
                             </a>
                         
                     </div>
@@ -411,62 +420,447 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <blockquote>
-<p>⚠️ <strong>警告</strong>：卸载是一个<strong>不可逆</strong>的操作，请谨慎操作。</p>
+<p>⚠️ <strong>更新说明</strong>：本文已根据权威资料更新，部分内容来自维基百科、IBM、AWS、Microsoft Azure 等官方文档。</p>
+</blockquote>
+<hr>
+<p>在 AI 时代，这些概念你是否经常听到但又似懂非懂？这篇文章帮你一次性搞懂！</p>
+<hr>
+<h2 id="1-LLM（大语言模型）"><a href="#1-LLM（大语言模型）" class="headerlink" title="1. LLM（大语言模型）"></a>1. LLM（大语言模型）</h2><h3 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>LLM &#x3D; Large Language Model</strong>，即大语言模型。简单来说，它是一个<strong>经过海量文本训练的超大神经网络</strong>，能够理解和生成人类语言。</p>
+<p>你可以把它想象成一个<strong>读过了互联网几乎所有文章的人</strong>，它学会了语言的模式，能够回答问题、写作文、写代码、翻译等。</p>
+<blockquote>
+<p>参考来源：<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B">维基百科 - 大型语言模型</a>、<a target="_blank" rel="noopener" href="https://www.elastic.co/cn/what-is/large-language-models">Elastic - 了解大型语言模型</a></p>
+</blockquote>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><ul>
+<li><strong>对话问答</strong>：回答各种问题</li>
+<li><strong>文本生成</strong>：写文章、写邮件、写代码</li>
+<li><strong>翻译</strong>：多语言互译</li>
+<li><strong>总结</strong>：把长文章浓缩成短摘要</li>
+<li><strong>代码补全</strong>：帮你写代码、debug</li>
+</ul>
+<h3 id="著名-LLM"><a href="#著名-LLM" class="headerlink" title="著名 LLM"></a>著名 LLM</h3><table>
+<thead>
+<tr>
+<th>模型</th>
+<th>开发者</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>GPT-4 &#x2F; o1</strong></td>
+<td>OpenAI</td>
+<td>最强综合能力，多模态</td>
+</tr>
+<tr>
+<td><strong>Claude 4</strong></td>
+<td>Anthropic</td>
+<td>长文本处理强，安全</td>
+</tr>
+<tr>
+<td><strong>Gemini</strong></td>
+<td>Google</td>
+<td>多模态原生</td>
+</tr>
+<tr>
+<td><strong>MiniMax</strong></td>
+<td>中国</td>
+<td>中文优化</td>
+</tr>
+<tr>
+<td><strong>DeepSeek</strong></td>
+<td>中国</td>
+<td>开源、性能强</td>
+</tr>
+</tbody></table>
+<h3 id="一个重要概念：Token"><a href="#一个重要概念：Token" class="headerlink" title="一个重要概念：Token"></a>一个重要概念：Token</h3><p>LLM 处理文本的基本单位叫 <strong>Token</strong>。简单理解：</p>
+<ul>
+<li>1 个 Token ≈ 0.5 ~ 1 个中文字</li>
+<li>≈ 1~2 个英文单词</li>
+</ul>
+<p><strong>为什么关注 Token？</strong></p>
+<p>因为 LLM 是按 <strong>Token 收费</strong>的！你发送的 Prompt 和收到的回复，都会消耗 Token。</p>
+<hr>
+<h2 id="2-Prompt（提示词）"><a href="#2-Prompt（提示词）" class="headerlink" title="2. Prompt（提示词）"></a>2. Prompt（提示词）</h2><h3 id="是什么？-1"><a href="#是什么？-1" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Prompt</strong> 就是你发给 LLM 的<strong>指令或问题</strong>。</p>
+<p>你可以把它理解为<strong>对 AI 说话的方式</strong>。同样一个问题，用不同的 Prompt 问，得到的答案质量可能天差地别。</p>
+<blockquote>
+<p>参考来源：<a target="_blank" rel="noopener" href="https://www.promptingguide.ai/zh">提示工程指南</a>、<a target="_blank" rel="noopener" href="https://help.openai.com/zh-hans-cn/articles/10032626-prompt-engineering-best-practices-for-chatgpt">OpenAI 提示词最佳实践</a></p>
+</blockquote>
+<h3 id="作用-1"><a href="#作用-1" class="headerlink" title="作用"></a>作用</h3><p>Prompt 决定了 AI <strong>理解你的意图</strong>和<strong>输出什么内容</strong>。</p>
+<h3 id="好的-Prompt-怎么写？"><a href="#好的-Prompt-怎么写？" class="headerlink" title="好的 Prompt 怎么写？"></a>好的 Prompt 怎么写？</h3><p>一个好的 Prompt 通常包含：</p>
+<table>
+<thead>
+<tr>
+<th>要素</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>角色</strong></td>
+<td>让 AI 扮演什么角色</td>
+<td>“你是一位专业的营养师”</td>
+</tr>
+<tr>
+<td><strong>任务</strong></td>
+<td>要完成什么</td>
+<td>“帮我写一份健康饮食计划”</td>
+</tr>
+<tr>
+<td><strong>背景</strong></td>
+<td>补充相关信息</td>
+<td>“我身高 175cm，体重 70kg”</td>
+</tr>
+<tr>
+<td><strong>格式</strong></td>
+<td>要求输出格式</td>
+<td>“用表格形式呈现”</td>
+</tr>
+<tr>
+<td><strong>限制</strong></td>
+<td>有什么约束</td>
+<td>“不要超过 500 字”</td>
+</tr>
+</tbody></table>
+<h3 id="经典-Prompt-框架"><a href="#经典-Prompt-框架" class="headerlink" title="经典 Prompt 框架"></a>经典 Prompt 框架</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">你是 [角色]</span><br><span class="line">需要完成 [任务]</span><br><span class="line">背景信息：[背景]</span><br><span class="line">要求：[格式/限制]</span><br></pre></td></tr></table></figure>
+
+<h3 id="常见-Prompt-技巧"><a href="#常见-Prompt-技巧" class="headerlink" title="常见 Prompt 技巧"></a>常见 Prompt 技巧</h3><ul>
+<li><strong>Few-shot</strong>：给几个例子，让 AI 模仿</li>
+<li><strong>Chain-of-Thought</strong>：让 AI 展示思考过程</li>
+<li><strong>Role-playing</strong>：设定角色获得更好专业回答</li>
+</ul>
+<hr>
+<h2 id="3-Context（上下文）"><a href="#3-Context（上下文）" class="headerlink" title="3. Context（上下文）"></a>3. Context（上下文）</h2><h3 id="是什么？-2"><a href="#是什么？-2" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Context</strong> 就是<strong>对话的上下文</strong>，包括之前聊过的内容、历史消息等。</p>
+<p>LLM 本身是<strong>无状态的</strong>——每次请求都是独立的。但通过把历史消息放进 Prompt，AI 就能”记住”之前聊了什么。</p>
+<h3 id="作用-2"><a href="#作用-2" class="headerlink" title="作用"></a>作用</h3><ul>
+<li>让多轮对话连贯</li>
+<li>让 AI 记住你的偏好</li>
+<li>实现”连续任务”（如长文写作）</li>
+</ul>
+<h3 id="一个关键指标：上下文窗口"><a href="#一个关键指标：上下文窗口" class="headerlink" title="一个关键指标：上下文窗口"></a>一个关键指标：上下文窗口</h3><p><strong>上下文窗口</strong>（Context Window）是指 LLM 一次能处理的 Token 数量。</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>上下文窗口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GPT-4</td>
+<td>128K Token（约 10 万汉字）</td>
+</tr>
+<tr>
+<td>Claude 4</td>
+<td>200K Token</td>
+</tr>
+<tr>
+<td>Gemini</td>
+<td>200万 Token</td>
+</tr>
+<tr>
+<td>DeepSeek</td>
+<td>64K - 128K Token</td>
+</tr>
+</tbody></table>
+<p>超出这个长度怎么办？通常会<strong>截断</strong>或<strong>摘要</strong>前面的内容。</p>
+<hr>
+<h2 id="4-Agent（智能体）"><a href="#4-Agent（智能体）" class="headerlink" title="4. Agent（智能体）"></a>4. Agent（智能体）</h2><h3 id="是什么？-3"><a href="#是什么？-3" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Agent</strong> &#x3D; <strong>智能体</strong>，是一个能够自主思考、规划并执行任务的 AI 系统。</p>
+<p>如果说 LLM 是一个”大脑”，那 Agent 就是<strong>大脑 + 手 + 工具</strong>的组合。</p>
+<blockquote>
+<p>参考来源：<a target="_blank" rel="noopener" href="https://www.ibm.com/cn-zh/think/topics/ai-agents">IBM - 什么是 AI agent</a>、<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2556858">腾讯云 - 什么是AI Agent</a>、<a target="_blank" rel="noopener" href="https://www.gartner.com/cn/information-technology/articles/ai-agents">Gartner - AI Agents</a></p>
+</blockquote>
+<h3 id="Agent-的核心能力"><a href="#Agent-的核心能力" class="headerlink" title="Agent 的核心能力"></a>Agent 的核心能力</h3><p>一个真正的 Agent 通常具备：</p>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>感知</strong></td>
+<td>理解输入（文本、图像、声音）</td>
+</tr>
+<tr>
+<td><strong>思考</strong></td>
+<td>分析问题、制定计划</td>
+</tr>
+<tr>
+<td><strong>规划</strong></td>
+<td>把复杂任务拆成步骤</td>
+</tr>
+<tr>
+<td><strong>行动</strong></td>
+<td>调用工具、执行操作</td>
+</tr>
+<tr>
+<td><strong>反思</strong></td>
+<td>检查结果、调整策略</td>
+</tr>
+</tbody></table>
+<h3 id="2025-年-Agent-趋势"><a href="#2025-年-Agent-趋势" class="headerlink" title="2025 年 Agent 趋势"></a>2025 年 Agent 趋势</h3><p>根据 <a target="_blank" rel="noopener" href="https://aiindex.stanford.edu/report/">斯坦福 2024 AI 指数报告</a> 和 <a target="_blank" rel="noopener" href="https://www.gartner.com/cn/information-technology/articles/ai-agents">Gartner 预测</a>：</p>
+<ul>
+<li>智能体技术正从简单动作转向<strong>多智能体复杂工作流</strong></li>
+<li><strong>Agentic AI</strong> 被列为 2025 年首要战略技术</li>
+<li>企业软件中整合 AI Agent 的比例将大幅上升</li>
+</ul>
+<h3 id="LLM-vs-Agent"><a href="#LLM-vs-Agent" class="headerlink" title="LLM vs Agent"></a>LLM vs Agent</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>LLM</th>
+<th>Agent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>本质</td>
+<td>语言模型</td>
+<td>系统</td>
+</tr>
+<tr>
+<td>行动</td>
+<td>只能输出文字</td>
+<td>可以执行操作</td>
+</tr>
+<tr>
+<td>自主性</td>
+<td>低（你问我答）</td>
+<td>高（自主规划）</td>
+</tr>
+<tr>
+<td>工具使用</td>
+<td>不会</td>
+<td>会调用工具</td>
+</tr>
+</tbody></table>
+<h3 id="Agent-用来干什么？"><a href="#Agent-用来干什么？" class="headerlink" title="Agent 用来干什么？"></a>Agent 用来干什么？</h3><ul>
+<li><strong>自动化工作流</strong>：自动处理邮件、生成报告</li>
+<li><strong>编程助手</strong>：帮你写代码、调试</li>
+<li><strong>数据分析</strong>：自动分析数据、画图表</li>
+<li><strong>个人助理</strong>：帮你管理日程、订机票</li>
+</ul>
+<hr>
+<h2 id="5-Tool（工具）"><a href="#5-Tool（工具）" class="headerlink" title="5. Tool（工具）"></a>5. Tool（工具）</h2><h3 id="是什么？-4"><a href="#是什么？-4" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Tool</strong> 是 Agent 可以调用的<strong>外部能力</strong>。</p>
+<p>LLM 本身只会”说话”，但通过 Tool，它可以：</p>
+<ul>
+<li>联网搜索</li>
+<li>读写文件</li>
+<li>执行代码</li>
+<li>调用 API</li>
+<li>操作浏览器</li>
+</ul>
+<h3 id="常见的-Tool"><a href="#常见的-Tool" class="headerlink" title="常见的 Tool"></a>常见的 Tool</h3><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>搜索</strong></td>
+<td>联网查资料（如 SearXNG）</td>
+</tr>
+<tr>
+<td><strong>计算器</strong></td>
+<td>数学计算</td>
+</tr>
+<tr>
+<td><strong>代码执行</strong></td>
+<td>运行 Python、JS 等</td>
+</tr>
+<tr>
+<td><strong>浏览器</strong></td>
+<td>操控网页</td>
+</tr>
+<tr>
+<td><strong>文件读写</strong></td>
+<td>读取&#x2F;写入本地文件</td>
+</tr>
+<tr>
+<td><strong>日历</strong></td>
+<td>查日程、写日程</td>
+</tr>
+<tr>
+<td><strong>邮件</strong></td>
+<td>发送&#x2F;接收邮件</td>
+</tr>
+</tbody></table>
+<h3 id="Tool-怎么工作？"><a href="#Tool-怎么工作？" class="headerlink" title="Tool 怎么工作？"></a>Tool 怎么工作？</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户 → Agent → [判断需要什么工具] → 调用 Tool → 返回结果 → Agent 整理回答</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="6-Workflow（工作流）"><a href="#6-Workflow（工作流）" class="headerlink" title="6. Workflow（工作流）"></a>6. Workflow（工作流）</h2><h3 id="是什么？-5"><a href="#是什么？-5" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Workflow</strong> &#x3D; <strong>工作流</strong>，是把多个步骤<strong>有序组织</strong>起来的自动化流程。</p>
+<p>如果说 Agent 是一个”全自动司机”，Workflow 更像是<strong>设计好的路线图</strong>——每一步该做什么都已规划好。</p>
+<h3 id="Workflow-的组成"><a href="#Workflow-的组成" class="headerlink" title="Workflow 的组成"></a>Workflow 的组成</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[输入] → [步骤1: 提取信息] → [步骤2: 调用API] → [步骤3: 整理输出] → [结果]</span><br></pre></td></tr></table></figure>
+
+<h3 id="Agent-vs-Workflow"><a href="#Agent-vs-Workflow" class="headerlink" title="Agent vs Workflow"></a>Agent vs Workflow</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>Agent</th>
+<th>Workflow</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>灵活性</td>
+<td>高（自主决策）</td>
+<td>低（固定流程）</td>
+</tr>
+<tr>
+<td>复杂度</td>
+<td>适合复杂&#x2F;模糊任务</td>
+<td>适合清晰&#x2F;重复任务</td>
+</tr>
+<tr>
+<td>成本</td>
+<td>较高（需要推理）</td>
+<td>较低（确定性执行）</td>
+</tr>
+</tbody></table>
+<h3 id="实际例子"><a href="#实际例子" class="headerlink" title="实际例子"></a>实际例子</h3><p><strong>Workflow 场景</strong>：</p>
+<blockquote>
+<p>用户提交表单 → 自动发确认邮件 → 存入数据库 → 通知管理员</p>
+</blockquote>
+<p><strong>Agent 场景</strong>：</p>
+<blockquote>
+<p>“帮我分析这个月销售额下降的原因” → Agent 自动分析数据、查资料、给建议</p>
+</blockquote>
+<hr>
+<h2 id="7-RAG（检索增强生成）"><a href="#7-RAG（检索增强生成）" class="headerlink" title="7. RAG（检索增强生成）"></a>7. RAG（检索增强生成）</h2><h3 id="是什么？-6"><a href="#是什么？-6" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>RAG &#x3D; Retrieval-Augmented Generation</strong>，即<strong>检索增强生成</strong>。</p>
+<p>它的核心思想是：</p>
+<blockquote>
+<p>让 LLM 在回答问题时，<strong>先检索相关资料，再基于资料生成答案</strong>。</p>
 </blockquote>
 <blockquote>
-<p>⚠️ <strong>注意</strong>：以下内容是<strong>基于官方文档</strong>编写的，我让openclaw自己写的，卸载前请确保你了解每一步的作用。</p>
-<p>官方文档参考：<a target="_blank" rel="noopener" href="https://openclaw.ai/docs/install/uninstall">https://openclaw.ai/docs/install/uninstall</a></p>
+<p>参考来源：<a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/what-is/retrieval-augmented-generation/">AWS - 什么是 RAG</a>、<a target="_blank" rel="noopener" href="https://azure.microsoft.com/zh-cn/resources/cloud-computing-dictionary/what-is-retrieval-augmented-generation-rag">Microsoft Azure - 什么是 RAG</a></p>
 </blockquote>
+<h3 id="为什么需要-RAG？"><a href="#为什么需要-RAG？" class="headerlink" title="为什么需要 RAG？"></a>为什么需要 RAG？</h3><p>LLM 的两大局限：</p>
+<ol>
+<li><strong>知识截止</strong>：训练数据有截止日期，不知道最新信息</li>
+<li><strong>幻觉</strong>：可能编造不存在的信息</li>
+</ol>
+<p>RAG 通过<strong>让 AI 查阅参考资料</strong>来解决这些问题。</p>
+<h3 id="RAG-工作原理"><a href="#RAG-工作原理" class="headerlink" title="RAG 工作原理"></a>RAG 工作原理</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户问题 → [检索器] → 从知识库找相关资料 → [把资料 + 问题发给 LLM] → 生成答案</span><br></pre></td></tr></table></figure>
+
+<h3 id="RAG-高级方法"><a href="#RAG-高级方法" class="headerlink" title="RAG 高级方法"></a>RAG 高级方法</h3><ul>
+<li><strong>Parent Document Retrieval</strong>：先检索小块，如果多个小块指向同一父节点，则用父节点作为上下文</li>
+<li><strong>Hybrid Search</strong>：结合关键词搜索和向量搜索</li>
+<li><strong>Reranking</strong>：对检索结果重新排序，提高相关性</li>
+</ul>
+<h3 id="RAG-用来干什么？"><a href="#RAG-用来干什么？" class="headerlink" title="RAG 用来干什么？"></a>RAG 用来干什么？</h3><ul>
+<li><strong>企业知识库</strong>：员工问公司政策，AI 从文档中检索</li>
+<li><strong>客服系统</strong>：从产品手册中找答案</li>
+<li><strong>个人知识管理</strong>：让 AI 读你的笔记、论文</li>
+<li><strong>法律&#x2F;医疗</strong>：基于权威文档提供准确信息</li>
+</ul>
 <hr>
-<h2 id="方法一：CLI-仍在（推荐）"><a href="#方法一：CLI-仍在（推荐）" class="headerlink" title="方法一：CLI 仍在（推荐）"></a>方法一：CLI 仍在（推荐）</h2><p>如果你的电脑上还能运行 <code>openclaw</code> 命令，使用官方内置的卸载工具。</p>
-<h3 id="交互式卸载"><a href="#交互式卸载" class="headerlink" title="交互式卸载"></a>交互式卸载</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw uninstall</span><br></pre></td></tr></table></figure>
-
-<h3 id="非交互式卸载（自动化脚本用）"><a href="#非交互式卸载（自动化脚本用）" class="headerlink" title="非交互式卸载（自动化脚本用）"></a>非交互式卸载（自动化脚本用）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw uninstall --all --<span class="built_in">yes</span> --non-interactive</span><br></pre></td></tr></table></figure>
-
-<p>或者如果没安装 CLI：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx -y openclaw uninstall --all --<span class="built_in">yes</span> --non-interactive</span><br></pre></td></tr></table></figure>
+<h2 id="8-Embedding（向量）"><a href="#8-Embedding（向量）" class="headerlink" title="8. Embedding（向量）"></a>8. Embedding（向量）</h2><h3 id="是什么？-7"><a href="#是什么？-7" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Embedding</strong> &#x3D; <strong>向量嵌入</strong>，是把文字、图片、声音等转换成**一组数字（向量）**的技术。</p>
+<p>关键是：<strong>意思相近的内容，向量也相近</strong>。</p>
+<h3 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h3><ul>
+<li>“狗” → [0.1, 0.8, 0.3, …]</li>
+<li>“猫” → [0.12, 0.75, 0.35, …]  ← 和”狗”很接近</li>
+<li>“汽车” → [0.9, 0.1, 0.2, …] ← 和”狗”距离很远</li>
+</ul>
+<h3 id="Embedding-用来干什么？"><a href="#Embedding-用来干什么？" class="headerlink" title="Embedding 用来干什么？"></a>Embedding 用来干什么？</h3><table>
+<thead>
+<tr>
+<th>应用</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>相似文章推荐</strong></td>
+<td>找到内容相似的文章</td>
+</tr>
+<tr>
+<td><strong>语义搜索</strong></td>
+<td>搜索”水果”，不仅能找到”苹果”，还能找到”香蕉”</td>
+</tr>
+<tr>
+<td><strong>RAG</strong></td>
+<td>把文档转成向量，存入向量数据库</td>
+</tr>
+<tr>
+<td><strong>聚类分析</strong></td>
+<td>把相似的文本自动分组</td>
+</tr>
+</tbody></table>
+<h3 id="向量数据库"><a href="#向量数据库" class="headerlink" title="向量数据库"></a>向量数据库</h3><p>存储向量的地方叫<strong>向量数据库</strong>，常见的有：</p>
+<ul>
+<li>Milvus</li>
+<li>Pinecone</li>
+<li>Qdrant</li>
+<li>FAISS</li>
+</ul>
+<hr>
+<h2 id="9-总结：它们之间的关系"><a href="#9-总结：它们之间的关系" class="headerlink" title="9. 总结：它们之间的关系"></a>9. 总结：它们之间的关系</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────┐</span><br><span class="line">│                    用户                          │</span><br><span class="line">└─────────────────┬───────────────────────────────┘</span><br><span class="line">                  │</span><br><span class="line">                  ▼</span><br><span class="line">┌─────────────────────────────────────────────────┐</span><br><span class="line">│              Prompt（提示词）                     │</span><br><span class="line">│    &quot;帮我分析这份报告，给出建议&quot;                   │</span><br><span class="line">└─────────────────┬───────────────────────────────┘</span><br><span class="line">                  │</span><br><span class="line">                  ▼</span><br><span class="line">┌─────────────────────────────────────────────────┐</span><br><span class="line">│              Context（上下文）                    │</span><br><span class="line">│    + 历史对话 + 检索到的资料                      │</span><br><span class="line">└─────────────────┬───────────────────────────────┘</span><br><span class="line">                  │</span><br><span class="line">                  ▼</span><br><span class="line">┌─────────────────────────────────────────────────┐</span><br><span class="line">│              Agent（智能体）                      │</span><br><span class="line">│  ┌─────────────────────────────────────────┐    │</span><br><span class="line">│  │  思考 → 规划 → 调用 Tool → 执行 → 反思  │    │</span><br><span class="line">│  └─────────────────────────────────────────┘    │</span><br><span class="line">│                     │                           │</span><br><span class="line">│           ┌────────┴────────┐                  │</span><br><span class="line">│           ▼                 ▼                   │</span><br><span class="line">│    ┌───────────┐    ┌───────────┐              │</span><br><span class="line">│    │  Workflow │    │    RAG    │              │</span><br><span class="line">│    │ (工作流)  │    │(检索增强) │              │</span><br><span class="line">│    └───────────┘    └─────┬─────┘              │</span><br><span class="line">│                           │                    │</span><br><span class="line">│                    ┌──────┴──────┐              │</span><br><span class="line">│                    ▼             ▼              │</span><br><span class="line">│             ┌──────────┐  ┌──────────┐         │</span><br><span class="line">│             │Embedding │  │  搜索/   │         │</span><br><span class="line">│             │ (向量)   │  │ 计算器   │         │</span><br><span class="line">│             └──────────┘  └──────────┘         │</span><br><span class="line">└─────────────────┬───────────────────────────────┘</span><br><span class="line">                  │</span><br><span class="line">                  ▼</span><br><span class="line">┌─────────────────────────────────────────────────┐</span><br><span class="line">│              LLM（大语言模型）                    │</span><br><span class="line">│         输入 Prompt → 输出回答                    │</span><br><span class="line">│              (消耗 Token)                        │</span><br><span class="line">└─────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 
 <hr>
-<h2 id="方法二：手动卸载（一步一步来）"><a href="#方法二：手动卸载（一步一步来）" class="headerlink" title="方法二：手动卸载（一步一步来）"></a>方法二：手动卸载（一步一步来）</h2><p>如果你无法运行 <code>openclaw</code> 命令，或者想手动清理每个部分，请按以下步骤操作。</p>
-<h3 id="1-停止-Gateway-服务"><a href="#1-停止-Gateway-服务" class="headerlink" title="1. 停止 Gateway 服务"></a>1. 停止 Gateway 服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw gateway stop</span><br></pre></td></tr></table></figure>
+<h2 id="10-快速对比表"><a href="#10-快速对比表" class="headerlink" title="10. 快速对比表"></a>10. 快速对比表</h2><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>简单理解</th>
+<th>类比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LLM</strong></td>
+<td>能说会写的 AI 大脑</td>
+<td>图书馆（知识丰富）</td>
+</tr>
+<tr>
+<td><strong>Prompt</strong></td>
+<td>给 AI 的指令</td>
+<td>提问方式</td>
+</tr>
+<tr>
+<td><strong>Context</strong></td>
+<td>对话历史&#x2F;背景</td>
+<td>聊天记录</td>
+</tr>
+<tr>
+<td><strong>Agent</strong></td>
+<td>会思考会行动的 AI</td>
+<td>秘书（帮你干活）</td>
+</tr>
+<tr>
+<td><strong>Tool</strong></td>
+<td>AI 能调用的技能</td>
+<td>工具箱</td>
+</tr>
+<tr>
+<td><strong>Workflow</strong></td>
+<td>规划好的步骤</td>
+<td>流程图</td>
+</tr>
+<tr>
+<td><strong>RAG</strong></td>
+<td>查资料再回答</td>
+<td>开卷考试</td>
+</tr>
+<tr>
+<td><strong>Embedding</strong></td>
+<td>把文字变成数字</td>
+<td>书的索引</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="11-实际应用场景"><a href="#11-实际应用场景" class="headerlink" title="11. 实际应用场景"></a>11. 实际应用场景</h2><h3 id="场景-1：智能客服"><a href="#场景-1：智能客服" class="headerlink" title="场景 1：智能客服"></a>场景 1：智能客服</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户问 → Agent 接收 → RAG 检索产品文档 → LLM 生成回答 → 返回给用户</span><br></pre></td></tr></table></figure>
 
-<blockquote>
-<p>⚠️ 如果 CLI 已经不可用，跳过这一步。</p>
-</blockquote>
-<h3 id="2-卸载-Gateway-服务"><a href="#2-卸载-Gateway-服务" class="headerlink" title="2. 卸载 Gateway 服务"></a>2. 卸载 Gateway 服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw gateway uninstall</span><br></pre></td></tr></table></figure>
+<h3 id="场景-2：编程助手"><a href="#场景-2：编程助手" class="headerlink" title="场景 2：编程助手"></a>场景 2：编程助手</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户说&quot;帮我写个排序算法&quot; → Agent 理解需求 → Tool 执行代码 → 返回结果</span><br></pre></td></tr></table></figure>
 
-<h3 id="3-删除状态和配置文件"><a href="#3-删除状态和配置文件" class="headerlink" title="3. 删除状态和配置文件"></a>3. 删除状态和配置文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认路径</span></span><br><span class="line"><span class="built_in">rm</span> -rf <span class="string">&quot;<span class="variable">$&#123;OPENCLAW_STATE_DIR:-<span class="variable">$HOME</span>/.openclaw&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果你使用了自定义配置路径，也需要删除</span></span><br><span class="line"><span class="comment"># 如果你设置了 OPENCLAW_CONFIG_PATH，删掉那个文件</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>⚠️ <strong>注意</strong>：这会删除所有聊天记录、配置、API 密钥等数据！</p>
-</blockquote>
-<h3 id="4-删除工作区（可选）"><a href="#4-删除工作区（可选）" class="headerlink" title="4. 删除工作区（可选）"></a>4. 删除工作区（可选）</h3><p>如果你想删除所有 agent 文件和对话历史：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf ~/.openclaw/workspace</span><br></pre></td></tr></table></figure>
-
-<h3 id="5-删除-CLI"><a href="#5-删除-CLI" class="headerlink" title="5. 删除 CLI"></a>5. 删除 CLI</h3><p>根据你当初的安装方式选择：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># npm 安装</span></span><br><span class="line">npm <span class="built_in">rm</span> -g openclaw</span><br><span class="line"></span><br><span class="line"><span class="comment"># pnpm 安装</span></span><br><span class="line">pnpm remove -g openclaw</span><br><span class="line"></span><br><span class="line"><span class="comment"># bun 安装</span></span><br><span class="line">bun remove -g openclaw</span><br></pre></td></tr></table></figure>
-
-<h3 id="6-删除-macOS-App（如果你用了-macOS-版）"><a href="#6-删除-macOS-App（如果你用了-macOS-版）" class="headerlink" title="6. 删除 macOS App（如果你用了 macOS 版）"></a>6. 删除 macOS App（如果你用了 macOS 版）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf /Applications/OpenClaw.app</span><br></pre></td></tr></table></figure>
+<h3 id="场景-3：知识管理"><a href="#场景-3：知识管理" class="headerlink" title="场景 3：知识管理"></a>场景 3：知识管理</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">你问&quot;去年那个项目的方案是什么&quot; </span><br><span class="line">→ Embedding 把问题转成向量 </span><br><span class="line">→ 向量数据库搜索相似内容 </span><br><span class="line">→ RAG 把找到的文档给 LLM </span><br><span class="line">→ 生成答案</span><br></pre></td></tr></table></figure>
 
 <hr>
-<h2 id="方法三：CLI-已删除但服务仍在运行"><a href="#方法三：CLI-已删除但服务仍在运行" class="headerlink" title="方法三：CLI 已删除但服务仍在运行"></a>方法三：CLI 已删除但服务仍在运行</h2><p>有些情况下，你卸载了 CLI 但 Gateway 服务仍在后台运行。</p>
-<h3 id="macOS-launchd"><a href="#macOS-launchd" class="headerlink" title="macOS (launchd)"></a>macOS (launchd)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 停止服务</span></span><br><span class="line">launchctl bootout gui/<span class="variable">$UID</span>/ai.openclaw.gateway</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除启动配置</span></span><br><span class="line"><span class="built_in">rm</span> -f ~/Library/LaunchAgents/ai.openclaw.gateway.plist</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果你用过自定义 profile</span></span><br><span class="line"><span class="comment"># 把 ai.openclaw.gateway 改成 ai.openclaw.&lt;你的profile名&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="Linux-systemd"><a href="#Linux-systemd" class="headerlink" title="Linux (systemd)"></a>Linux (systemd)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 停止并禁用服务</span></span><br><span class="line">systemctl --user <span class="built_in">disable</span> --now openclaw-gateway.service</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除服务文件</span></span><br><span class="line"><span class="built_in">rm</span> -f ~/.config/systemd/user/openclaw-gateway.service</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新加载 systemd</span></span><br><span class="line">systemctl --user daemon-reload</span><br></pre></td></tr></table></figure>
-
-<h3 id="Windows-计划任务"><a href="#Windows-计划任务" class="headerlink" title="Windows (计划任务)"></a>Windows (计划任务)</h3><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除计划任务</span></span><br><span class="line">schtasks /Delete /F /TN <span class="string">&quot;OpenClaw Gateway&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除服务脚本</span></span><br><span class="line"><span class="built_in">Remove-Item</span> <span class="literal">-Force</span> <span class="string">&quot;<span class="variable">$env:USERPROFILE</span>\.openclaw\gateway.cmd&quot;</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><p><strong>Q: 卸载后想重装怎么办？</strong></p>
-<p>重新运行安装命令即可：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Windows</span></span><br><span class="line">iwr -useb https://openclaw.ai/install.ps1 | iex</span><br><span class="line"></span><br><span class="line"><span class="comment"># macOS / Linux</span></span><br><span class="line">curl -fsSL https://openclaw.ai/install.sh | bash</span><br></pre></td></tr></table></figure>
-
-<p><strong>Q: 之前用了 <code>--profile</code> 怎么办？</strong></p>
-<p>每个 profile 都有独立的状态目录，如 <code>~/.openclaw-&lt;profile&gt;</code>，需要手动删除：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf ~/.openclaw-&lt;你的profile名&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<p>如有问题，欢迎在评论区留言！ 🦞🐨</p>
+<p>希望这篇文章能帮你搞懂这些概念！有问题欢迎评论区交流 🐨</p>
+<p><strong>参考来源</strong>：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B">维基百科 - 大型语言模型</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.ibm.com/cn-zh/think/topics/ai-agents">IBM - 什么是 AI agent</a></li>
+<li><a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/what-is/retrieval-augmented-generation/">AWS - 什么是 RAG</a></li>
+<li><a target="_blank" rel="noopener" href="https://azure.microsoft.com/zh-cn/resources/cloud-computing-dictionary/what-is-retrieval-augmented-generation-rag">Microsoft Azure - 什么是 RAG</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.promptingguide.ai/zh">提示工程指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://help.openai.com/zh-hans-cn/articles/10032626-prompt-engineering-best-practices-for-chatgpt">OpenAI 提示词最佳实践</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.gartner.com/cn/information-technology/articles/ai-agents">Gartner - AI Agents</a></li>
+</ul>
 
                 
             </div>
@@ -493,7 +887,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blogbu2154.site/%E5%A6%82%E4%BD%95%E5%8D%B8%E8%BD%BDOpenClaw/">https://blogbu2154.site/%E5%A6%82%E4%BD%95%E5%8D%B8%E8%BD%BDOpenClaw/</a>
+                    <a href="https://blogbu2154.site/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82AI%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/">https://blogbu2154.site/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82AI%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -531,12 +925,20 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/OpenClaw/">
-                                    <span class="chip bg-color">OpenClaw</span>
+                                <a href="/tags/AI/">
+                                    <span class="chip bg-color">AI</span>
                                 </a>
                             
-                                <a href="/tags/%E5%8D%B8%E8%BD%BD/">
-                                    <span class="chip bg-color">卸载</span>
+                                <a href="/tags/Agent/">
+                                    <span class="chip bg-color">Agent</span>
+                                </a>
+                            
+                                <a href="/tags/LLM/">
+                                    <span class="chip bg-color">LLM</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%85%A5%E9%97%A8/">
+                                    <span class="chip bg-color">入门</span>
                                 </a>
                             
                         </div>
@@ -615,9 +1017,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82AI%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/">
                     <div class="card-image">
@@ -635,9 +1038,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2026-03-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-03-19
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -646,6 +1049,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -676,13 +1080,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAOpenClaw/">
+                <a href="/%E5%A6%82%E4%BD%95%E5%8D%B8%E8%BD%BDOpenClaw/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="如何搭建OpenClaw">
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="如何卸载OpenClaw">
                         
-                        <span class="card-title">如何搭建OpenClaw</span>
+                        <span class="card-title">如何卸载OpenClaw</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -710,8 +1114,8 @@
                         <span class="chip bg-color">OpenClaw</span>
                     </a>
                     
-                    <a href="/tags/AI%E5%8A%A9%E6%89%8B/">
-                        <span class="chip bg-color">AI助手</span>
+                    <a href="/tags/%E5%8D%B8%E8%BD%BD/">
+                        <span class="chip bg-color">卸载</span>
                     </a>
                     
                 </div>
