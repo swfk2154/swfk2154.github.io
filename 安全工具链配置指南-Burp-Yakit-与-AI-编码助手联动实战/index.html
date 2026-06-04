@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="AI安全,大模型安全,LLM安全,网络安全,PyRIT,garak,OWASP,MITRE ATLAS,AI-Infra-Guard">
-    <meta name="description" content="系统整理中国、欧美、俄罗斯 AI 与网络安全结合方向的教程、视频、工具、文档和文章，并给出学习路线与落地建议。">
+    <meta name="keywords" content="Burp Suite, Yakit, Claude Code, Codex, MCP, AI安全, 渗透测试工具链">
+    <meta name="description" content="详细记录如何将 Burp Suite、Yakit 与 Claude Code、Codex 通过 MCP 协议打通，构建一套&#34;AI + 安全工具&#34;的联动工作流。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -17,7 +17,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>AI 与网络安全资源全景报告：中国、欧美、俄罗斯教程、工具与文档 | swfk 的安全笔记</title>
+    <title>安全工具链配置指南：Burp、Yakit 与 AI 编码助手联动实战 | swfk 的安全笔记</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -275,7 +275,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">AI 与网络安全资源全景报告：中国、欧美、俄罗斯教程、工具与文档</h1>
+                    <h1 class="description center-align post-title">安全工具链配置指南：Burp、Yakit 与 AI 编码助手联动实战</h1>
                 </div>
             </div>
         </div>
@@ -299,24 +299,32 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/LLM/">
-                                <span class="chip bg-color">LLM</span>
-                            </a>
-                        
                             <a href="/tags/AI%E5%AE%89%E5%85%A8/">
                                 <span class="chip bg-color">AI安全</span>
                             </a>
                         
-                            <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
-                                <span class="chip bg-color">网络安全</span>
+                            <a href="/tags/Burp-Suite/">
+                                <span class="chip bg-color">Burp Suite</span>
                             </a>
                         
-                            <a href="/tags/%E7%BA%A2%E9%98%9F/">
-                                <span class="chip bg-color">红队</span>
+                            <a href="/tags/Yakit/">
+                                <span class="chip bg-color">Yakit</span>
                             </a>
                         
-                            <a href="/tags/%E8%B5%84%E6%96%99%E6%95%B4%E7%90%86/">
-                                <span class="chip bg-color">资料整理</span>
+                            <a href="/tags/Claude-Code/">
+                                <span class="chip bg-color">Claude Code</span>
+                            </a>
+                        
+                            <a href="/tags/Codex/">
+                                <span class="chip bg-color">Codex</span>
+                            </a>
+                        
+                            <a href="/tags/MCP/">
+                                <span class="chip bg-color">MCP</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">
+                                <span class="chip bg-color">工具配置</span>
                             </a>
                         
                     </div>
@@ -327,8 +335,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/AI%E5%AE%89%E5%85%A8/" class="post-category">
-                                AI安全
+                            <a href="/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/" class="post-category">
+                                工具实践
                             </a>
                         
                     </div>
@@ -362,177 +370,238 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <blockquote>
-<p>本文整理的是 AI 与网络安全结合方向的学习与实践入口，覆盖中国、欧美、俄罗斯三类生态。资料链接基于 2026-06-04 前后公开信息整理；正式引用或落地前，建议重新打开原始链接核对。</p>
+<p>本文记录我个人搭建的安全工具链配置过程，覆盖 Burp Suite、Yakit 与 Claude Code、Codex 的 MCP 联动方案。环境为 Windows 11 + bash shell。</p>
 </blockquote>
-<div class="ai-atlas">
-  <div class="ai-atlas-hero">
-    <div>
-      <p class="ai-kicker">AI Security Resource Atlas</p>
-      <h2>从 LLM 安全入门到企业 AI 安全治理</h2>
-      <p>重点关注 Prompt Injection、RAG 数据污染、Agent 工具越权、模型供应链、AI 基础设施暴露和安全运营自动化。</p>
-    </div>
-    <div class="ai-atlas-stats">
-      <span><b>3</b>地区生态</span>
-      <span><b>20+</b>核心入口</span>
-      <span><b>5</b>阶段路线</span>
-    </div>
-  </div>
-</div>
+<hr>
+<h2 id="一、整体架构"><a href="#一、整体架构" class="headerlink" title="一、整体架构"></a>一、整体架构</h2><p>这套工具链的核心思路是：<strong>通过 MCP（Model Context Protocol）协议，让 AI 助手直接调用安全工具的 API，实现”用自然语言驱动工具”的工作流。</strong></p>
+<pre><code class="hljs plaintext">┌─────────────┐     MCP      ┌──────────────┐
+│ Claude Code │ ◄──────────► │ Burp Suite   │
+│   / Codex   │              │  (MCP Server)│
+└─────────────┘              └──────────────┘
+       │                            │
+       │ MCP                  ┌─────┴─────┐
+       ▼                      ▼           ▼
+┌─────────────┐        ┌─────────┐  ┌──────────┐
+│   Yakit     │        │ Proxy   │  │ Scanner  │
+│(yaklang MCP)│        │ History │  │  APIs    │
+└─────────────┘        └─────────┘  └──────────┘</code></pre>
 
-<h2 id="一、先看主线"><a href="#一、先看主线" class="headerlink" title="一、先看主线"></a>一、先看主线</h2><p>学习 AI 安全不要只盯着“越狱提示词”。更完整的路线应该是：</p>
-<ol>
-<li><strong>概念框架</strong>：AI 系统威胁建模、LLM &#x2F; Agent 风险、MLSecOps。</li>
-<li><strong>应用安全</strong>：Prompt Injection、RAG 数据污染、Agent 工具越权、敏感数据泄露。</li>
-<li><strong>AI 基础设施安全</strong>：Ollama、ComfyUI、vLLM、向量库、MCP Server、模型供应链。</li>
-<li><strong>防御落地</strong>：LLM-WAF、AI Gateway、Guardrails、日志审计、权限隔离。</li>
-<li><strong>AI 赋能安全运营</strong>：告警研判、威胁情报摘要、检测规则生成、代码审计辅助。</li>
-</ol>
-<h2 id="二、地区生态对比"><a href="#二、地区生态对比" class="headerlink" title="二、地区生态对比"></a>二、地区生态对比</h2><div class="ai-region-grid">
-  <section>
-    <h3>中国</h3>
-    <p><strong>特点：</strong>政策治理、政企合规、厂商方案和 AI 基础设施扫描发展快。</p>
-    <p><strong>重点：</strong>大模型安全评估、MCP / Agent 安全、LLM-WAF、数据分类分级。</p>
-    <p><strong>风险：</strong>组件暴露、默认配置、数据泄露、出入口合规、越权工具调用。</p>
-  </section>
-  <section>
-    <h3>欧美</h3>
-    <p><strong>特点：</strong>开放框架、标准文档、开源工具和红队方法论最完整。</p>
-    <p><strong>重点：</strong>LLM 红队、RAG 安全、Agentic AI、模型供应链、AI 风险管理。</p>
-    <p><strong>风险：</strong>提示词注入、数据投毒、模型提取、跨租户泄露、供应链风险。</p>
-  </section>
-  <section>
-    <h3>俄罗斯</h3>
-    <p><strong>特点：</strong>Kaspersky、Sber、Positive Technologies、Habr 等厂商和社区资料较集中。</p>
-    <p><strong>重点：</strong>AI 防御、LLM 安全培训、威胁模型、企业安全实践。</p>
-    <p><strong>风险：</strong>资料入口分散，商业培训偏多，部分文档需要二次核验。</p>
-  </section>
-</div>
-
-<h2 id="三、中国资源"><a href="#三、中国资源" class="headerlink" title="三、中国资源"></a>三、中国资源</h2><h3 id="官方、治理与报告"><a href="#官方、治理与报告" class="headerlink" title="官方、治理与报告"></a>官方、治理与报告</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://www.cac.gov.cn/2024-09/09/c_1727567886199789.htm">《人工智能安全治理框架》1.0 - 中央网信办</a></li>
-<li><a target="_blank" rel="noopener" href="https://cms.gzwxb.gov.cn/netcom/ueditor-file/file/20250918/1758205976589006025.pdf">《人工智能安全治理框架》2.0 PDF</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.caict.ac.cn/english/research/whitepapers/202504/P020250402526466179450.pdf">中国信通院：人工智能风险治理报告 PDF</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cert.org.cn/">国家互联网应急中心 CNCERT</a>：关注“大模型安全众测”“AI 组件漏洞通报”等。</li>
-</ul>
-<h3 id="平台与工具"><a href="#平台与工具" class="headerlink" title="平台与工具"></a>平台与工具</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://flagsafe.baai.ac.cn/">FlagSafe 大模型安全平台</a>：偏大模型安全评估、红队 &#x2F; 蓝队、防护与可解释。</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/Tencent/AI-Infra-Guard">Tencent AI-Infra-Guard</a>：腾讯朱雀实验室开源 AI 红队与 AI 基础设施扫描平台，覆盖 MCP、Agent Skills、AI Infra、越狱评估等。</li>
-<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/llmwaf">腾讯云 LLM-WAF</a>：了解企业级 LLM 网关、防护、限流和审计设计。</li>
-<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/llmsgw">腾讯云 AI Agent 安全网关</a>：适合参考 Agent 工具调用安全网关思路。</li>
-<li><a target="_blank" rel="noopener" href="https://www.qianxin.com/product/detail/pid/522">奇安信大模型卫士</a>、<a target="_blank" rel="noopener" href="https://www.qianxin.com/product/detail/pid/496">QAX-GPT 安全机器人</a>：偏企业产品和安全运营。</li>
-</ul>
-<h3 id="教程、文章与视频"><a href="#教程、文章与视频" class="headerlink" title="教程、文章与视频"></a>教程、文章与视频</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://yeasy.gitbook.io/ai_security_guide/di-yi-bu-fen-ji-chu-pian/03_frameworks/3.1_owasp_top10">AI Security Guide 中文版：OWASP LLM Top 10 解析</a></li>
-<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2672023">腾讯云大模型安全方案文章</a></li>
-<li><a target="_blank" rel="noopener" href="https://hub.baai.ac.cn/view/54558">FlagSafe 发布介绍</a></li>
-<li>FreeBuf、安全客、看雪、先知社区：关键词建议 <code>AI安全</code>、<code>大模型安全</code>、<code>LLM安全</code>、<code>MCP安全</code>、<code>Agent安全</code>。</li>
-<li>B站可搜：<code>大模型安全 OWASP LLM Top10</code>、<code>AI-Infra-Guard</code>、<code>PyRIT AI 红队</code>、<code>大模型安全 智源 FlagSafe</code>。</li>
-</ul>
-<h2 id="四、欧美资源"><a href="#四、欧美资源" class="headerlink" title="四、欧美资源"></a>四、欧美资源</h2><h3 id="框架与文档"><a href="#框架与文档" class="headerlink" title="框架与文档"></a>框架与文档</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://genai.owasp.org/">OWASP GenAI Security Project</a>：LLM Top 10、Agentic Security、工具、白皮书和视频的主入口。</li>
-<li><a target="_blank" rel="noopener" href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP Top 10 for LLM Applications</a></li>
-<li><a target="_blank" rel="noopener" href="https://atlas.mitre.org/">MITRE ATLAS</a>：AI &#x2F; ML 对抗技术矩阵，适合威胁建模和红队映射。</li>
-<li><a target="_blank" rel="noopener" href="https://www.nist.gov/itl/ai-risk-management-framework">NIST AI RMF</a>：AI 风险管理框架。</li>
-<li><a target="_blank" rel="noopener" href="https://csrc.nist.gov/pubs/ai/100/2/e2025/final">NIST Adversarial Machine Learning Taxonomy</a>：对抗机器学习攻击与缓解术语体系。</li>
-<li><a target="_blank" rel="noopener" href="https://www.cisa.gov/news-events/news/dhs-cisa-and-uk-ncsc-release-joint-guidelines-secure-ai-system-development">CISA &#x2F; NCSC Secure AI System Development</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cisa.gov/news-events/alerts/2024/04/15/joint-guidance-deploying-ai-systems-securely">CISA Deploying AI Systems Securely</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.enisa.europa.eu/publications/artificial-intelligence-cybersecurity-challenges">ENISA Artificial Intelligence Cybersecurity Challenges</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.enisa.europa.eu/publications/multilayer-framework-for-good-cybersecurity-practices-for-ai">ENISA Multilayer Framework for Good Cybersecurity Practices for AI</a></li>
-<li><a target="_blank" rel="noopener" href="https://safety.google/intl/en_us/safety/saif/">Google Secure AI Framework &#x2F; SAIF</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.coalitionforsecureai.org/">Coalition for Secure AI &#x2F; CoSAI</a></li>
-</ul>
-<h3 id="开源工具"><a href="#开源工具" class="headerlink" title="开源工具"></a>开源工具</h3><table>
+<p><strong>各组件作用：</strong></p>
+<table>
 <thead>
 <tr>
-<th>工具</th>
-<th>用途</th>
-<th>适合阶段</th>
+<th>组件</th>
+<th>作用</th>
+<th>状态</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><a target="_blank" rel="noopener" href="https://github.com/microsoft/PyRIT">Microsoft PyRIT</a></td>
-<td>生成式 AI 风险识别和自动化红队编排</td>
-<td>红队评估、持续测试</td>
+<td><strong>Burp MCP</strong></td>
+<td>代理流量分析、被动&#x2F;主动扫描、漏洞验证</td>
+<td>Active @ <code>127.0.0.1:9876</code></td>
 </tr>
 <tr>
-<td><a target="_blank" rel="noopener" href="https://github.com/NVIDIA/garak">NVIDIA garak</a></td>
-<td>LLM 漏洞、安全和鲁棒性探测</td>
-<td>模型 &#x2F; 应用上线前测试</td>
+<td><strong>Yakit (yaklang)</strong></td>
+<td>端口扫描、PoC 检测、Web Fuzzer、暴力破解</td>
+<td>Active @ <code>D:\yingyong\yakit</code></td>
 </tr>
 <tr>
-<td><a target="_blank" rel="noopener" href="https://www.promptfoo.dev/docs/red-team/">Promptfoo Red Team</a></td>
-<td>LLM、RAG、Agent 红队测试，可接入 CI</td>
-<td>开发、回归、发布门禁</td>
+<td><strong>Kimi WebBridge</strong></td>
+<td>浏览器自动化（替代 Claude in Chrome）</td>
+<td>Active @ <code>localhost:10086</code></td>
 </tr>
 <tr>
-<td><a target="_blank" rel="noopener" href="https://github.com/protectai/llm-guard">Protect AI LLM Guard</a></td>
-<td>LLM 输入输出扫描</td>
-<td>应用防护、网关前置</td>
+<td><strong>Claude Code</strong></td>
+<td>AI 编码助手，通过 MCP 调用上述工具</td>
+<td>CLI 主入口</td>
 </tr>
 <tr>
-<td><a target="_blank" rel="noopener" href="https://github.com/protectai/modelscan">Protect AI ModelScan</a></td>
-<td>模型序列化安全扫描</td>
-<td>模型供应链、模型导入</td>
-</tr>
-<tr>
-<td><a target="_blank" rel="noopener" href="https://github.com/NVIDIA/NeMo-Guardrails">NVIDIA NeMo Guardrails</a></td>
-<td>为 LLM 应用添加可编程护栏</td>
-<td>应用设计、运行时控制</td>
-</tr>
-<tr>
-<td><a target="_blank" rel="noopener" href="https://github.com/guardrails-ai/guardrails">Guardrails AI</a></td>
-<td>输出校验、结构化约束和运行时护栏</td>
-<td>应用层防护</td>
+<td><strong>Codex</strong></td>
+<td>OpenAI 的命令行编码助手</td>
+<td>备用方案</td>
 </tr>
 </tbody></table>
-<h3 id="视频与课程"><a href="#视频与课程" class="headerlink" title="视频与课程"></a>视频与课程</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://genai.owasp.org/learning/">OWASP GenAI Learning Archive</a></li>
-<li>Microsoft Build &#x2F; BlueHat：关键词 <code>How Microsoft Approaches AI Red Teaming PyRIT</code></li>
-<li>Black Hat &#x2F; DEF CON &#x2F; RSA：关键词 <code>LLM security red teaming</code>、<code>AI supply chain security</code>、<code>agentic AI security</code></li>
+<hr>
+<h2 id="二、Burp-Suite-MCP-配置"><a href="#二、Burp-Suite-MCP-配置" class="headerlink" title="二、Burp Suite MCP 配置"></a>二、Burp Suite MCP 配置</h2><h3 id="2-1-前置要求"><a href="#2-1-前置要求" class="headerlink" title="2.1 前置要求"></a>2.1 前置要求</h3><ul>
+<li>Burp Suite Professional &#x2F; Community（Pro 功能更全）</li>
+<li>Burp 的 <strong>AI Agent MCP Server</strong> 插件（或原生 MCP 支持）</li>
 </ul>
-<h2 id="五、俄罗斯-俄语生态资源"><a href="#五、俄罗斯-俄语生态资源" class="headerlink" title="五、俄罗斯 &#x2F; 俄语生态资源"></a>五、俄罗斯 &#x2F; 俄语生态资源</h2><p>公开资料相对分散，偏 Kaspersky、Sber、Positive Technologies、Yandex Cloud、Habr。开源工具不如欧美多，很多是商业产品、培训或文章。</p>
-<h3 id="课程与报告"><a href="#课程与报告" class="headerlink" title="课程与报告"></a>课程与报告</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://xtraining.kaspersky.com/courses/large-language-models-security/">Kaspersky Large Language Models Security</a>：付费课程，覆盖 LLM 攻击、防御和安全框架。</li>
-<li><a target="_blank" rel="noopener" href="https://media.kaspersky.com/en/business-security/enterprise/machine-learning-cybersecurity-whitepaper.pdf">Kaspersky：AI under Attack - How to Secure Machine Learning</a></li>
-<li>Sber AI 威胁模型：公开入口不稳定，可从 <a target="_blank" rel="noopener" href="https://habr.com/ru/news/902882/">Habr 介绍</a> 或 <a target="_blank" rel="noopener" href="https://bosfera.ru/press-release/sber-razrabotal-model-dlya-kiberbezopasnosti-ii">Банковское обозрение</a> 追踪。</li>
-</ul>
-<h3 id="文章与教程"><a href="#文章与教程" class="headerlink" title="文章与教程"></a>文章与教程</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://habr.com/ru/companies/cloud_ru/articles/1003844/">Habr：AI-security развивается…</a></li>
-<li><a target="_blank" rel="noopener" href="https://habr.com/ru/articles/906172/">Habr：MLSecOps защита машинного обучения</a></li>
-<li><a target="_blank" rel="noopener" href="https://habr.com/en/companies/pt/articles/904936/">Positive Technologies：Искусственный интеллект в киберзащите</a></li>
-<li><a target="_blank" rel="noopener" href="https://habr.com/ru/companies/yandex_cloud_and_infra/articles/876004/">Yandex Cloud：LLM 在网络安全中的应用</a></li>
-<li><a target="_blank" rel="noopener" href="https://habr.com/ru/articles/871780/">Habr：LLM agents in cybersecurity</a></li>
-</ul>
-<h3 id="视频检索关键词"><a href="#视频检索关键词" class="headerlink" title="视频检索关键词"></a>视频检索关键词</h3><ul>
-<li><code>безопасность LLM</code></li>
-<li><code>AI security кибербезопасность</code></li>
-<li><code>MLSecOps</code></li>
-<li><code>ИИ в киберзащите</code></li>
-<li><code>Kaspersky LLM security</code></li>
-</ul>
-<h2 id="六、推荐学习顺序"><a href="#六、推荐学习顺序" class="headerlink" title="六、推荐学习顺序"></a>六、推荐学习顺序</h2><div class="ai-roadmap">
-  <div><b>1</b><span>网络安全基础</span><p>Linux、Python、HTTP、Web 安全、身份认证、日志和基础攻防。</p></div>
-  <div><b>2</b><span>AI / LLM 基础</span><p>Transformer、RAG、Agent、向量数据库、模型推理、微调和评测。</p></div>
-  <div><b>3</b><span>AI 安全框架</span><p>OWASP GenAI、MITRE ATLAS、NIST AI RMF、CISA、ENISA。</p></div>
-  <div><b>4</b><span>红队与防御</span><p>Prompt Injection、越狱、RAG 污染、模型提取、Agent 工具越权。</p></div>
-  <div><b>5</b><span>企业落地</span><p>LLM 网关、AI-BOM、日志审计、权限隔离、持续评估和合规文档。</p></div>
-</div>
+<h3 id="2-2-启动-MCP-Server"><a href="#2-2-启动-MCP-Server" class="headerlink" title="2.2 启动 MCP Server"></a>2.2 启动 MCP Server</h3><p>Burp 的 MCP Server 默认以 <strong>SSE（Server-Sent Events）</strong> 方式暴露：</p>
+<pre><code class="hljs plaintext">Endpoint: http://127.0.0.1:9876/
+Transport: SSE</code></pre>
 
-<h2 id="七、落地建议"><a href="#七、落地建议" class="headerlink" title="七、落地建议"></a>七、落地建议</h2><ol>
-<li><strong>列出 AI 资产</strong>：模型、RAG、向量库、MCP、Agent、API Key、日志。</li>
-<li><strong>做威胁建模</strong>：用 OWASP 与 MITRE ATLAS 明确攻击面和业务影响。</li>
-<li><strong>建立红队基线</strong>：用 PyRIT、garak、Promptfoo 保存可复现评估报告。</li>
-<li><strong>检查基础设施</strong>：用 AI-Infra-Guard 排查 AI 组件和 MCP &#x2F; Agent 生态暴露面。</li>
-<li><strong>在模型外做控制</strong>：权限隔离、DLP、审批、审计、速率限制和回滚机制。</li>
+<p>启动方式：</p>
+<ol>
+<li>打开 Burp Suite</li>
+<li>进入 <strong>Extender → BApp Store</strong>，搜索 “AI Agent” 或 “MCP”</li>
+<li>安装并启用后，在插件配置中开启 MCP Server</li>
+<li>确认端口监听：<code>netstat -ano | findstr 9876</code></li>
 </ol>
-<h2 id="八、容易误判的点"><a href="#八、容易误判的点" class="headerlink" title="八、容易误判的点"></a>八、容易误判的点</h2><ul>
-<li>Prompt 过滤不是完整防线，工具权限和数据访问控制更关键。</li>
-<li>红队扫描结果不是合规结论，需要结合业务、日志和人工复核。</li>
-<li>Agent 能调用真实工具时，风险从聊天安全变成系统权限安全。</li>
-<li>社区文章可能过期或带厂商立场，关键事实要回到官方文档验证。</li>
+<h3 id="2-3-测试连通性"><a href="#2-3-测试连通性" class="headerlink" title="2.3 测试连通性"></a>2.3 测试连通性</h3><pre><code class="hljs bash"><span class="hljs-comment"># 检查 SSE 端点是否响应</span>
+curl -s http://127.0.0.1:9876/health
+
+<span class="hljs-comment"># 或使用 Claude Code 内置检测</span>
+claude mcp <span class="hljs-built_in">test</span> burp</code></pre>
+
+<hr>
+<h2 id="三、Yakit-yaklang-MCP-配置"><a href="#三、Yakit-yaklang-MCP-配置" class="headerlink" title="三、Yakit &#x2F; yaklang MCP 配置"></a>三、Yakit &#x2F; yaklang MCP 配置</h2><h3 id="3-1-前置要求"><a href="#3-1-前置要求" class="headerlink" title="3.1 前置要求"></a>3.1 前置要求</h3><ul>
+<li>Yakit 客户端已安装</li>
+<li>yak-engine 引擎路径确认：<code>D:\yingyong\yakit\yakit-projects\yak-engine\yak.exe</code></li>
 </ul>
+<h3 id="3-2-启动-yaklang-MCP"><a href="#3-2-启动-yaklang-MCP" class="headerlink" title="3.2 启动 yaklang MCP"></a>3.2 启动 yaklang MCP</h3><p>Yakit 的 MCP 通常通过 yak-engine 的命令行模式启动：</p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 进入 yak-engine 目录</span>
+<span class="hljs-built_in">cd</span> <span class="hljs-string">&quot;/d/yingyong/yakit/yakit-projects/yak-engine&quot;</span>
+
+<span class="hljs-comment"># 启动 MCP 服务（示例命令，具体参数参考 Yakit 文档）</span>
+./yak.exe mcp --port 50051</code></pre>
+
+<p>或者通过 Yakit GUI：</p>
+<ol>
+<li>打开 Yakit → <strong>设置 → 高级设置</strong></li>
+<li>找到 <strong>MCP Server</strong> 选项，勾选启用</li>
+<li>配置监听地址（默认 <code>127.0.0.1:50051</code>）</li>
+</ol>
+<h3 id="3-3-验证工具可用性"><a href="#3-3-验证工具可用性" class="headerlink" title="3.3 验证工具可用性"></a>3.3 验证工具可用性</h3><pre><code class="hljs bash"><span class="hljs-comment"># 检查 yak 引擎版本</span>
+<span class="hljs-string">&quot;D:\yingyong\yakit\yakit-projects\yak-engine\yak.exe&quot;</span> version
+
+<span class="hljs-comment"># 简单端口扫描测试（本地测试用）</span>
+yak.exe port-scan --target 127.0.0.1 --port 80,443,8080</code></pre>
+
+<hr>
+<h2 id="四、Claude-Code-MCP-配置"><a href="#四、Claude-Code-MCP-配置" class="headerlink" title="四、Claude Code MCP 配置"></a>四、Claude Code MCP 配置</h2><h3 id="4-1-配置文件位置"><a href="#4-1-配置文件位置" class="headerlink" title="4.1 配置文件位置"></a>4.1 配置文件位置</h3><p>Claude Code 的 MCP 配置在用户目录下的 <code>settings.json</code>：</p>
+<pre><code class="hljs plaintext">Windows: %USERPROFILE%\.claude\settings.json
+Linux/macOS: ~/.claude/settings.json</code></pre>
+
+<h3 id="4-2-添加-MCP-Servers"><a href="#4-2-添加-MCP-Servers" class="headerlink" title="4.2 添加 MCP Servers"></a>4.2 添加 MCP Servers</h3><p>编辑 <code>settings.json</code>，在 <code>mcpServers</code> 字段中添加：</p>
+<pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+  <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+    <span class="hljs-attr">&quot;burp&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+      <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;python&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">&quot;C:\\Users\\32550\\.claude\\tools\\burp_mcp_client.py&quot;</span>
+      <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+        <span class="hljs-attr">&quot;BURP_MCP_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;http://127.0.0.1:9876&quot;</span>
+      <span class="hljs-punctuation">&#125;</span>
+    <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;yaklang&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+      <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;D:\\yingyong\\yakit\\yakit-projects\\yak-engine\\yak.exe&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;mcp&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;--port&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;50051&quot;</span><span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">&#125;</span>
+  <span class="hljs-punctuation">&#125;</span>
+<span class="hljs-punctuation">&#125;</span></code></pre>
+
+<p><strong>配置说明：</strong></p>
+<ul>
+<li><strong>burp</strong>：通过 Python 桥接脚本连接 Burp 的 SSE 端点</li>
+<li><strong>yaklang</strong>：直接调用 yak 引擎的 MCP 子命令</li>
+<li><code>env</code> 中可配置 Burp 的连接地址</li>
+</ul>
+<h3 id="4-3-验证配置"><a href="#4-3-验证配置" class="headerlink" title="4.3 验证配置"></a>4.3 验证配置</h3><pre><code class="hljs bash"><span class="hljs-comment"># 列出已配置的 MCP 服务器</span>
+claude mcp list
+
+<span class="hljs-comment"># 测试单个连接</span>
+claude mcp <span class="hljs-built_in">test</span> burp
+claude mcp <span class="hljs-built_in">test</span> yaklang
+
+<span class="hljs-comment"># 进入交互模式，直接调用工具</span>
+claude
+&gt; /mcp burp scan http://target.com</code></pre>
+
+<hr>
+<h2 id="五、Codex-CLI-配置（备用方案）"><a href="#五、Codex-CLI-配置（备用方案）" class="headerlink" title="五、Codex CLI 配置（备用方案）"></a>五、Codex CLI 配置（备用方案）</h2><p>Codex 是 OpenAI 的命令行编码助手，同样支持通过 MCP 扩展能力。</p>
+<h3 id="5-1-安装-Codex"><a href="#5-1-安装-Codex" class="headerlink" title="5.1 安装 Codex"></a>5.1 安装 Codex</h3><pre><code class="hljs bash"><span class="hljs-comment"># 通过 npm 安装</span>
+npm install -g @openai/codex
+
+<span class="hljs-comment"># 或通过 pip</span>
+pip install openai-codex</code></pre>
+
+<h3 id="5-2-配置-API-Key"><a href="#5-2-配置-API-Key" class="headerlink" title="5.2 配置 API Key"></a>5.2 配置 API Key</h3><pre><code class="hljs bash"><span class="hljs-comment"># 设置 OpenAI API Key</span>
+codex config <span class="hljs-built_in">set</span> api_key sk-xxxxxxxxxxxxxxxx
+
+<span class="hljs-comment"># 或使用环境变量</span>
+<span class="hljs-built_in">export</span> OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxx</code></pre>
+
+<h3 id="5-3-接入-MCP（如支持）"><a href="#5-3-接入-MCP（如支持）" class="headerlink" title="5.3 接入 MCP（如支持）"></a>5.3 接入 MCP（如支持）</h3><p>Codex 的 MCP 支持尚在演进中，当前可用方案：</p>
+<ol>
+<li><strong>通过 Claude Code 的桥接</strong>：在同一个项目中同时使用 Claude Code 和 Codex</li>
+<li><strong>独立调用</strong>：Codex 负责代码生成，Claude Code 负责工具调用</li>
+</ol>
+<pre><code class="hljs bash"><span class="hljs-comment"># 示例：Codex 生成 PoC 代码，Claude Code 调用 Yakit 执行</span>
+codex <span class="hljs-string">&quot;写一个检测 Redis 未授权访问的 Python 脚本&quot;</span>
+<span class="hljs-comment"># 生成代码后，用 Claude Code 的 yaklang MCP 执行扫描</span></code></pre>
+
+<hr>
+<h2 id="六、实战工作流"><a href="#六、实战工作流" class="headerlink" title="六、实战工作流"></a>六、实战工作流</h2><h3 id="6-1-场景一：自动化漏洞扫描"><a href="#6-1-场景一：自动化漏洞扫描" class="headerlink" title="6.1 场景一：自动化漏洞扫描"></a>6.1 场景一：自动化漏洞扫描</h3><pre><code class="hljs bash"><span class="hljs-comment"># 1. 用 Claude Code 启动 Burp 被动扫描</span>
+claude
+&gt; 让 burp 监听 8080 端口，然后帮我扫描 http://testphp.vulnweb.com
+
+<span class="hljs-comment"># 2. AI 自动配置代理，抓取流量，分析漏洞</span>
+<span class="hljs-comment"># 3. 输出结果到本地报告</span></code></pre>
+
+<h3 id="6-2-场景二：快速端口与服务探测"><a href="#6-2-场景二：快速端口与服务探测" class="headerlink" title="6.2 场景二：快速端口与服务探测"></a>6.2 场景二：快速端口与服务探测</h3><pre><code class="hljs bash"><span class="hljs-comment"># 用 yaklang MCP 执行端口扫描</span>
+claude
+&gt; 用 yakit 扫描 192.168.1.0/24 的 22,80,443,3306,6379,8080 端口
+
+<span class="hljs-comment"># AI 自动解析结果，标记高风险端口</span></code></pre>
+
+<h3 id="6-3-场景三：PoC-验证"><a href="#6-3-场景三：PoC-验证" class="headerlink" title="6.3 场景三：PoC 验证"></a>6.3 场景三：PoC 验证</h3><pre><code class="hljs bash"><span class="hljs-comment"># 1. 发现疑似漏洞后，让 AI 生成验证 PoC</span>
+codex <span class="hljs-string">&quot;写一个验证 Fastjson &lt;= 1.2.24 RCE 的 curl 命令&quot;</span>
+
+<span class="hljs-comment"># 2. 用 Claude Code 调用 Yakit 的 Fuzzer 批量验证</span>
+claude
+&gt; 用 yakit fuzzer 对 http://target.com/api 测试这个 payload</code></pre>
+
+<h3 id="6-4-场景四：浏览器自动化-抓包联动"><a href="#6-4-场景四：浏览器自动化-抓包联动" class="headerlink" title="6.4 场景四：浏览器自动化 + 抓包联动"></a>6.4 场景四：浏览器自动化 + 抓包联动</h3><pre><code class="hljs bash"><span class="hljs-comment"># 1. Kimi WebBridge 控制浏览器访问目标</span>
+<span class="hljs-comment"># 2. 流量自动经过 Burp Proxy</span>
+<span class="hljs-comment"># 3. Claude Code 分析 Burp 中的请求/响应</span>
+claude
+&gt; 分析 burp 中最近 10 条包含 login 的请求，判断是否存在 SQL 注入风险</code></pre>
+
+<hr>
+<h2 id="七、常见问题"><a href="#七、常见问题" class="headerlink" title="七、常见问题"></a>七、常见问题</h2><h3 id="Q1-Burp-MCP-连接失败？"><a href="#Q1-Burp-MCP-连接失败？" class="headerlink" title="Q1: Burp MCP 连接失败？"></a>Q1: Burp MCP 连接失败？</h3><p><strong>排查：</strong></p>
+<ol>
+<li>确认 Burp 已启动且插件已加载</li>
+<li>检查 <code>127.0.0.1:9876</code> 是否被占用：<code>netstat -ano | findstr 9876</code></li>
+<li>查看 Burp 的 <strong>Extender → Output</strong> 面板是否有错误日志</li>
+<li>防火墙是否拦截了本地回环地址</li>
+</ol>
+<h3 id="Q2-Yakit-MCP-端口冲突？"><a href="#Q2-Yakit-MCP-端口冲突？" class="headerlink" title="Q2: Yakit MCP 端口冲突？"></a>Q2: Yakit MCP 端口冲突？</h3><p><strong>解决：</strong></p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 更换监听端口</span>
+yak.exe mcp --port 50052
+
+<span class="hljs-comment"># 同步更新 Claude Code 的 settings.json</span></code></pre>
+
+<h3 id="Q3-Claude-Code-不识别-MCP-工具？"><a href="#Q3-Claude-Code-不识别-MCP-工具？" class="headerlink" title="Q3: Claude Code 不识别 MCP 工具？"></a>Q3: Claude Code 不识别 MCP 工具？</h3><p><strong>排查：</strong></p>
+<ol>
+<li>确认 <code>settings.json</code> 语法正确（JSON 格式）</li>
+<li>重启 Claude Code 进程</li>
+<li>检查 <code>claude mcp list</code> 是否列出配置</li>
+<li>查看 Claude Code 日志：<code>%USERPROFILE%\.claude\logs\</code></li>
+</ol>
+<h3 id="Q4-中文路径问题？"><a href="#Q4-中文路径问题？" class="headerlink" title="Q4: 中文路径问题？"></a>Q4: 中文路径问题？</h3><p>已知问题：bash 中直接输入中文路径可能导致 EOF 错误。</p>
+<p><strong>规避方案：</strong></p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 使用短路径或环境变量</span>
+<span class="hljs-built_in">export</span> YAK_PATH=<span class="hljs-string">&quot;/d/yingyong/yakit/yakit-projects/yak-engine&quot;</span>
+$<span class="hljs-string">&quot;YAK_PATH&quot;</span>/yak.exe mcp --port 50051</code></pre>
+
+<hr>
+<h2 id="八、安全与合规提醒"><a href="#八、安全与合规提醒" class="headerlink" title="八、安全与合规提醒"></a>八、安全与合规提醒</h2><ol>
+<li><strong>授权边界</strong>：所有扫描和测试行为必须在授权范围内进行，严禁对非自有资产进行探测</li>
+<li><strong>数据隐私</strong>：Burp 抓包可能包含敏感信息，注意本地存储安全</li>
+<li><strong>AI 输出校验</strong>：AI 生成的 PoC 代码需人工审核后再执行，避免误操作</li>
+<li><strong>环境隔离</strong>：建议在虚拟机或 Docker 中运行高风险测试</li>
+</ol>
+<hr>
+<h2 id="九、参考链接"><a href="#九、参考链接" class="headerlink" title="九、参考链接"></a>九、参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.anthropic.com/en/docs/claude-code/mcp">Claude Code MCP 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/burp/documentation">Burp Suite 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.yaklang.com/">Yakit 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/">Model Context Protocol 规范</a></li>
+</ul>
+<hr>
 <blockquote>
-<p>所有测试应在授权环境、靶场或自有系统中进行。本文只做资料索引和工程化学习路线整理，不提供未授权攻击步骤。</p>
+<p>本文基于个人实际配置经验整理，工具版本更新可能导致部分命令变化，建议以官方文档为准。如有疑问欢迎在评论区留言交流。</p>
 </blockquote>
 
                 
@@ -560,7 +629,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blogbu2154.site/AI%E4%B8%8E%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E8%B5%84%E6%BA%90%E5%85%A8%E6%99%AF%E6%8A%A5%E5%91%8A/">https://blogbu2154.site/AI%E4%B8%8E%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E8%B5%84%E6%BA%90%E5%85%A8%E6%99%AF%E6%8A%A5%E5%91%8A/</a>
+                    <a href="https://blogbu2154.site/%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E9%93%BE%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97-Burp-Yakit-%E4%B8%8E-AI-%E7%BC%96%E7%A0%81%E5%8A%A9%E6%89%8B%E8%81%94%E5%8A%A8%E5%AE%9E%E6%88%98/">https://blogbu2154.site/%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E9%93%BE%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97-Burp-Yakit-%E4%B8%8E-AI-%E7%BC%96%E7%A0%81%E5%8A%A9%E6%89%8B%E8%81%94%E5%8A%A8%E5%AE%9E%E6%88%98/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -598,24 +667,32 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/LLM/">
-                                    <span class="chip bg-color">LLM</span>
-                                </a>
-                            
                                 <a href="/tags/AI%E5%AE%89%E5%85%A8/">
                                     <span class="chip bg-color">AI安全</span>
                                 </a>
                             
-                                <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
-                                    <span class="chip bg-color">网络安全</span>
+                                <a href="/tags/Burp-Suite/">
+                                    <span class="chip bg-color">Burp Suite</span>
                                 </a>
                             
-                                <a href="/tags/%E7%BA%A2%E9%98%9F/">
-                                    <span class="chip bg-color">红队</span>
+                                <a href="/tags/Yakit/">
+                                    <span class="chip bg-color">Yakit</span>
                                 </a>
                             
-                                <a href="/tags/%E8%B5%84%E6%96%99%E6%95%B4%E7%90%86/">
-                                    <span class="chip bg-color">资料整理</span>
+                                <a href="/tags/Claude-Code/">
+                                    <span class="chip bg-color">Claude Code</span>
+                                </a>
+                            
+                                <a href="/tags/Codex/">
+                                    <span class="chip bg-color">Codex</span>
+                                </a>
+                            
+                                <a href="/tags/MCP/">
+                                    <span class="chip bg-color">MCP</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">
+                                    <span class="chip bg-color">工具配置</span>
                                 </a>
                             
                         </div>
@@ -661,9 +738,83 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E9%93%BE%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97-Burp-Yakit-%E4%B8%8E-AI-%E7%BC%96%E7%A0%81%E5%8A%A9%E6%89%8B%E8%81%94%E5%8A%A8%E5%AE%9E%E6%88%98/">
+                    <div class="card-image">
+                        
+                        <img src="/images/ai-security-hero.png" class="responsive-img" alt="安全工具链配置指南：Burp、Yakit 与 AI 编码助手联动实战">
+                        
+                        <span class="card-title">安全工具链配置指南：Burp、Yakit 与 AI 编码助手联动实战</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            详细记录如何将 Burp Suite、Yakit 与 Claude Code、Codex 通过 MCP 协议打通，构建一套"AI + 安全工具"的联动工作流。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-04
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/" class="post-category">
+                                    工具实践
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/AI%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">AI安全</span>
+                    </a>
+                    
+                    <a href="/tags/Burp-Suite/">
+                        <span class="chip bg-color">Burp Suite</span>
+                    </a>
+                    
+                    <a href="/tags/Yakit/">
+                        <span class="chip bg-color">Yakit</span>
+                    </a>
+                    
+                    <a href="/tags/Claude-Code/">
+                        <span class="chip bg-color">Claude Code</span>
+                    </a>
+                    
+                    <a href="/tags/Codex/">
+                        <span class="chip bg-color">Codex</span>
+                    </a>
+                    
+                    <a href="/tags/MCP/">
+                        <span class="chip bg-color">MCP</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">
+                        <span class="chip bg-color">工具配置</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
             <div class="card">
                 <a href="/%E6%8A%A4%E7%BD%91-HVV-%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8/">
                     <div class="card-image">
@@ -680,9 +831,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2026-06-04
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-04
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -724,63 +875,6 @@
                     
                     <a href="/tags/%E8%93%9D%E9%98%9F/">
                         <span class="chip bg-color">蓝队</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82AI%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="AI 入门必看！一篇文章搞懂 Agent、LLM、Prompt、Token、Tool、Workflow、RAG、Embedding、Context">
-                        
-                        <span class="card-title">AI 入门必看！一篇文章搞懂 Agent、LLM、Prompt、Token、Tool、Workflow、RAG、Embedding、Context</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2026-03-19
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            swfk2154
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/AI/">
-                        <span class="chip bg-color">AI</span>
-                    </a>
-                    
-                    <a href="/tags/Agent/">
-                        <span class="chip bg-color">Agent</span>
-                    </a>
-                    
-                    <a href="/tags/LLM/">
-                        <span class="chip bg-color">LLM</span>
-                    </a>
-                    
-                    <a href="/tags/%E5%85%A5%E9%97%A8/">
-                        <span class="chip bg-color">入门</span>
                     </a>
                     
                 </div>

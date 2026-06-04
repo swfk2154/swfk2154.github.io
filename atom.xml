@@ -6,7 +6,7 @@
   <link href="https://blogbu2154.site/atom.xml" rel="self"/>
   
   <link href="https://blogbu2154.site/"/>
-  <updated>2026-06-04T06:00:00.000Z</updated>
+  <updated>2026-06-04T07:00:00.000Z</updated>
   <id>https://blogbu2154.site/</id>
   
   <author>
@@ -15,6 +15,46 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>安全工具链配置指南：Burp、Yakit 与 AI 编码助手联动实战</title>
+    <link href="https://blogbu2154.site/%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E9%93%BE%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97-Burp-Yakit-%E4%B8%8E-AI-%E7%BC%96%E7%A0%81%E5%8A%A9%E6%89%8B%E8%81%94%E5%8A%A8%E5%AE%9E%E6%88%98/"/>
+    <id>https://blogbu2154.site/%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E9%93%BE%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97-Burp-Yakit-%E4%B8%8E-AI-%E7%BC%96%E7%A0%81%E5%8A%A9%E6%89%8B%E8%81%94%E5%8A%A8%E5%AE%9E%E6%88%98/</id>
+    <published>2026-06-04T07:00:00.000Z</published>
+    <updated>2026-06-04T07:00:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>本文记录我个人搭建的安全工具链配置过程，覆盖 Burp Suite、Yakit 与 Claude Code、Codex 的 MCP 联动方案。环境为 Windows 11 + bash shell。</p></blockquote><hr><h2 id="一、整体架构"><a href="#一、整体架构" class="headerlink" title="一、整体架构"></a>一、整体架构</h2><p>这套工具链的核心思路是：<strong>通过 MCP（Model Context Protocol）协议，让 AI 助手直接调用安全工具的 API，实现”用自然语言驱动工具”的工作流。</strong></p><pre><code class="hljs plaintext">┌─────────────┐     MCP      ┌──────────────┐│ Claude Code │ ◄──────────► │ Burp Suite   ││   / Codex   │              │  (MCP Server)│└─────────────┘              └──────────────┘       │                            │       │ MCP                  ┌─────┴─────┐       ▼                      ▼           ▼┌─────────────┐        ┌─────────┐  ┌──────────┐│   Yakit     │        │ Proxy   │  │ Scanner  ││(yaklang MCP)│        │ History │  │  APIs    │└─────────────┘        └─────────┘  └──────────┘</code></pre><p><strong>各组件作用：</strong></p><table><thead><tr><th>组件</th><th>作用</th><th>状态</th></tr></thead><tbody><tr><td><strong>Burp MCP</strong></td><td>代理流量分析、被动&#x2F;主动扫描、漏洞验证</td><td>Active @ <code>127.0.0.1:9876</code></td></tr><tr><td><strong>Yakit (yaklang)</strong></td><td>端口扫描、PoC 检测、Web Fuzzer、暴力破解</td><td>Active @ <code>D:\yingyong\yakit</code></td></tr><tr><td><strong>Kimi WebBridge</strong></td><td>浏览器自动化（替代 Claude in Chrome）</td><td>Active @ <code>localhost:10086</code></td></tr><tr><td><strong>Claude Code</strong></td><td>AI 编码助手，通过 MCP 调用上述工具</td><td>CLI 主入口</td></tr><tr><td><strong>Codex</strong></td><td>OpenAI 的命令行编码助手</td><td>备用方案</td></tr></tbody></table><hr><h2 id="二、Burp-Suite-MCP-配置"><a href="#二、Burp-Suite-MCP-配置" class="headerlink" title="二、Burp Suite MCP 配置"></a>二、Burp Suite MCP 配置</h2><h3 id="2-1-前置要求"><a href="#2-1-前置要求" class="headerlink" title="2.1 前置要求"></a>2.1 前置要求</h3><ul><li>Burp Suite Professional &#x2F; Community（Pro 功能更全）</li><li>Burp 的 <strong>AI Agent MCP Server</strong> 插件（或原生 MCP 支持）</li></ul><h3 id="2-2-启动-MCP-Server"><a href="#2-2-启动-MCP-Server" class="headerlink" title="2.2 启动 MCP Server"></a>2.2 启动 MCP Server</h3><p>Burp 的 MCP Server 默认以 <strong>SSE（Server-Sent Events）</strong> 方式暴露：</p><pre><code class="hljs plaintext">Endpoint: http://127.0.0.1:9876/Transport: SSE</code></pre><p>启动方式：</p><ol><li>打开 Burp Suite</li><li>进入 <strong>Extender → BApp Store</strong>，搜索 “AI Agent” 或 “MCP”</li><li>安装并启用后，在插件配置中开启 MCP Server</li><li>确认端口监听：<code>netstat -ano | findstr 9876</code></li></ol><h3 id="2-3-测试连通性"><a href="#2-3-测试连通性" class="headerlink" title="2.3 测试连通性"></a>2.3 测试连通性</h3><pre><code class="hljs bash"><span class="hljs-comment"># 检查 SSE 端点是否响应</span>curl -s http://127.0.0.1:9876/health<span class="hljs-comment"># 或使用 Claude Code 内置检测</span>claude mcp <span class="hljs-built_in">test</span> burp</code></pre><hr><h2 id="三、Yakit-yaklang-MCP-配置"><a href="#三、Yakit-yaklang-MCP-配置" class="headerlink" title="三、Yakit &#x2F; yaklang MCP 配置"></a>三、Yakit &#x2F; yaklang MCP 配置</h2><h3 id="3-1-前置要求"><a href="#3-1-前置要求" class="headerlink" title="3.1 前置要求"></a>3.1 前置要求</h3><ul><li>Yakit 客户端已安装</li><li>yak-engine 引擎路径确认：<code>D:\yingyong\yakit\yakit-projects\yak-engine\yak.exe</code></li></ul><h3 id="3-2-启动-yaklang-MCP"><a href="#3-2-启动-yaklang-MCP" class="headerlink" title="3.2 启动 yaklang MCP"></a>3.2 启动 yaklang MCP</h3><p>Yakit 的 MCP 通常通过 yak-engine 的命令行模式启动：</p><pre><code class="hljs bash"><span class="hljs-comment"># 进入 yak-engine 目录</span><span class="hljs-built_in">cd</span> <span class="hljs-string">&quot;/d/yingyong/yakit/yakit-projects/yak-engine&quot;</span><span class="hljs-comment"># 启动 MCP 服务（示例命令，具体参数参考 Yakit 文档）</span>./yak.exe mcp --port 50051</code></pre><p>或者通过 Yakit GUI：</p><ol><li>打开 Yakit → <strong>设置 → 高级设置</strong></li><li>找到 <strong>MCP Server</strong> 选项，勾选启用</li><li>配置监听地址（默认 <code>127.0.0.1:50051</code>）</li></ol><h3 id="3-3-验证工具可用性"><a href="#3-3-验证工具可用性" class="headerlink" title="3.3 验证工具可用性"></a>3.3 验证工具可用性</h3><pre><code class="hljs bash"><span class="hljs-comment"># 检查 yak 引擎版本</span><span class="hljs-string">&quot;D:\yingyong\yakit\yakit-projects\yak-engine\yak.exe&quot;</span> version<span class="hljs-comment"># 简单端口扫描测试（本地测试用）</span>yak.exe port-scan --target 127.0.0.1 --port 80,443,8080</code></pre><hr><h2 id="四、Claude-Code-MCP-配置"><a href="#四、Claude-Code-MCP-配置" class="headerlink" title="四、Claude Code MCP 配置"></a>四、Claude Code MCP 配置</h2><h3 id="4-1-配置文件位置"><a href="#4-1-配置文件位置" class="headerlink" title="4.1 配置文件位置"></a>4.1 配置文件位置</h3><p>Claude Code 的 MCP 配置在用户目录下的 <code>settings.json</code>：</p><pre><code class="hljs plaintext">Windows: %USERPROFILE%\.claude\settings.jsonLinux/macOS: ~/.claude/settings.json</code></pre><h3 id="4-2-添加-MCP-Servers"><a href="#4-2-添加-MCP-Servers" class="headerlink" title="4.2 添加 MCP Servers"></a>4.2 添加 MCP Servers</h3><p>编辑 <code>settings.json</code>，在 <code>mcpServers</code> 字段中添加：</p><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>  <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>    <span class="hljs-attr">&quot;burp&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>      <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;python&quot;</span><span class="hljs-punctuation">,</span>      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>        <span class="hljs-string">&quot;C:\\Users\\32550\\.claude\\tools\\burp_mcp_client.py&quot;</span>      <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>      <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>        <span class="hljs-attr">&quot;BURP_MCP_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;http://127.0.0.1:9876&quot;</span>      <span class="hljs-punctuation">&#125;</span>    <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span>    <span class="hljs-attr">&quot;yaklang&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>      <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;D:\\yingyong\\yakit\\yakit-projects\\yak-engine\\yak.exe&quot;</span><span class="hljs-punctuation">,</span>      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;mcp&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;--port&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;50051&quot;</span><span class="hljs-punctuation">]</span>    <span class="hljs-punctuation">&#125;</span>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">&#125;</span></code></pre><p><strong>配置说明：</strong></p><ul><li><strong>burp</strong>：通过 Python 桥接脚本连接 Burp 的 SSE 端点</li><li><strong>yaklang</strong>：直接调用 yak 引擎的 MCP 子命令</li><li><code>env</code> 中可配置 Burp 的连接地址</li></ul><h3 id="4-3-验证配置"><a href="#4-3-验证配置" class="headerlink" title="4.3 验证配置"></a>4.3 验证配置</h3><pre><code class="hljs bash"><span class="hljs-comment"># 列出已配置的 MCP 服务器</span>claude mcp list<span class="hljs-comment"># 测试单个连接</span>claude mcp <span class="hljs-built_in">test</span> burpclaude mcp <span class="hljs-built_in">test</span> yaklang<span class="hljs-comment"># 进入交互模式，直接调用工具</span>claude&gt; /mcp burp scan http://target.com</code></pre><hr><h2 id="五、Codex-CLI-配置（备用方案）"><a href="#五、Codex-CLI-配置（备用方案）" class="headerlink" title="五、Codex CLI 配置（备用方案）"></a>五、Codex CLI 配置（备用方案）</h2><p>Codex 是 OpenAI 的命令行编码助手，同样支持通过 MCP 扩展能力。</p><h3 id="5-1-安装-Codex"><a href="#5-1-安装-Codex" class="headerlink" title="5.1 安装 Codex"></a>5.1 安装 Codex</h3><pre><code class="hljs bash"><span class="hljs-comment"># 通过 npm 安装</span>npm install -g @openai/codex<span class="hljs-comment"># 或通过 pip</span>pip install openai-codex</code></pre><h3 id="5-2-配置-API-Key"><a href="#5-2-配置-API-Key" class="headerlink" title="5.2 配置 API Key"></a>5.2 配置 API Key</h3><pre><code class="hljs bash"><span class="hljs-comment"># 设置 OpenAI API Key</span>codex config <span class="hljs-built_in">set</span> api_key sk-xxxxxxxxxxxxxxxx<span class="hljs-comment"># 或使用环境变量</span><span class="hljs-built_in">export</span> OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxx</code></pre><h3 id="5-3-接入-MCP（如支持）"><a href="#5-3-接入-MCP（如支持）" class="headerlink" title="5.3 接入 MCP（如支持）"></a>5.3 接入 MCP（如支持）</h3><p>Codex 的 MCP 支持尚在演进中，当前可用方案：</p><ol><li><strong>通过 Claude Code 的桥接</strong>：在同一个项目中同时使用 Claude Code 和 Codex</li><li><strong>独立调用</strong>：Codex 负责代码生成，Claude Code 负责工具调用</li></ol><pre><code class="hljs bash"><span class="hljs-comment"># 示例：Codex 生成 PoC 代码，Claude Code 调用 Yakit 执行</span>codex <span class="hljs-string">&quot;写一个检测 Redis 未授权访问的 Python 脚本&quot;</span><span class="hljs-comment"># 生成代码后，用 Claude Code 的 yaklang MCP 执行扫描</span></code></pre><hr><h2 id="六、实战工作流"><a href="#六、实战工作流" class="headerlink" title="六、实战工作流"></a>六、实战工作流</h2><h3 id="6-1-场景一：自动化漏洞扫描"><a href="#6-1-场景一：自动化漏洞扫描" class="headerlink" title="6.1 场景一：自动化漏洞扫描"></a>6.1 场景一：自动化漏洞扫描</h3><pre><code class="hljs bash"><span class="hljs-comment"># 1. 用 Claude Code 启动 Burp 被动扫描</span>claude&gt; 让 burp 监听 8080 端口，然后帮我扫描 http://testphp.vulnweb.com<span class="hljs-comment"># 2. AI 自动配置代理，抓取流量，分析漏洞</span><span class="hljs-comment"># 3. 输出结果到本地报告</span></code></pre><h3 id="6-2-场景二：快速端口与服务探测"><a href="#6-2-场景二：快速端口与服务探测" class="headerlink" title="6.2 场景二：快速端口与服务探测"></a>6.2 场景二：快速端口与服务探测</h3><pre><code class="hljs bash"><span class="hljs-comment"># 用 yaklang MCP 执行端口扫描</span>claude&gt; 用 yakit 扫描 192.168.1.0/24 的 22,80,443,3306,6379,8080 端口<span class="hljs-comment"># AI 自动解析结果，标记高风险端口</span></code></pre><h3 id="6-3-场景三：PoC-验证"><a href="#6-3-场景三：PoC-验证" class="headerlink" title="6.3 场景三：PoC 验证"></a>6.3 场景三：PoC 验证</h3><pre><code class="hljs bash"><span class="hljs-comment"># 1. 发现疑似漏洞后，让 AI 生成验证 PoC</span>codex <span class="hljs-string">&quot;写一个验证 Fastjson &lt;= 1.2.24 RCE 的 curl 命令&quot;</span><span class="hljs-comment"># 2. 用 Claude Code 调用 Yakit 的 Fuzzer 批量验证</span>claude&gt; 用 yakit fuzzer 对 http://target.com/api 测试这个 payload</code></pre><h3 id="6-4-场景四：浏览器自动化-抓包联动"><a href="#6-4-场景四：浏览器自动化-抓包联动" class="headerlink" title="6.4 场景四：浏览器自动化 + 抓包联动"></a>6.4 场景四：浏览器自动化 + 抓包联动</h3><pre><code class="hljs bash"><span class="hljs-comment"># 1. Kimi WebBridge 控制浏览器访问目标</span><span class="hljs-comment"># 2. 流量自动经过 Burp Proxy</span><span class="hljs-comment"># 3. Claude Code 分析 Burp 中的请求/响应</span>claude&gt; 分析 burp 中最近 10 条包含 login 的请求，判断是否存在 SQL 注入风险</code></pre><hr><h2 id="七、常见问题"><a href="#七、常见问题" class="headerlink" title="七、常见问题"></a>七、常见问题</h2><h3 id="Q1-Burp-MCP-连接失败？"><a href="#Q1-Burp-MCP-连接失败？" class="headerlink" title="Q1: Burp MCP 连接失败？"></a>Q1: Burp MCP 连接失败？</h3><p><strong>排查：</strong></p><ol><li>确认 Burp 已启动且插件已加载</li><li>检查 <code>127.0.0.1:9876</code> 是否被占用：<code>netstat -ano | findstr 9876</code></li><li>查看 Burp 的 <strong>Extender → Output</strong> 面板是否有错误日志</li><li>防火墙是否拦截了本地回环地址</li></ol><h3 id="Q2-Yakit-MCP-端口冲突？"><a href="#Q2-Yakit-MCP-端口冲突？" class="headerlink" title="Q2: Yakit MCP 端口冲突？"></a>Q2: Yakit MCP 端口冲突？</h3><p><strong>解决：</strong></p><pre><code class="hljs bash"><span class="hljs-comment"># 更换监听端口</span>yak.exe mcp --port 50052<span class="hljs-comment"># 同步更新 Claude Code 的 settings.json</span></code></pre><h3 id="Q3-Claude-Code-不识别-MCP-工具？"><a href="#Q3-Claude-Code-不识别-MCP-工具？" class="headerlink" title="Q3: Claude Code 不识别 MCP 工具？"></a>Q3: Claude Code 不识别 MCP 工具？</h3><p><strong>排查：</strong></p><ol><li>确认 <code>settings.json</code> 语法正确（JSON 格式）</li><li>重启 Claude Code 进程</li><li>检查 <code>claude mcp list</code> 是否列出配置</li><li>查看 Claude Code 日志：<code>%USERPROFILE%\.claude\logs\</code></li></ol><h3 id="Q4-中文路径问题？"><a href="#Q4-中文路径问题？" class="headerlink" title="Q4: 中文路径问题？"></a>Q4: 中文路径问题？</h3><p>已知问题：bash 中直接输入中文路径可能导致 EOF 错误。</p><p><strong>规避方案：</strong></p><pre><code class="hljs bash"><span class="hljs-comment"># 使用短路径或环境变量</span><span class="hljs-built_in">export</span> YAK_PATH=<span class="hljs-string">&quot;/d/yingyong/yakit/yakit-projects/yak-engine&quot;</span>$<span class="hljs-string">&quot;YAK_PATH&quot;</span>/yak.exe mcp --port 50051</code></pre><hr><h2 id="八、安全与合规提醒"><a href="#八、安全与合规提醒" class="headerlink" title="八、安全与合规提醒"></a>八、安全与合规提醒</h2><ol><li><strong>授权边界</strong>：所有扫描和测试行为必须在授权范围内进行，严禁对非自有资产进行探测</li><li><strong>数据隐私</strong>：Burp 抓包可能包含敏感信息，注意本地存储安全</li><li><strong>AI 输出校验</strong>：AI 生成的 PoC 代码需人工审核后再执行，避免误操作</li><li><strong>环境隔离</strong>：建议在虚拟机或 Docker 中运行高风险测试</li></ol><hr><h2 id="九、参考链接"><a href="#九、参考链接" class="headerlink" title="九、参考链接"></a>九、参考链接</h2><ul><li><a href="https://docs.anthropic.com/en/docs/claude-code/mcp">Claude Code MCP 文档</a></li><li><a href="https://portswigger.net/burp/documentation">Burp Suite 官方文档</a></li><li><a href="https://www.yaklang.com/">Yakit 官方文档</a></li><li><a href="https://modelcontextprotocol.io/">Model Context Protocol 规范</a></li></ul><hr><blockquote><p>本文基于个人实际配置经验整理，工具版本更新可能导致部分命令变化，建议以官方文档为准。如有疑问欢迎在评论区留言交流。</p></blockquote>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本文记录我个人搭建的安全工具链配置过程，覆盖 Burp Suite、Yakit 与 Claude Code、Codex 的 MCP 联动方案。环境为 Windows 11 + bash shell。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;</summary>
+      
+    
+    
+    
+    <category term="工具实践" scheme="https://blogbu2154.site/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/"/>
+    
+    
+    <category term="AI安全" scheme="https://blogbu2154.site/tags/AI%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="Burp Suite" scheme="https://blogbu2154.site/tags/Burp-Suite/"/>
+    
+    <category term="Yakit" scheme="https://blogbu2154.site/tags/Yakit/"/>
+    
+    <category term="Claude Code" scheme="https://blogbu2154.site/tags/Claude-Code/"/>
+    
+    <category term="Codex" scheme="https://blogbu2154.site/tags/Codex/"/>
+    
+    <category term="MCP" scheme="https://blogbu2154.site/tags/MCP/"/>
+    
+    <category term="工具配置" scheme="https://blogbu2154.site/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/"/>
+    
+  </entry>
   
   <entry>
     <title>护网（HVV）面试题大全</title>
@@ -79,11 +119,11 @@
     <category term="AI安全" scheme="https://blogbu2154.site/categories/AI%E5%AE%89%E5%85%A8/"/>
     
     
+    <category term="LLM" scheme="https://blogbu2154.site/tags/LLM/"/>
+    
     <category term="AI安全" scheme="https://blogbu2154.site/tags/AI%E5%AE%89%E5%85%A8/"/>
     
     <category term="网络安全" scheme="https://blogbu2154.site/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
-    
-    <category term="LLM" scheme="https://blogbu2154.site/tags/LLM/"/>
     
     <category term="红队" scheme="https://blogbu2154.site/tags/%E7%BA%A2%E9%98%9F/"/>
     
@@ -113,11 +153,11 @@
     
     
     
-    <category term="LLM" scheme="https://blogbu2154.site/tags/LLM/"/>
-    
     <category term="AI" scheme="https://blogbu2154.site/tags/AI/"/>
     
     <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
+    
+    <category term="LLM" scheme="https://blogbu2154.site/tags/LLM/"/>
     
     <category term="入门" scheme="https://blogbu2154.site/tags/%E5%85%A5%E9%97%A8/"/>
     
