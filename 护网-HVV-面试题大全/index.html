@@ -1,0 +1,1506 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="HVV, 护网, 面试题, 应急响应, 蓝队, 红队, 渗透测试, 安全运营">
+    <meta name="description" content="综合整理护网（HVV）面试常见题目，涵盖应急响应、流量分析、常见漏洞、红队渗透、安全设备、网络基础、安全加固、综合场景、常用工具、企业安全运营十大模块。">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>护网（HVV）面试题大全 | swfk 的安全笔记</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="swfk 的安全笔记" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">swfk 的安全笔记</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+  <li>
+    <a href="javascript:;" class="waves-effect waves-light" onclick="switchNightMode()" title="深色/浅色模式" >
+      <i id="sum-moon-icon" class="fas fa-sun" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">swfk 的安全笔记</div>
+        <div class="logo-desc">
+            
+            记录 AI 安全、网络安全、工具实践与技术复盘。
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/images/ai-security-hero.png')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">护网（HVV）面试题大全</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                                <span class="chip bg-color">网络安全</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%BA%A2%E9%98%9F/">
+                                <span class="chip bg-color">红队</span>
+                            </a>
+                        
+                            <a href="/tags/HVV/">
+                                <span class="chip bg-color">HVV</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                                <span class="chip bg-color">护网</span>
+                            </a>
+                        
+                            <a href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/">
+                                <span class="chip bg-color">面试题</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">
+                                <span class="chip bg-color">应急响应</span>
+                            </a>
+                        
+                            <a href="/tags/%E8%93%9D%E9%98%9F/">
+                                <span class="chip bg-color">蓝队</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" class="post-category">
+                                网络安全
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2026-06-04
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>本文综合整理了护网（HVV）面试中常见的技术问题，覆盖应急响应、流量分析、漏洞攻防、安全设备、网络基础等多个维度，适合蓝队、红队及安全运营方向的同学参考。</p>
+</blockquote>
+<hr>
+<h2 id="一、应急响应"><a href="#一、应急响应" class="headerlink" title="一、应急响应"></a>一、应急响应</h2><h3 id="1-应急响应的标准流程是什么？"><a href="#1-应急响应的标准流程是什么？" class="headerlink" title="1. 应急响应的标准流程是什么？"></a>1. 应急响应的标准流程是什么？</h3><p><strong>答：</strong> 六步法——收集信息 → 判断类型 → 抑制范围 → 深入分析 → 清理处置 → 输出报告。</p>
+<ol>
+<li><strong>收集信息：</strong> 收集客户信息和中毒主机信息，包括样本</li>
+<li><strong>判断类型：</strong> 判断是否为安全事件及类型（勒索、挖矿、断网、DoS 等）</li>
+<li><strong>抑制范围：</strong> 隔离受害面，防止继续扩大</li>
+<li><strong>深入分析：</strong> 日志分析、进程分析、启动项分析、样本分析，便于溯源</li>
+<li><strong>清理处置：</strong> 杀进程、删文件、打补丁、删异常服务和后门账号，恢复生产</li>
+<li><strong>输出报告：</strong> 整理完整安全事件报告</li>
+</ol>
+<h3 id="2-Windows-入侵排查思路？"><a href="#2-Windows-入侵排查思路？" class="headerlink" title="2. Windows 入侵排查思路？"></a>2. Windows 入侵排查思路？</h3><p><strong>答：</strong></p>
+<ul>
+<li><strong>账号安全：</strong> 查弱口令、远程管理端口是否对公网开放（<code>netstat -ano</code>）；<code>lusrmgr.msc</code> 查可疑&#x2F;新增账号；D 盾查隐藏账号、克隆账号；日志查管理员登录异常</li>
+<li><strong>异常端口&#x2F;进程：</strong> <code>netstat -ano</code> 检查端口连接，任务管理器查进程</li>
+<li><strong>启动项&#x2F;计划任务&#x2F;服务：</strong> 检查是否有异常自启动项</li>
+<li><strong>系统信息：</strong> 系统版本、补丁情况、可疑目录及文件</li>
+<li><strong>日志分析：</strong> <code>eventvwr.msc</code> 导出安全日志，用 Log Parser 分析</li>
+</ul>
+<h3 id="3-Linux-入侵排查思路？"><a href="#3-Linux-入侵排查思路？" class="headerlink" title="3. Linux 入侵排查思路？"></a>3. Linux 入侵排查思路？</h3><p><strong>答：</strong></p>
+<ul>
+<li><strong>账号安全：</strong> <code>who</code>&#x2F;<code>w</code>&#x2F;<code>uptime</code> 查登录用户；<code>/etc/passwd</code> 和 <code>/etc/shadow</code> 检查用户信息</li>
+<li><strong>历史命令：</strong> <code>.bash_history</code> 查看执行过的命令</li>
+<li><strong>异常端口：</strong> <code>netstat -antlp | more</code>，<code>ls -l /proc/$PID/exe</code> 查进程文件路径</li>
+<li><strong>异常进程：</strong> <code>ps aux | grep pid</code></li>
+<li><strong>开机启动项：</strong> <code>/etc/rc.local</code>、<code>/etc/rc.d/rc[0~6].d</code></li>
+<li><strong>定时任务：</strong> <code>crontab -l</code>，文件在 <code>/var/spool/cron/用户名</code></li>
+<li><strong>服务：</strong> <code>chkconfig --list</code></li>
+<li><strong>异常文件和系统日志</strong></li>
+</ul>
+<h3 id="4-挖矿病毒如何判断和处理？"><a href="#4-挖矿病毒如何判断和处理？" class="headerlink" title="4. 挖矿病毒如何判断和处理？"></a>4. 挖矿病毒如何判断和处理？</h3><p><strong>答：</strong></p>
+<p><strong>判断特征：</strong> 系统响应缓慢、CPU&#x2F;显卡使用率过高、内存&#x2F;带宽占用高</p>
+<p><strong>确认方式：</strong> 查看进程（注意系统命令可能被替换）、检查日志和系统用户、发现异常文件</p>
+<p><strong>常见入侵手段：</strong></p>
+<ul>
+<li>未授权访问或弱口令（Redis、Docker API、Hadoop Yarn、SSH 等）</li>
+<li>远程命令执行漏洞（WebLogic、Jenkins、Struts2、永恒之蓝等）</li>
+</ul>
+<p><strong>清除流程：</strong></p>
+<ol>
+<li>及时隔离主机（防蠕虫横向传播）</li>
+<li>iptables 阻断与矿池通讯</li>
+<li>清除定时任务</li>
+<li>清除启动项</li>
+<li>先杀守护进程再杀挖矿进程</li>
+<li>清除 <code>.ssh/authorized_keys</code> 中的可疑公钥</li>
+</ol>
+<h3 id="5-大范围-0day-被曝光，甲方安全工程师如何处理？"><a href="#5-大范围-0day-被曝光，甲方安全工程师如何处理？" class="headerlink" title="5. 大范围 0day 被曝光，甲方安全工程师如何处理？"></a>5. 大范围 0day 被曝光，甲方安全工程师如何处理？</h3><p><strong>答：</strong></p>
+<ol>
+<li><strong>评估影响：</strong> 分析 0day 对自身系统的影响（利用点、是否需交互、是否影响 CIA、是否有在野 PoC、资产是否暴露公网等，参考 CVSS 评分）</li>
+<li><strong>建立感知：</strong> 确定有影响且有 PoC 时，分析 PoC 执行痕迹位置，利用现有设备采集数据，编写对应检测规则，用 SIEM 或实时日志分析平台建立感知防线</li>
+<li><strong>纵深防御：</strong> 日常建立完整纵深防御体系，不依赖单一防线</li>
+</ol>
+<h3 id="6-DDoS-CC-攻击如何发现和应急？"><a href="#6-DDoS-CC-攻击如何发现和应急？" class="headerlink" title="6. DDoS&#x2F;CC 攻击如何发现和应急？"></a>6. DDoS&#x2F;CC 攻击如何发现和应急？</h3><p><strong>答：</strong></p>
+<p><strong>发现方法：</strong></p>
+<ul>
+<li>部署流量监视&#x2F;审计系统，设立警戒阈值</li>
+<li>Linux 日志（dmesg&#x2F;message）记录 Flood 日志</li>
+<li>netstat 统计连接数，top 查看资源使用</li>
+<li>tcpdump&#x2F;tshark 抓包分析</li>
+</ul>
+<p><strong>应急措施：</strong></p>
+<ul>
+<li>低网络层 DDoS：丢弃第一次 SYN 包、上流量防护设备、上 WAF 封禁地址</li>
+<li>CC 攻击：优化代码、增加硬件、上云 WAF&#x2F;CDN&#x2F;负载均衡、隐藏真实 IP</li>
+<li>购买运营商流量清洗服务（最有效）</li>
+</ul>
+<hr>
+<h2 id="二、流量分析与研判"><a href="#二、流量分析与研判" class="headerlink" title="二、流量分析与研判"></a>二、流量分析与研判</h2><h3 id="7-蓝队研判工作怎么做？"><a href="#7-蓝队研判工作怎么做？" class="headerlink" title="7. 蓝队研判工作怎么做？"></a>7. 蓝队研判工作怎么做？</h3><p><strong>答：</strong></p>
+<ol>
+<li>充分利用已有安全设备，分析近期告警</li>
+<li>将全部流量日志（源地址、目的地址、端口、事件名称、时间等）根据研判标准筛选</li>
+<li>挖矿、蠕虫、病毒、拒绝服务等不太可能为攻击方发起的事件直接过滤</li>
+<li>真实攻击通常是长时间、周期性、多 IP 进行的</li>
+<li>结合威胁情报库（微步、奇安信、绿盟）对源 IP 分析</li>
+<li>分析请求数据包和返回数据包判断是否误报</li>
+<li>留意 X-Forwarded-For 和 x-real-ip 字段</li>
+<li>了解 Webshell 工具流量特征</li>
+<li>上报时提供完整截图：源 IP、目的 IP、请求包、响应包等</li>
+</ol>
+<h3 id="8-Webshell-管理工具的流量特征？"><a href="#8-Webshell-管理工具的流量特征？" class="headerlink" title="8. Webshell 管理工具的流量特征？"></a>8. Webshell 管理工具的流量特征？</h3><p><strong>答：</strong></p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>特征</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>菜刀</strong></td>
+<td>url 编码 + base64 编码，参数名 z0，存在 <code>int_set(&quot;display_errors&quot;,&quot;0&quot;)</code> 特征</td>
+</tr>
+<tr>
+<td><strong>蚁剑</strong></td>
+<td>默认连接请求两次（第一次获取主机信息，第二次列目录），请求体经 url 编码</td>
+</tr>
+<tr>
+<td><strong>冰蝎 2.0</strong></td>
+<td>AES 加密三次请求：第一次产生密钥写入 session，第二次获取 key，第三次 AES 加密通信</td>
+</tr>
+<tr>
+<td><strong>冰蝎 3.0</strong></td>
+<td>AES 加密两次请求，连接密码 MD5 前 16 位作密钥</td>
+</tr>
+<tr>
+<td><strong>哥斯拉</strong></td>
+<td>支持多种加密，建立连接发起三次请求，第一次数据超长建立 session</td>
+</tr>
+</tbody></table>
+<h3 id="9-如何检测-Webshell？"><a href="#9-如何检测-Webshell？" class="headerlink" title="9. 如何检测 Webshell？"></a>9. 如何检测 Webshell？</h3><p><strong>答：</strong></p>
+<p><strong>主机层面：</strong></p>
+<ul>
+<li><strong>静态检测：</strong> 匹配特征码、危险函数（eval、assert、system 等）</li>
+<li><strong>动态检测：</strong> 监控系统调用、文件操作</li>
+<li><strong>日志检测：</strong> web 日志中查找 webshell 页面访问数据</li>
+<li><strong>语法检测：</strong> 语法语义分析，剥离注释，分析变量和函数</li>
+</ul>
+<p><strong>流量层面：</strong> 分析请求&#x2F;响应特征，加密通信模式</p>
+<p><strong>排查命令：</strong></p>
+<pre><code class="hljs bash">find /var/www/html -name <span class="hljs-string">&quot;*.php&quot;</span> | xargs egrep <span class="hljs-string">&#x27;assert|eval|phpinfo\(\)|base64_decode|shell_exec|passthru|file_put_contents&#x27;</span></code></pre>
+
+<h3 id="10-数据包或日志分析思路？"><a href="#10-数据包或日志分析思路？" class="headerlink" title="10. 数据包或日志分析思路？"></a>10. 数据包或日志分析思路？</h3><p><strong>答：</strong></p>
+<ol>
+<li>用流量监测设备（如天眼）查看报文</li>
+<li>分析 host 和网站目录路径是否可疑</li>
+<li>使用微步等威胁情报查询 host&#x2F;IP 是否恶意</li>
+<li>用 Wireshark 深度分析数据包</li>
+<li>看请求路径、源 IP 与目的 IP、host 字段值、发包内容</li>
+<li>分析请求数据包和返回数据包判断攻击是否成功</li>
+</ol>
+<hr>
+<h2 id="三、常见漏洞与攻击"><a href="#三、常见漏洞与攻击" class="headerlink" title="三、常见漏洞与攻击"></a>三、常见漏洞与攻击</h2><h3 id="11-SQL-注入如何检测和加固？"><a href="#11-SQL-注入如何检测和加固？" class="headerlink" title="11. SQL 注入如何检测和加固？"></a>11. SQL 注入如何检测和加固？</h3><p><strong>答：</strong></p>
+<p><strong>检测：</strong></p>
+<ul>
+<li>入侵前：对 Payload 进行规则匹配检测</li>
+<li>入侵后：检查数据库、IIS&#x2F;Apache 日志</li>
+<li>传统方法基于规则库匹配，也可采用机器学习方式</li>
+</ul>
+<p><strong>加固措施：</strong></p>
+<ul>
+<li>对输入字符进行过滤和转义</li>
+<li>使用 PDO 预编译语句&#x2F;参数化查询</li>
+<li>最小权限原则配置数据库账号</li>
+<li>WAF 规则防护</li>
+</ul>
+<h3 id="12-文件上传漏洞原理及加固？"><a href="#12-文件上传漏洞原理及加固？" class="headerlink" title="12. 文件上传漏洞原理及加固？"></a>12. 文件上传漏洞原理及加固？</h3><p><strong>答：</strong></p>
+<p><strong>原理：</strong> 应用程序对用户上传文件类型不校验或校验不严格可绕过，导致攻击者上传 webshell 获取服务器权限。</p>
+<p><strong>加固方法：</strong></p>
+<ol>
+<li>后端限制文件上传白名单</li>
+<li>上传后文件随机重命名，不输出保存路径</li>
+<li>图片文件二次渲染，使用对象存储 OSS</li>
+<li>文件目录取消执行权限</li>
+<li>PHP 设置 basedir 限制</li>
+</ol>
+<h3 id="13-常见中间件漏洞有哪些？"><a href="#13-常见中间件漏洞有哪些？" class="headerlink" title="13. 常见中间件漏洞有哪些？"></a>13. 常见中间件漏洞有哪些？</h3><p><strong>答：</strong></p>
+<table>
+<thead>
+<tr>
+<th>中间件</th>
+<th>常见漏洞</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>IIS</strong></td>
+<td>PUT 漏洞、短文件名猜解、远程代码执行、解析漏洞</td>
+</tr>
+<tr>
+<td><strong>Apache</strong></td>
+<td>解析漏洞、目录遍历</td>
+</tr>
+<tr>
+<td><strong>Nginx</strong></td>
+<td>文件解析、目录遍历、CRLF 注入、目录穿越</td>
+</tr>
+<tr>
+<td><strong>Tomcat</strong></td>
+<td>远程代码执行、war 后门部署</td>
+</tr>
+<tr>
+<td><strong>JBoss</strong></td>
+<td>反序列化漏洞、war 后门部署</td>
+</tr>
+<tr>
+<td><strong>WebLogic</strong></td>
+<td>反序列化、SSRF、任意文件上传、war 后门</td>
+</tr>
+</tbody></table>
+<h3 id="14-常见端口对应的漏洞？"><a href="#14-常见端口对应的漏洞？" class="headerlink" title="14. 常见端口对应的漏洞？"></a>14. 常见端口对应的漏洞？</h3><p><strong>答：</strong></p>
+<p><strong>数据库类（弱口令）：</strong></p>
+<ul>
+<li>1433：MSSQL | 1521：Oracle | 3306：MySQL | 5432：PostgreSQL</li>
+</ul>
+<p><strong>特殊服务类（未授权&#x2F;命令执行）：</strong></p>
+<ul>
+<li>6379：Redis 未授权 | 7001&#x2F;7002：WebLogic | 8088：Hadoop Yarn 未授权</li>
+<li>9200&#x2F;9300：Elasticsearch 命令执行 | 11211：Memcache 未授权</li>
+<li>27017：MongoDB 未授权 | 443：SSL 心脏滴血 | 873：Rsync 未授权</li>
+</ul>
+<p><strong>常用端口类：</strong></p>
+<ul>
+<li>21：FTP 弱口令 | 22：SSH | 23：Telnet | 445：SMB（ms17-010）| 3389：RDP</li>
+</ul>
+<h3 id="15-Fastjson-漏洞利用原理？"><a href="#15-Fastjson-漏洞利用原理？" class="headerlink" title="15. Fastjson 漏洞利用原理？"></a>15. Fastjson 漏洞利用原理？</h3><p><strong>答：</strong></p>
+<p>程序处理 JSON 对象时未对 <code>@type</code> 字段进行过滤，攻击者可传入恶意的 TemplatesImpl 类。该类有 <code>_bytecodes</code> 字段，部分函数会根据此字段生成 Java 实例，在类实例化时执行构造函数，实现代码执行。</p>
+<p><strong>不出网利用方式：</strong></p>
+<ul>
+<li>将命令执行结果写入静态资源文件，通过 HTTP 访问查看</li>
+<li>通过 dnslog 进行数据外带</li>
+<li>将结果直接回显到 HTTP 响应中</li>
+</ul>
+<hr>
+<h2 id="四、红队-渗透相关"><a href="#四、红队-渗透相关" class="headerlink" title="四、红队&#x2F;渗透相关"></a>四、红队&#x2F;渗透相关</h2><h3 id="16-外围打点的基本流程？"><a href="#16-外围打点的基本流程？" class="headerlink" title="16. 外围打点的基本流程？"></a>16. 外围打点的基本流程？</h3><p><strong>答：</strong></p>
+<ol>
+<li><strong>靶标确认：</strong> 明确目标范围</li>
+<li><strong>信息收集：</strong> 子域名、Whois、C 段、旁站、Web 指纹识别</li>
+<li><strong>漏洞探测：</strong> 扫描 + 手工测试</li>
+<li><strong>利用漏洞：</strong> 优先 Java 反序列化类（Shiro、Fastjson、WebLogic、用友 OA 等）</li>
+<li><strong>获取权限：</strong> 获取靶标系统权限和关键数据</li>
+</ol>
+<h3 id="17-横向渗透有哪些命令执行手段？"><a href="#17-横向渗透有哪些命令执行手段？" class="headerlink" title="17. 横向渗透有哪些命令执行手段？"></a>17. 横向渗透有哪些命令执行手段？</h3><p><strong>答：</strong></p>
+<ul>
+<li>psexec</li>
+<li>wmic</li>
+<li>smbexec</li>
+<li>winrm</li>
+<li>net use 共享 + 计划任务 + type 命令</li>
+</ul>
+<h3 id="18-域内攻击方法有哪些？"><a href="#18-域内攻击方法有哪些？" class="headerlink" title="18. 域内攻击方法有哪些？"></a>18. 域内攻击方法有哪些？</h3><p><strong>答：</strong></p>
+<ul>
+<li>MS14-068（域提权）</li>
+<li>Roasting 攻击（离线爆破密码）</li>
+<li>委派攻击（非约束性委派）</li>
+<li>基于资源的约束委派</li>
+<li>NTLM Relay</li>
+<li>域委派：把域内用户权限委派给服务账户，让服务账号能以该用户身份在域内活动</li>
+</ul>
+<h3 id="19-不出网情况下如何处理？"><a href="#19-不出网情况下如何处理？" class="headerlink" title="19. 不出网情况下如何处理？"></a>19. 不出网情况下如何处理？</h3><p><strong>答：</strong></p>
+<ul>
+<li>使用 socks 隧道</li>
+<li>CS（Cobalt Strike）直接上线</li>
+<li>ICMP 隧道（封装数据到 Ping 包）</li>
+<li>DNS 隧道（通过 DNS 查询传递数据，企业极少封锁 DNS 端口）</li>
+</ul>
+<h3 id="20-木马免杀有哪些方式？"><a href="#20-木马免杀有哪些方式？" class="headerlink" title="20. 木马免杀有哪些方式？"></a>20. 木马免杀有哪些方式？</h3><p><strong>答：</strong></p>
+<ol>
+<li><strong>代码混淆：</strong> 加密字符串（AES）、指令重排</li>
+<li><strong>加壳：</strong> UPX 压缩或 VMProtect 虚拟化</li>
+<li><strong>内存加载：</strong> PE 文件注入合法进程（最有效，不落盘且行为模拟合法进程）</li>
+<li><strong>签名劫持：</strong> 伪造微软签名或劫持白名单程序</li>
+</ol>
+<h3 id="21-如何绕过-WAF？"><a href="#21-如何绕过-WAF？" class="headerlink" title="21. 如何绕过 WAF？"></a>21. 如何绕过 WAF？</h3><p><strong>答：</strong></p>
+<ol>
+<li><strong>编码绕过：</strong> Unicode&#x2F;Base64 编码注入语句</li>
+<li><strong>分块传输：</strong> HTTP 协议分块发送恶意载荷（绕过正则匹配）</li>
+<li><strong>IP 轮替：</strong> 代理池切换源 IP 避开速率限制</li>
+<li><strong>利用 WAF 规则盲区：</strong> 如 JSON 格式 SQLi</li>
+<li><strong>参数污染、大小写混合、注释符干扰</strong></li>
+</ol>
+<h3 id="22-如何识别-CDN-并找到真实-IP？"><a href="#22-如何识别-CDN-并找到真实-IP？" class="headerlink" title="22. 如何识别 CDN 并找到真实 IP？"></a>22. 如何识别 CDN 并找到真实 IP？</h3><p><strong>答：</strong></p>
+<p><strong>识别 CDN：</strong></p>
+<ul>
+<li>ping 命令观察回显（是否有 CDN 节点域名）</li>
+<li>nslookup 查询域名解析</li>
+<li>超级 ping 工具查看多地解析结果是否一致</li>
+</ul>
+<p><strong>绕过 CDN 找真实 IP：</strong></p>
+<ul>
+<li>查询历史 DNS 解析记录</li>
+<li>子域名可能未使用 CDN</li>
+<li>邮件服务器 IP</li>
+<li>国外节点访问</li>
+<li>SSL 证书信息</li>
+</ul>
+<hr>
+<h2 id="五、安全设备与防护"><a href="#五、安全设备与防护" class="headerlink" title="五、安全设备与防护"></a>五、安全设备与防护</h2><h3 id="23-常见安全设备及其作用？"><a href="#23-常见安全设备及其作用？" class="headerlink" title="23. 常见安全设备及其作用？"></a>23. 常见安全设备及其作用？</h3><p><strong>答：</strong></p>
+<table>
+<thead>
+<tr>
+<th>设备</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>NGAF&#x2F;NGFW</strong></td>
+<td>下一代防火墙，聚合 IDS、IPS、AV</td>
+</tr>
+<tr>
+<td><strong>EDR</strong></td>
+<td>终端检测和响应，实时监测终端行为</td>
+</tr>
+<tr>
+<td><strong>堡垒机</strong></td>
+<td>运维审计和管理平台</td>
+</tr>
+<tr>
+<td><strong>DAS</strong></td>
+<td>数据库安全审计</td>
+</tr>
+<tr>
+<td><strong>LAS</strong></td>
+<td>日志审计安全平台</td>
+</tr>
+<tr>
+<td><strong>AC</strong></td>
+<td>上网行为管理</td>
+</tr>
+<tr>
+<td><strong>蜜罐&#x2F;蜜网</strong></td>
+<td>伪装欺骗系统，诱捕攻击者</td>
+</tr>
+<tr>
+<td><strong>SIP</strong></td>
+<td>安全态势感知平台，集检测、可视、响应于一体</td>
+</tr>
+<tr>
+<td><strong>WAF</strong></td>
+<td>Web 应用防火墙</td>
+</tr>
+<tr>
+<td><strong>IDS&#x2F;IPS</strong></td>
+<td>入侵检测&#x2F;防御系统</td>
+</tr>
+</tbody></table>
+<h3 id="24-护网的分组和流程？"><a href="#24-护网的分组和流程？" class="headerlink" title="24. 护网的分组和流程？"></a>24. 护网的分组和流程？</h3><p><strong>答：</strong></p>
+<p><strong>分组：</strong> 领导小组下分防护检测组、综合研判组、应急溯源组</p>
+<p><strong>三阶段流程：</strong></p>
+<ul>
+<li><strong>备战阶段：</strong> 资产梳理、减少暴露面、漏洞扫描、渗透测试、弱口令自查</li>
+<li><strong>临战阶段：</strong> 内部演练发现疏忽并整改；增加安全设备（WAF、IPS、IDS、SOC、堡垒机）</li>
+<li><strong>决战阶段：</strong> 坚守岗位，看应急日志，不能解决就上报，持续优化防护</li>
+</ul>
+<h3 id="25-护网期间蓝队日常工作内容？"><a href="#25-护网期间蓝队日常工作内容？" class="headerlink" title="25. 护网期间蓝队日常工作内容？"></a>25. 护网期间蓝队日常工作内容？</h3><p><strong>答：</strong></p>
+<p>核心四项：<strong>监控、研判、处置、溯源</strong></p>
+<p>具体工作：</p>
+<ul>
+<li>使用 IPS&#x2F;IDS 等设备做流量监控与日志分析</li>
+<li>判断安全事件是否误判</li>
+<li>对安全管理中心发出的态势排查单进行排查并反馈</li>
+<li>执行封堵&#x2F;解封工单</li>
+<li>每两小时反馈排查结果、设备巡检报告、封堵情况</li>
+</ul>
+<hr>
+<h2 id="六、网络基础"><a href="#六、网络基础" class="headerlink" title="六、网络基础"></a>六、网络基础</h2><h3 id="26-TCP-三次握手与四次挥手？"><a href="#26-TCP-三次握手与四次挥手？" class="headerlink" title="26. TCP 三次握手与四次挥手？"></a>26. TCP 三次握手与四次挥手？</h3><p><strong>答：</strong></p>
+<p><strong>三次握手：</strong></p>
+<ol>
+<li>客户端发送 SYN → SYN_SENT</li>
+<li>服务器回 SYN+ACK → SYN_RCVD</li>
+<li>客户端发 ACK → 双方 ESTABLISHED</li>
+</ol>
+<p><strong>四次挥手：</strong></p>
+<ol>
+<li>客户端发 FIN → FIN_WAIT_1</li>
+<li>服务端回 ACK → CLOSE_WAIT</li>
+<li>服务端发 FIN → LAST_ACK</li>
+<li>客户端回 ACK → TIME_WAIT → CLOSED</li>
+</ol>
+<h3 id="27-HTTP-无连接与无状态的含义？"><a href="#27-HTTP-无连接与无状态的含义？" class="headerlink" title="27. HTTP 无连接与无状态的含义？"></a>27. HTTP 无连接与无状态的含义？</h3><p><strong>答：</strong></p>
+<ul>
+<li><strong>无连接：</strong> 每次连接只处理一个请求，处理完收到应答后断开（HTTP&#x2F;1.1 引入 Keep-Alive 改善）</li>
+<li><strong>无状态：</strong> 协议对事务处理没有记忆能力，每次请求独立，服务器不保存客户端状态（通过 Cookie&#x2F;Session 解决）</li>
+</ul>
+<h3 id="28-同源策略与跨域？"><a href="#28-同源策略与跨域？" class="headerlink" title="28. 同源策略与跨域？"></a>28. 同源策略与跨域？</h3><p><strong>答：</strong></p>
+<ul>
+<li><strong>同源策略：</strong> 域名、协议、端口均相同才算同源</li>
+<li><strong>跨域：</strong> 浏览器不能执行其它源的脚本，由同源策略造成</li>
+<li><strong>JSONP：</strong> 利用 script 标签 src 属性可跨域，只支持 GET</li>
+<li><strong>CORS：</strong> 支持所有 HTTP 请求类型，通过服务端设置 Access-Control-Allow-Origin 实现</li>
+</ul>
+<hr>
+<h2 id="七、安全加固"><a href="#七、安全加固" class="headerlink" title="七、安全加固"></a>七、安全加固</h2><h3 id="29-Linux-安全加固要点？"><a href="#29-Linux-安全加固要点？" class="headerlink" title="29. Linux 安全加固要点？"></a>29. Linux 安全加固要点？</h3><p><strong>答：</strong></p>
+<ol>
+<li>关闭不必要系统服务</li>
+<li>更改 SSH 默认端口，禁止 root 远程登录</li>
+<li>限制 su 切换 root</li>
+<li>密码复杂度策略（<code>/etc/login.defs</code>）</li>
+<li>检查空口令账号</li>
+<li>禁止 ctrl+alt+del 重启</li>
+<li>禁用 telnet，用 ssh 替代</li>
+<li>设置 hosts.allow 和 hosts.deny</li>
+<li>iptables + denyhost 防 SSH 暴力破解</li>
+<li>设置 umask 值 027，登录超时 TMOUT&#x3D;180</li>
+</ol>
+<h3 id="30-Windows-安全基线检查五方面？"><a href="#30-Windows-安全基线检查五方面？" class="headerlink" title="30. Windows 安全基线检查五方面？"></a>30. Windows 安全基线检查五方面？</h3><p><strong>答：</strong></p>
+<ol>
+<li><strong>身份鉴别：</strong> 更改缺省账户、禁用 Guest、密码复杂性、最小 8 位</li>
+<li><strong>访问控制：</strong> 共享账户检查、远程关机授权、授权登录</li>
+<li><strong>安全审计：</strong> 登录日志记录、系统日志完备性</li>
+<li><strong>资源控制：</strong> 登录超时管理、远程登录超时配置</li>
+<li><strong>剩余信息保护：</strong> 不显示上次用户名、关机前清除虚拟内存</li>
+</ol>
+<hr>
+<h2 id="八、综合场景题"><a href="#八、综合场景题" class="headerlink" title="八、综合场景题"></a>八、综合场景题</h2><h3 id="31-内网横向攻击如何处理？"><a href="#31-内网横向攻击如何处理？" class="headerlink" title="31. 内网横向攻击如何处理？"></a>31. 内网横向攻击如何处理？</h3><p><strong>答：</strong></p>
+<ol>
+<li>确定攻击来源（是否员工误操作&#x2F;自动化脚本）</li>
+<li>确定是攻击后，结合时间点查看设备信息、安全事件、进程、流量</li>
+<li>找到问题主机</li>
+<li>应急响应流程：准备 → 检测 → 遏制 → 根除 → 恢复 → 跟踪</li>
+</ol>
+<h3 id="32-如何判断服务器是否被入侵？"><a href="#32-如何判断服务器是否被入侵？" class="headerlink" title="32. 如何判断服务器是否被入侵？"></a>32. 如何判断服务器是否被入侵？</h3><p><strong>答：</strong></p>
+<p><strong>网站被攻击表现：</strong> 跳转赌博网站、首页被篡改、百度快照被改、被植入 webshell、被 DDoS&#x2F;CC</p>
+<p><strong>服务器被黑表现：</strong> 中木马病毒、管理员密码被改、被远程控制、带宽向外发包</p>
+<p><strong>排查方法：</strong> 分析登录记录、系统日志、web 日志、进程列表、网络连接、启动项</p>
+<h3 id="33-Java-内存马如何排查？"><a href="#33-Java-内存马如何排查？" class="headerlink" title="33. Java 内存马如何排查？"></a>33. Java 内存马如何排查？</h3><p><strong>答：</strong></p>
+<ul>
+<li><strong>JSP 注入：</strong> 日志中排查可疑 jsp 访问请求</li>
+<li><strong>代码执行漏洞：</strong> 排查中间件 error.log 可疑报错</li>
+<li><strong>Servlet&#x2F;Spring controller 类型：</strong> 根据 url 查找日志，确定最早访问时间即注入时间</li>
+<li><strong>Filter&#x2F;Listener 类型：</strong> 可能有较多 404 带参数请求，或大量不同 url 带相同参数，或页面不存在但返回 200</li>
+</ul>
+<h3 id="34-文件读取漏洞通常读哪些文件？"><a href="#34-文件读取漏洞通常读哪些文件？" class="headerlink" title="34. 文件读取漏洞通常读哪些文件？"></a>34. 文件读取漏洞通常读哪些文件？</h3><p><strong>答：</strong></p>
+<p><strong>Linux：</strong></p>
+<ul>
+<li><code>/etc/passwd</code>、<code>/etc/shadow</code></li>
+<li><code>/root/.bash_history</code></li>
+<li><code>/root/.ssh/id_rsa</code>（拿私钥直接 ssh）</li>
+<li><code>/proc/xxxx/cmdline</code>（进程状态枚举）</li>
+<li>数据库 config 文件、web 日志</li>
+</ul>
+<p><strong>Windows：</strong></p>
+<ul>
+<li><code>C:\boot.ini</code>（系统版本）</li>
+<li><code>C:\Windows\System32\inetsrv\MetaBase.xml</code>（IIS 配置）</li>
+<li><code>C:\Windows\repair\sam</code>（系统初次安装密码）</li>
+<li><code>C:\Program Files\mysql\my.ini</code>（MySQL 配置）</li>
+</ul>
+<h3 id="35-TLS-加密过程简述？"><a href="#35-TLS-加密过程简述？" class="headerlink" title="35. TLS 加密过程简述？"></a>35. TLS 加密过程简述？</h3><p><strong>答：</strong></p>
+<ol>
+<li>客户端发送随机数 1 和支持的加密算法列表</li>
+<li>服务端确定加密算法，发送随机数 2</li>
+<li>服务端发送数字证书（含公钥），客户端验证证书有效性</li>
+<li>客户端生成随机数 3，用公钥加密后发送给服务端</li>
+<li>双方用三个随机数通过 DH 算法生成对称密钥</li>
+<li>后续通信使用对称密钥加密</li>
+</ol>
+<hr>
+<h2 id="九、常用工具"><a href="#九、常用工具" class="headerlink" title="九、常用工具"></a>九、常用工具</h2><h3 id="36-常见安全工具有哪些？"><a href="#36-常见安全工具有哪些？" class="headerlink" title="36. 常见安全工具有哪些？"></a>36. 常见安全工具有哪些？</h3><p><strong>答：</strong></p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>端口&#x2F;漏洞扫描</td>
+<td>Nmap、Masscan、Nessus</td>
+</tr>
+<tr>
+<td>抓包</td>
+<td>Wireshark、Burpsuite、Fiddler</td>
+</tr>
+<tr>
+<td>Web 扫描</td>
+<td>Awvs、Appscan、Xray</td>
+</tr>
+<tr>
+<td>信息收集</td>
+<td>Oneforall、Subfinder</td>
+</tr>
+<tr>
+<td>漏洞利用</td>
+<td>MSF、Cobalt Strike</td>
+</tr>
+<tr>
+<td>Webshell 管理</td>
+<td>菜刀、蚁剑、冰蝎、哥斯拉</td>
+</tr>
+<tr>
+<td>威胁情报</td>
+<td>微步在线、奇安信威胁情报</td>
+</tr>
+<tr>
+<td>日志分析</td>
+<td>Log Parser、Event Log Explorer</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十、企业安全运营"><a href="#十、企业安全运营" class="headerlink" title="十、企业安全运营"></a>十、企业安全运营</h2><h3 id="37-什么是企业安全运营？如何建设？"><a href="#37-什么是企业安全运营？如何建设？" class="headerlink" title="37. 什么是企业安全运营？如何建设？"></a>37. 什么是企业安全运营？如何建设？</h3><p><strong>答：</strong></p>
+<p><strong>定义：</strong> 以资产为核心、以安全事件管理为关键流程，建立实时资产风险模型，协助进行事件分析、风险分析、预警管理和应急响应的集中安全管理体系。</p>
+<p><strong>建设方向：</strong></p>
+<ol>
+<li><strong>合规性建设：</strong> 等级保护、风险评估、制度体系</li>
+<li><strong>组织架构建设：</strong> 明确安全职责矩阵</li>
+<li><strong>安全运营服务体系：</strong> 基线加固、运维审计、攻防演练、态势监测、漏洞管理</li>
+<li><strong>安全管理服务：</strong> 制度管理、流程管理、人员管理、培训管理</li>
+</ol>
+<h3 id="38-如何降低被蓝队发现的概率？（红队视角）"><a href="#38-如何降低被蓝队发现的概率？（红队视角）" class="headerlink" title="38. 如何降低被蓝队发现的概率？（红队视角）"></a>38. 如何降低被蓝队发现的概率？（红队视角）</h3><p><strong>答：</strong></p>
+<ul>
+<li><strong>侦查阶段：</strong> 使用匿名基础设施（Tor + 云虚拟机）</li>
+<li><strong>攻击阶段：</strong> 无文件攻击 + 合法工具滥用（Living-off-the-Land）</li>
+<li><strong>持久化：</strong> 隐藏计划任务&#x2F;注册表键（命名仿系统服务）</li>
+<li><strong>核心原则：</strong> 减少攻击频率，模拟正常用户行为（如工作时间访问）</li>
+</ul>
+<hr>
+<blockquote>
+<p>参考来源：护网面试题整理、甲方安全面试总结、渗透测试面试题等。</p>
+</blockquote>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">swfk2154</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://blogbu2154.site/%E6%8A%A4%E7%BD%91-HVV-%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8/">https://blogbu2154.site/%E6%8A%A4%E7%BD%91-HVV-%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">swfk2154</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                                    <span class="chip bg-color">网络安全</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%BA%A2%E9%98%9F/">
+                                    <span class="chip bg-color">红队</span>
+                                </a>
+                            
+                                <a href="/tags/HVV/">
+                                    <span class="chip bg-color">HVV</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                                    <span class="chip bg-color">护网</span>
+                                </a>
+                            
+                                <a href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/">
+                                    <span class="chip bg-color">面试题</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">
+                                    <span class="chip bg-color">应急响应</span>
+                                </a>
+                            
+                                <a href="/tags/%E8%93%9D%E9%98%9F/">
+                                    <span class="chip bg-color">蓝队</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/%E6%8A%A4%E7%BD%91-HVV-%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8/">
+                    <div class="card-image">
+                        
+                        <img src="/images/ai-security-hero.png" class="responsive-img" alt="护网（HVV）面试题大全">
+                        
+                        <span class="card-title">护网（HVV）面试题大全</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            综合整理护网（HVV）面试常见题目，涵盖应急响应、流量分析、常见漏洞、红队渗透、安全设备、网络基础、安全加固、综合场景、常用工具、企业安全运营十大模块。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-04
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" class="post-category">
+                                    网络安全
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">网络安全</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BA%A2%E9%98%9F/">
+                        <span class="chip bg-color">红队</span>
+                    </a>
+                    
+                    <a href="/tags/HVV/">
+                        <span class="chip bg-color">HVV</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                        <span class="chip bg-color">护网</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/">
+                        <span class="chip bg-color">面试题</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">
+                        <span class="chip bg-color">应急响应</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%93%9D%E9%98%9F/">
+                        <span class="chip bg-color">蓝队</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/AI%E4%B8%8E%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E8%B5%84%E6%BA%90%E5%85%A8%E6%99%AF%E6%8A%A5%E5%91%8A/">
+                    <div class="card-image">
+                        
+                        <img src="/images/ai-security-hero.png" class="responsive-img" alt="AI 与网络安全资源全景报告：中国、欧美、俄罗斯教程、工具与文档">
+                        
+                        <span class="card-title">AI 与网络安全资源全景报告：中国、欧美、俄罗斯教程、工具与文档</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            系统整理中国、欧美、俄罗斯 AI 与网络安全结合方向的教程、视频、工具、文档和文章，并给出学习路线与落地建议。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-04
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/AI%E5%AE%89%E5%85%A8/" class="post-category">
+                                    AI安全
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/AI%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">AI安全</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">网络安全</span>
+                    </a>
+                    
+                    <a href="/tags/LLM/">
+                        <span class="chip bg-color">LLM</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BA%A2%E9%98%9F/">
+                        <span class="chip bg-color">红队</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%B5%84%E6%96%99%E6%95%B4%E7%90%86/">
+                        <span class="chip bg-color">资料整理</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2026</span>
+            
+            <a href="/about" target="_blank">swfk2154</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            
+            <br>
+            
+            
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+    <a href="https://github.com/swfk2154" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+    
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+    
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

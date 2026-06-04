@@ -4,18 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="如何卸载OpenClaw, AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
-    <meta name="description" content="
-⚠️ 警告：卸载是一个不可逆的操作，请谨慎操作。
-
-
-⚠️ 注意：以下内容是我让openclaw自己写的综合了官方文档和中文社区教程编写，确保严谨性。
-
-
-参考来源：OpenClaw 官方文档、博客园 - 慕容木木
-
-
-简短引言：为什么我">
+    <meta name="keywords" content="AI安全,大模型安全,LLM安全,网络安全,PyRIT,garak,OWASP,MITRE ATLAS,AI-Infra-Guard">
+    <meta name="description" content="系统整理中国、欧美、俄罗斯 AI 与网络安全结合方向的教程、视频、工具、文档和文章，并给出学习路线与落地建议。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -27,7 +17,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>如何卸载OpenClaw | swfk 的安全笔记</title>
+    <title>AI 与网络安全资源全景报告：中国、欧美、俄罗斯教程、工具与文档 | swfk 的安全笔记</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -280,12 +270,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/images/ai-security-hero.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">如何卸载OpenClaw</h1>
+                    <h1 class="description center-align post-title">AI 与网络安全资源全景报告：中国、欧美、俄罗斯教程、工具与文档</h1>
                 </div>
             </div>
         </div>
@@ -309,18 +299,39 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/OpenClaw/">
-                                <span class="chip bg-color">OpenClaw</span>
+                            <a href="/tags/AI%E5%AE%89%E5%85%A8/">
+                                <span class="chip bg-color">AI安全</span>
                             </a>
                         
-                            <a href="/tags/%E5%8D%B8%E8%BD%BD/">
-                                <span class="chip bg-color">卸载</span>
+                            <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                                <span class="chip bg-color">网络安全</span>
+                            </a>
+                        
+                            <a href="/tags/LLM/">
+                                <span class="chip bg-color">LLM</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%BA%A2%E9%98%9F/">
+                                <span class="chip bg-color">红队</span>
+                            </a>
+                        
+                            <a href="/tags/%E8%B5%84%E6%96%99%E6%95%B4%E7%90%86/">
+                                <span class="chip bg-color">资料整理</span>
                             </a>
                         
                     </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/AI%E5%AE%89%E5%85%A8/" class="post-category">
+                                AI安全
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -329,7 +340,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2026-03-19
+                    2026-06-04
                 </div>
                 
 
@@ -351,160 +362,178 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <blockquote>
-<p>⚠️ <strong>警告</strong>：卸载是一个<strong>不可逆</strong>的操作，请谨慎操作。</p>
+<p>本文整理的是 AI 与网络安全结合方向的学习与实践入口，覆盖中国、欧美、俄罗斯三类生态。资料链接基于 2026-06-04 前后公开信息整理；正式引用或落地前，建议重新打开原始链接核对。</p>
 </blockquote>
-<blockquote>
-<p>⚠️ <strong>注意</strong>：以下内容是我让openclaw自己写的综合了官方文档和中文社区教程编写，确保严谨性。</p>
-</blockquote>
-<blockquote>
-<p>参考来源：OpenClaw 官方文档、博客园 - 慕容木木</p>
-</blockquote>
-<hr>
-<h2 id="简短引言：为什么我们要”送走”这只龙虾？"><a href="#简短引言：为什么我们要”送走”这只龙虾？" class="headerlink" title="简短引言：为什么我们要”送走”这只龙虾？"></a>简短引言：为什么我们要”送走”这只龙虾？</h2><p>很多人被”拥有自己的贾维斯”、”让 AI 帮你自动干活”的演示吸引，部署了 OpenClaw。但使用过程中可能会遇到：</p>
-<ul>
-<li><strong>钱包刺客</strong>：API Key 配置后，AI 后台执行任务可能导致 Token 快速消耗</li>
-<li><strong>数据风险</strong>：权限过大可能误删重要文件，或暴露端口</li>
-<li><strong>体验不稳定</strong>：作为快速迭代的开源项目，可能存在各种 Bug</li>
+<div class="ai-atlas">
+  <div class="ai-atlas-hero">
+    <div>
+      <p class="ai-kicker">AI Security Resource Atlas</p>
+      <h2>从 LLM 安全入门到企业 AI 安全治理</h2>
+      <p>重点关注 Prompt Injection、RAG 数据污染、Agent 工具越权、模型供应链、AI 基础设施暴露和安全运营自动化。</p>
+    </div>
+    <div class="ai-atlas-stats">
+      <span><b>3</b>地区生态</span>
+      <span><b>20+</b>核心入口</span>
+      <span><b>5</b>阶段路线</span>
+    </div>
+  </div>
+</div>
+
+<h2 id="一、先看主线"><a href="#一、先看主线" class="headerlink" title="一、先看主线"></a>一、先看主线</h2><p>学习 AI 安全不要只盯着“越狱提示词”。更完整的路线应该是：</p>
+<ol>
+<li><strong>概念框架</strong>：AI 系统威胁建模、LLM &#x2F; Agent 风险、MLSecOps。</li>
+<li><strong>应用安全</strong>：Prompt Injection、RAG 数据污染、Agent 工具越权、敏感数据泄露。</li>
+<li><strong>AI 基础设施安全</strong>：Ollama、ComfyUI、vLLM、向量库、MCP Server、模型供应链。</li>
+<li><strong>防御落地</strong>：LLM-WAF、AI Gateway、Guardrails、日志审计、权限隔离。</li>
+<li><strong>AI 赋能安全运营</strong>：告警研判、威胁情报摘要、检测规则生成、代码审计辅助。</li>
+</ol>
+<h2 id="二、地区生态对比"><a href="#二、地区生态对比" class="headerlink" title="二、地区生态对比"></a>二、地区生态对比</h2><div class="ai-region-grid">
+  <section>
+    <h3>中国</h3>
+    <p><strong>特点：</strong>政策治理、政企合规、厂商方案和 AI 基础设施扫描发展快。</p>
+    <p><strong>重点：</strong>大模型安全评估、MCP / Agent 安全、LLM-WAF、数据分类分级。</p>
+    <p><strong>风险：</strong>组件暴露、默认配置、数据泄露、出入口合规、越权工具调用。</p>
+  </section>
+  <section>
+    <h3>欧美</h3>
+    <p><strong>特点：</strong>开放框架、标准文档、开源工具和红队方法论最完整。</p>
+    <p><strong>重点：</strong>LLM 红队、RAG 安全、Agentic AI、模型供应链、AI 风险管理。</p>
+    <p><strong>风险：</strong>提示词注入、数据投毒、模型提取、跨租户泄露、供应链风险。</p>
+  </section>
+  <section>
+    <h3>俄罗斯</h3>
+    <p><strong>特点：</strong>Kaspersky、Sber、Positive Technologies、Habr 等厂商和社区资料较集中。</p>
+    <p><strong>重点：</strong>AI 防御、LLM 安全培训、威胁模型、企业安全实践。</p>
+    <p><strong>风险：</strong>资料入口分散，商业培训偏多，部分文档需要二次核验。</p>
+  </section>
+</div>
+
+<h2 id="三、中国资源"><a href="#三、中国资源" class="headerlink" title="三、中国资源"></a>三、中国资源</h2><h3 id="官方、治理与报告"><a href="#官方、治理与报告" class="headerlink" title="官方、治理与报告"></a>官方、治理与报告</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cac.gov.cn/2024-09/09/c_1727567886199789.htm">《人工智能安全治理框架》1.0 - 中央网信办</a></li>
+<li><a target="_blank" rel="noopener" href="https://cms.gzwxb.gov.cn/netcom/ueditor-file/file/20250918/1758205976589006025.pdf">《人工智能安全治理框架》2.0 PDF</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.caict.ac.cn/english/research/whitepapers/202504/P020250402526466179450.pdf">中国信通院：人工智能风险治理报告 PDF</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cert.org.cn/">国家互联网应急中心 CNCERT</a>：关注“大模型安全众测”“AI 组件漏洞通报”等。</li>
 </ul>
-<p>如果你觉得”驾驭不了”，及时卸载是明智的选择。</p>
-<hr>
-<h2 id="方法一：官方卸载命令（推荐）"><a href="#方法一：官方卸载命令（推荐）" class="headerlink" title="方法一：官方卸载命令（推荐）"></a>方法一：官方卸载命令（推荐）</h2><h3 id="步骤-1：停止-Gateway"><a href="#步骤-1：停止-Gateway" class="headerlink" title="步骤 1：停止 Gateway"></a>步骤 1：停止 Gateway</h3><p>如果 OpenClaw 正在运行，先停止：</p>
-<pre><code class="hljs bash"><span class="hljs-comment"># 在终端中按 Ctrl + C 强制停止当前进程</span></code></pre>
-
-<h3 id="步骤-2：执行官方卸载"><a href="#步骤-2：执行官方卸载" class="headerlink" title="步骤 2：执行官方卸载"></a>步骤 2：执行官方卸载</h3><pre><code class="hljs bash"><span class="hljs-comment"># 一键彻底卸载 OpenClaw</span>
-openclaw uninstall --all --<span class="hljs-built_in">yes</span></code></pre>
-
-<p><strong>参数说明：</strong></p>
-<ul>
-<li><code>--all</code>：彻底删除，包括服务、数据、配置文件</li>
-<li><code>--yes</code>：自动确认，无需手动输入</li>
+<h3 id="平台与工具"><a href="#平台与工具" class="headerlink" title="平台与工具"></a>平台与工具</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://flagsafe.baai.ac.cn/">FlagSafe 大模型安全平台</a>：偏大模型安全评估、红队 &#x2F; 蓝队、防护与可解释。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Tencent/AI-Infra-Guard">Tencent AI-Infra-Guard</a>：腾讯朱雀实验室开源 AI 红队与 AI 基础设施扫描平台，覆盖 MCP、Agent Skills、AI Infra、越狱评估等。</li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/llmwaf">腾讯云 LLM-WAF</a>：了解企业级 LLM 网关、防护、限流和审计设计。</li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/llmsgw">腾讯云 AI Agent 安全网关</a>：适合参考 Agent 工具调用安全网关思路。</li>
+<li><a target="_blank" rel="noopener" href="https://www.qianxin.com/product/detail/pid/522">奇安信大模型卫士</a>、<a target="_blank" rel="noopener" href="https://www.qianxin.com/product/detail/pid/496">QAX-GPT 安全机器人</a>：偏企业产品和安全运营。</li>
 </ul>
-<h3 id="步骤-3：删除-CLI-工具"><a href="#步骤-3：删除-CLI-工具" class="headerlink" title="步骤 3：删除 CLI 工具"></a>步骤 3：删除 CLI 工具</h3><pre><code class="hljs bash"><span class="hljs-comment"># 删除全局安装的 OpenClaw CLI</span>
-npm uninstall -g openclaw
-
-<span class="hljs-comment"># 如果权限不足（Mac/Linux）</span>
-<span class="hljs-built_in">sudo</span> npm uninstall -g openclaw</code></pre>
-
-<hr>
-<h2 id="方法二：手动卸载（适合-CLI-已删除但服务仍在）"><a href="#方法二：手动卸载（适合-CLI-已删除但服务仍在）" class="headerlink" title="方法二：手动卸载（适合 CLI 已删除但服务仍在）"></a>方法二：手动卸载（适合 CLI 已删除但服务仍在）</h2><h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h3><h4 id="1-停止服务"><a href="#1-停止服务" class="headerlink" title="1. 停止服务"></a>1. 停止服务</h4><pre><code class="hljs powershell"><span class="hljs-comment"># 打开任务管理器，找到 OpenClaw 相关进程，结束任务</span></code></pre>
-
-<h4 id="2-删除计划任务"><a href="#2-删除计划任务" class="headerlink" title="2. 删除计划任务"></a>2. 删除计划任务</h4><pre><code class="hljs powershell"><span class="hljs-comment"># 删除 Windows 计划任务</span>
-schtasks /Delete /F /TN <span class="hljs-string">&quot;OpenClaw Gateway&quot;</span></code></pre>
-
-<h4 id="3-删除残留文件"><a href="#3-删除残留文件" class="headerlink" title="3. 删除残留文件"></a>3. 删除残留文件</h4><pre><code class="hljs powershell"><span class="hljs-comment"># 删除配置目录</span>
-<span class="hljs-built_in">Remove-Item</span> <span class="hljs-literal">-Recurse</span> <span class="hljs-literal">-Force</span> <span class="hljs-string">&quot;<span class="hljs-variable">$env:USERPROFILE</span>\.openclaw&quot;</span>
-
-<span class="hljs-comment"># 删除 Gateway 脚本</span>
-<span class="hljs-built_in">Remove-Item</span> <span class="hljs-literal">-Force</span> <span class="hljs-string">&quot;<span class="hljs-variable">$env:USERPROFILE</span>\.openclaw\gateway.cmd&quot;</span></code></pre>
-
-<h4 id="4-删除-npm-全局包"><a href="#4-删除-npm-全局包" class="headerlink" title="4. 删除 npm 全局包"></a>4. 删除 npm 全局包</h4><pre><code class="hljs powershell"><span class="hljs-comment"># 卸载 OpenClaw CLI</span>
-npm uninstall <span class="hljs-literal">-g</span> openclaw</code></pre>
-
-<h3 id="macOS-Linux"><a href="#macOS-Linux" class="headerlink" title="macOS &#x2F; Linux"></a>macOS &#x2F; Linux</h3><h4 id="1-停止服务-1"><a href="#1-停止服务-1" class="headerlink" title="1. 停止服务"></a>1. 停止服务</h4><pre><code class="hljs bash"><span class="hljs-comment"># 停止 launchd 服务（macOS）</span>
-launchctl bootout gui/<span class="hljs-variable">$UID</span>/ai.openclaw.gateway
-<span class="hljs-built_in">rm</span> -f ~/Library/LaunchAgents/ai.openclaw.gateway.plist
-
-<span class="hljs-comment"># 停止 systemd 服务（Linux）</span>
-systemctl --user <span class="hljs-built_in">disable</span> --now openclaw-gateway.service</code></pre>
-
-<h4 id="2-删除配置目录"><a href="#2-删除配置目录" class="headerlink" title="2. 删除配置目录"></a>2. 删除配置目录</h4><pre><code class="hljs bash"><span class="hljs-comment"># 删除 OpenClaw 配置目录</span>
-<span class="hljs-built_in">rm</span> -rf ~/.openclaw</code></pre>
-
-<h4 id="3-删除-CLI"><a href="#3-删除-CLI" class="headerlink" title="3. 删除 CLI"></a>3. 删除 CLI</h4><pre><code class="hljs bash"><span class="hljs-comment"># 卸载 OpenClaw CLI</span>
-<span class="hljs-built_in">sudo</span> npm uninstall -g openclaw</code></pre>
-
-<hr>
-<h2 id="方法三：彻底清理（完美主义者）"><a href="#方法三：彻底清理（完美主义者）" class="headerlink" title="方法三：彻底清理（完美主义者）"></a>方法三：彻底清理（完美主义者）</h2><p>如果你想确保不留任何残留：</p>
-<h3 id="1-删除所有相关目录"><a href="#1-删除所有相关目录" class="headerlink" title="1. 删除所有相关目录"></a>1. 删除所有相关目录</h3><pre><code class="hljs bash"><span class="hljs-comment"># 默认配置目录</span>
-<span class="hljs-built_in">rm</span> -rf ~/.openclaw
-
-<span class="hljs-comment"># 工作区（如果有）</span>
-<span class="hljs-built_in">rm</span> -rf ~/.openclaw/workspace
-
-<span class="hljs-comment"># npm 全局目录中的残留</span>
-<span class="hljs-built_in">rm</span> -rf $(npm prefix -g)/lib/node_modules/openclaw</code></pre>
-
-<h3 id="2-清理环境变量"><a href="#2-清理环境变量" class="headerlink" title="2. 清理环境变量"></a>2. 清理环境变量</h3><p>检查以下环境变量是否包含 OpenClaw 相关路径，如有则删除：</p>
-<ul>
-<li><code>PATH</code> 中的 OpenClaw 路径</li>
-<li><code>OPENCLAW_HOME</code></li>
-<li><code>OPENCLAW_STATE_DIR</code></li>
+<h3 id="教程、文章与视频"><a href="#教程、文章与视频" class="headerlink" title="教程、文章与视频"></a>教程、文章与视频</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://yeasy.gitbook.io/ai_security_guide/di-yi-bu-fen-ji-chu-pian/03_frameworks/3.1_owasp_top10">AI Security Guide 中文版：OWASP LLM Top 10 解析</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2672023">腾讯云大模型安全方案文章</a></li>
+<li><a target="_blank" rel="noopener" href="https://hub.baai.ac.cn/view/54558">FlagSafe 发布介绍</a></li>
+<li>FreeBuf、安全客、看雪、先知社区：关键词建议 <code>AI安全</code>、<code>大模型安全</code>、<code>LLM安全</code>、<code>MCP安全</code>、<code>Agent安全</code>。</li>
+<li>B站可搜：<code>大模型安全 OWASP LLM Top10</code>、<code>AI-Infra-Guard</code>、<code>PyRIT AI 红队</code>、<code>大模型安全 智源 FlagSafe</code>。</li>
 </ul>
-<h3 id="3-重启电脑"><a href="#3-重启电脑" class="headerlink" title="3. 重启电脑"></a>3. 重启电脑</h3><blockquote>
-<p>⚠️ 强烈建议重启电脑，确保所有后台进程被清除。</p>
-</blockquote>
-<hr>
-<h2 id="卸载后的安全补救措施（非常重要！）"><a href="#卸载后的安全补救措施（非常重要！）" class="headerlink" title="卸载后的安全补救措施（非常重要！）"></a>卸载后的安全补救措施（非常重要！）</h2><p>⚠️ 卸载软件不等于安全！你还需要：</p>
-<h3 id="1-废弃并重新生成-API-Key"><a href="#1-废弃并重新生成-API-Key" class="headerlink" title="1. 废弃并重新生成 API Key"></a>1. 废弃并重新生成 API Key</h3><p>请立即前往你使用过的模型服务商官网，撤销旧的密钥：</p>
-<table>
+<h2 id="四、欧美资源"><a href="#四、欧美资源" class="headerlink" title="四、欧美资源"></a>四、欧美资源</h2><h3 id="框架与文档"><a href="#框架与文档" class="headerlink" title="框架与文档"></a>框架与文档</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://genai.owasp.org/">OWASP GenAI Security Project</a>：LLM Top 10、Agentic Security、工具、白皮书和视频的主入口。</li>
+<li><a target="_blank" rel="noopener" href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP Top 10 for LLM Applications</a></li>
+<li><a target="_blank" rel="noopener" href="https://atlas.mitre.org/">MITRE ATLAS</a>：AI &#x2F; ML 对抗技术矩阵，适合威胁建模和红队映射。</li>
+<li><a target="_blank" rel="noopener" href="https://www.nist.gov/itl/ai-risk-management-framework">NIST AI RMF</a>：AI 风险管理框架。</li>
+<li><a target="_blank" rel="noopener" href="https://csrc.nist.gov/pubs/ai/100/2/e2025/final">NIST Adversarial Machine Learning Taxonomy</a>：对抗机器学习攻击与缓解术语体系。</li>
+<li><a target="_blank" rel="noopener" href="https://www.cisa.gov/news-events/news/dhs-cisa-and-uk-ncsc-release-joint-guidelines-secure-ai-system-development">CISA &#x2F; NCSC Secure AI System Development</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cisa.gov/news-events/alerts/2024/04/15/joint-guidance-deploying-ai-systems-securely">CISA Deploying AI Systems Securely</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.enisa.europa.eu/publications/artificial-intelligence-cybersecurity-challenges">ENISA Artificial Intelligence Cybersecurity Challenges</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.enisa.europa.eu/publications/multilayer-framework-for-good-cybersecurity-practices-for-ai">ENISA Multilayer Framework for Good Cybersecurity Practices for AI</a></li>
+<li><a target="_blank" rel="noopener" href="https://safety.google/intl/en_us/safety/saif/">Google Secure AI Framework &#x2F; SAIF</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.coalitionforsecureai.org/">Coalition for Secure AI &#x2F; CoSAI</a></li>
+</ul>
+<h3 id="开源工具"><a href="#开源工具" class="headerlink" title="开源工具"></a>开源工具</h3><table>
 <thead>
 <tr>
-<th>服务商</th>
-<th>网址</th>
+<th>工具</th>
+<th>用途</th>
+<th>适合阶段</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>OpenAI</td>
-<td>platform.openai.com → API Keys</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/microsoft/PyRIT">Microsoft PyRIT</a></td>
+<td>生成式 AI 风险识别和自动化红队编排</td>
+<td>红队评估、持续测试</td>
 </tr>
 <tr>
-<td>Claude</td>
-<td>console.anthropic.com → API Keys</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/NVIDIA/garak">NVIDIA garak</a></td>
+<td>LLM 漏洞、安全和鲁棒性探测</td>
+<td>模型 &#x2F; 应用上线前测试</td>
 </tr>
 <tr>
-<td>DeepSeek</td>
-<td>platform.deepseek.com → API 密钥</td>
+<td><a target="_blank" rel="noopener" href="https://www.promptfoo.dev/docs/red-team/">Promptfoo Red Team</a></td>
+<td>LLM、RAG、Agent 红队测试，可接入 CI</td>
+<td>开发、回归、发布门禁</td>
 </tr>
 <tr>
-<td>MiniMax</td>
-<td><a target="_blank" rel="noopener" href="http://www.minimaxi.com/">www.minimaxi.com</a> → 控制台</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/protectai/llm-guard">Protect AI LLM Guard</a></td>
+<td>LLM 输入输出扫描</td>
+<td>应用防护、网关前置</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/protectai/modelscan">Protect AI ModelScan</a></td>
+<td>模型序列化安全扫描</td>
+<td>模型供应链、模型导入</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/NVIDIA/NeMo-Guardrails">NVIDIA NeMo Guardrails</a></td>
+<td>为 LLM 应用添加可编程护栏</td>
+<td>应用设计、运行时控制</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/guardrails-ai/guardrails">Guardrails AI</a></td>
+<td>输出校验、结构化约束和运行时护栏</td>
+<td>应用层防护</td>
 </tr>
 </tbody></table>
+<h3 id="视频与课程"><a href="#视频与课程" class="headerlink" title="视频与课程"></a>视频与课程</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://genai.owasp.org/learning/">OWASP GenAI Learning Archive</a></li>
+<li>Microsoft Build &#x2F; BlueHat：关键词 <code>How Microsoft Approaches AI Red Teaming PyRIT</code></li>
+<li>Black Hat &#x2F; DEF CON &#x2F; RSA：关键词 <code>LLM security red teaming</code>、<code>AI supply chain security</code>、<code>agentic AI security</code></li>
+</ul>
+<h2 id="五、俄罗斯-俄语生态资源"><a href="#五、俄罗斯-俄语生态资源" class="headerlink" title="五、俄罗斯 &#x2F; 俄语生态资源"></a>五、俄罗斯 &#x2F; 俄语生态资源</h2><p>公开资料相对分散，偏 Kaspersky、Sber、Positive Technologies、Yandex Cloud、Habr。开源工具不如欧美多，很多是商业产品、培训或文章。</p>
+<h3 id="课程与报告"><a href="#课程与报告" class="headerlink" title="课程与报告"></a>课程与报告</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://xtraining.kaspersky.com/courses/large-language-models-security/">Kaspersky Large Language Models Security</a>：付费课程，覆盖 LLM 攻击、防御和安全框架。</li>
+<li><a target="_blank" rel="noopener" href="https://media.kaspersky.com/en/business-security/enterprise/machine-learning-cybersecurity-whitepaper.pdf">Kaspersky：AI under Attack - How to Secure Machine Learning</a></li>
+<li>Sber AI 威胁模型：公开入口不稳定，可从 <a target="_blank" rel="noopener" href="https://habr.com/ru/news/902882/">Habr 介绍</a> 或 <a target="_blank" rel="noopener" href="https://bosfera.ru/press-release/sber-razrabotal-model-dlya-kiberbezopasnosti-ii">Банковское обозрение</a> 追踪。</li>
+</ul>
+<h3 id="文章与教程"><a href="#文章与教程" class="headerlink" title="文章与教程"></a>文章与教程</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://habr.com/ru/companies/cloud_ru/articles/1003844/">Habr：AI-security развивается…</a></li>
+<li><a target="_blank" rel="noopener" href="https://habr.com/ru/articles/906172/">Habr：MLSecOps защита машинного обучения</a></li>
+<li><a target="_blank" rel="noopener" href="https://habr.com/en/companies/pt/articles/904936/">Positive Technologies：Искусственный интеллект в киберзащите</a></li>
+<li><a target="_blank" rel="noopener" href="https://habr.com/ru/companies/yandex_cloud_and_infra/articles/876004/">Yandex Cloud：LLM 在网络安全中的应用</a></li>
+<li><a target="_blank" rel="noopener" href="https://habr.com/ru/articles/871780/">Habr：LLM agents in cybersecurity</a></li>
+</ul>
+<h3 id="视频检索关键词"><a href="#视频检索关键词" class="headerlink" title="视频检索关键词"></a>视频检索关键词</h3><ul>
+<li><code>безопасность LLM</code></li>
+<li><code>AI security кибербезопасность</code></li>
+<li><code>MLSecOps</code></li>
+<li><code>ИИ в киберзащите</code></li>
+<li><code>Kaspersky LLM security</code></li>
+</ul>
+<h2 id="六、推荐学习顺序"><a href="#六、推荐学习顺序" class="headerlink" title="六、推荐学习顺序"></a>六、推荐学习顺序</h2><div class="ai-roadmap">
+  <div><b>1</b><span>网络安全基础</span><p>Linux、Python、HTTP、Web 安全、身份认证、日志和基础攻防。</p></div>
+  <div><b>2</b><span>AI / LLM 基础</span><p>Transformer、RAG、Agent、向量数据库、模型推理、微调和评测。</p></div>
+  <div><b>3</b><span>AI 安全框架</span><p>OWASP GenAI、MITRE ATLAS、NIST AI RMF、CISA、ENISA。</p></div>
+  <div><b>4</b><span>红队与防御</span><p>Prompt Injection、越狱、RAG 污染、模型提取、Agent 工具越权。</p></div>
+  <div><b>5</b><span>企业落地</span><p>LLM 网关、AI-BOM、日志审计、权限隔离、持续评估和合规文档。</p></div>
+</div>
+
+<h2 id="七、落地建议"><a href="#七、落地建议" class="headerlink" title="七、落地建议"></a>七、落地建议</h2><ol>
+<li><strong>列出 AI 资产</strong>：模型、RAG、向量库、MCP、Agent、API Key、日志。</li>
+<li><strong>做威胁建模</strong>：用 OWASP 与 MITRE ATLAS 明确攻击面和业务影响。</li>
+<li><strong>建立红队基线</strong>：用 PyRIT、garak、Promptfoo 保存可复现评估报告。</li>
+<li><strong>检查基础设施</strong>：用 AI-Infra-Guard 排查 AI 组件和 MCP &#x2F; Agent 生态暴露面。</li>
+<li><strong>在模型外做控制</strong>：权限隔离、DLP、审批、审计、速率限制和回滚机制。</li>
+</ol>
+<h2 id="八、容易误判的点"><a href="#八、容易误判的点" class="headerlink" title="八、容易误判的点"></a>八、容易误判的点</h2><ul>
+<li>Prompt 过滤不是完整防线，工具权限和数据访问控制更关键。</li>
+<li>红队扫描结果不是合规结论，需要结合业务、日志和人工复核。</li>
+<li>Agent 能调用真实工具时，风险从聊天安全变成系统权限安全。</li>
+<li>社区文章可能过期或带厂商立场，关键事实要回到官方文档验证。</li>
+</ul>
 <blockquote>
-<p>⚠️ 不要心存侥幸！黑客拿到 API Key 后可能短时间内消耗完所有余额。</p>
+<p>所有测试应在授权环境、靶场或自有系统中进行。本文只做资料索引和工程化学习路线整理，不提供未授权攻击步骤。</p>
 </blockquote>
-<h3 id="2-检查云端账单"><a href="#2-检查云端账单" class="headerlink" title="2. 检查云端账单"></a>2. 检查云端账单</h3><p>登录服务商后台，查看最近用量。如有异常暴涨，记录并联系客服。</p>
-<h3 id="3-检查是否有公网暴露"><a href="#3-检查是否有公网暴露" class="headerlink" title="3. 检查是否有公网暴露"></a>3. 检查是否有公网暴露</h3><p>如果你曾经配置过远程访问，建议：</p>
-<ul>
-<li>修改路由器端口转发规则</li>
-<li>检查防火墙规则</li>
-<li>如果使用 Tailscale，考虑断开或重置</li>
-</ul>
-<hr>
-<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><p><strong>Q: 卸载后想重装怎么办？</strong></p>
-<pre><code class="hljs bash"><span class="hljs-comment"># Windows</span>
-iwr -useb https://openclaw.ai/install.ps1 | iex
-
-<span class="hljs-comment"># 或使用国内镜像</span>
-iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
-
-<p><strong>Q: 提示”不是内部命令”？</strong></p>
-<p>说明 CLI 已成功卸载，OpenClaw 已离开你的电脑。</p>
-<p><strong>Q: 之前用了 <code>--profile</code> 怎么办？</strong></p>
-<p>需要手动删除各 profile 的目录：</p>
-<pre><code class="hljs bash"><span class="hljs-built_in">rm</span> -rf ~/.openclaw-&lt;profile名&gt;</code></pre>
-
-<hr>
-<h2 id="理性看待-AI，安全第一"><a href="#理性看待-AI，安全第一" class="headerlink" title="理性看待 AI，安全第一"></a>理性看待 AI，安全第一</h2><p>OpenClaw 展示了”AI 自主行动”的未来，但它还在快速迭代中。</p>
-<p><strong>当前阶段的风险：</strong></p>
-<ul>
-<li>裸奔的网关可能让你成为黑客跳板</li>
-<li>供应链投毒：不明来源的插件可能包含恶意代码</li>
-<li>不受控的行为可能导致文件误删</li>
-</ul>
-<p><strong>安全建议：</strong></p>
-<ul>
-<li>最小权限原则</li>
-<li>不要轻易把系统最高权限交给 AI</li>
-<li>仅在内网使用，不暴露到公网</li>
-</ul>
-<hr>
-<p>希望这篇指南能帮你安全地卸载 OpenClaw！🐨</p>
-<p><strong>参考来源：</strong></p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://openclaw.ai/docs/install/uninstall">OpenClaw 官方文档</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/miao-zp/p/19718662">博客园 - 手把手教你安全移除 OpenClaw</a></li>
-</ul>
 
                 
             </div>
@@ -531,7 +560,7 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://blogbu2154.site/%E5%A6%82%E4%BD%95%E5%8D%B8%E8%BD%BDOpenClaw/">https://blogbu2154.site/%E5%A6%82%E4%BD%95%E5%8D%B8%E8%BD%BDOpenClaw/</a>
+                    <a href="https://blogbu2154.site/AI%E4%B8%8E%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E8%B5%84%E6%BA%90%E5%85%A8%E6%99%AF%E6%8A%A5%E5%91%8A/">https://blogbu2154.site/AI%E4%B8%8E%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E8%B5%84%E6%BA%90%E5%85%A8%E6%99%AF%E6%8A%A5%E5%91%8A/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -569,12 +598,24 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/OpenClaw/">
-                                    <span class="chip bg-color">OpenClaw</span>
+                                <a href="/tags/AI%E5%AE%89%E5%85%A8/">
+                                    <span class="chip bg-color">AI安全</span>
                                 </a>
                             
-                                <a href="/tags/%E5%8D%B8%E8%BD%BD/">
-                                    <span class="chip bg-color">卸载</span>
+                                <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                                    <span class="chip bg-color">网络安全</span>
+                                </a>
+                            
+                                <a href="/tags/LLM/">
+                                    <span class="chip bg-color">LLM</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%BA%A2%E9%98%9F/">
+                                    <span class="chip bg-color">红队</span>
+                                </a>
+                            
+                                <a href="/tags/%E8%B5%84%E6%96%99%E6%95%B4%E7%90%86/">
+                                    <span class="chip bg-color">资料整理</span>
                                 </a>
                             
                         </div>
@@ -624,6 +665,78 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
+                <a href="/%E6%8A%A4%E7%BD%91-HVV-%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8/">
+                    <div class="card-image">
+                        
+                        <img src="/images/ai-security-hero.png" class="responsive-img" alt="护网（HVV）面试题大全">
+                        
+                        <span class="card-title">护网（HVV）面试题大全</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            综合整理护网（HVV）面试常见题目，涵盖应急响应、流量分析、常见漏洞、红队渗透、安全设备、网络基础、安全加固、综合场景、常用工具、企业安全运营十大模块。
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2026-06-04
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" class="post-category">
+                                    网络安全
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">网络安全</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BA%A2%E9%98%9F/">
+                        <span class="chip bg-color">红队</span>
+                    </a>
+                    
+                    <a href="/tags/HVV/">
+                        <span class="chip bg-color">HVV</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                        <span class="chip bg-color">护网</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/">
+                        <span class="chip bg-color">面试题</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">
+                        <span class="chip bg-color">应急响应</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%93%9D%E9%98%9F/">
+                        <span class="chip bg-color">蓝队</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
                 <a href="/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82AI%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/">
                     <div class="card-image">
                         
@@ -640,9 +753,9 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2026-03-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-03-19
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -668,55 +781,6 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                     
                     <a href="/tags/%E5%85%A5%E9%97%A8/">
                         <span class="chip bg-color">入门</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAOpenClaw/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="如何搭建OpenClaw">
-                        
-                        <span class="card-title">如何搭建OpenClaw</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2026-03-19
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            swfk2154
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/OpenClaw/">
-                        <span class="chip bg-color">OpenClaw</span>
-                    </a>
-                    
-                    <a href="/tags/AI%E5%8A%A9%E6%89%8B/">
-                        <span class="chip bg-color">AI助手</span>
                     </a>
                     
                 </div>
