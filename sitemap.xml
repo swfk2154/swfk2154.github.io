@@ -38,6 +38,15 @@
   </url>
   
   <url>
+    <loc>https://blogbu2154.site/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82AI%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/</loc>
+    
+    <lastmod>2026-03-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blogbu2154.site/%E5%A6%82%E4%BD%95%E5%8D%B8%E8%BD%BDOpenClaw/</loc>
     
     <lastmod>2026-03-19</lastmod>
@@ -48,15 +57,6 @@
   
   <url>
     <loc>https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAOpenClaw/</loc>
-    
-    <lastmod>2026-03-19</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82AI%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/</loc>
     
     <lastmod>2026-03-19</lastmod>
     
@@ -214,21 +214,21 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/OpenClaw/</loc>
+    <loc>https://blogbu2154.site/tags/Prompt/</loc>
     <lastmod>2026-06-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/AI%E5%8A%A9%E6%89%8B/</loc>
+    <loc>https://blogbu2154.site/tags/RAG/</loc>
     <lastmod>2026-06-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/%E5%8D%B8%E8%BD%BD/</loc>
+    <loc>https://blogbu2154.site/tags/Embedding/</loc>
     <lastmod>2026-06-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -304,10 +304,59 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://blogbu2154.site/tags/OpenClaw/</loc>
+    <lastmod>2026-06-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E5%8D%B8%E8%BD%BD/</loc>
+    <lastmod>2026-06-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/AI%E5%8A%A9%E6%89%8B/</loc>
+    <lastmod>2026-06-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8/</loc>
+    <lastmod>2026-06-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E9%83%A8%E7%BD%B2/</loc>
+    <lastmod>2026-06-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Node-js/</loc>
+    <lastmod>2026-06-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
     <loc>https://blogbu2154.site/categories/AI%E5%AE%89%E5%85%A8/</loc>
+    <lastmod>2026-06-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/categories/AI%E5%85%A5%E9%97%A8/</loc>
     <lastmod>2026-06-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

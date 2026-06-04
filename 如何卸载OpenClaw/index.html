@@ -4,18 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="如何卸载OpenClaw, AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
-    <meta name="description" content="
-⚠️ 警告：卸载是一个不可逆的操作，请谨慎操作。
-
-
-⚠️ 注意：以下内容是我让openclaw自己写的综合了官方文档和中文社区教程编写，确保严谨性。
-
-
-参考来源：OpenClaw 官方文档、博客园 - 慕容木木
-
-
-简短引言：为什么我">
+    <meta name="keywords" content="OpenClaw, 卸载, AI助手, Node.js, 安全清理">
+    <meta name="description" content="完整记录 OpenClaw 的三种卸载方式（官方命令、手动卸载、彻底清理），以及卸载后的安全补救措施：API Key 撤销、账单检查、端口排查。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -27,7 +17,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>如何卸载OpenClaw | swfk 的安全笔记</title>
+    <title>如何卸载 OpenClaw | swfk 的安全笔记</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -280,12 +270,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">如何卸载OpenClaw</h1>
+                    <h1 class="description center-align post-title">如何卸载 OpenClaw</h1>
                 </div>
             </div>
         </div>
@@ -317,10 +307,27 @@
                                 <span class="chip bg-color">卸载</span>
                             </a>
                         
+                            <a href="/tags/AI%E5%8A%A9%E6%89%8B/">
+                                <span class="chip bg-color">AI助手</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%AE%89%E5%85%A8/">
+                                <span class="chip bg-color">安全</span>
+                            </a>
+                        
                     </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/" class="post-category">
+                                工具实践
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -577,6 +584,14 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                                     <span class="chip bg-color">卸载</span>
                                 </a>
                             
+                                <a href="/tags/AI%E5%8A%A9%E6%89%8B/">
+                                    <span class="chip bg-color">AI助手</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%AE%89%E5%85%A8/">
+                                    <span class="chip bg-color">安全</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -627,8 +642,7 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                 <a href="/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82AI%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/">
                     <div class="card-image">
                         
-                        
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="AI 入门必看！一篇文章搞懂 Agent、LLM、Prompt、Token、Tool、Workflow、RAG、Embedding、Context">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="AI 入门必看！一篇文章搞懂 Agent、LLM、Prompt、Token、Tool、Workflow、RAG、Embedding、Context">
                         
                         <span class="card-title">AI 入门必看！一篇文章搞懂 Agent、LLM、Prompt、Token、Tool、Workflow、RAG、Embedding、Context</span>
                     </div>
@@ -636,7 +650,7 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            用通俗易懂的方式一次性讲清 AI 领域 9 个核心概念：LLM、Prompt、Context、Agent、Tool、Workflow、RAG、Embedding，附关系图和对比表。
                         
                     </div>
                     <div class="publish-info">
@@ -645,8 +659,12 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                         </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            swfk2154
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/AI%E5%85%A5%E9%97%A8/" class="post-category">
+                                    AI入门
+                                </a>
+                            
                             
                         </span>
                     </div>
@@ -670,6 +688,18 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                         <span class="chip bg-color">入门</span>
                     </a>
                     
+                    <a href="/tags/Prompt/">
+                        <span class="chip bg-color">Prompt</span>
+                    </a>
+                    
+                    <a href="/tags/RAG/">
+                        <span class="chip bg-color">RAG</span>
+                    </a>
+                    
+                    <a href="/tags/Embedding/">
+                        <span class="chip bg-color">Embedding</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -684,16 +714,15 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                 <a href="/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAOpenClaw/">
                     <div class="card-image">
                         
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="如何搭建 OpenClaw">
                         
-                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="如何搭建OpenClaw">
-                        
-                        <span class="card-title">如何搭建OpenClaw</span>
+                        <span class="card-title">如何搭建 OpenClaw</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            从零开始搭建 OpenClaw AI 助手网关，覆盖 PowerShell 一键安装、npm 手动安装、WSL2 部署三种方式，附 MiniMax API Key 配置和常见问题排查。
                         
                     </div>
                     <div class="publish-info">
@@ -702,8 +731,12 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            swfk2154
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/" class="post-category">
+                                    工具实践
+                                </a>
+                            
                             
                         </span>
                     </div>
@@ -717,6 +750,14 @@ iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex</code></pre>
                     
                     <a href="/tags/AI%E5%8A%A9%E6%89%8B/">
                         <span class="chip bg-color">AI助手</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%83%A8%E7%BD%B2/">
+                        <span class="chip bg-color">部署</span>
+                    </a>
+                    
+                    <a href="/tags/Node-js/">
+                        <span class="chip bg-color">Node.js</span>
                     </a>
                     
                 </div>
