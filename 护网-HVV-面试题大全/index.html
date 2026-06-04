@@ -501,6 +501,89 @@
 <li>看请求路径、源 IP 与目的 IP、host 字段值、发包内容</li>
 <li>分析请求数据包和返回数据包判断攻击是否成功</li>
 </ol>
+<h3 id="11-冰蝎-3-0-与-4-0-的区别？"><a href="#11-冰蝎-3-0-与-4-0-的区别？" class="headerlink" title="11. 冰蝎 3.0 与 4.0 的区别？"></a>11. 冰蝎 3.0 与 4.0 的区别？</h3><p><strong>答：</strong></p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>冰蝎 3.0</th>
+<th>冰蝎 4.0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>密钥协商</td>
+<td>固定密钥（连接密码 MD5 前 16 位）</td>
+<td>动态密钥协商，首次请求交换公钥</td>
+</tr>
+<tr>
+<td>通信加密</td>
+<td>AES 加密两次请求</td>
+<td>AES 加密，后续流量加密随机性更强</td>
+</tr>
+<tr>
+<td>流量特征</td>
+<td>Content-Type 为 application&#x2F;octet-stream，请求体长度固定约 1KB</td>
+<td>无明显固定长度特征，通信特征更接近正常业务请求</td>
+</tr>
+<tr>
+<td>内存马支持</td>
+<td>有限</td>
+<td>支持内存马，插件生态更丰富</td>
+</tr>
+<tr>
+<td>研判重点</td>
+<td>看固定入口文件的持续 POST、高熵请求体</td>
+<td>需结合异常进程、文件改动、会话行为关联判断</td>
+</tr>
+</tbody></table>
+<h3 id="12-哥斯拉、蚁剑、菜刀的详细流量特征？"><a href="#12-哥斯拉、蚁剑、菜刀的详细流量特征？" class="headerlink" title="12. 哥斯拉、蚁剑、菜刀的详细流量特征？"></a>12. 哥斯拉、蚁剑、菜刀的详细流量特征？</h3><p><strong>答：</strong></p>
+<p><strong>哥斯拉 Godzilla：</strong></p>
+<ul>
+<li>加密通信（AES），POST 交互，流量伪装能力强</li>
+<li>请求体高熵、参数结构固定但内容不可读</li>
+<li>可能伪装成正常业务路径或常见 Header</li>
+<li>Cookie 中可能包含 <code>pass=</code> 开头参数，末尾常多出一个分号</li>
+<li>研判需结合固定后门文件、异常回连、文件写入、命令执行综合判断</li>
+</ul>
+<p><strong>蚁剑 AntSword：</strong></p>
+<ul>
+<li>POST 请求、参数编码、Base64 相关内容</li>
+<li>常见特征：<code>@ini_set(&quot;display_errors&quot;,&quot;0&quot;);@set_time_limit(0)</code> 开头</li>
+<li>关键函数：eval、assert、base64_decode</li>
+<li>对文件管理、命令执行、数据库操作的交互比较明显</li>
+<li>响应体返回结果是 base64 编码发混淆字符，格式为：随机数+结果+随机数</li>
+</ul>
+<p><strong>菜刀 Chopper：</strong></p>
+<ul>
+<li>老式 WebShell 管理工具，流量相对简单</li>
+<li>请求体包含 z0、z1、z2 三个参数，z0 为 Base64 编码的执行命令</li>
+<li>可能出现固定连接密码参数，频繁访问同一个后门文件</li>
+<li>响应中出现目录、文件、命令执行结果</li>
+<li>短连接、单次请求执行单个命令</li>
+</ul>
+<h3 id="13-Cobalt-Strike（CS）流量特征？"><a href="#13-Cobalt-Strike（CS）流量特征？" class="headerlink" title="13. Cobalt Strike（CS）流量特征？"></a>13. Cobalt Strike（CS）流量特征？</h3><p><strong>答：</strong></p>
+<ul>
+<li><strong>Beacon 周期性心跳：</strong> 固定或带 jitter 的访问间隔，同一主机周期性访问同一外部 IP&#x2F;域名</li>
+<li><strong>User-Agent：</strong> 可能伪装，但 JA3&#x2F;JA3S 指纹异常</li>
+<li><strong>请求体&#x2F;响应体：</strong> 加密高熵，数据包大小相近</li>
+<li><strong>URI 模式：</strong> 固定 URI&#x2F;Header 模式，可能伪装成图片、JS、CDN、API 请求</li>
+<li><strong>主机联动证据：</strong> rundll32、regsvr32、powershell、wmic、mshta 异常执行，远程服务创建、计划任务、进程注入、凭据访问和横向移动</li>
+</ul>
+<h3 id="14-SQL-注入告警如何分析？"><a href="#14-SQL-注入告警如何分析？" class="headerlink" title="14. SQL 注入告警如何分析？"></a>14. SQL 注入告警如何分析？</h3><p><strong>答：</strong></p>
+<p><strong>分析步骤：</strong></p>
+<ol>
+<li>确定攻击源和目标接口</li>
+<li>对比正常请求，检查参数是否异常</li>
+<li>检查响应状态码、响应长度、报错信息、时间延迟</li>
+<li>查看应用和数据库日志</li>
+<li>判断是真实攻击、扫描探测还是误报（开发测试流量、安全扫描器）</li>
+</ol>
+<p><strong>成功证据：</strong></p>
+<ul>
+<li>数据库报错、响应长度明显变化</li>
+<li>敏感字段回显、时间延迟稳定出现</li>
+<li>后续出现枚举库表字段行为</li>
+</ul>
 <hr>
 <h2 id="三、常见漏洞与攻击"><a href="#三、常见漏洞与攻击" class="headerlink" title="三、常见漏洞与攻击"></a>三、常见漏洞与攻击</h2><h3 id="11-SQL-注入如何检测和加固？"><a href="#11-SQL-注入如何检测和加固？" class="headerlink" title="11. SQL 注入如何检测和加固？"></a>11. SQL 注入如何检测和加固？</h3><p><strong>答：</strong></p>
 <p><strong>检测：</strong></p>
@@ -582,6 +665,78 @@
 <li>通过 dnslog 进行数据外带</li>
 <li>将结果直接回显到 HTTP 响应中</li>
 </ul>
+<h3 id="16-SpringBoot-常见漏洞有哪些？"><a href="#16-SpringBoot-常见漏洞有哪些？" class="headerlink" title="16. SpringBoot 常见漏洞有哪些？"></a>16. SpringBoot 常见漏洞有哪些？</h3><p><strong>答：</strong></p>
+<p><strong>指纹信息：</strong></p>
+<ul>
+<li>响应头：<code>Server: Apache-Coyote</code> 或 <code>X-Application-Context</code></li>
+<li>默认错误页面特征、Wappalyzer 指纹识别</li>
+</ul>
+<p><strong>常见漏洞：</strong></p>
+<ul>
+<li><strong>Actuator 未授权：</strong> 监控组件敏感接口暴露（<code>/actuator/env</code>、<code>/actuator/heapdump</code> 等）</li>
+<li><strong>Fastjson 反序列化：</strong> 历史高危漏洞，可导致 RCE</li>
+<li><strong>Log4j2：</strong> 可导致远程代码执行</li>
+<li><strong>文件上传：</strong> 上传 WebShell</li>
+<li><strong>SQL 注入：</strong> 后端代码过滤不严导致</li>
+</ul>
+<p><strong>日志位置：</strong> <code>/var/log/</code> 或应用目录下 <code>logs/</code></p>
+<h3 id="17-OWASP-Top-10-有哪些？"><a href="#17-OWASP-Top-10-有哪些？" class="headerlink" title="17. OWASP Top 10 有哪些？"></a>17. OWASP Top 10 有哪些？</h3><p><strong>答：</strong></p>
+<ol>
+<li><strong>访问控制失效</strong>（Broken Access Control）</li>
+<li><strong>加密失败</strong>（Cryptographic Failures）</li>
+<li><strong>注入</strong>（Injection）</li>
+<li><strong>不安全设计</strong>（Insecure Design）</li>
+<li><strong>安全配置错误</strong>（Security Misconfiguration）</li>
+<li><strong>易受攻击和过时组件</strong>（Vulnerable and Outdated Components）</li>
+<li><strong>身份认证失败</strong>（Identification and Authentication Failures）</li>
+<li><strong>软件和数据完整性失败</strong>（Software and Data Integrity Failures）</li>
+<li><strong>安全日志和监控不足</strong>（Security Logging and Monitoring Failures）</li>
+<li><strong>服务端请求伪造（SSRF）</strong>（Server-Side Request Forgery）</li>
+</ol>
+<h3 id="18-XXE（XML-外部实体注入）漏洞？"><a href="#18-XXE（XML-外部实体注入）漏洞？" class="headerlink" title="18. XXE（XML 外部实体注入）漏洞？"></a>18. XXE（XML 外部实体注入）漏洞？</h3><p><strong>答：</strong></p>
+<p><strong>危害：</strong> 敏感文件泄露、SSRF、远程文件读取&#x2F;数据外带、拒绝服务攻击，严重时可配合其他漏洞实现远程代码执行。</p>
+<p><strong>利用方式：</strong></p>
+<ul>
+<li>读取敏感信息：<code>&lt;!ENTITY xxe SYSTEM &quot;file:///etc/passwd&quot;&gt;</code></li>
+<li>盲打 XXE：通过 DNSLog 或外带数据通道回传</li>
+<li>攻击内网服务、DDOS 攻击</li>
+</ul>
+<p><strong>防御：</strong></p>
+<ul>
+<li>禁用外部实体加载（<code>DOCTYPE</code> 禁止）</li>
+<li>过滤常见协议头 <code>file://</code>、<code>php://filter</code></li>
+<li>使用 JSON 替代 XML 传输数据</li>
+</ul>
+<h3 id="19-CSRF（跨站请求伪造）漏洞？"><a href="#19-CSRF（跨站请求伪造）漏洞？" class="headerlink" title="19. CSRF（跨站请求伪造）漏洞？"></a>19. CSRF（跨站请求伪造）漏洞？</h3><p><strong>答：</strong></p>
+<p><strong>危害：</strong> 盗号、修改个人信息、诱导受害者执行命令。</p>
+<p><strong>利用方式：</strong></p>
+<ul>
+<li>GET 型：构造恶意 URL，诱导受害者访问</li>
+<li>POST 型：构造自动提交表单，诱导受害者访问或点击</li>
+<li>配合存储型 XSS：自动触发，无需用户主动点击</li>
+</ul>
+<p><strong>防御：</strong></p>
+<ul>
+<li>添加不可控参数：手机验证码、生物指纹、随机 Token</li>
+<li>验证 HTTP 头的 Referer</li>
+<li>修改密码时要求输入原密码</li>
+<li>使用 SameSite Cookie 属性</li>
+</ul>
+<h3 id="20-SSRF（服务端请求伪造）如何利用？"><a href="#20-SSRF（服务端请求伪造）如何利用？" class="headerlink" title="20. SSRF（服务端请求伪造）如何利用？"></a>20. SSRF（服务端请求伪造）如何利用？</h3><p><strong>答：</strong></p>
+<p><strong>利用方式：</strong></p>
+<ul>
+<li>读取本地文件：<code>file:///etc/passwd</code></li>
+<li>探测内网：<code>http://192.168.1.1:22</code>、<code>dict://</code>、<code>gopher://</code></li>
+<li>攻击内网服务：Redis、FastCGI、MySQL 等</li>
+<li>访问云平台元数据服务（如 AWS 169.254.169.254）</li>
+</ul>
+<p><strong>防御：</strong></p>
+<ul>
+<li>URL 白名单，禁止请求内网 IP、回环地址、链路本地地址</li>
+<li>限制协议（只允许 HTTP&#x2F;HTTPS）</li>
+<li>限制端口（只允许 Web 端口）</li>
+<li>DNS 解析验证，防止 DNS 重绑定绕过</li>
+</ul>
 <hr>
 <h2 id="四、红队-渗透相关"><a href="#四、红队-渗透相关" class="headerlink" title="四、红队&#x2F;渗透相关"></a>四、红队&#x2F;渗透相关</h2><h3 id="16-外围打点的基本流程？"><a href="#16-外围打点的基本流程？" class="headerlink" title="16. 外围打点的基本流程？"></a>16. 外围打点的基本流程？</h3><p><strong>答：</strong></p>
 <ol>
@@ -644,6 +799,35 @@
 <li>邮件服务器 IP</li>
 <li>国外节点访问</li>
 <li>SSL 证书信息</li>
+</ul>
+<h3 id="23-内网渗透的完整流程？"><a href="#23-内网渗透的完整流程？" class="headerlink" title="23. 内网渗透的完整流程？"></a>23. 内网渗透的完整流程？</h3><p><strong>答：</strong></p>
+<ol>
+<li><strong>前期打点：</strong> 攻击处在 DMZ 区，能被互联网直接访问的网站或服务。信息收集、漏洞扫描、漏洞挖掘、历史漏洞利用</li>
+<li><strong>权限获取：</strong> 利用 Web 漏洞、钓鱼、弱口令等获取初始权限</li>
+<li><strong>内网信息收集：</strong> 内网存活探测、内网凭证获取、权限提升</li>
+<li><strong>构建代理隧道：</strong> 内网穿透（FRP、NPS、Neo-reGeorg 等），后续进行跨网段渗透</li>
+<li><strong>横向渗透：</strong> 同一内网网段的攻击，获取多台主机权限</li>
+<li><strong>权限维持：</strong> 添加后门账号、计划任务、服务、WebShell、内存马等</li>
+<li><strong>痕迹清除：</strong> 清理日志、删除临时文件、隐藏进程</li>
+</ol>
+<h3 id="24-漏洞挖掘思路？"><a href="#24-漏洞挖掘思路？" class="headerlink" title="24. 漏洞挖掘思路？"></a>24. 漏洞挖掘思路？</h3><p><strong>答：</strong></p>
+<p><strong>信息收集阶段：</strong></p>
+<ul>
+<li>子域名收集、端口扫描、指纹识别</li>
+<li>发现功能点：登录、上传、搜索、导出、API 接口</li>
+</ul>
+<p><strong>测试漏洞阶段：</strong></p>
+<ul>
+<li>注入类：SQL 注入、XSS、XXE、命令注入</li>
+<li>逻辑类：越权、支付逻辑、验证码绕过、密码重置</li>
+<li>配置类：未授权访问、敏感信息泄露、目录遍历</li>
+<li>组件类：Fastjson、Shiro、Log4j2、Struts2、SpringBoot Actuator</li>
+</ul>
+<p><strong>验证与报告：</strong></p>
+<ul>
+<li>确认漏洞可利用性、影响范围</li>
+<li>截图留证、编写修复建议</li>
+<li>按危害程度分级报告</li>
 </ul>
 <hr>
 <h2 id="五、安全设备与防护"><a href="#五、安全设备与防护" class="headerlink" title="五、安全设备与防护"></a>五、安全设备与防护</h2><h3 id="23-常见安全设备及其作用？"><a href="#23-常见安全设备及其作用？" class="headerlink" title="23. 常见安全设备及其作用？"></a>23. 常见安全设备及其作用？</h3><p><strong>答：</strong></p>
@@ -713,6 +897,76 @@
 <li>执行封堵&#x2F;解封工单</li>
 <li>每两小时反馈排查结果、设备巡检报告、封堵情况</li>
 </ul>
+<h3 id="26-IDS-和-IPS-的区别？"><a href="#26-IDS-和-IPS-的区别？" class="headerlink" title="26. IDS 和 IPS 的区别？"></a>26. IDS 和 IPS 的区别？</h3><p><strong>答：</strong></p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>IDS</th>
+<th>IPS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>部署方式</td>
+<td>旁路部署（镜像端口）</td>
+<td>串联部署</td>
+</tr>
+<tr>
+<td>功能</td>
+<td>检测攻击行为，产生告警</td>
+<td>检测并实时阻断攻击流量</td>
+</tr>
+<tr>
+<td>对业务影响</td>
+<td>不影响业务，风险低</td>
+<td>可能影响业务，误报会导致误拦截</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>需要全面监控但不愿影响业务的场景</td>
+<td>需要实时拦截攻击的场景</td>
+</tr>
+<tr>
+<td>互补关系</td>
+<td>防火墙是第一道防线，IPS 是第二道，IDS 是补充检测</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="27-EDR-怎么看？"><a href="#27-EDR-怎么看？" class="headerlink" title="27. EDR 怎么看？"></a>27. EDR 怎么看？</h3><p><strong>答：</strong></p>
+<p>EDR（终端检测与响应）主要看主机行为，不只看文件特征：</p>
+<ul>
+<li><strong>可疑进程树：</strong> Office、浏览器、Web 服务拉起 shell</li>
+<li><strong>异常执行：</strong> PowerShell、cmd、bash 异常执行</li>
+<li><strong>持久化：</strong> 计划任务、服务、自启动项异常</li>
+<li><strong>凭据访问：</strong> 横向移动、凭据抓取行为</li>
+<li><strong>外联异常：</strong> 可疑外连、文件落地和加密行为</li>
+</ul>
+<p>EDR 对无文件攻击、勒索、挖矿、横向移动比较有价值，但也需要结合日志和流量确认。</p>
+<h3 id="28-态势感知怎么减少误报？"><a href="#28-态势感知怎么减少误报？" class="headerlink" title="28. 态势感知怎么减少误报？"></a>28. 态势感知怎么减少误报？</h3><p><strong>答：</strong></p>
+<ul>
+<li><strong>规则调优：</strong> 给内部扫描器和监控系统打标签，降低低置信规则权重</li>
+<li><strong>资产上下文：</strong> 对正常业务参数加白名单，把单点告警改成多条件关联</li>
+<li><strong>样本沉淀：</strong> 保留真实攻击样本做反向优化，定期复盘误报原因</li>
+<li><strong>避免一刀切：</strong> 不要为了降低告警量直接关闭高价值规则</li>
+</ul>
+<h3 id="29-WAF-怎么部署？"><a href="#29-WAF-怎么部署？" class="headerlink" title="29. WAF 怎么部署？"></a>29. WAF 怎么部署？</h3><p><strong>答：</strong></p>
+<p><strong>常见部署方式：</strong></p>
+<ul>
+<li>反向代理（最常用）</li>
+<li>透明代理&#x2F;串联部署</li>
+<li>旁路镜像（只检测不阻断）</li>
+<li>云 WAF</li>
+</ul>
+<p><strong>部署步骤：</strong></p>
+<ol>
+<li>梳理 Web 资产和业务流量，确认域名、端口、证书、真实源站</li>
+<li>配置 DNS 或负载均衡，让流量先经过 WAF 再回源</li>
+<li>导入 HTTPS 证书，配置域名、回源地址、健康检查</li>
+<li>先开启监控&#x2F;告警模式，观察规则命中情况</li>
+<li>对正常业务接口做白名单和规则调优</li>
+<li>对高危接口逐步开启拦截策略</li>
+<li>上线后持续复盘误报、漏报和攻击样本</li>
+</ol>
 <hr>
 <h2 id="六、网络基础"><a href="#六、网络基础" class="headerlink" title="六、网络基础"></a>六、网络基础</h2><h3 id="26-TCP-三次握手与四次挥手？"><a href="#26-TCP-三次握手与四次挥手？" class="headerlink" title="26. TCP 三次握手与四次挥手？"></a>26. TCP 三次握手与四次挥手？</h3><p><strong>答：</strong></p>
 <p><strong>三次握手：</strong></p>
@@ -806,6 +1060,81 @@
 <li>双方用三个随机数通过 DH 算法生成对称密钥</li>
 <li>后续通信使用对称密钥加密</li>
 </ol>
+<h3 id="36-AI-在安全运营中的作用？"><a href="#36-AI-在安全运营中的作用？" class="headerlink" title="36. AI 在安全运营中的作用？"></a>36. AI 在安全运营中的作用？</h3><p><strong>答：</strong></p>
+<p>AI 适合做辅助工作，<strong>不能替代最终判断</strong>（可能误判或编造）。</p>
+<p><strong>适用场景：</strong></p>
+<ul>
+<li>日志摘要、告警降噪</li>
+<li>IOC 提取、攻击链整理</li>
+<li>报告初稿、规则生成建议</li>
+<li>漏洞情报归纳</li>
+</ul>
+<p><strong>原则：</strong> AI 做初筛和提效，人负责证据校验，关键结论必须回到日志、流量、主机和业务上下文。</p>
+<h3 id="37-怎么和甲方沟通安全事件？"><a href="#37-怎么和甲方沟通安全事件？" class="headerlink" title="37. 怎么和甲方沟通安全事件？"></a>37. 怎么和甲方沟通安全事件？</h3><p><strong>答：</strong></p>
+<p><strong>结构化表达：先说结论，再说证据，再说影响和建议。</strong></p>
+<p>示例：</p>
+<blockquote>
+<p>“当前某资产出现 SQL 注入攻击告警，证据包括多次参数探测、异常响应长度和数据库报错。建议先临时封禁攻击源，同时请业务确认接口归属和是否为测试流量；若确认漏洞存在，需要尽快参数化修复，并排查数据泄露风险。”</p>
+</blockquote>
+<p><strong>安抚甲方情绪：</strong></p>
+<ul>
+<li>先给结论和定心丸，表明已经控制事态</li>
+<li>简明扼要同步现状与影响</li>
+<li>给出清晰的下一步处置建议和需要配合的事项</li>
+</ul>
+<p><strong>甲方情绪失控甩锅时：</strong></p>
+<blockquote>
+<p>“我完全理解您的焦急。护网结束后，我们会出具详细的复盘报告协助您厘清责任。但当前最核心的任务是止损和防守，多拖一分钟内网就多一分风险，我们先把眼前的漏洞补上，您看可以吗？”</p>
+</blockquote>
+<h3 id="38-后门处理的完整流程？"><a href="#38-后门处理的完整流程？" class="headerlink" title="38. 后门处理的完整流程？"></a>38. 后门处理的完整流程？</h3><p><strong>答：</strong></p>
+<p>处理后门的核心是：<strong>先保全证据，再定位入口和影响范围，不能只删文件。</strong></p>
+<p><strong>常见后门类型：</strong> WebShell、内存马、计划任务、系统服务、自启动项、隐藏账号、SSH key、恶意脚本、异常外联程序</p>
+<p><strong>处理流程：</strong></p>
+<ol>
+<li><strong>隔离：</strong> 隔离受影响主机或限制外联，防止攻击者继续操作</li>
+<li><strong>取证：</strong> 保留 Web 日志、主机日志、可疑文件、进程信息、网络连接和告警记录</li>
+<li><strong>定位后门类型：</strong><ul>
+<li>WebShell → 看 Web 目录和访问日志</li>
+<li>内存马 → 看 Java 进程、过滤器、监听器、异常类加载</li>
+<li>系统后门 → 看账号、服务、计划任务、自启动项和 SSH key</li>
+</ul>
+</li>
+<li><strong>排查入侵入口：</strong> 弱口令、漏洞利用、文件上传、SQL 注入、未授权接口或历史 WebShell</li>
+<li><strong>清理：</strong> 删除可疑文件、进程、服务、计划任务、异常账号和外联配置</li>
+<li><strong>修复：</strong> 修复入口漏洞，修改相关账号密码，更新组件补丁，收紧权限和出网策略</li>
+<li><strong>持续观察：</strong> 恢复后持续观察日志和流量，确认没有复连、复发和横向移动</li>
+</ol>
+<p><strong>清后门不是最终目标，必须找到入口并完成加固，否则容易再次被打进来。</strong></p>
+<h3 id="39-0day-没有设备防护怎么分析？"><a href="#39-0day-没有设备防护怎么分析？" class="headerlink" title="39. 0day 没有设备防护怎么分析？"></a>39. 0day 没有设备防护怎么分析？</h3><p><strong>答：</strong></p>
+<ol>
+<li><strong>确认影响：</strong> 受影响资产、组件版本、暴露面</li>
+<li><strong>异常检测：</strong> 看是否有异常请求、异常参数、异常响应</li>
+<li><strong>主机侧：</strong> 关注 Web 服务是否拉起 shell，检查新增文件、异常进程、外连、计划任务</li>
+<li><strong>临时处置：</strong> 临时下线或限制访问高风险接口，加 WAF 临时虚拟补丁</li>
+<li><strong>网络隔离：</strong> 限制出网和内网访问</li>
+<li><strong>等官方补丁后尽快升级</strong></li>
+</ol>
+<h3 id="40-挖矿应急详细流程？"><a href="#40-挖矿应急详细流程？" class="headerlink" title="40. 挖矿应急详细流程？"></a>40. 挖矿应急详细流程？</h3><p><strong>答：</strong></p>
+<p><strong>判断阶段：</strong></p>
+<ul>
+<li>查看 CPU 占用率（是否持续高企）</li>
+<li>查看流量分析，是否访问可疑网站或下载可疑文件</li>
+<li>查看是否有外连远程 IP（矿池地址）</li>
+</ul>
+<p><strong>分析阶段：</strong></p>
+<ul>
+<li>登录服务器，查看进程是否有异常</li>
+<li>查看异常进程的服务项，停止可疑服务</li>
+<li>查看计划任务是否有可疑项</li>
+</ul>
+<p><strong>处置阶段：</strong></p>
+<ul>
+<li>停用并禁止可疑服务项（根据描述寻找）</li>
+<li>根据实际木马路径，删除木马文件</li>
+<li>重启计算机，使用杀软全盘查杀</li>
+<li>修复入侵入口（弱口令、漏洞），检查横向移动</li>
+<li>持续观察是否复发</li>
+</ul>
 <hr>
 <h2 id="九、常用工具"><a href="#九、常用工具" class="headerlink" title="九、常用工具"></a>九、常用工具</h2><h3 id="36-常见安全工具有哪些？"><a href="#36-常见安全工具有哪些？" class="headerlink" title="36. 常见安全工具有哪些？"></a>36. 常见安全工具有哪些？</h3><p><strong>答：</strong></p>
 <table>
@@ -866,8 +1195,72 @@
 <li><strong>核心原则：</strong> 减少攻击频率，模拟正常用户行为（如工作时间访问）</li>
 </ul>
 <hr>
+<h2 id="十一、通用流量研判方法论"><a href="#十一、通用流量研判方法论" class="headerlink" title="十一、通用流量研判方法论"></a>十一、通用流量研判方法论</h2><h3 id="39-流量特征分析的通用思路？"><a href="#39-流量特征分析的通用思路？" class="headerlink" title="39. 流量特征分析的通用思路？"></a>39. 流量特征分析的通用思路？</h3><p><strong>答：</strong></p>
+<p>从”工具类型 + 流量表现 + 成功证据 + 联动主机证据”四个角度回答。</p>
+<p><strong>不要只背工具名，面试时重点说清楚：</strong></p>
+<ul>
+<li>请求是否异常（源 IP、目标资产、URL、方法、Header、参数、Body、编码方式、请求频率）</li>
+<li>响应是否成功（状态码、响应长度、报错信息、敏感回显、下载文件、时间延迟）</li>
+<li>是否有后续攻击链行为</li>
+<li>主机侧是否出现进程&#x2F;文件&#x2F;外联异常</li>
+</ul>
+<p><strong>五步研判法：</strong></p>
+<ol>
+<li><strong>看请求：</strong> 确认 payload、编码、访问频率和目标接口</li>
+<li><strong>看响应：</strong> 确认是否有报错、敏感回显、响应长度变化或时间延迟</li>
+<li><strong>看上下文：</strong> 是否核心资产、是否业务高峰、是否内部扫描器、是否安全测试窗口</li>
+<li><strong>联动主机：</strong> 进程、文件落地、网络连接、账号登录、计划任务、服务、自启动、EDR 告警</li>
+<li><strong>判断结论：</strong> 真实攻击、攻击成功、攻击失败、扫描探测、内部测试、误报，并给出处置建议</li>
+</ol>
+<p><strong>面试表达模板：</strong></p>
 <blockquote>
-<p>参考来源：护网面试题整理、甲方安全面试总结、渗透测试面试题等。</p>
+<p>“我分析流量特征时不会只看某一个关键字，而是按攻击链判断。第一步看请求包，确认 payload、编码、访问频率和目标接口；第二步看响应包，确认是否有报错、敏感回显、响应长度变化或时间延迟；第三步结合资产重要性和业务场景，判断是不是扫描器、测试流量或真实攻击；第四步联动主机日志和 EDR，看是否有异常进程、文件落地、计划任务、外联或账号登录异常。只有流量证据和主机证据能闭环，才会升级为真实攻击处置。”</p>
+</blockquote>
+<hr>
+<h2 id="十二、面试表达与沟通技巧"><a href="#十二、面试表达与沟通技巧" class="headerlink" title="十二、面试表达与沟通技巧"></a>十二、面试表达与沟通技巧</h2><h3 id="40-面试自我介绍怎么说？"><a href="#40-面试自我介绍怎么说？" class="headerlink" title="40. 面试自我介绍怎么说？"></a>40. 面试自我介绍怎么说？</h3><p><strong>答：</strong></p>
+<p><strong>结构：背景 + 技能 + 经验 + 价值</strong></p>
+<p>示例：</p>
+<blockquote>
+<p>“面试官好，我叫 XXX，毕业于 XX 大学计算机专业，主要从事 Web 安全方向。平时会进行漏洞复现，结合 AI 辅助进行抓包分析和日志分析。去年参加过护网，主要负责 WAF、EDR、防火墙等设备告警分析，处理 WebShell、SQL 注入、暴力破解、异常外联等安全事件，并参与应急响应、攻击溯源和漏洞加固工作。”</p>
+</blockquote>
+<p><strong>要点：</strong></p>
+<ul>
+<li>突出与岗位匹配的技能和经验</li>
+<li>量化成果（如处理过多少告警、参与过几次应急）</li>
+<li>表达学习能力和团队协作意识</li>
+</ul>
+<h3 id="41-被问到不会的问题怎么办？"><a href="#41-被问到不会的问题怎么办？" class="headerlink" title="41. 被问到不会的问题怎么办？"></a>41. 被问到不会的问题怎么办？</h3><p><strong>答：</strong></p>
+<ul>
+<li><strong>诚实承认：</strong> “这个问题我目前了解不深，但我可以尝试从相关角度分析…”</li>
+<li><strong>关联迁移：</strong> 把不会的问题引到你会的领域</li>
+<li><strong>表达学习意愿：</strong> “这部分我确实需要加强，回去后会重点学习”</li>
+<li><strong>不要瞎编：</strong> 面试官通常能识别出编造的内容</li>
+</ul>
+<h3 id="42-怎么描述一次完整的应急响应经历？"><a href="#42-怎么描述一次完整的应急响应经历？" class="headerlink" title="42. 怎么描述一次完整的应急响应经历？"></a>42. 怎么描述一次完整的应急响应经历？</h3><p><strong>答：</strong></p>
+<p>按”时间线 + 关键动作 + 结果”描述：</p>
+<ol>
+<li><strong>发现：</strong> 通过什么告警&#x2F;日志发现异常</li>
+<li><strong>确认：</strong> 如何判断是真实攻击（流量证据 + 主机证据）</li>
+<li><strong>遏制：</strong> 隔离主机、封禁 IP、阻断横向移动</li>
+<li><strong>根除：</strong> 清理 WebShell&#x2F;后门、修复漏洞、修改密码</li>
+<li><strong>恢复：</strong> 验证无残留后恢复业务</li>
+<li><strong>复盘：</strong> 输出报告、加固建议、规则优化</li>
+</ol>
+<h3 id="43-被问到溯源案例怎么说？"><a href="#43-被问到溯源案例怎么说？" class="headerlink" title="43. 被问到溯源案例怎么说？"></a>43. 被问到溯源案例怎么说？</h3><p><strong>答：</strong></p>
+<p><strong>结构：线索获取 → 关联分析 → 身份定位</strong></p>
+<p>示例：</p>
+<blockquote>
+<p>“通过天眼日志发现攻击 IP，然后使用微步查询该 IP 的历史情报和关联域名，发现绑定了一个备案域名。通过域名备案信息查到所属单位。同时分析攻击者上传的 WebShell 样本，发现代码注释中留有 QQ 号，通过社交工程进一步确认攻击者身份。”</p>
+</blockquote>
+<p><strong>要点：</strong></p>
+<ul>
+<li>强调合法合规，只做证据链关联，不做未授权反制</li>
+<li>突出你的分析思路，而不是具体技术细节</li>
+<li>说明最终成果（如提交护网指挥部、获得溯源加分）</li>
+</ul>
+<hr>
+<blockquote>
+<p>参考来源：护网面试题整理、甲方安全面试总结、渗透测试面试题、HVV 中高级面试题集等。</p>
 </blockquote>
 
                 
@@ -1042,10 +1435,6 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/AI%E5%AE%89%E5%85%A8/">
-                        <span class="chip bg-color">AI安全</span>
-                    </a>
-                    
                     <a href="/tags/Burp-Suite/">
                         <span class="chip bg-color">Burp Suite</span>
                     </a>
@@ -1068,6 +1457,10 @@
                     
                     <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">
                         <span class="chip bg-color">工具配置</span>
+                    </a>
+                    
+                    <a href="/tags/AI%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">AI安全</span>
                     </a>
                     
                 </div>
@@ -1114,16 +1507,16 @@
                 
                 <div class="card-action article-tags">
                     
+                    <a href="/tags/LLM/">
+                        <span class="chip bg-color">LLM</span>
+                    </a>
+                    
                     <a href="/tags/AI%E5%AE%89%E5%85%A8/">
                         <span class="chip bg-color">AI安全</span>
                     </a>
                     
                     <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
                         <span class="chip bg-color">网络安全</span>
-                    </a>
-                    
-                    <a href="/tags/LLM/">
-                        <span class="chip bg-color">LLM</span>
                     </a>
                     
                     <a href="/tags/%E7%BA%A2%E9%98%9F/">
