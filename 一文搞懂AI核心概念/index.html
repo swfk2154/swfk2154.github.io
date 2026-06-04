@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="AI入门, LLM, Agent, Prompt, RAG, Embedding, Context, Token, AI概念">
-    <meta name="description" content="用通俗易懂的方式一次性讲清 AI 领域 9 个核心概念：LLM、Prompt、Context、Agent、Tool、Workflow、RAG、Embedding，附关系图和对比表。">
+    <meta name="description" content="用通俗易懂的方式一次性讲清 AI 领域 9 个核心概念：LLM、Token、Prompt、Context、Agent、Tool、Workflow、RAG、Embedding，附关系图和对比表。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -17,7 +17,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>AI 入门必看！一篇文章搞懂 Agent、LLM、Prompt、Token、Tool、Workflow、RAG、Embedding、Context | swfk 的安全笔记</title>
+    <title>AI 入门必看！一篇文章搞懂 LLM、Token、Prompt、Context、Agent、Tool、Workflow、RAG、Embedding | swfk 的安全笔记</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -275,7 +275,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">AI 入门必看！一篇文章搞懂 Agent、LLM、Prompt、Token、Tool、Workflow、RAG、Embedding、Context</h1>
+                    <h1 class="description center-align post-title">AI 入门必看！一篇文章搞懂 LLM、Token、Prompt、Context、Agent、Tool、Workflow、RAG、Embedding</h1>
                 </div>
             </div>
         </div>
@@ -299,16 +299,16 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/LLM/">
-                                <span class="chip bg-color">LLM</span>
-                            </a>
-                        
                             <a href="/tags/AI/">
                                 <span class="chip bg-color">AI</span>
                             </a>
                         
                             <a href="/tags/Agent/">
                                 <span class="chip bg-color">Agent</span>
+                            </a>
+                        
+                            <a href="/tags/LLM/">
+                                <span class="chip bg-color">LLM</span>
                             </a>
                         
                             <a href="/tags/%E5%85%A5%E9%97%A8/">
@@ -371,9 +371,13 @@
             <div id="articleContent">
                 <blockquote>
 <p>⚠️ <strong>更新说明</strong>：本文已根据权威资料更新，部分内容来自维基百科、IBM、AWS、Microsoft Azure 等官方文档。</p>
+<p>本文面向 AI 安全&#x2F;网络安全方向的初学者，用尽量直白的方式把概念讲清楚，方便后续学习 AI 安全、LLM 红队等进阶内容时有个知识底座。</p>
 </blockquote>
 <hr>
 <p>在 AI 时代，这些概念你是否经常听到但又似懂非懂？这篇文章帮你一次性搞懂！</p>
+<blockquote>
+<p>阅读提示：建议按顺序阅读，后面的概念会用到前面铺垫的内容。</p>
+</blockquote>
 <hr>
 <h2 id="1-LLM（大语言模型）"><a href="#1-LLM（大语言模型）" class="headerlink" title="1. LLM（大语言模型）"></a>1. LLM（大语言模型）</h2><h3 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>LLM &#x3D; Large Language Model</strong>，即大语言模型。简单来说，它是一个<strong>经过海量文本训练的超大神经网络</strong>，能够理解和生成人类语言。</p>
 <p>你可以把它想象成一个<strong>读过了互联网几乎所有文章的人</strong>，它学会了语言的模式，能够回答问题、写作文、写代码、翻译等。</p>
@@ -421,15 +425,52 @@
 <td>开源、性能强</td>
 </tr>
 </tbody></table>
-<h3 id="一个重要概念：Token"><a href="#一个重要概念：Token" class="headerlink" title="一个重要概念：Token"></a>一个重要概念：Token</h3><p>LLM 处理文本的基本单位叫 <strong>Token</strong>。简单理解：</p>
+<hr>
+<h2 id="2-Token（词元）"><a href="#2-Token（词元）" class="headerlink" title="2. Token（词元）"></a>2. Token（词元）</h2><h3 id="是什么？-1"><a href="#是什么？-1" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Token</strong> 是 LLM 处理文本的<strong>最小单位</strong>。它不是”字”也不是”词”，而是模型在训练时切分文本得到的基本片段。</p>
+<p>简单理解：</p>
 <ul>
 <li>1 个 Token ≈ 0.5 ~ 1 个中文字</li>
 <li>≈ 1~2 个英文单词</li>
 </ul>
-<p><strong>为什么关注 Token？</strong></p>
-<p>因为 LLM 是按 <strong>Token 收费</strong>的！你发送的 Prompt 和收到的回复，都会消耗 Token。</p>
+<p>比如这句话：</p>
+<blockquote>
+<p>“你好，世界！”</p>
+</blockquote>
+<p>可能被切分成：<code>[&quot;你&quot;, &quot;好&quot;, &quot;，&quot;, &quot;世界&quot;, &quot;！&quot;]</code> 或 <code>[&quot;你好&quot;, &quot;，&quot;, &quot;世界&quot;, &quot;！&quot;]</code>，具体取决于模型用的分词器（Tokenizer）。</p>
+<h3 id="为什么关注-Token？"><a href="#为什么关注-Token？" class="headerlink" title="为什么关注 Token？"></a>为什么关注 Token？</h3><ol>
+<li><strong>计费依据</strong>：LLM API 按输入 + 输出的 Token 总数收费</li>
+<li><strong>上下文长度限制</strong>：模型的”上下文窗口”就是用 Token 数衡量的</li>
+<li><strong>影响响应速度</strong>：Token 越多，生成越慢</li>
+</ol>
+<h3 id="一个直观的例子"><a href="#一个直观的例子" class="headerlink" title="一个直观的例子"></a>一个直观的例子</h3><table>
+<thead>
+<tr>
+<th>文本</th>
+<th>大约 Token 数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“Hello”</td>
+<td>1</td>
+</tr>
+<tr>
+<td>“你好”</td>
+<td>1 ~ 2</td>
+</tr>
+<tr>
+<td>一篇 1000 字中文文章</td>
+<td>约 1500 Token</td>
+</tr>
+<tr>
+<td>GPT-4 的 128K 上下文</td>
+<td>约 10 万汉字</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>你可以在 <a target="_blank" rel="noopener" href="https://platform.openai.com/tokenizer">OpenAI Tokenizer</a> 上实际体验分词效果。</p>
+</blockquote>
 <hr>
-<h2 id="2-Prompt（提示词）"><a href="#2-Prompt（提示词）" class="headerlink" title="2. Prompt（提示词）"></a>2. Prompt（提示词）</h2><h3 id="是什么？-1"><a href="#是什么？-1" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Prompt</strong> 就是你发给 LLM 的<strong>指令或问题</strong>。</p>
+<h2 id="3-Prompt（提示词）"><a href="#3-Prompt（提示词）" class="headerlink" title="3. Prompt（提示词）"></a>3. Prompt（提示词）</h2><h3 id="是什么？-2"><a href="#是什么？-2" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Prompt</strong> 就是你发给 LLM 的<strong>指令或问题</strong>。</p>
 <p>你可以把它理解为<strong>对 AI 说话的方式</strong>。同样一个问题，用不同的 Prompt 问，得到的答案质量可能天差地别。</p>
 <blockquote>
 <p>参考来源：<a target="_blank" rel="noopener" href="https://www.promptingguide.ai/zh">提示工程指南</a>、<a target="_blank" rel="noopener" href="https://help.openai.com/zh-hans-cn/articles/10032626-prompt-engineering-best-practices-for-chatgpt">OpenAI 提示词最佳实践</a></p>
@@ -481,7 +522,7 @@
 <li><strong>Role-playing</strong>：设定角色获得更好专业回答</li>
 </ul>
 <hr>
-<h2 id="3-Context（上下文）"><a href="#3-Context（上下文）" class="headerlink" title="3. Context（上下文）"></a>3. Context（上下文）</h2><h3 id="是什么？-2"><a href="#是什么？-2" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Context</strong> 就是<strong>对话的上下文</strong>，包括之前聊过的内容、历史消息等。</p>
+<h2 id="4-Context（上下文）"><a href="#4-Context（上下文）" class="headerlink" title="4. Context（上下文）"></a>4. Context（上下文）</h2><h3 id="是什么？-3"><a href="#是什么？-3" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Context</strong> 就是<strong>对话的上下文</strong>，包括之前聊过的内容、历史消息等。</p>
 <p>LLM 本身是<strong>无状态的</strong>——每次请求都是独立的。但通过把历史消息放进 Prompt，AI 就能”记住”之前聊了什么。</p>
 <h3 id="作用-2"><a href="#作用-2" class="headerlink" title="作用"></a>作用</h3><ul>
 <li>让多轮对话连贯</li>
@@ -515,7 +556,7 @@
 </tbody></table>
 <p>超出这个长度怎么办？通常会<strong>截断</strong>或<strong>摘要</strong>前面的内容。</p>
 <hr>
-<h2 id="4-Agent（智能体）"><a href="#4-Agent（智能体）" class="headerlink" title="4. Agent（智能体）"></a>4. Agent（智能体）</h2><h3 id="是什么？-3"><a href="#是什么？-3" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Agent</strong> &#x3D; <strong>智能体</strong>，是一个能够自主思考、规划并执行任务的 AI 系统。</p>
+<h2 id="5-Agent（智能体）"><a href="#5-Agent（智能体）" class="headerlink" title="5. Agent（智能体）"></a>5. Agent（智能体）</h2><h3 id="是什么？-4"><a href="#是什么？-4" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Agent</strong> &#x3D; <strong>智能体</strong>，是一个能够自主思考、规划并执行任务的 AI 系统。</p>
 <p>如果说 LLM 是一个”大脑”，那 Agent 就是<strong>大脑 + 手 + 工具</strong>的组合。</p>
 <blockquote>
 <p>参考来源：<a target="_blank" rel="noopener" href="https://www.ibm.com/cn-zh/think/topics/ai-agents">IBM - 什么是 AI agent</a>、<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2556858">腾讯云 - 什么是AI Agent</a>、<a target="_blank" rel="noopener" href="https://www.gartner.com/cn/information-technology/articles/ai-agents">Gartner - AI Agents</a></p>
@@ -591,7 +632,7 @@
 <li><strong>个人助理</strong>：帮你管理日程、订机票</li>
 </ul>
 <hr>
-<h2 id="5-Tool（工具）"><a href="#5-Tool（工具）" class="headerlink" title="5. Tool（工具）"></a>5. Tool（工具）</h2><h3 id="是什么？-4"><a href="#是什么？-4" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Tool</strong> 是 Agent 可以调用的<strong>外部能力</strong>。</p>
+<h2 id="6-Tool（工具）"><a href="#6-Tool（工具）" class="headerlink" title="6. Tool（工具）"></a>6. Tool（工具）</h2><h3 id="是什么？-5"><a href="#是什么？-5" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Tool</strong> 是 Agent 可以调用的<strong>外部能力</strong>。</p>
 <p>LLM 本身只会”说话”，但通过 Tool，它可以：</p>
 <ul>
 <li>联网搜索</li>
@@ -639,7 +680,7 @@
 <h3 id="Tool-怎么工作？"><a href="#Tool-怎么工作？" class="headerlink" title="Tool 怎么工作？"></a>Tool 怎么工作？</h3><pre><code class="hljs plaintext">用户 → Agent → [判断需要什么工具] → 调用 Tool → 返回结果 → Agent 整理回答</code></pre>
 
 <hr>
-<h2 id="6-Workflow（工作流）"><a href="#6-Workflow（工作流）" class="headerlink" title="6. Workflow（工作流）"></a>6. Workflow（工作流）</h2><h3 id="是什么？-5"><a href="#是什么？-5" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Workflow</strong> &#x3D; <strong>工作流</strong>，是把多个步骤<strong>有序组织</strong>起来的自动化流程。</p>
+<h2 id="7-Workflow（工作流）"><a href="#7-Workflow（工作流）" class="headerlink" title="7. Workflow（工作流）"></a>7. Workflow（工作流）</h2><h3 id="是什么？-6"><a href="#是什么？-6" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Workflow</strong> &#x3D; <strong>工作流</strong>，是把多个步骤<strong>有序组织</strong>起来的自动化流程。</p>
 <p>如果说 Agent 是一个”全自动司机”，Workflow 更像是<strong>设计好的路线图</strong>——每一步该做什么都已规划好。</p>
 <h3 id="Workflow-的组成"><a href="#Workflow-的组成" class="headerlink" title="Workflow 的组成"></a>Workflow 的组成</h3><pre><code class="hljs plaintext">[输入] → [步骤1: 提取信息] → [步骤2: 调用API] → [步骤3: 整理输出] → [结果]</code></pre>
 
@@ -676,7 +717,7 @@
 <p>“帮我分析这个月销售额下降的原因” → Agent 自动分析数据、查资料、给建议</p>
 </blockquote>
 <hr>
-<h2 id="7-RAG（检索增强生成）"><a href="#7-RAG（检索增强生成）" class="headerlink" title="7. RAG（检索增强生成）"></a>7. RAG（检索增强生成）</h2><h3 id="是什么？-6"><a href="#是什么？-6" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>RAG &#x3D; Retrieval-Augmented Generation</strong>，即<strong>检索增强生成</strong>。</p>
+<h2 id="8-RAG（检索增强生成）"><a href="#8-RAG（检索增强生成）" class="headerlink" title="8. RAG（检索增强生成）"></a>8. RAG（检索增强生成）</h2><h3 id="是什么？-7"><a href="#是什么？-7" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>RAG &#x3D; Retrieval-Augmented Generation</strong>，即<strong>检索增强生成</strong>。</p>
 <p>它的核心思想是：</p>
 <blockquote>
 <p>让 LLM 在回答问题时，<strong>先检索相关资料，再基于资料生成答案</strong>。</p>
@@ -704,7 +745,7 @@
 <li><strong>法律&#x2F;医疗</strong>：基于权威文档提供准确信息</li>
 </ul>
 <hr>
-<h2 id="8-Embedding（向量）"><a href="#8-Embedding（向量）" class="headerlink" title="8. Embedding（向量）"></a>8. Embedding（向量）</h2><h3 id="是什么？-7"><a href="#是什么？-7" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Embedding</strong> &#x3D; <strong>向量嵌入</strong>，是把文字、图片、声音等转换成**一组数字（向量）**的技术。</p>
+<h2 id="9-Embedding（向量）"><a href="#9-Embedding（向量）" class="headerlink" title="9. Embedding（向量）"></a>9. Embedding（向量）</h2><h3 id="是什么？-8"><a href="#是什么？-8" class="headerlink" title="是什么？"></a>是什么？</h3><p><strong>Embedding</strong> &#x3D; <strong>向量嵌入</strong>，是把文字、图片、声音等转换成**一组数字（向量）**的技术。</p>
 <p>关键是：<strong>意思相近的内容，向量也相近</strong>。</p>
 <h3 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h3><ul>
 <li>“狗” → [0.1, 0.8, 0.3, …]</li>
@@ -743,7 +784,7 @@
 <li>FAISS</li>
 </ul>
 <hr>
-<h2 id="9-总结：它们之间的关系"><a href="#9-总结：它们之间的关系" class="headerlink" title="9. 总结：它们之间的关系"></a>9. 总结：它们之间的关系</h2><pre><code class="hljs plaintext">┌─────────────────────────────────────────────────┐
+<h2 id="10-总结：它们之间的关系"><a href="#10-总结：它们之间的关系" class="headerlink" title="10. 总结：它们之间的关系"></a>10. 总结：它们之间的关系</h2><pre><code class="hljs plaintext">┌─────────────────────────────────────────────────┐
 │                    用户                          │
 └─────────────────┬───────────────────────────────┘
                   │
@@ -789,7 +830,7 @@
 └─────────────────────────────────────────────────┘</code></pre>
 
 <hr>
-<h2 id="10-快速对比表"><a href="#10-快速对比表" class="headerlink" title="10. 快速对比表"></a>10. 快速对比表</h2><table>
+<h2 id="11-快速对比表"><a href="#11-快速对比表" class="headerlink" title="11. 快速对比表"></a>11. 快速对比表</h2><table>
 <thead>
 <tr>
 <th>概念</th>
@@ -839,7 +880,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h2 id="11-实际应用场景"><a href="#11-实际应用场景" class="headerlink" title="11. 实际应用场景"></a>11. 实际应用场景</h2><h3 id="场景-1：智能客服"><a href="#场景-1：智能客服" class="headerlink" title="场景 1：智能客服"></a>场景 1：智能客服</h3><pre><code class="hljs plaintext">用户问 → Agent 接收 → RAG 检索产品文档 → LLM 生成回答 → 返回给用户</code></pre>
+<h2 id="12-实际应用场景"><a href="#12-实际应用场景" class="headerlink" title="12. 实际应用场景"></a>12. 实际应用场景</h2><h3 id="场景-1：智能客服"><a href="#场景-1：智能客服" class="headerlink" title="场景 1：智能客服"></a>场景 1：智能客服</h3><pre><code class="hljs plaintext">用户问 → Agent 接收 → RAG 检索产品文档 → LLM 生成回答 → 返回给用户</code></pre>
 
 <h3 id="场景-2：编程助手"><a href="#场景-2：编程助手" class="headerlink" title="场景 2：编程助手"></a>场景 2：编程助手</h3><pre><code class="hljs plaintext">用户说&quot;帮我写个排序算法&quot; → Agent 理解需求 → Tool 执行代码 → 返回结果</code></pre>
 
@@ -925,16 +966,16 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/LLM/">
-                                    <span class="chip bg-color">LLM</span>
-                                </a>
-                            
                                 <a href="/tags/AI/">
                                     <span class="chip bg-color">AI</span>
                                 </a>
                             
                                 <a href="/tags/Agent/">
                                     <span class="chip bg-color">Agent</span>
+                                </a>
+                            
+                                <a href="/tags/LLM/">
+                                    <span class="chip bg-color">LLM</span>
                                 </a>
                             
                                 <a href="/tags/%E5%85%A5%E9%97%A8/">
@@ -1033,16 +1074,16 @@
                 
                 <div class="card-action article-tags">
                     
+                    <a href="/tags/LLM/">
+                        <span class="chip bg-color">LLM</span>
+                    </a>
+                    
                     <a href="/tags/AI%E5%AE%89%E5%85%A8/">
                         <span class="chip bg-color">AI安全</span>
                     </a>
                     
                     <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">
                         <span class="chip bg-color">网络安全</span>
-                    </a>
-                    
-                    <a href="/tags/LLM/">
-                        <span class="chip bg-color">LLM</span>
                     </a>
                     
                     <a href="/tags/%E7%BA%A2%E9%98%9F/">
