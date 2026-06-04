@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Burp Suite, Yakit, Claude Code, MCP, AI安全, 渗透测试工具链, PortSwigger">
-    <meta name="description" content="真实记录 Burp Suite（PortSwigger 官方 MCP Server）与 Yakit 在 Claude Code 中的 MCP 配置全过程，包含踩坑记录、验证方法与可用工具速查。">
+    <meta name="keywords" content="Burp Suite, Yakit, Claude Code, Codex Desktop, MCP, AI安全, 渗透测试工具链, PortSwigger">
+    <meta name="description" content="真实记录 Burp Suite（PortSwigger 官方 MCP Server）与 Yakit 在 Claude Code / Codex Desktop 中的 MCP 配置全过程，包含踩坑记录、验证方法与可用工具速查。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -315,6 +315,10 @@
                                 <span class="chip bg-color">Claude Code</span>
                             </a>
                         
+                            <a href="/tags/Codex-Desktop/">
+                                <span class="chip bg-color">Codex Desktop</span>
+                            </a>
+                        
                             <a href="/tags/MCP/">
                                 <span class="chip bg-color">MCP</span>
                             </a>
@@ -369,11 +373,11 @@
 <p>本文基于真实配置经验撰写，环境为 Windows 11 + bash shell。所有命令和路径均经过实际验证，目的是把”AI + 安全工具”的联动配置讲清楚、踩过的坑标出来。</p>
 </blockquote>
 <hr>
-<h2 id="一、整体架构"><a href="#一、整体架构" class="headerlink" title="一、整体架构"></a>一、整体架构</h2><p>这套工具链的核心思路是：<strong>通过 MCP（Model Context Protocol）协议，让 Claude Code 直接调用 Burp Suite 和 Yakit 的 API，实现”用自然语言驱动安全工具”的工作流。</strong></p>
+<h2 id="一、整体架构"><a href="#一、整体架构" class="headerlink" title="一、整体架构"></a>一、整体架构</h2><p>这套工具链的核心思路是：<strong>通过 MCP（Model Context Protocol）协议，让 Claude Code &#x2F; Codex Desktop 直接调用 Burp Suite 和 Yakit 的 API，实现”用自然语言驱动安全工具”的工作流。</strong></p>
 <pre><code class="hljs plaintext">┌─────────────┐     MCP/SSE    ┌─────────────────────────┐
 │             │ ◄─────────────►│  Burp Suite             │
-│  Claude     │                │  (PortSwigger MCP Server│
-│  Code       │                │   @ 127.0.0.1:9876)     │
+│ Claude Code │                │  (PortSwigger MCP Server│
+│ / Codex     │                │   @ 127.0.0.1:9876)     │
 │             │     MCP/stdio  └─────────────────────────┘
 │             │ ◄─────────────►┌─────────────────────────┐
 │             │                │  Yakit / yaklang        │
@@ -408,12 +412,18 @@
 <td>—</td>
 <td>MCP Client</td>
 </tr>
+<tr>
+<td><strong>Codex Desktop</strong></td>
+<td>OpenAI Codex 桌面端</td>
+<td>—</td>
+<td>MCP Client（<code>config.toml</code>）</td>
+</tr>
 </tbody></table>
 <hr>
 <h2 id="二、Burp-Suite-MCP-配置"><a href="#二、Burp-Suite-MCP-配置" class="headerlink" title="二、Burp Suite MCP 配置"></a>二、Burp Suite MCP 配置</h2><h3 id="2-1-前置条件"><a href="#2-1-前置条件" class="headerlink" title="2.1 前置条件"></a>2.1 前置条件</h3><ul>
 <li>Burp Suite Professional &#x2F; Community 已安装并运行</li>
 <li>从 <a target="_blank" rel="noopener" href="https://github.com/PortSwigger/mcp-server">PortSwigger&#x2F;mcp-server</a> 获取 MCP Server（不是 BApp Store 插件）</li>
-<li>Claude Code 已安装</li>
+<li>Claude Code 或 Codex Desktop 已安装</li>
 </ul>
 <h3 id="2-2-启动-MCP-Server"><a href="#2-2-启动-MCP-Server" class="headerlink" title="2.2 启动 MCP Server"></a>2.2 启动 MCP Server</h3><p>Burp 的 MCP Server 以 <strong>SSE（Server-Sent Events）</strong> 方式暴露，默认监听：</p>
 <pre><code class="hljs plaintext">Endpoint: http://127.0.0.1:9876/
@@ -425,7 +435,7 @@ Transport: SSE</code></pre>
 <li>按仓库说明启动 MCP Server（通常为独立进程或集成到 Burp 扩展中）</li>
 <li>确认端口监听：<pre><code class="hljs bash">netstat -ano | grep 9876</code></pre></li>
 </ol>
-<h3 id="2-3-配置-Claude-Code-连接"><a href="#2-3-配置-Claude-Code-连接" class="headerlink" title="2.3 配置 Claude Code 连接"></a>2.3 配置 Claude Code 连接</h3><p><strong>不要</strong>手动写 <code>.mcp.json</code> 文件——放在项目根目录或 <code>.claude/.mcp.json</code> 中均不被 Claude Code 读取。</p>
+<h3 id="2-3-配置-Claude-Code-Codex-Desktop-连接"><a href="#2-3-配置-Claude-Code-Codex-Desktop-连接" class="headerlink" title="2.3 配置 Claude Code &#x2F; Codex Desktop 连接"></a>2.3 配置 Claude Code &#x2F; Codex Desktop 连接</h3><p><strong>不要</strong>手动写 <code>.mcp.json</code> 文件——放在项目根目录或 <code>.claude/.mcp.json</code> 中均不被 Claude Code 读取。</p>
 <p>使用 CLI 命令直接写入项目级配置：</p>
 <pre><code class="hljs bash">claude mcp add --transport sse burp http://127.0.0.1:9876/</code></pre>
 
@@ -444,7 +454,23 @@ Transport: SSE</code></pre>
   <span class="hljs-punctuation">&#125;</span>
 <span class="hljs-punctuation">&#125;</span></code></pre>
 
-<h3 id="2-4-验证是否生效"><a href="#2-4-验证是否生效" class="headerlink" title="2.4 验证是否生效"></a>2.4 验证是否生效</h3><p>重启 Claude Code 后，检查工具列表中是否出现 <code>mcp__burp__*</code> 前缀的工具。若出现，说明连接成功。</p>
+<h4 id="我的实际配置补充"><a href="#我的实际配置补充" class="headerlink" title="我的实际配置补充"></a>我的实际配置补充</h4><p>我在 Codex Desktop 里不是直接写 Claude Code 的 <code>.claude.json</code>，而是把 Burp 注册到了 <code>C:\Users\32550\.codex\config.toml</code>。实际采用的是 <strong>stdio 启动 Burp MCP proxy，再由 proxy 连接 Burp SSE 服务</strong> 的方式：</p>
+<pre><code class="hljs toml"><span class="hljs-section">[mcp_servers.burp]</span>
+<span class="hljs-attr">type</span> = <span class="hljs-string">&quot;stdio&quot;</span>
+<span class="hljs-attr">command</span> = <span class="hljs-string">&#x27;D:\yingyong\BurpSuite\BurpSuite V2026.4.3\jre\bin\java.exe&#x27;</span>
+<span class="hljs-attr">args</span> = [
+  <span class="hljs-string">&#x27;-jar&#x27;</span>,
+  <span class="hljs-string">&#x27;C:\Users\32550\AppData\Roaming\BurpSuite\mcp-proxy\mcp-proxy-all.jar&#x27;</span>,
+  <span class="hljs-string">&#x27;--sse-url&#x27;</span>,
+  <span class="hljs-string">&#x27;http://127.0.0.1:9876&#x27;</span>
+]</code></pre>
+
+<p>这里有两个关键点：</p>
+<ul>
+<li>Burp Suite Professional 版本为 <code>2026.4.3</code>，直接复用 Burp 自带 JRE，避免系统 Java 版本不一致。</li>
+<li><code>mcp-proxy-all.jar</code> 来自 Burp 的 MCP proxy 目录，本质上是把本地 SSE MCP 服务桥接成 Codex 可管理的 stdio MCP server。</li>
+</ul>
+<h3 id="2-4-验证是否生效"><a href="#2-4-验证是否生效" class="headerlink" title="2.4 验证是否生效"></a>2.4 验证是否生效</h3><p>重启 Claude Code &#x2F; Codex Desktop 后，检查工具列表中是否出现 <code>mcp__burp__*</code> 前缀的工具。若出现，说明连接成功。</p>
 <p>也可用保底 Python 客户端验证：</p>
 <pre><code class="hljs bash">python .claude/tools/burp_mcp_client.py --list</code></pre>
 
@@ -465,7 +491,7 @@ Transport: SSE</code></pre>
 </tr>
 <tr>
 <td>Bridge 方案失败</td>
-<td><code>npx supergateway</code> 和 <code>java -jar mcp-proxy-all.jar</code> 作为子进程启动均失败，<strong>原生 SSE 才是正确方式</strong></td>
+<td>Claude Code CLI 场景中，<code>npx supergateway</code> 和 <code>java -jar mcp-proxy-all.jar</code> 作为子进程启动均失败，<strong>原生 SSE 才是正确方式</strong>；Codex Desktop 场景可用 <code>config.toml</code> 托管 <code>mcp-proxy-all.jar</code> 再连接 SSE</td>
 </tr>
 <tr>
 <td>路径斜杠</td>
@@ -497,6 +523,17 @@ Transport: SSE</code></pre>
   <span class="hljs-punctuation">&#125;</span>
 <span class="hljs-punctuation">&#125;</span></code></pre>
 
+<h4 id="我的实际配置补充-1"><a href="#我的实际配置补充-1" class="headerlink" title="我的实际配置补充"></a>我的实际配置补充</h4><p>我在 Codex Desktop 里的实际配置同样写在 <code>C:\Users\32550\.codex\config.toml</code>，但没有只执行裸 <code>yak.exe mcp</code>，而是通过 <code>-t</code> 明确加载需要暴露给 AI 的工具域：</p>
+<pre><code class="hljs toml"><span class="hljs-section">[mcp_servers.yaklang]</span>
+<span class="hljs-attr">type</span> = <span class="hljs-string">&quot;stdio&quot;</span>
+<span class="hljs-attr">command</span> = <span class="hljs-string">&#x27;D:\yingyong\yakit\yakit-projects\yak-engine\yak.exe&#x27;</span>
+<span class="hljs-attr">args</span> = [
+  <span class="hljs-string">&quot;mcp&quot;</span>,
+  <span class="hljs-string">&quot;-t&quot;</span>,
+  <span class="hljs-string">&quot;codec,cve,httpflow,hybrid_scan,payload,port_scan,yak_document,yak_script,reverse_shell,http_fuzzer,brute,subdomain,crawler,dynamic,ssa,project_database&quot;</span>
+]</code></pre>
+
+<p>这样做的好处是工具能力边界更清楚：需要 HTTPFlow、Fuzzer、端口扫描、Yak 脚本、SyntaxFlow&#x2F;SSA 等能力时可以直接调用；不需要的能力就不暴露，后续排查也更容易定位是哪一类工具没有加载。</p>
 <h3 id="3-3-关键路径说明"><a href="#3-3-关键路径说明" class="headerlink" title="3.3 关键路径说明"></a>3.3 关键路径说明</h3><table>
 <thead>
 <tr>
@@ -520,8 +557,8 @@ Transport: SSE</code></pre>
 <blockquote>
 <p>根据实际安装路径调整，以上为示例路径。</p>
 </blockquote>
-<h3 id="3-4-验证是否生效"><a href="#3-4-验证是否生效" class="headerlink" title="3.4 验证是否生效"></a>3.4 验证是否生效</h3><p>重启 Claude Code 后，检查工具列表中是否出现 <code>mcp__yaklang__*</code> 前缀的工具。</p>
-<p>常用验证命令（在 Claude Code 中直接调用）：</p>
+<h3 id="3-4-验证是否生效"><a href="#3-4-验证是否生效" class="headerlink" title="3.4 验证是否生效"></a>3.4 验证是否生效</h3><p>重启 Claude Code &#x2F; Codex Desktop 后，检查工具列表中是否出现 <code>mcp__yaklang__*</code> 前缀的工具。</p>
+<p>常用验证命令（在 Claude Code &#x2F; Codex Desktop 中直接调用）：</p>
 <pre><code class="hljs plaintext">get_current_database_context
 list_project_databases
 query_yak_script</code></pre>
@@ -542,9 +579,13 @@ query_yak_script</code></pre>
 <td>Claude Desktop</td>
 <td><code>%APPDATA%\Claude\claude_desktop_config.json</code></td>
 </tr>
+<tr>
+<td>Codex Desktop</td>
+<td><code>C:\Users\&lt;用户名&gt;\.codex\config.toml</code> → <code>[mcp_servers.&lt;name&gt;]</code></td>
+</tr>
 </tbody></table>
 <blockquote>
-<p>优先级：CLI 使用 <code>.claude.json</code>，Desktop 使用 <code>claude_desktop_config.json</code>，两者不互通。</p>
+<p>优先级：Claude Code CLI 使用 <code>.claude.json</code>，Claude Desktop 使用 <code>claude_desktop_config.json</code>，Codex Desktop 使用 <code>.codex\config.toml</code>，三者配置文件不同，不互通。</p>
 </blockquote>
 <hr>
 <h2 id="五、可用工具速查"><a href="#五、可用工具速查" class="headerlink" title="五、可用工具速查"></a>五、可用工具速查</h2><h3 id="Burp-Suite（27-个工具）"><a href="#Burp-Suite（27-个工具）" class="headerlink" title="Burp Suite（27 个工具）"></a>Burp Suite（27 个工具）</h3><p>HTTP 请求、Repeater、Intruder、编解码、代理历史（含正则&#x2F;WebSocket）、Organizer、Collaborator、扫描器、配置读写、编辑器读写、任务引擎、拦截控制等。</p>
@@ -622,8 +663,8 @@ query_yak_script</code></pre>
 <hr>
 <h2 id="七、故障排查"><a href="#七、故障排查" class="headerlink" title="七、故障排查"></a>七、故障排查</h2><h3 id="MCP-工具未出现"><a href="#MCP-工具未出现" class="headerlink" title="MCP 工具未出现"></a>MCP 工具未出现</h3><ol>
 <li>检查对应服务是否已启动（Burp MCP Server 是否运行、Yakit 引擎是否正常）</li>
-<li>检查 <code>.claude.json</code> 中配置是否写入了正确的项目路径</li>
-<li>重启 Claude Code（配置更改后需重启）</li>
+<li>检查 <code>.claude.json</code> 或 <code>.codex\config.toml</code> 中配置是否写入了正确的项目路径&#x2F;服务器条目</li>
+<li>重启 Claude Code &#x2F; Codex Desktop（配置更改后需重启）</li>
 <li>检查端口是否被占用（Burp 9876）</li>
 </ol>
 <h3 id="Burp-SSE-连接失败"><a href="#Burp-SSE-连接失败" class="headerlink" title="Burp SSE 连接失败"></a>Burp SSE 连接失败</h3><ul>
@@ -639,13 +680,13 @@ query_yak_script</code></pre>
 <hr>
 <h2 id="八、实战工作流示例"><a href="#八、实战工作流示例" class="headerlink" title="八、实战工作流示例"></a>八、实战工作流示例</h2><h3 id="场景一：分析-Burp-代理历史"><a href="#场景一：分析-Burp-代理历史" class="headerlink" title="场景一：分析 Burp 代理历史"></a>场景一：分析 Burp 代理历史</h3><pre><code class="hljs plaintext">&gt; 查看 burp 中最近 20 条包含 /api 的请求，统计状态码分布</code></pre>
 
-<p>Claude Code 自动调用 <code>mcp__burp__get_proxy_history</code>，按条件过滤后给出统计结果。</p>
+<p>Claude Code &#x2F; Codex Desktop 自动调用 <code>mcp__burp__get_proxy_history</code>，按条件过滤后给出统计结果。</p>
 <h3 id="场景二：Yakit-端口扫描"><a href="#场景二：Yakit-端口扫描" class="headerlink" title="场景二：Yakit 端口扫描"></a>场景二：Yakit 端口扫描</h3><pre><code class="hljs plaintext">&gt; 用 yaklang 扫描 192.168.1.10 的 22,80,443,3306,6379,8080 端口</code></pre>
 
-<p>Claude Code 调用 <code>mcp__yaklang__port_scan</code>，返回开放端口和服务指纹。</p>
+<p>Claude Code &#x2F; Codex Desktop 调用 <code>mcp__yaklang__port_scan</code>，返回开放端口和服务指纹。</p>
 <h3 id="场景三：HTTP-Fuzzer-验证"><a href="#场景三：HTTP-Fuzzer-验证" class="headerlink" title="场景三：HTTP Fuzzer 验证"></a>场景三：HTTP Fuzzer 验证</h3><pre><code class="hljs plaintext">&gt; 对 http://target.com/login 用 yaklang fuzzer 测试 SQL 注入，payload 用 &#123;&#123;int(1-100)&#125;&#125;</code></pre>
 
-<p>Claude Code 构造 fuzz 请求，通过 <code>mcp__yaklang__http_fuzzer</code> 批量发送并分析响应差异。</p>
+<p>Claude Code &#x2F; Codex Desktop 构造 fuzz 请求，通过 <code>mcp__yaklang__http_fuzzer</code> 批量发送并分析响应差异。</p>
 <hr>
 <h2 id="九、安全与合规提醒"><a href="#九、安全与合规提醒" class="headerlink" title="九、安全与合规提醒"></a>九、安全与合规提醒</h2><ol>
 <li><strong>授权边界</strong>：所有扫描和测试行为必须在授权范围内进行，严禁对非自有资产进行探测</li>
@@ -745,6 +786,10 @@ query_yak_script</code></pre>
                                     <span class="chip bg-color">Claude Code</span>
                                 </a>
                             
+                                <a href="/tags/Codex-Desktop/">
+                                    <span class="chip bg-color">Codex Desktop</span>
+                                </a>
+                            
                                 <a href="/tags/MCP/">
                                     <span class="chip bg-color">MCP</span>
                                 </a>
@@ -813,7 +858,7 @@ query_yak_script</code></pre>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            真实记录 Burp Suite（PortSwigger 官方 MCP Server）与 Yakit 在 Claude Code 中的 MCP 配置全过程，包含踩坑记录、验证方法与可用工具速查。
+                            真实记录 Burp Suite（PortSwigger 官方 MCP Server）与 Yakit 在 Claude Code / Codex Desktop 中的 MCP 配置全过程，包含踩坑记录、验证方法与可用工具速查。
                         
                     </div>
                     <div class="publish-info">
@@ -850,6 +895,10 @@ query_yak_script</code></pre>
                     
                     <a href="/tags/Claude-Code/">
                         <span class="chip bg-color">Claude Code</span>
+                    </a>
+                    
+                    <a href="/tags/Codex-Desktop/">
+                        <span class="chip bg-color">Codex Desktop</span>
                     </a>
                     
                     <a href="/tags/MCP/">
@@ -1070,6 +1119,8 @@ query_yak_script</code></pre>
             
             
             
+                
+            
             
                 <span id="busuanzi_container_site_pv">
                 &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
@@ -1089,7 +1140,7 @@ query_yak_script</code></pre>
             <br>
             
         </div>
-        <div class="col s12 m4 l4 social-link ">
+        <div class="col s12 m4 l4 social-link social-statis">
     <a href="https://github.com/swfk2154" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
         <i class="fab fa-github"></i>
     </a>
@@ -1281,6 +1332,8 @@ $(function () {
     <!-- Baidu Push -->
 
     
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
     
 
     
