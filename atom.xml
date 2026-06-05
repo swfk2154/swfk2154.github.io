@@ -196,9 +196,9 @@
     
     <category term="OpenClaw" scheme="https://blogbu2154.site/tags/OpenClaw/"/>
     
-    <category term="AI助手" scheme="https://blogbu2154.site/tags/AI%E5%8A%A9%E6%89%8B/"/>
-    
     <category term="卸载" scheme="https://blogbu2154.site/tags/%E5%8D%B8%E8%BD%BD/"/>
+    
+    <category term="AI助手" scheme="https://blogbu2154.site/tags/AI%E5%8A%A9%E6%89%8B/"/>
     
     <category term="安全" scheme="https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8/"/>
     
@@ -239,27 +239,6 @@
   </entry>
   
   <entry>
-    <title>如何搭建Hexo博客</title>
-    <link href="https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/"/>
-    <id>https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/</id>
-    <published>2026-01-29T12:50:20.000Z</published>
-    <updated>2026-01-29T13:22:54.594Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;1-安装Node-js&quot;&gt;&lt;a href=&quot;#1-安装Node-js&quot; class=&quot;headerlink&quot; title=&quot;1 安装Node.js&quot;&gt;&lt;/a&gt;1 安装Node.js&lt;/h2&gt;&lt;p&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
     <title>如何搭建 Hexo 博客 - 完整教程</title>
     <link href="https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2(%E4%BC%98%E5%8C%96%E5%90%8E)/"/>
     <id>https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2(%E4%BC%98%E5%8C%96%E5%90%8E)/</id>
@@ -287,6 +266,27 @@
     <category term="博客" scheme="https://blogbu2154.site/tags/%E5%8D%9A%E5%AE%A2/"/>
     
     <category term="GitHub Pages" scheme="https://blogbu2154.site/tags/GitHub-Pages/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何搭建Hexo博客</title>
+    <link href="https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/"/>
+    <id>https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/</id>
+    <published>2026-01-29T12:50:20.000Z</published>
+    <updated>2026-01-29T13:22:54.594Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;1-安装Node-js&quot;&gt;&lt;a href=&quot;#1-安装Node-js&quot; class=&quot;headerlink&quot; title=&quot;1 安装Node.js&quot;&gt;&lt;/a&gt;1 安装Node.js&lt;/h2&gt;&lt;p&gt;&lt;a</summary>
+        
+      
+    
+    
+    
     
   </entry>
   
