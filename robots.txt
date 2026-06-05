@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /js/
+Disallow: /css/
+Disallow: /lib/
+
+Sitemap: https://blogbu2154.site/sitemap.xml
+Sitemap: https://blogbu2154.site/baidusitemap.xml
