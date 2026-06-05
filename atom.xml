@@ -6,7 +6,7 @@
   <link href="https://blogbu2154.site/atom.xml" rel="self"/>
   
   <link href="https://blogbu2154.site/"/>
-  <updated>2026-06-04T07:00:00.000Z</updated>
+  <updated>2026-06-04T16:00:00.000Z</updated>
   <id>https://blogbu2154.site/</id>
   
   <author>
@@ -15,6 +15,43 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>护网（HVV）面试题大全：全面最终版</title>
+    <link href="https://blogbu2154.site/%E6%8A%A4%E7%BD%91-HVV-%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8/"/>
+    <id>https://blogbu2154.site/%E6%8A%A4%E7%BD%91-HVV-%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8/</id>
+    <published>2026-06-04T16:00:00.000Z</published>
+    <updated>2026-06-04T16:00:00.000Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本文适合护网蓝队、流量研判、应急响应和安全运营岗位复习。回答问题时建议遵循：&lt;strong&gt;先结论，后证据；先控制风险，后恢复业务；所有结论都要能由日志、流量、主机或业务上下文验证。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;红队相关内容仅用于合法授权的安全</summary>
+        
+      
+    
+    
+    
+    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    
+    <category term="HVV" scheme="https://blogbu2154.site/tags/HVV/"/>
+    
+    <category term="护网" scheme="https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/"/>
+    
+    <category term="面试题" scheme="https://blogbu2154.site/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
+    
+    <category term="应急响应" scheme="https://blogbu2154.site/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/"/>
+    
+    <category term="蓝队" scheme="https://blogbu2154.site/tags/%E8%93%9D%E9%98%9F/"/>
+    
+    <category term="安全运营" scheme="https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/"/>
+    
+  </entry>
   
   <entry>
     <title>安全工具链配置指南：Burp、Yakit 与 AI 编码助手联动实战</title>
@@ -54,47 +91,6 @@
     <category term="MCP" scheme="https://blogbu2154.site/tags/MCP/"/>
     
     <category term="工具配置" scheme="https://blogbu2154.site/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>护网（HVV）面试题大全</title>
-    <link href="https://blogbu2154.site/%E6%8A%A4%E7%BD%91-HVV-%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8/"/>
-    <id>https://blogbu2154.site/%E6%8A%A4%E7%BD%91-HVV-%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8/</id>
-    <published>2026-06-04T06:00:00.000Z</published>
-    <updated>2026-06-04T06:00:00.000Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本文综合整理了护网（HVV）面试中常见的技术问题，覆盖应急响应、流量分析、漏洞攻防、安全设备、网络基础等多个维度，适合蓝队、红队及安全运营方向的同学参考。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr&gt;
-&lt;h2 id=&quot;一、应急响应&quot;&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
-    
-    
-    <category term="网络安全" scheme="https://blogbu2154.site/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
-    
-    <category term="红队" scheme="https://blogbu2154.site/tags/%E7%BA%A2%E9%98%9F/"/>
-    
-    <category term="HVV" scheme="https://blogbu2154.site/tags/HVV/"/>
-    
-    <category term="护网" scheme="https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/"/>
-    
-    <category term="面试题" scheme="https://blogbu2154.site/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
-    
-    <category term="应急响应" scheme="https://blogbu2154.site/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/"/>
-    
-    <category term="蓝队" scheme="https://blogbu2154.site/tags/%E8%93%9D%E9%98%9F/"/>
     
   </entry>
   
@@ -243,27 +239,6 @@
   </entry>
   
   <entry>
-    <title>如何搭建Hexo博客</title>
-    <link href="https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/"/>
-    <id>https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/</id>
-    <published>2026-01-29T12:50:20.000Z</published>
-    <updated>2026-01-29T13:22:54.594Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;1-安装Node-js&quot;&gt;&lt;a href=&quot;#1-安装Node-js&quot; class=&quot;headerlink&quot; title=&quot;1 安装Node.js&quot;&gt;&lt;/a&gt;1 安装Node.js&lt;/h2&gt;&lt;p&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
     <title>如何搭建 Hexo 博客 - 完整教程</title>
     <link href="https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2(%E4%BC%98%E5%8C%96%E5%90%8E)/"/>
     <id>https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2(%E4%BC%98%E5%8C%96%E5%90%8E)/</id>
@@ -291,6 +266,27 @@
     <category term="博客" scheme="https://blogbu2154.site/tags/%E5%8D%9A%E5%AE%A2/"/>
     
     <category term="GitHub Pages" scheme="https://blogbu2154.site/tags/GitHub-Pages/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何搭建Hexo博客</title>
+    <link href="https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/"/>
+    <id>https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/</id>
+    <published>2026-01-29T12:50:20.000Z</published>
+    <updated>2026-01-29T13:22:54.594Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;1-安装Node-js&quot;&gt;&lt;a href=&quot;#1-安装Node-js&quot; class=&quot;headerlink&quot; title=&quot;1 安装Node.js&quot;&gt;&lt;/a&gt;1 安装Node.js&lt;/h2&gt;&lt;p&gt;&lt;a</summary>
+        
+      
+    
+    
+    
     
   </entry>
   
