@@ -298,6 +298,10 @@
                                 <span class="chip bg-color">AI安全</span>
                             </a>
                         
+                            <a href="/tags/MCP/">
+                                <span class="chip bg-color">MCP</span>
+                            </a>
+                        
                             <a href="/tags/Burp-Suite/">
                                 <span class="chip bg-color">Burp Suite</span>
                             </a>
@@ -312,10 +316,6 @@
                         
                             <a href="/tags/Codex-Desktop/">
                                 <span class="chip bg-color">Codex Desktop</span>
-                            </a>
-                        
-                            <a href="/tags/MCP/">
-                                <span class="chip bg-color">MCP</span>
                             </a>
                         
                             <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">
@@ -583,7 +583,139 @@ query_yak_script</code></pre>
 <p>优先级：Claude Code CLI 使用 <code>.claude.json</code>，Claude Desktop 使用 <code>claude_desktop_config.json</code>，Codex Desktop 使用 <code>.codex\config.toml</code>，三者配置文件不同，不互通。</p>
 </blockquote>
 <hr>
-<h2 id="五、可用工具速查"><a href="#五、可用工具速查" class="headerlink" title="五、可用工具速查"></a>五、可用工具速查</h2><h3 id="Burp-Suite（27-个工具）"><a href="#Burp-Suite（27-个工具）" class="headerlink" title="Burp Suite（27 个工具）"></a>Burp Suite（27 个工具）</h3><p>HTTP 请求、Repeater、Intruder、编解码、代理历史（含正则&#x2F;WebSocket）、Organizer、Collaborator、扫描器、配置读写、编辑器读写、任务引擎、拦截控制等。</p>
+<h2 id="五、Burp-Suite-与-Yakit-对比"><a href="#五、Burp-Suite-与-Yakit-对比" class="headerlink" title="五、Burp Suite 与 Yakit 对比"></a>五、Burp Suite 与 Yakit 对比</h2><p>在配置之前，先厘清两者的定位和差异，方便按需选择或组合使用。</p>
+<h3 id="5-1-相同点"><a href="#5-1-相同点" class="headerlink" title="5.1 相同点"></a>5.1 相同点</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>核心能力</strong></td>
+<td>都支持 HTTP&#x2F;HTTPS 代理抓包、请求重放、主动&#x2F;被动扫描</td>
+</tr>
+<tr>
+<td><strong>扩展生态</strong></td>
+<td>都有插件&#x2F;脚本机制（Burp BApp &#x2F; Yak 脚本）</td>
+</tr>
+<tr>
+<td><strong>MCP 支持</strong></td>
+<td>都提供官方 MCP Server，可与 Claude Code &#x2F; Codex Desktop 联动</td>
+</tr>
+<tr>
+<td><strong>工作模式</strong></td>
+<td>都支持拦截代理模式，可在浏览器与目标之间插入做分析</td>
+</tr>
+<tr>
+<td><strong>版本策略</strong></td>
+<td>都有免费版（Community &#x2F; 社区版）和付费版（Professional &#x2F; 企业版）</td>
+</tr>
+<tr>
+<td><strong>目标场景</strong></td>
+<td>主要面向 Web 应用安全测试、API 测试、渗透测试</td>
+</tr>
+</tbody></table>
+<h3 id="5-2-不同点"><a href="#5-2-不同点" class="headerlink" title="5.2 不同点"></a>5.2 不同点</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Burp Suite</th>
+<th>Yakit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>开发商</strong></td>
+<td>PortSwigger（英国）</td>
+<td>源鉴科技 &#x2F; yaklang.io（中国）</td>
+</tr>
+<tr>
+<td><strong>开源程度</strong></td>
+<td>闭源商业软件</td>
+<td>yaklang 核心开源，Yakit 为开源客户端</td>
+</tr>
+<tr>
+<td><strong>语言与文档</strong></td>
+<td>英文为主，文档体系成熟</td>
+<td>中文原生，中文社区活跃</td>
+</tr>
+<tr>
+<td><strong>协议覆盖</strong></td>
+<td>聚焦 Web（HTTP&#x2F;HTTPS&#x2F;WebSocket）</td>
+<td>除 Web 外，还集成端口扫描、SSH、DNS、POC 等</td>
+</tr>
+<tr>
+<td><strong>扫描引擎</strong></td>
+<td>Scanner 成熟稳定，规则库由 PortSwigger 维护</td>
+<td>基于 Yak 脚本，内置大量国产漏洞 POC，可自定义</td>
+</tr>
+<tr>
+<td><strong>国产适配</strong></td>
+<td>对国内框架、中间件、CMS 识别一般</td>
+<td>对国产应用、中间件、IoT 协议支持更好</td>
+</tr>
+<tr>
+<td><strong>附加功能</strong></td>
+<td>Repeater、Intruder、Sequencer、Decoder 分立</td>
+<td>集成 MITM、Fuzzer、Codec、SSA 代码分析、Web Fuzzer 于一体</td>
+</tr>
+<tr>
+<td><strong>价格</strong></td>
+<td>Professional 年费较高（约 $449&#x2F;年）</td>
+<td>社区版免费，企业版价格相对亲民</td>
+</tr>
+<tr>
+<td><strong>插件开发</strong></td>
+<td>Java &#x2F; Kotlin（BApp）</td>
+<td>Yak 语言（类 Go 语法，内置安全函数库）</td>
+</tr>
+<tr>
+<td><strong>数据存储</strong></td>
+<td>项目文件（.burp）</td>
+<td>SQLite 项目数据库（.db），便于查询</td>
+</tr>
+</tbody></table>
+<h3 id="5-3-选型建议"><a href="#5-3-选型建议" class="headerlink" title="5.3 选型建议"></a>5.3 选型建议</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐工具</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>国际标准渗透测试、合规报告</td>
+<td><strong>Burp Suite</strong></td>
+<td>行业标杆，报告认可度高，Scanner 稳定</td>
+</tr>
+<tr>
+<td>国产应用测试、IoT&#x2F;工控场景</td>
+<td><strong>Yakit</strong></td>
+<td>国产协议支持好，POC 库覆盖国内漏洞</td>
+</tr>
+<tr>
+<td>快速一站式安全测试</td>
+<td><strong>Yakit</strong></td>
+<td>工具集成度高，一个平台覆盖多类测试</td>
+</tr>
+<tr>
+<td>深度 Web 漏洞研究</td>
+<td><strong>Burp Suite</strong></td>
+<td>Repeater&#x2F;Intruder 精细控制，插件生态丰富</td>
+</tr>
+<tr>
+<td>预算有限、个人学习</td>
+<td><strong>Yakit 社区版</strong></td>
+<td>免费，中文资料多，社区活跃</td>
+</tr>
+<tr>
+<td><strong>最佳实践</strong></td>
+<td><strong>两者互补</strong></td>
+<td>Burp 做标准 Web 测试，Yakit 做扩展扫描和国产场景</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、可用工具速查"><a href="#六、可用工具速查" class="headerlink" title="六、可用工具速查"></a>六、可用工具速查</h2><h3 id="Burp-Suite（27-个工具）"><a href="#Burp-Suite（27-个工具）" class="headerlink" title="Burp Suite（27 个工具）"></a>Burp Suite（27 个工具）</h3><p>HTTP 请求、Repeater、Intruder、编解码、代理历史（含正则&#x2F;WebSocket）、Organizer、Collaborator、扫描器、配置读写、编辑器读写、任务引擎、拦截控制等。</p>
 <h3 id="Yakit（15-个工具集）"><a href="#Yakit（15-个工具集）" class="headerlink" title="Yakit（15+ 个工具集）"></a>Yakit（15+ 个工具集）</h3><table>
 <thead>
 <tr>
@@ -649,14 +781,14 @@ query_yak_script</code></pre>
 </tr>
 </tbody></table>
 <hr>
-<h2 id="六、敏感数据约束"><a href="#六、敏感数据约束" class="headerlink" title="六、敏感数据约束"></a>六、敏感数据约束</h2><p>Yakit HTTPFlow 和项目库中可能包含 Cookie、Token、私密 URL 等敏感数据。</p>
+<h2 id="七、敏感数据约束"><a href="#七、敏感数据约束" class="headerlink" title="七、敏感数据约束"></a>七、敏感数据约束</h2><p>Yakit HTTPFlow 和项目库中可能包含 Cookie、Token、私密 URL 等敏感数据。</p>
 <p><strong>默认操作原则</strong>：</p>
 <ul>
 <li>除非用户明确要求查看原始包，否则只做聚合统计（数量、时间范围、host、method、status、content-type）</li>
 <li>不主动复述 Cookie、Token、完整请求体&#x2F;响应体、个人定位信息</li>
 </ul>
 <hr>
-<h2 id="七、故障排查"><a href="#七、故障排查" class="headerlink" title="七、故障排查"></a>七、故障排查</h2><h3 id="MCP-工具未出现"><a href="#MCP-工具未出现" class="headerlink" title="MCP 工具未出现"></a>MCP 工具未出现</h3><ol>
+<h2 id="八、故障排查"><a href="#八、故障排查" class="headerlink" title="八、故障排查"></a>八、故障排查</h2><h3 id="MCP-工具未出现"><a href="#MCP-工具未出现" class="headerlink" title="MCP 工具未出现"></a>MCP 工具未出现</h3><ol>
 <li>检查对应服务是否已启动（Burp MCP Server 是否运行、Yakit 引擎是否正常）</li>
 <li>检查 <code>.claude.json</code> 或 <code>.codex\config.toml</code> 中配置是否写入了正确的项目路径&#x2F;服务器条目</li>
 <li>重启 Claude Code &#x2F; Codex Desktop（配置更改后需重启）</li>
@@ -673,7 +805,7 @@ query_yak_script</code></pre>
 <li>确认 Yakit 项目数据库已初始化</li>
 </ul>
 <hr>
-<h2 id="八、实战工作流示例"><a href="#八、实战工作流示例" class="headerlink" title="八、实战工作流示例"></a>八、实战工作流示例</h2><h3 id="场景一：分析-Burp-代理历史"><a href="#场景一：分析-Burp-代理历史" class="headerlink" title="场景一：分析 Burp 代理历史"></a>场景一：分析 Burp 代理历史</h3><pre><code class="hljs plaintext">&gt; 查看 burp 中最近 20 条包含 /api 的请求，统计状态码分布</code></pre>
+<h2 id="九、实战工作流示例"><a href="#九、实战工作流示例" class="headerlink" title="九、实战工作流示例"></a>九、实战工作流示例</h2><h3 id="场景一：分析-Burp-代理历史"><a href="#场景一：分析-Burp-代理历史" class="headerlink" title="场景一：分析 Burp 代理历史"></a>场景一：分析 Burp 代理历史</h3><pre><code class="hljs plaintext">&gt; 查看 burp 中最近 20 条包含 /api 的请求，统计状态码分布</code></pre>
 
 <p>Claude Code &#x2F; Codex Desktop 自动调用 <code>mcp__burp__get_proxy_history</code>，按条件过滤后给出统计结果。</p>
 <h3 id="场景二：Yakit-端口扫描"><a href="#场景二：Yakit-端口扫描" class="headerlink" title="场景二：Yakit 端口扫描"></a>场景二：Yakit 端口扫描</h3><pre><code class="hljs plaintext">&gt; 用 yaklang 扫描 192.168.1.10 的 22,80,443,3306,6379,8080 端口</code></pre>
@@ -683,14 +815,14 @@ query_yak_script</code></pre>
 
 <p>Claude Code &#x2F; Codex Desktop 构造 fuzz 请求，通过 <code>mcp__yaklang__http_fuzzer</code> 批量发送并分析响应差异。</p>
 <hr>
-<h2 id="九、安全与合规提醒"><a href="#九、安全与合规提醒" class="headerlink" title="九、安全与合规提醒"></a>九、安全与合规提醒</h2><ol>
+<h2 id="十、安全与合规提醒"><a href="#十、安全与合规提醒" class="headerlink" title="十、安全与合规提醒"></a>十、安全与合规提醒</h2><ol>
 <li><strong>授权边界</strong>：所有扫描和测试行为必须在授权范围内进行，严禁对非自有资产进行探测</li>
 <li><strong>数据隐私</strong>：Burp 抓包和 Yakit HTTPFlow 可能包含敏感信息，注意本地存储安全</li>
 <li><strong>AI 输出校验</strong>：AI 生成的 PoC 代码需人工审核后再执行，避免误操作</li>
 <li><strong>环境隔离</strong>：建议在虚拟机或隔离网络中运行高风险测试</li>
 </ol>
 <hr>
-<h2 id="十、参考链接"><a href="#十、参考链接" class="headerlink" title="十、参考链接"></a>十、参考链接</h2><ul>
+<h2 id="十一、参考链接"><a href="#十一、参考链接" class="headerlink" title="十一、参考链接"></a>十一、参考链接</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://github.com/PortSwigger/mcp-server">PortSwigger&#x2F;mcp-server</a> — Burp Suite 官方 MCP Server</li>
 <li><a target="_blank" rel="noopener" href="https://docs.anthropic.com/en/docs/claude-code/mcp">Claude Code MCP 文档</a></li>
 <li><a target="_blank" rel="noopener" href="https://portswigger.net/burp/documentation">Burp Suite 官方文档</a></li>
@@ -769,6 +901,10 @@ query_yak_script</code></pre>
                                     <span class="chip bg-color">AI安全</span>
                                 </a>
                             
+                                <a href="/tags/MCP/">
+                                    <span class="chip bg-color">MCP</span>
+                                </a>
+                            
                                 <a href="/tags/Burp-Suite/">
                                     <span class="chip bg-color">Burp Suite</span>
                                 </a>
@@ -783,10 +919,6 @@ query_yak_script</code></pre>
                             
                                 <a href="/tags/Codex-Desktop/">
                                     <span class="chip bg-color">Codex Desktop</span>
-                                </a>
-                            
-                                <a href="/tags/MCP/">
-                                    <span class="chip bg-color">MCP</span>
                                 </a>
                             
                                 <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">

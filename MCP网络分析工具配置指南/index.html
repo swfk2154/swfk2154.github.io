@@ -1,0 +1,1963 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="Wireshark, 科来, CSNAS, MCP, tshark, 网络抓包, 流量分析, AI安全">
+    <meta name="description" content="真实记录 Wireshark（tshark）与科来网络分析系统（CSNAS）在 Claude Code 中的 MCP 配置全过程，包含踩坑记录、验证方法与工具对比。">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>MCP 网络分析工具配置指南：Wireshark、科来与 AI 编码助手联动实战 | swfk 的安全笔记</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="swfk 的安全笔记" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">swfk 的安全笔记</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">swfk 的安全笔记</div>
+        <div class="logo-desc">
+            
+            记录 AI 安全、网络安全、工具实践与技术复盘。
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">MCP 网络分析工具配置指南：Wireshark、科来与 AI 编码助手联动实战</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Wireshark/">
+                                <span class="chip bg-color">Wireshark</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%A7%91%E6%9D%A5/">
+                                <span class="chip bg-color">科来</span>
+                            </a>
+                        
+                            <a href="/tags/MCP/">
+                                <span class="chip bg-color">MCP</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90/">
+                                <span class="chip bg-color">网络分析</span>
+                            </a>
+                        
+                            <a href="/tags/tshark/">
+                                <span class="chip bg-color">tshark</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%8A%93%E5%8C%85/">
+                                <span class="chip bg-color">抓包</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/" class="post-category">
+                                工具实践
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2026-06-06
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>本文基于真实配置经验撰写，环境为 Windows 11 + bash shell。所有命令和路径均经过实际验证，目的是把”AI + 网络分析工具”的联动配置讲清楚、踩过的坑标出来。</p>
+</blockquote>
+<hr>
+<h2 id="一、整体架构"><a href="#一、整体架构" class="headerlink" title="一、整体架构"></a>一、整体架构</h2><p>这套工具链的核心思路是：<strong>通过 MCP（Model Context Protocol）协议，让 Claude Code &#x2F; Codex Desktop 直接调用 Wireshark 和科来的 CLI 工具，实现”用自然语言驱动网络分析”的工作流。</strong></p>
+<pre><code class="hljs plaintext">┌─────────────┐     MCP/stdio    ┌─────────────────────────┐
+│             │ ◄─────────────►│  Wireshark / tshark     │
+│ Claude Code │                │  (pyshark_mcp.py)       │
+│ / Codex     │                │                         │
+│             │     MCP/stdio  └─────────────────────────┘
+│             │ ◄─────────────►┌─────────────────────────┐
+│             │                │  科来 CSNAS             │
+└─────────────┘                │  (csnas_mcp.py)         │
+                               └─────────────────────────┘</code></pre>
+
+<p><strong>各组件作用：</strong></p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>来源</th>
+<th>传输方式</th>
+<th>监听地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Wireshark MCP</strong></td>
+<td>社区 <code>wireshark-mcp</code> + <code>tshark.exe</code></td>
+<td>stdio</td>
+<td>通过子进程交互</td>
+</tr>
+<tr>
+<td><strong>科来 MCP</strong></td>
+<td>自建 <code>csnas_mcp.py</code> + <code>cmdl.exe</code></td>
+<td>stdio</td>
+<td>通过子进程交互</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>Anthropic CLI</td>
+<td>—</td>
+<td>MCP Client</td>
+</tr>
+<tr>
+<td><strong>Codex Desktop</strong></td>
+<td>OpenAI Codex 桌面端</td>
+<td>—</td>
+<td>MCP Client（<code>config.toml</code>）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、环境概述"><a href="#二、环境概述" class="headerlink" title="二、环境概述"></a>二、环境概述</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OS</td>
+<td>Windows 11 Pro</td>
+</tr>
+<tr>
+<td>Wireshark 版本</td>
+<td>4.6.6 (v4.6.6-0-g3a22c3ef473d)</td>
+</tr>
+<tr>
+<td>Wireshark 安装路径</td>
+<td><code>D:\yingyong\Wireshark\</code></td>
+</tr>
+<tr>
+<td>Python</td>
+<td>3.10 (C:\Program Files\Python310)</td>
+</tr>
+<tr>
+<td>MCP 框架</td>
+<td><code>mcp[cli]</code> + <code>FastMCP</code></td>
+</tr>
+<tr>
+<td>原 MCP 服务器</td>
+<td><code>mcp-wireshark</code> (pyz 打包，stdio 连接失败)</td>
+</tr>
+<tr>
+<td>替换方案</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/A-G-U-P-T-A/wireshark-mcp">A-G-U-P-T-A&#x2F;wireshark-mcp</a> + PyShark + subprocess fallback</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h2><h3 id="1-克隆仓库"><a href="#1-克隆仓库" class="headerlink" title="1. 克隆仓库"></a>1. 克隆仓库</h3><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> D:\&lt;user&gt;\Documents\Agent\claude
+git <span class="hljs-built_in">clone</span> https://github.com/A-G-U-P-T-A/wireshark-mcp.git</code></pre>
+
+<h3 id="2-安装依赖"><a href="#2-安装依赖" class="headerlink" title="2. 安装依赖"></a>2. 安装依赖</h3><pre><code class="hljs bash"><span class="hljs-comment"># pyshark 已就绪</span>
+pip install pyshark
+
+<span class="hljs-comment"># 解决 MCP 异步 + PyShark 事件循环冲突</span>
+pip install nest_asyncio
+
+<span class="hljs-comment"># mcp CLI 已就绪</span>
+<span class="hljs-comment"># pip install mcp[cli]</span></code></pre>
+
+<h3 id="3-修改-pyshark-mcp-py"><a href="#3-修改-pyshark-mcp-py" class="headerlink" title="3. 修改 pyshark_mcp.py"></a>3. 修改 <code>pyshark_mcp.py</code></h3><blockquote>
+<p>共 3 处修改：</p>
+</blockquote>
+<p><strong>修改 1 — 插入 tshark 路径注入 + nest_asyncio 补丁 + 工作目录切换</strong>（文件顶部，约第 25 行后）：</p>
+<pre><code class="hljs python"><span class="hljs-comment"># Ensure tshark is in PATH for Windows</span>
+_TSHARK_DIR = <span class="hljs-string">r&quot;D:\yingyong\Wireshark&quot;</span>
+<span class="hljs-keyword">if</span> os.path.isdir(_TSHARK_DIR) <span class="hljs-keyword">and</span> _TSHARK_DIR <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> os.environ.get(<span class="hljs-string">&quot;PATH&quot;</span>, <span class="hljs-string">&quot;&quot;</span>):
+    os.environ[<span class="hljs-string">&quot;PATH&quot;</span>] = _TSHARK_DIR + os.pathsep + os.environ.get(<span class="hljs-string">&quot;PATH&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)
+
+<span class="hljs-comment"># Patch asyncio to allow nested event loops (MCP + PyShark conflict)</span>
+<span class="hljs-keyword">import</span> nest_asyncio
+nest_asyncio.apply()
+
+<span class="hljs-comment"># Ensure PyShark can find tshark</span>
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+<span class="hljs-keyword">if</span> os.getcwd() != _SCRIPT_DIR:
+    os.chdir(_SCRIPT_DIR)</code></pre>
+
+<p><strong>修改 2 — 设置默认 tshark 路径</strong>（约第 47 行）：</p>
+<pre><code class="hljs python">config = &#123;
+    <span class="hljs-string">&quot;default_timeout&quot;</span>: <span class="hljs-number">30</span>,
+    <span class="hljs-string">&quot;capture_dir&quot;</span>: <span class="hljs-string">&quot;./captures&quot;</span>,
+    <span class="hljs-string">&quot;tshark_path&quot;</span>: <span class="hljs-string">r&quot;D:\yingyong\Wireshark&quot;</span>
+&#125;</code></pre>
+
+<p><strong>修改 3 — <code>subprocess.check_output</code> 编码修复</strong>（<code>list_interfaces</code> 函数中）：</p>
+<pre><code class="hljs python">output = subprocess.check_output([<span class="hljs-string">&#x27;tshark&#x27;</span>, <span class="hljs-string">&#x27;-D&#x27;</span>], universal_newlines=<span class="hljs-literal">True</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>, errors=<span class="hljs-string">&#x27;replace&#x27;</span>)</code></pre>
+
+<h3 id="4-创建-config-ini"><a href="#4-创建-config-ini" class="headerlink" title="4. 创建 config.ini"></a>4. 创建 <code>config.ini</code></h3><p>位置：<code>wireshark-mcp/config.ini</code></p>
+<pre><code class="hljs ini"><span class="hljs-section">[tshark]</span>
+<span class="hljs-attr">tshark_path</span> = D:\yingyong\Wireshark</code></pre>
+
+<h3 id="5-重写-read-pcap-file"><a href="#5-重写-read-pcap-file" class="headerlink" title="5. 重写 read_pcap_file"></a>5. 重写 <code>read_pcap_file</code></h3><blockquote>
+<p>PyShark 的 <code>FileCapture</code> 在 Windows 非管理员权限下触发 <code>[WinError 5] 拒绝访问</code>，改用 <code>subprocess</code> 直接调 <code>tshark</code> 替代。</p>
+</blockquote>
+<p>将原 <code>read_pcap_file</code> 函数替换为基于 <code>subprocess.run</code> 的实现，通过 <code>-T fields</code> 格式输出并解析管道分隔文本，绕过 PyShark 的权限问题。</p>
+<h3 id="6-配置-mcp-json"><a href="#6-配置-mcp-json" class="headerlink" title="6. 配置 .mcp.json"></a>6. 配置 <code>.mcp.json</code></h3><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+  <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+    <span class="hljs-attr">&quot;wireshark&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+      <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;C:\\Program Files\\Python310\\python.exe&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">&quot;D:\\&lt;user&gt;\\Documents\\Agent\\claude\\wireshark-mcp\\pyshark_mcp.py&quot;</span>
+      <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+        <span class="hljs-attr">&quot;PATH&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;D:\\yingyong\\Wireshark;C:\\Program Files\\Python310;...&quot;</span>
+      <span class="hljs-punctuation">&#125;</span>
+    <span class="hljs-punctuation">&#125;</span>
+  <span class="hljs-punctuation">&#125;</span>
+<span class="hljs-punctuation">&#125;</span></code></pre>
+
+<hr>
+<h2 id="验证用例与结果"><a href="#验证用例与结果" class="headerlink" title="验证用例与结果"></a>验证用例与结果</h2><h3 id="用例-1：list-interfaces-—-列出网络接口"><a href="#用例-1：list-interfaces-—-列出网络接口" class="headerlink" title="用例 1：list_interfaces — 列出网络接口"></a>用例 1：<code>list_interfaces</code> — 列出网络接口</h3><p><strong>目的</strong>：验证 MCP 服务器能启动并与 tshark 通信</p>
+<p><strong>命令</strong>：</p>
+<pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;method&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;tools/call&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;params&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;list_interfaces&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;arguments&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">&#125;</span></code></pre>
+
+<p><strong>结果路径</strong>：<code>$</code> → 首次失败（空列表，编码问题） → 修复 <code>encoding=&#39;utf-8&#39;, errors=&#39;replace&#39;</code> → <strong>通过</strong></p>
+<p><strong>正确输出</strong>（12 个接口）：</p>
+<pre><code class="hljs plaintext">本地连接* 5, 本地连接* 4, 本地连接* 3,
+VMware Network Adapter VMnet8, VMware Network Adapter VMnet1,
+WLAN, WLAN 4, WLAN 3,
+..., Adapter for loopback traffic capture, 以太网,
+Event Tracing for Windows (ETW reader)</code></pre>
+
+<hr>
+<h3 id="用例-2：read-pcap-file-—-读取-pcap-文件"><a href="#用例-2：read-pcap-file-—-读取-pcap-文件" class="headerlink" title="用例 2：read_pcap_file — 读取 pcap 文件"></a>用例 2：<code>read_pcap_file</code> — 读取 pcap 文件</h3><p><strong>目的</strong>：验证能正确解析捕获文件并输出协议统计</p>
+<p><strong>用例 2a — 原始 PyShark 方式</strong>（失败）：</p>
+<table>
+<thead>
+<tr>
+<th>问题阶段</th>
+<th>现象</th>
+<th>根因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>首次</td>
+<td><code>This event loop is already running</code></td>
+<td>MCP FastMCP 的 asyncio 事件循环与 PyShark <code>FileCapture</code> 冲突</td>
+</tr>
+<tr>
+<td>修复</td>
+<td><code>TShark not found</code></td>
+<td>PyShark 在 Windows 上不读 <code>PATH</code>，只查 <code>Program Files</code></td>
+</tr>
+<tr>
+<td>修复</td>
+<td><code>[WinError 5] 拒绝访问</code></td>
+<td>PyShark 需要管理员权限读取 pcap</td>
+</tr>
+</tbody></table>
+<p><strong>解决方案</strong>：放弃 PyShark <code>FileCapture</code>，改用 <code>subprocess.run</code> 直接调 <code>tshark -r</code>。</p>
+<p><strong>用例 2b — subprocess 方式</strong>（通过）：</p>
+<pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;read_pcap_file&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;arguments&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;file_path&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;C:/.../test_capture.pcapng&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;packet_count&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10</span><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">&#125;</span></code></pre>
+
+<p>输出：</p>
+<pre><code class="hljs plaintext">Capture File: test_capture.pcapng
+Timestamp: 2026-06-06T16:39:10
+Filter: None
+Packet Count: 5
+
+Protocol Distribution:
+  - UDP: 4 packets (80.0%)
+  - TCP: 1 packets (20.0%)
+
+Packet Details (first 5 of 5):
+#     Time         Source           Dest           Proto   Info
+----------------------------------------------------------------
+1     0.000000000  x.x.x.x  192.168.x.x   UDP     443 → 56154 Len=26
+2     0.034851000  192.168.x.x     x.x.x.x   TCP     23337 → 57044 [ACK]
+3     0.039885600  192.168.x.x     x.x.x.x   UDP     55531 → 443 Len=379
+4     0.085165500  x.x.x.x  192.168.x.x   UDP     443 → 56154 Len=1055
+5     0.085186000  x.x.x.x  192.168.x.x   UDP     443 → 56154 Len=1054</code></pre>
+
+<hr>
+<h3 id="用例-3：实时捕获分析"><a href="#用例-3：实时捕获分析" class="headerlink" title="用例 3：实时捕获分析"></a>用例 3：实时捕获分析</h3><p><strong>目的</strong>：验证能从 Wireshark 实时写入的临时文件读取并做完整分析</p>
+<p><strong>临时捕获文件</strong>：<code>%TEMP%\wireshark_*.pcapng</code></p>
+<p><strong>3a — 协议层次统计</strong>（<code>tshark -r -q -z io,phs</code>）：</p>
+<pre><code class="hljs plaintext">frame: 6834
+  eth: 6834
+    ip: 6805
+      udp: 4731 (69.2%)
+        data: 4662 (QUIC/HTTP3)
+        dns: 26
+      tcp: 2035 (29.8%)
+        tls: 780
+        http: 2
+      icmp: 39
+    arp: 24</code></pre>
+
+<p><strong>3b — TCP 会话</strong>（<code>tshark -r -q -z conv,tcp</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>本地:端口</th>
+<th>远程:端口</th>
+<th>双向包数</th>
+<th>双向流量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>192.168.x.x:54328</td>
+<td>x.x.x.x:443</td>
+<td>1,056</td>
+<td>652 KB</td>
+</tr>
+<tr>
+<td>192.168.x.x:36265</td>
+<td>x.x.x.x:443</td>
+<td>296</td>
+<td>174 KB</td>
+</tr>
+</tbody></table>
+<p><strong>3c — IPv4 端点 Top 5</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>IP</th>
+<th>总包数</th>
+<th>总流量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>192.168.x.x (本机)</td>
+<td>6,804</td>
+<td>3.31 MB</td>
+</tr>
+<tr>
+<td>x.x.x.x</td>
+<td>4,126</td>
+<td>2.23 MB</td>
+</tr>
+<tr>
+<td>x.x.x.x</td>
+<td>1,056</td>
+<td>652 KB</td>
+</tr>
+<tr>
+<td>x.x.x.x</td>
+<td>309</td>
+<td>180 KB</td>
+</tr>
+</tbody></table>
+<p><strong>3d — 专家信息</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>数量</th>
+<th>主要类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Warn</td>
+<td>121</td>
+<td>D-SACK(91), ACK missing(11), RST(3), out-of-order(1)</td>
+</tr>
+<tr>
+<td>Note</td>
+<td>381</td>
+<td>超 MSS(142), keep-alive(66), 重复ACK(33), 重传(17)</td>
+</tr>
+<tr>
+<td>Chat</td>
+<td>111</td>
+<td>SYN, FIN, TLS legacy_version</td>
+</tr>
+</tbody></table>
+<p><strong>3e — DNS 查询记录</strong>（已脱敏）：</p>
+<pre><code class="hljs plaintext">browser-intake-us5-datadoghq.com
+signaler-pa.clients6.google.com
+a-api.anthropic.com
+api.anthropic.com
+api.deepseek.com
+claude.ai
+collect.alipay.com
+clientsservices.googleapis.com</code></pre>
+
+<hr>
+<h2 id="已知问题"><a href="#已知问题" class="headerlink" title="已知问题"></a>已知问题</h2><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>影响</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PyShark <code>FileCapture</code> 需管理员权限</td>
+<td>无法用 PyShark 解析包</td>
+<td><strong>已绕过</strong>：subprocess 替代</td>
+</tr>
+<tr>
+<td><code>capture_live_packets</code> 依赖 PyShark <code>LiveCapture</code></td>
+<td>实时抓包可能失败</td>
+<td>⚠️ 待验证</td>
+</tr>
+<tr>
+<td>Windows 中文接口名导致编码问题</td>
+<td><code>list_interfaces</code> 中文名乱码</td>
+<td>✅ 已修复</td>
+</tr>
+<tr>
+<td>nest_asyncio 补丁</td>
+<td>确保 PyShark + MCP 共存</td>
+<td>✅ 已应用</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="可用工具清单"><a href="#可用工具清单" class="headerlink" title="可用工具清单"></a>可用工具清单</h2><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>依赖</th>
+<th>已验证</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>list_interfaces</code></td>
+<td>subprocess → tshark -D</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>read_pcap_file</code></td>
+<td>subprocess → tshark -r</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>get_capture_history</code></td>
+<td>纯内存</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>display_filter</code> &#x2F; <code>filtered_packet_display</code></td>
+<td>tshark</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><code>analyze_traffic</code></td>
+<td>基于 capture_history</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><code>analyze_http_traffic</code></td>
+<td>PyShark → subprocess</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><code>analyze_dns_traffic</code></td>
+<td>PyShark → subprocess</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><code>capture_live_packets</code></td>
+<td>PyShark LiveCapture</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><code>quick_capture</code></td>
+<td>subprocess → tshark -i</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><code>protocol_hierarchy_statistics</code></td>
+<td>tshark -z</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><code>expert_information</code></td>
+<td>tshark -z expert</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><code>save_capture_to_file</code></td>
+<td>PyShark</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><code>deep_packet_analysis</code></td>
+<td>subprocess → tshark</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><code>detect_protocols</code></td>
+<td>PyShark</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td>SSH 相关（remote_capture 等）</td>
+<td>不适用</td>
+<td>❌ windows 跳过</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="科来-CSNAS-MCP-配置"><a href="#科来-CSNAS-MCP-配置" class="headerlink" title="科来 &#x2F; CSNAS MCP 配置"></a>科来 &#x2F; CSNAS MCP 配置</h2><blockquote>
+<p>科来网络分析系统（技术交流版）自带的 <code>cmdl.exe</code> CLI 工具，封装为 MCP Server 后可与 Wireshark MCP 互补使用。</p>
+</blockquote>
+<h3 id="环境概述"><a href="#环境概述" class="headerlink" title="环境概述"></a>环境概述</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产品</td>
+<td>科来网络分析系统 技术交流版</td>
+</tr>
+<tr>
+<td>CLI 工具</td>
+<td><code>cmdl.exe</code> v1.0.0.8</td>
+</tr>
+<tr>
+<td>安装路径</td>
+<td><code>D:\yingyong\CSNAS\</code></td>
+</tr>
+<tr>
+<td>帮助文档</td>
+<td><code>mui/zh_cn/cmdl.chm</code>（已提取 HTML）</td>
+</tr>
+<tr>
+<td>MCP 脚本</td>
+<td><code>wireshark-mcp/csnas_mcp.py</code></td>
+</tr>
+<tr>
+<td>运行方式</td>
+<td>FastMCP stdio</td>
+</tr>
+</tbody></table>
+<h3 id="安装与配置"><a href="#安装与配置" class="headerlink" title="安装与配置"></a>安装与配置</h3><p><strong>无额外依赖</strong>，<code>cmdl.exe</code> 是独立的 Windows exe，Python 仅做包装。</p>
+<p><strong>注册到 Claude Code（CLI 方式，推荐）</strong>：</p>
+<pre><code class="hljs bash">claude mcp add --transport stdio csnas <span class="hljs-string">&quot;C:\Program Files\Python310\python.exe&quot;</span> -- <span class="hljs-string">&quot;D:\path\to\wireshark-mcp\csnas_mcp.py&quot;</span></code></pre>
+
+<blockquote>
+<p>CLI 注册后需手动在 <code>.claude.json</code> 的 <code>env</code> 中补充 <code>PATH</code>（加入 CSNAS 目录），否则 cmdl.exe 会找不到。</p>
+</blockquote>
+<p><strong>注册到 Claude Code（原始 <code>.mcp.json</code> 方式）</strong>：</p>
+<pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+  <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+    <span class="hljs-attr">&quot;csnas&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+      <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;C:\\Program Files\\Python310\\python.exe&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;D:\\path\\to\\wireshark-mcp\\csnas_mcp.py&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+        <span class="hljs-attr">&quot;PATH&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;D:\\yingyong\\CSNAS;...其余 PATH...&quot;</span>
+      <span class="hljs-punctuation">&#125;</span>
+    <span class="hljs-punctuation">&#125;</span>
+  <span class="hljs-punctuation">&#125;</span>
+<span class="hljs-punctuation">&#125;</span></code></pre>
+
+<h3 id="可用工具清单-1"><a href="#可用工具清单-1" class="headerlink" title="可用工具清单"></a>可用工具清单</h3><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>功能</th>
+<th>依赖</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>list_interfaces</code></td>
+<td>列出可用网络接口</td>
+<td><code>cmdl -D</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>read_pcap</code></td>
+<td>读取 pcap 文件并综合分析（协议分布、Top IP、Top 端口、会话）</td>
+<td><code>cmdl -r -T json</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>protocol_hierarchy</code></td>
+<td>协议层次分布统计</td>
+<td><code>cmdl -r -T json</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>capture_live</code></td>
+<td>实时抓包 + 综合分析（指定接口、时长）</td>
+<td><code>cmdl -i -T json</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>get_capture_history</code></td>
+<td>本次会话的抓取历史</td>
+<td>内存存储</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<h3 id="验证用例"><a href="#验证用例" class="headerlink" title="验证用例"></a>验证用例</h3><p><strong>用例 1 — <code>list_interfaces</code></strong>（通过）</p>
+<pre><code class="hljs plaintext">VMware Network Adapter VMnet8, VMware Network Adapter VMnet1,
+WLAN, WLAN 4, WLAN 3, ..., 以太网</code></pre>
+
+<p><strong>用例 2 — <code>read_pcap</code> 读取 pcap 文件</strong>（通过）</p>
+<pre><code class="hljs plaintext">Protocol Distribution:
+  UDP    80.0%  ████████████████░░░░
+  TCP    20.0%  ████░░░░░░░░░░░░░░░░</code></pre>
+
+<p><strong>用例 3 — <code>capture_live</code> 实时抓取 8 秒 WLAN 流量</strong>（通过）</p>
+<pre><code class="hljs plaintext">Live Capture (WLAN, 8s), Packet Count: 80
+TCP: 46 (57.5%), UDP: 33 (41.2%), ICMP: 1 (1.2%)
+Top Talkers: 本机 IP, 出口代理 IP, 远程 443 服务端...</code></pre>
+
+<h3 id="与-Wireshark-MCP-对比"><a href="#与-Wireshark-MCP-对比" class="headerlink" title="与 Wireshark MCP 对比"></a>与 Wireshark MCP 对比</h3><table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>科来 csnas</th>
+<th>Wireshark &#x2F; tshark</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>协议深度解析</td>
+<td>仅 IP&#x2F;TCP&#x2F;UDP 协议层，无 TLS&#x2F;HTTP&#x2F;DNS 细节</td>
+<td>完整协议树（700+ 协议解析器）</td>
+</tr>
+<tr>
+<td>输出格式</td>
+<td><code>-T text</code>&#x2F;<code>json</code>&#x2F;<code>fields</code>；JSON 含 <code>ip</code>、<code>tcp</code>、<code>udp</code> 三层</td>
+<td>多种格式：<code>-T fields</code>、<code>-z</code> 统计、JSON、PDML</td>
+</tr>
+<tr>
+<td>过滤能力</td>
+<td>capsa dpifilter 语法（<code>protocol=tcp and dstport=80</code>）</td>
+<td>Wireshark display filter + BPF capture filter</td>
+</tr>
+<tr>
+<td>统计功能</td>
+<td>需自己算（JSON 解析后聚合）</td>
+<td>内置 <code>-z</code> 统计（io,phs&#x2F;conv,tcp&#x2F;endpoints 等）</td>
+</tr>
+<tr>
+<td>实时写入文件</td>
+<td>❌ <code>-w</code> 写入疑似依赖 GUI 后台，CLI 直接 kill 无法保存</td>
+<td>✅ <code>-w</code> 直接写 pcap，信号处理完善</td>
+</tr>
+<tr>
+<td>JSON 截断</td>
+<td>⚠️ kill 进程后 JSON 不完整，MCP 脚本做了截断修复</td>
+<td>✅ 输出完整</td>
+</tr>
+<tr>
+<td>高级分析</td>
+<td>❌ 无 expert info、无 TLS 解密、无 HTTP 对象导出</td>
+<td>✅ expert info、follow stream、SSL key log</td>
+</tr>
+<tr>
+<td>应用层日志</td>
+<td>部分支持：<code>-l http_apache,dns,ssl,ftp,email</code>（未封装）</td>
+<td>✅ 全面</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>快速看一眼网络状态（协议分布、Top 会话）</td>
+<td>深度分析、排查问题、取证</td>
+</tr>
+</tbody></table>
+<h3 id="科来与-Wireshark-的异同"><a href="#科来与-Wireshark-的异同" class="headerlink" title="科来与 Wireshark 的异同"></a>科来与 Wireshark 的异同</h3><h4 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h4><ol>
+<li><strong>核心功能一致</strong> — 两者都是网络数据包分析工具，都支持实时抓包和离线分析 pcap&#x2F;pcapng 文件</li>
+<li><strong>协议解析目标一致</strong> — 都能识别 IP、TCP、UDP、ICMP、ARP、DNS、HTTP、SSL&#x2F;TLS 等常见协议（科来 GUI 支持度高，cmdl CLI 有局限）</li>
+<li><strong>过滤机制</strong> — 都支持捕获过滤和分析过滤。科来用 capsa dpifilter 语法，Wireshark 用 BPF + display filter</li>
+<li><strong>输出格式多样</strong> — 都支持 text、fields、JSON 等多种输出格式</li>
+<li><strong>GUI 能力</strong> — 两者都提供图形界面，科来 GUI 功能完整（类似于 Wireshark 的主窗口），含实时统计、图表、会话重组、对象导出等</li>
+<li><strong>Windows 生态</strong> — 两者在 Windows 上都有良好支持</li>
+<li><strong>命令行工具</strong> — 两者都提供 CLI 接口（cmdl.exe &#x2F; tshark.exe），均可被 MCP 封装调用</li>
+<li><strong>MCP 集成方式一致</strong> — 都是通过 stdio 子进程 + FastMCP 包装 CLI 工具暴露工具函数</li>
+</ol>
+<h4 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h4><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>科来 &#x2F; CSNAS</th>
+<th>Wireshark &#x2F; tshark</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>开发商</strong></td>
+<td>中国公司 科来（Colasoft）</td>
+<td>全球开源社区（Wireshark Foundation）</td>
+</tr>
+<tr>
+<td><strong>开源&#x2F;闭源</strong></td>
+<td>闭源商业软件（技术交流版免费）</td>
+<td>开源（GPLv2）</td>
+</tr>
+<tr>
+<td><strong>协议解析器数量</strong></td>
+<td>有限（以常见协议为主，偏工业&#x2F;国产生态）</td>
+<td>700+ 协议解析器，覆盖几乎所有已知协议</td>
+</tr>
+<tr>
+<td><strong>社区与生态</strong></td>
+<td>国内论坛 + 商业支持，插件生态小</td>
+<td>全球社区活跃，大量扩展、Lua 脚本、第三方工具</td>
+</tr>
+<tr>
+<td><strong>国产协议支持</strong></td>
+<td>✅ 对国内常见协议、工业控制协议支持更好</td>
+<td>❌ 缺乏部分国产&#x2F;专有协议解析器</td>
+</tr>
+<tr>
+<td><strong>中文界面</strong></td>
+<td>✅ 原生中文，中文文档完善</td>
+<td>⚠️ 有中文语言包，但社区文档以英文为主</td>
+</tr>
+<tr>
+<td><strong>易用性（入门）</strong></td>
+<td>面向国内网管&#x2F;安全运维，上手更直观</td>
+<td>功能强大但学习曲线较陡</td>
+</tr>
+<tr>
+<td><strong>MCP 工具数</strong></td>
+<td>5 个（list_interfaces, read_pcap, protocol_hierarchy, capture_live, get_capture_history）</td>
+<td>15 个（含实时抓包、协议统计、expert info、DNS&#x2F;HTTP 专项分析等）</td>
+</tr>
+<tr>
+<td><strong>cmdl JSON 接口</strong></td>
+<td>仅暴露 ip&#x2F;tcp&#x2F;udp 三个协议层的 JSON 字段</td>
+<td>tshark 可通过 <code>-T json</code> 暴露全部协议层字段</td>
+</tr>
+<tr>
+<td><strong>实时抓包稳定性</strong></td>
+<td>进程终止时 JSON 截断，需修复</td>
+<td>信号处理完善，输出完整</td>
+</tr>
+<tr>
+<td><strong>pcap 写入</strong></td>
+<td>CLI 直接写入有问题，依赖 GUI 保存</td>
+<td><code>-w</code> 稳定写入</td>
+</tr>
+<tr>
+<td><strong>信号处理</strong></td>
+<td>Windows 上 <code>taskkill /F</code> 粗暴终止</td>
+<td>支持 SIGINT 优雅退出</td>
+</tr>
+<tr>
+<td><strong>深度分析能力</strong></td>
+<td>需要配合 GUI 做 expert info、会话重组、文件还原</td>
+<td>CLI 自带 <code>-z</code> 统计 + Lua 扩展，功能丰富</td>
+</tr>
+<tr>
+<td><strong>跨平台</strong></td>
+<td>❌ 仅 Windows</td>
+<td>✅ Windows &#x2F; macOS &#x2F; Linux</td>
+</tr>
+<tr>
+<td><strong>价格</strong></td>
+<td>技术交流版免费；企业版付费</td>
+<td>完全免费</td>
+</tr>
+<tr>
+<td><strong>厂商支持</strong></td>
+<td>商业公司，有技术支持和服务</td>
+<td>开源社区 + 商业支持（Wireshark 公司）</td>
+</tr>
+</tbody></table>
+<h4 id="选型建议"><a href="#选型建议" class="headerlink" title="选型建议"></a>选型建议</h4><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐工具</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>快速查看网络状态（协议分布、Top 会话）</td>
+<td><strong>科来</strong>（看一眼就够）</td>
+<td>无需等 tshark 加载大量协议解析器</td>
+</tr>
+<tr>
+<td>国产&#x2F;工业协议分析</td>
+<td><strong>科来</strong></td>
+<td>国内协议支持更好</td>
+</tr>
+<tr>
+<td>深度取证、漏洞分析</td>
+<td><strong>Wireshark</strong></td>
+<td>协议解析全面、filter 强大</td>
+</tr>
+<tr>
+<td>日常 MCP 快速查询</td>
+<td><strong>科来 csnas</strong></td>
+<td>响应快，5 个工具覆盖基础需求</td>
+</tr>
+<tr>
+<td>复杂网络问题排查</td>
+<td><strong>Wireshark</strong></td>
+<td>expert info、会话统计、follow stream</td>
+</tr>
+<tr>
+<td>跨平台环境</td>
+<td><strong>Wireshark</strong></td>
+<td>全平台支持</td>
+</tr>
+<tr>
+<td><strong>最佳组合</strong></td>
+<td><strong>两者互补</strong></td>
+<td>科来快速查看 + Wireshark 深度分析</td>
+</tr>
+</tbody></table>
+<h3 id="局限性（重要）"><a href="#局限性（重要）" class="headerlink" title="局限性（重要）"></a>局限性（重要）</h3><ol>
+<li><strong>仅封装了 IP&#x2F;TCP&#x2F;UDP 三层</strong> — <code>-j ip,tcp,udp</code>。cmdl 虽支持 DNS、HTTP、SSL 等高层协议，但 JSON 输出只暴露这三层；高层信息需通过 <code>-T fields</code> 或 <code>-l</code> 模块日志获取，MCP 脚本暂未实现</li>
+<li><strong>实时抓包文件无法保存</strong> — <code>cmdl -w</code> 在 kill 进程时写不出有效文件，只能走 <code>-T json</code> stdout 并通过截断修复获得数据</li>
+<li><strong>JSON 输出不完整</strong> — cmdl 没有 <code>-q</code> 静默标志，实时抓包时 stderr 混入进度信息，JSON stdout 在 kill 时截断。MCP 脚本 <code>_fix_truncated_json()</code> 做了修复，但最后一个包可能丢失</li>
+<li><strong>无 pcap 写入能力</strong> — 当前脚本仅供实时查看，抓到的数据不落盘。如需持久化，需配合 Wireshark 补抓</li>
+<li><strong>无高协议层解析</strong> — 看不到 HTTP URL、DNS 查询名、TLS 证书等应用层细节。科来 GUI 有此能力，但 <code>cmdl.exe</code> 的 JSON 接口只暴露 IP&#x2F;TCP&#x2F;UDP</li>
+<li><strong>科来 GUI 捕获格式私有</strong> — GUI 界面捕获的数据存为 <code>.cscproj</code>&#x2F;<code>.cscpkt</code> 格式，<code>cmdl.exe</code> 无法直接读取，需从 GUI 中”另存为 pcapng”后才能用 <code>read_pcap</code> 分析</li>
+<li><strong>单进程抓包</strong> — 不支持多接口并发捕获</li>
+<li><strong>cmdl 帮助文档为 chm 格式</strong> — 已提取为 HTML，确认无 API&#x2F;MCP&#x2F;SDK 等二次开发接口</li>
+</ol>
+<hr>
+<h2 id="八、网络分析工具与-Web-安全工具的对比"><a href="#八、网络分析工具与-Web-安全工具的对比" class="headerlink" title="八、网络分析工具与 Web 安全工具的对比"></a>八、网络分析工具与 Web 安全工具的对比</h2><p>前面章节介绍了 Wireshark、科来（网络分析工具）的 MCP 配置。而在另一篇《安全工具链配置指南》中，还配置了 Burp Suite 和 Yakit（Web 安全测试工具）。这两类工具经常被混淆，下面厘清它们的定位差异。</p>
+<h3 id="8-1-工具分类定位"><a href="#8-1-工具分类定位" class="headerlink" title="8.1 工具分类定位"></a>8.1 工具分类定位</h3><pre><code class="hljs plaintext">┌─────────────────────────────────────────────────────────────┐
+│                     网络安全工具生态                           │
+├─────────────────────────────┬───────────────────────────────┤
+│      Web 应用安全测试         │        网络协议分析            │
+│    （应用层 L7，代理模式）      │   （网络层 L2-L7，网卡模式）   │
+├─────────────────────────────┼───────────────────────────────┤
+│  Burp Suite                 │  Wireshark / tshark           │
+│  Yakit                      │  科来 CSNAS                   │
+├─────────────────────────────┼───────────────────────────────┤
+│  目标：Web 漏洞、API 安全      │  目标：流量协议、网络故障      │
+│  方式：拦截→修改→重放→扫描    │  方式：捕获→解析→统计→取证    │
+└─────────────────────────────┴───────────────────────────────┘</code></pre>
+
+<h3 id="8-2-相同点"><a href="#8-2-相同点" class="headerlink" title="8.2 相同点"></a>8.2 相同点</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>流量获取</strong></td>
+<td>都能捕获和分析网络流量</td>
+</tr>
+<tr>
+<td><strong>MCP 集成</strong></td>
+<td>都提供 MCP Server，可与 Claude Code &#x2F; Codex Desktop 联动</td>
+</tr>
+<tr>
+<td><strong>过滤能力</strong></td>
+<td>都支持按协议、IP、端口、关键字等条件过滤流量</td>
+</tr>
+<tr>
+<td><strong>安全用途</strong></td>
+<td>都可用于安全分析（漏洞验证 &#x2F; 恶意流量检测）</td>
+</tr>
+<tr>
+<td><strong>离线分析</strong></td>
+<td>都支持读取 pcap&#x2F;pcapng 文件做离线分析</td>
+</tr>
+<tr>
+<td><strong>CLI 接口</strong></td>
+<td>都提供命令行工具（Burp MCP proxy &#x2F; yak.exe &#x2F; tshark &#x2F; cmdl）</td>
+</tr>
+</tbody></table>
+<h3 id="8-3-不同点"><a href="#8-3-不同点" class="headerlink" title="8.3 不同点"></a>8.3 不同点</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Burp Suite &#x2F; Yakit（Web 安全）</th>
+<th>科来 &#x2F; Wireshark（网络分析）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>工作层级</strong></td>
+<td>应用层（HTTP&#x2F;HTTPS&#x2F;WebSocket）</td>
+<td>网络层到应用层（全协议栈 L2-L7）</td>
+</tr>
+<tr>
+<td><strong>核心定位</strong></td>
+<td>Web 应用渗透测试与漏洞验证</td>
+<td>网络协议分析、故障排查与取证</td>
+</tr>
+<tr>
+<td><strong>抓包方式</strong></td>
+<td>代理模式（拦截浏览器&#x2F;客户端流量）</td>
+<td>网卡模式（捕获网卡所有进出流量）</td>
+</tr>
+<tr>
+<td><strong>流量范围</strong></td>
+<td>主要是 HTTP&#x2F;HTTPS，可扩展 WebSocket</td>
+<td>所有协议（TCP&#x2F;UDP&#x2F;ICMP&#x2F;ARP&#x2F;DNS&#x2F;HTTP 等）</td>
+</tr>
+<tr>
+<td><strong>请求修改</strong></td>
+<td>✅ 可拦截并实时修改请求&#x2F;响应</td>
+<td>❌ 只读分析，不可修改流量</td>
+</tr>
+<tr>
+<td><strong>漏洞扫描</strong></td>
+<td>✅ 主动&#x2F;被动扫描，发现 Web 漏洞</td>
+<td>❌ 无漏洞扫描能力</td>
+</tr>
+<tr>
+<td><strong>重放测试</strong></td>
+<td>✅ Repeater &#x2F; Fuzzer 重复发送请求</td>
+<td>❌ 无重放能力</td>
+</tr>
+<tr>
+<td><strong>协议解析深度</strong></td>
+<td>HTTP 协议深入（参数、Cookie、Header、Body）</td>
+<td>全协议树解析（Wireshark 700+ 协议）</td>
+</tr>
+<tr>
+<td><strong>加密处理</strong></td>
+<td>代理证书自动解密 HTTPS</td>
+<td>需 SSLKEYLOGFILE 或导入私钥解密</td>
+</tr>
+<tr>
+<td><strong>会话重组</strong></td>
+<td>❌ 不关注 TCP 会话重组</td>
+<td>✅ 支持 TCP 流重组、Follow Stream</td>
+</tr>
+<tr>
+<td><strong>统计输出</strong></td>
+<td>漏洞列表、扫描报告</td>
+<td>协议分布、Top IP&#x2F;端口&#x2F;会话、流量趋势</td>
+</tr>
+<tr>
+<td><strong>专家分析</strong></td>
+<td>❌ 无</td>
+<td>✅ Wireshark Expert Info 异常标记</td>
+</tr>
+<tr>
+<td><strong>目标用户</strong></td>
+<td>渗透测试员、Web 安全工程师、红队</td>
+<td>网络工程师、运维、蓝队、安全分析师</td>
+</tr>
+<tr>
+<td><strong>典型场景</strong></td>
+<td>SQL 注入测试、API 越权验证、XSS 检测</td>
+<td>网络卡顿排查、恶意域名检测、流量基线分析</td>
+</tr>
+</tbody></table>
+<h3 id="8-4-互补工作流示例"><a href="#8-4-互补工作流示例" class="headerlink" title="8.4 互补工作流示例"></a>8.4 互补工作流示例</h3><p><strong>场景：排查一次疑似数据泄露事件</strong></p>
+<ol>
+<li><strong>网络层发现异常</strong>：用 Wireshark &#x2F; 科来捕获流量，发现某主机频繁向外发送大流量</li>
+<li><strong>定位具体应用</strong>：通过 Wireshark 的 <code>Follow TCP Stream</code> 或 HTTP 过滤，定位到具体 Web 接口</li>
+<li><strong>应用层验证漏洞</strong>：将接口导入 Burp Suite &#x2F; Yakit，用 Repeater&#x2F;Fuzzer 验证是否存在越权或注入</li>
+<li><strong>AI 辅助分析</strong>：通过 MCP 让 Claude Code 同时读取网络层统计（科来）和应用层细节（Burp&#x2F;Yakit），生成完整的事件分析报告</li>
+</ol>
+<h3 id="8-5-选型建议"><a href="#8-5-选型建议" class="headerlink" title="8.5 选型建议"></a>8.5 选型建议</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐工具</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Web 渗透测试、漏洞挖掘</td>
+<td><strong>Burp Suite &#x2F; Yakit</strong></td>
+<td>代理拦截、请求修改、扫描是核心能力</td>
+</tr>
+<tr>
+<td>网络故障排查、流量基线</td>
+<td><strong>Wireshark &#x2F; 科来</strong></td>
+<td>全流量可见、协议统计、会话分析</td>
+</tr>
+<tr>
+<td>恶意流量检测、取证分析</td>
+<td><strong>Wireshark &#x2F; 科来</strong></td>
+<td>深度协议解析、专家信息、流重组</td>
+</tr>
+<tr>
+<td>API 安全测试</td>
+<td><strong>Burp Suite &#x2F; Yakit</strong></td>
+<td>参数 fuzz、认证绕过、响应分析</td>
+</tr>
+<tr>
+<td>完整事件溯源</td>
+<td><strong>两者结合</strong></td>
+<td>网络层定位 + 应用层验证</td>
+</tr>
+<tr>
+<td>AI 自动化安全运营</td>
+<td><strong>四者全部接入 MCP</strong></td>
+<td>用自然语言统一调度，减少切换成本</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="九、故障排查"><a href="#九、故障排查" class="headerlink" title="九、故障排查"></a>九、故障排查</h2><h3 id="MCP-工具未出现"><a href="#MCP-工具未出现" class="headerlink" title="MCP 工具未出现"></a>MCP 工具未出现</h3><ol>
+<li>检查 tshark &#x2F; cmdl 是否在 PATH 中，能否在终端独立运行</li>
+<li>检查 <code>.claude.json</code> 或 <code>.codex\config.toml</code> 中配置是否写入了正确的项目路径</li>
+<li>重启 Claude Code &#x2F; Codex Desktop（配置更改后需重启）</li>
+<li>检查 Python 脚本路径是否正确，Windows 下建议使用绝对路径</li>
+</ol>
+<h3 id="PyShark-FileCapture-失败"><a href="#PyShark-FileCapture-失败" class="headerlink" title="PyShark FileCapture 失败"></a>PyShark <code>FileCapture</code> 失败</h3><ul>
+<li>现象：<code>[WinError 5] 拒绝访问</code> 或 <code>This event loop is already running</code></li>
+<li>根因：Windows 非管理员权限下 PyShark 无法读取管道文件，或 asyncio 事件循环冲突</li>
+<li>解决：改用 <code>subprocess.run</code> 直接调用 <code>tshark -r</code>，绕过 PyShark</li>
+</ul>
+<h3 id="科来-cmdl-exe-找不到"><a href="#科来-cmdl-exe-找不到" class="headerlink" title="科来 cmdl.exe 找不到"></a>科来 <code>cmdl.exe</code> 找不到</h3><ul>
+<li>现象：MCP 启动后提示 <code>cmdl 不是内部或外部命令</code></li>
+<li>根因：<code>.claude.json</code> 的 <code>env.PATH</code> 未包含 CSNAS 安装目录</li>
+<li>解决：在配置中显式添加 <code>&quot;PATH&quot;: &quot;D:\\yingyong\\CSNAS;...&quot;</code></li>
+</ul>
+<h3 id="tshark-中文接口名乱码"><a href="#tshark-中文接口名乱码" class="headerlink" title="tshark 中文接口名乱码"></a>tshark 中文接口名乱码</h3><ul>
+<li>现象：<code>list_interfaces</code> 返回乱码或空列表</li>
+<li>根因：Windows 中文接口名编码问题</li>
+<li>解决：<code>subprocess.check_output</code> 添加 <code>encoding=&#39;utf-8&#39;, errors=&#39;replace&#39;</code></li>
+</ul>
+<hr>
+<h2 id="十、参考链接"><a href="#十、参考链接" class="headerlink" title="十、参考链接"></a>十、参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.wireshark.org/docs/">Wireshark 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.wireshark.org/docs/man-pages/tshark.html">tshark 手册页</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.colasoft.com.cn/">科来官方网站</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/A-G-U-P-T-A/wireshark-mcp">A-G-U-P-T-A&#x2F;wireshark-mcp</a> — Wireshark MCP Server 社区实现</li>
+<li><a target="_blank" rel="noopener" href="https://docs.anthropic.com/en/docs/claude-code/mcp">Claude Code MCP 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/">Model Context Protocol 规范</a></li>
+</ul>
+<hr>
+<blockquote>
+<p>本文所有配置均基于实际环境验证，工具版本更新可能导致行为变化，建议以官方文档为准。如有疑问欢迎在评论区留言交流。</p>
+</blockquote>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">swfk2154</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://blogbu2154.site/MCP%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/">https://blogbu2154.site/MCP%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">swfk2154</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Wireshark/">
+                                    <span class="chip bg-color">Wireshark</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%A7%91%E6%9D%A5/">
+                                    <span class="chip bg-color">科来</span>
+                                </a>
+                            
+                                <a href="/tags/MCP/">
+                                    <span class="chip bg-color">MCP</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90/">
+                                    <span class="chip bg-color">网络分析</span>
+                                </a>
+                            
+                                <a href="/tags/tshark/">
+                                    <span class="chip bg-color">tshark</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%8A%93%E5%8C%85/">
+                                    <span class="chip bg-color">抓包</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/MCP%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="MCP 网络分析工具配置指南：Wireshark、科来与 AI 编码助手联动实战">
+                        
+                        <span class="card-title">MCP 网络分析工具配置指南：Wireshark、科来与 AI 编码助手联动实战</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            真实记录 Wireshark（tshark）与科来网络分析系统（CSNAS）在 Claude Code 中的 MCP 配置全过程，包含踩坑记录、验证方法与工具对比。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-06
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/" class="post-category">
+                                    工具实践
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Wireshark/">
+                        <span class="chip bg-color">Wireshark</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%A7%91%E6%9D%A5/">
+                        <span class="chip bg-color">科来</span>
+                    </a>
+                    
+                    <a href="/tags/MCP/">
+                        <span class="chip bg-color">MCP</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90/">
+                        <span class="chip bg-color">网络分析</span>
+                    </a>
+                    
+                    <a href="/tags/tshark/">
+                        <span class="chip bg-color">tshark</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%8A%93%E5%8C%85/">
+                        <span class="chip bg-color">抓包</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/%E6%8A%A4%E7%BD%91-HVV-%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="护网（HVV）面试题大全：全面最终版">
+                        
+                        <span class="card-title">护网（HVV）面试题大全：全面最终版</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            面向护网蓝队、研判、应急响应和安全运营岗位的全面面试资料，覆盖 Web 漏洞、攻击流量、安全工具、安全设备、厂商产品、域安全、云容器和安全建设。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-05
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" class="post-category">
+                                    网络安全
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/HVV/">
+                        <span class="chip bg-color">HVV</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                        <span class="chip bg-color">护网</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/">
+                        <span class="chip bg-color">面试题</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">
+                        <span class="chip bg-color">应急响应</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%93%9D%E9%98%9F/">
+                        <span class="chip bg-color">蓝队</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/">
+                        <span class="chip bg-color">安全运营</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2026</span>
+            
+            <a href="/about" target="_blank">swfk2154</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            
+            <br>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/swfk2154" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+    
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+     
+        <script type="text/javascript">
+            // 只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/libs/others/star.js"><\/script>');
+            }
+        </script>
+    
+
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
