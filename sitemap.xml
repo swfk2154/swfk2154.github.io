@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blogbu2154.site/Codex-CLI-Claude-Code-Hermes-%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/</loc>
+    
+    <lastmod>2026-06-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blogbu2154.site/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%AE%9E%E6%88%98%E6%93%8D%E4%BD%9C%E8%A1%A5%E5%85%A8%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E5%BA%94%E6%80%A5%E6%8E%92%E6%9F%A5%E5%AE%9E%E6%93%8D%C2%B7%E6%B7%B1%E5%BA%A6%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%C2%B7%E6%8F%90%E6%9D%83%E6%89%8B%E6%B3%95%E4%B8%8E%E6%BA%AF%E6%BA%90%E5%8F%8D%E5%88%B6/</loc>
     
     <lastmod>2026-06-24</lastmod>
@@ -12,15 +21,6 @@
   
   <url>
     <loc>https://blogbu2154.site/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%A8%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
-    
-    <lastmod>2026-06-24</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/Codex-CLI-Claude-Code-Hermes-%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/</loc>
     
     <lastmod>2026-06-24</lastmod>
     
@@ -155,83 +155,6 @@
 
   
   <url>
-    <loc>https://blogbu2154.site/tags/AI%E5%AE%89%E5%85%A8/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/LLM/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E7%BA%A2%E9%98%9F/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E8%B5%84%E6%96%99%E6%95%B4%E7%90%86/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/AI/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Agent/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E5%85%A5%E9%97%A8/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Prompt/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/RAG/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Embedding/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blogbu2154.site/tags/Wireshark/</loc>
     <lastmod>2026-06-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -274,27 +197,6 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/Hexo/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E5%8D%9A%E5%AE%A2/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/GitHub-Pages/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blogbu2154.site/tags/AI%E5%B7%A5%E5%85%B7/</loc>
     <lastmod>2026-06-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -302,49 +204,7 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/Codex/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Claude-Code/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Hermes/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Gemini-CLI/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Antigravity-CLI/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/OpenClaw/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/OpenCode/</loc>
+    <loc>https://blogbu2154.site/tags/Agent/</loc>
     <lastmod>2026-06-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -372,6 +232,62 @@
   </url>
   
   <url>
+    <loc>https://blogbu2154.site/tags/AI%E5%AE%89%E5%85%A8/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/LLM/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E7%BA%A2%E9%98%9F/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E8%B5%84%E6%96%99%E6%95%B4%E7%90%86/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Hexo/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E5%8D%9A%E5%AE%A2/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/GitHub-Pages/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blogbu2154.site/tags/Burp-Suite/</loc>
     <lastmod>2026-06-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -380,6 +296,13 @@
   
   <url>
     <loc>https://blogbu2154.site/tags/Yakit/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Claude-Code/</loc>
     <lastmod>2026-06-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -428,6 +351,41 @@
   </url>
   
   <url>
+    <loc>https://blogbu2154.site/tags/AI/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E5%85%A5%E9%97%A8/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Prompt/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/RAG/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Embedding/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blogbu2154.site/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/</loc>
     <lastmod>2026-06-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -451,20 +409,6 @@
 
   
   <url>
-    <loc>https://blogbu2154.site/categories/AI%E5%AE%89%E5%85%A8/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/categories/AI%E5%85%A5%E9%97%A8/</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blogbu2154.site/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/</loc>
     <lastmod>2026-06-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -479,7 +423,21 @@
   </url>
   
   <url>
+    <loc>https://blogbu2154.site/categories/AI%E5%AE%89%E5%85%A8/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blogbu2154.site/categories/%E5%AE%89%E5%85%A8/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/categories/AI%E5%85%A5%E9%97%A8/</loc>
     <lastmod>2026-06-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

@@ -71,7 +71,7 @@
     <link href="https://blogbu2154.site/Codex-CLI-Claude-Code-Hermes-%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/"/>
     <id>https://blogbu2154.site/Codex-CLI-Claude-Code-Hermes-%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/</id>
     <published>2026-06-23T16:00:00.000Z</published>
-    <updated>2026-06-24T04:22:09.091Z</updated>
+    <updated>2026-06-24T04:50:57.725Z</updated>
     
     
       
@@ -93,19 +93,7 @@
     
     <category term="AI工具" scheme="https://blogbu2154.site/tags/AI%E5%B7%A5%E5%85%B7/"/>
     
-    <category term="Codex" scheme="https://blogbu2154.site/tags/Codex/"/>
-    
-    <category term="Claude Code" scheme="https://blogbu2154.site/tags/Claude-Code/"/>
-    
-    <category term="Hermes" scheme="https://blogbu2154.site/tags/Hermes/"/>
-    
-    <category term="Gemini CLI" scheme="https://blogbu2154.site/tags/Gemini-CLI/"/>
-    
-    <category term="Antigravity CLI" scheme="https://blogbu2154.site/tags/Antigravity-CLI/"/>
-    
-    <category term="OpenClaw" scheme="https://blogbu2154.site/tags/OpenClaw/"/>
-    
-    <category term="OpenCode" scheme="https://blogbu2154.site/tags/OpenCode/"/>
+    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
     
     <category term="CC Switch" scheme="https://blogbu2154.site/tags/CC-Switch/"/>
     
@@ -216,15 +204,15 @@
     <category term="工具实践" scheme="https://blogbu2154.site/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/"/>
     
     
-    <category term="AI安全" scheme="https://blogbu2154.site/tags/AI%E5%AE%89%E5%85%A8/"/>
-    
     <category term="MCP" scheme="https://blogbu2154.site/tags/MCP/"/>
     
-    <category term="Claude Code" scheme="https://blogbu2154.site/tags/Claude-Code/"/>
+    <category term="AI安全" scheme="https://blogbu2154.site/tags/AI%E5%AE%89%E5%85%A8/"/>
     
     <category term="Burp Suite" scheme="https://blogbu2154.site/tags/Burp-Suite/"/>
     
     <category term="Yakit" scheme="https://blogbu2154.site/tags/Yakit/"/>
+    
+    <category term="Claude Code" scheme="https://blogbu2154.site/tags/Claude-Code/"/>
     
     <category term="Codex Desktop" scheme="https://blogbu2154.site/tags/Codex-Desktop/"/>
     
@@ -291,11 +279,11 @@
     <category term="AI入门" scheme="https://blogbu2154.site/categories/AI%E5%85%A5%E9%97%A8/"/>
     
     
+    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
+    
     <category term="LLM" scheme="https://blogbu2154.site/tags/LLM/"/>
     
     <category term="AI" scheme="https://blogbu2154.site/tags/AI/"/>
-    
-    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
     
     <category term="入门" scheme="https://blogbu2154.site/tags/%E5%85%A5%E9%97%A8/"/>
     
