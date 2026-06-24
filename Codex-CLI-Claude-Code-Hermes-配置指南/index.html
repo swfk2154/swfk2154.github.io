@@ -1,0 +1,2085 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="Codex CLI, Claude Code, Hermes, Gemini CLI, Antigravity CLI, OpenClaw, OpenCode, CC Switch, EchoBird, 配置第三方模型, AI编程, MaaS, 桌面版, Claude Desktop, Antigravity Desktop, Codex Desktop, Hermes Desktop, OpenClaw Desktop">
+    <meta name="description" content="
+八个主流 AI 编程工具的 CLI + 桌面版安装配置，从命令行到图形界面一次讲清。
+
+
+前言目前主流的 AI 编程工具主要有八个：Codex（OpenAI）、Claude Code（Anthropic）、Hermes Agent（Nou">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>AI 编程 CLI + 桌面版工具大全｜安装、配置第三方模型、辅助管理工具 | swfk 的安全笔记</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="swfk 的安全笔记" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">swfk 的安全笔记</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">swfk 的安全笔记</div>
+        <div class="logo-desc">
+            
+            记录 AI 安全、网络安全、工具实践与技术复盘。
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">AI 编程 CLI + 桌面版工具大全｜安装、配置第三方模型、辅助管理工具</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/AI%E5%B7%A5%E5%85%B7/">
+                                <span class="chip bg-color">AI工具</span>
+                            </a>
+                        
+                            <a href="/tags/Codex/">
+                                <span class="chip bg-color">Codex</span>
+                            </a>
+                        
+                            <a href="/tags/Claude-Code/">
+                                <span class="chip bg-color">Claude Code</span>
+                            </a>
+                        
+                            <a href="/tags/Hermes/">
+                                <span class="chip bg-color">Hermes</span>
+                            </a>
+                        
+                            <a href="/tags/Gemini-CLI/">
+                                <span class="chip bg-color">Gemini CLI</span>
+                            </a>
+                        
+                            <a href="/tags/Antigravity-CLI/">
+                                <span class="chip bg-color">Antigravity CLI</span>
+                            </a>
+                        
+                            <a href="/tags/OpenClaw/">
+                                <span class="chip bg-color">OpenClaw</span>
+                            </a>
+                        
+                            <a href="/tags/OpenCode/">
+                                <span class="chip bg-color">OpenCode</span>
+                            </a>
+                        
+                            <a href="/tags/CC-Switch/">
+                                <span class="chip bg-color">CC Switch</span>
+                            </a>
+                        
+                            <a href="/tags/EchoBird/">
+                                <span class="chip bg-color">EchoBird</span>
+                            </a>
+                        
+                            <a href="/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/">
+                                <span class="chip bg-color">配置指南</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/AI%E5%B7%A5%E5%85%B7/" class="post-category">
+                                AI工具
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2026-06-24
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>八个主流 AI 编程工具的 CLI + 桌面版安装配置，从命令行到图形界面一次讲清。</p>
+</blockquote>
+<hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>目前主流的 AI 编程工具主要有八个：<strong>Codex</strong>（OpenAI）、<strong>Claude Code</strong>（Anthropic）、<strong>Hermes Agent</strong>（NousResearch）、<strong>Antigravity</strong>（Google，原 Gemini CLI 继任者）、<strong>OpenClaw</strong>、<strong>OpenCode</strong>。其中大部分既有 CLI 命令行版，也有桌面 GUI 应用。</p>
+<p>很多开发者手上同时用着两三个或更多，但每个工具的安装方式、配置文件写法、API Key 设置规则都不一样。这篇文章逐一覆盖：</p>
+<ol>
+<li>每个工具的 <strong>CLI 版 + 桌面版</strong> 安装方式</li>
+<li>如何在应用内配置第三方模型（原生方式）</li>
+<li>如果嫌手动改配置文件麻烦，用 <strong>CC Switch</strong> 或 <strong>EchoBird</strong> 怎么简化</li>
+</ol>
+<h3 id="两种思路"><a href="#两种思路" class="headerlink" title="两种思路"></a>两种思路</h3><ul>
+<li><strong>原生配置</strong>：工具本身支持设置第三方 API 端点，不依赖额外工具。每个工具单独配</li>
+<li><strong>辅助工具</strong>：通过 CC Switch 或 EchoBird 的 GUI 统一管理，还能做协议转换和故障切换</li>
+</ul>
+<h3 id="CLI-版-vs-桌面版"><a href="#CLI-版-vs-桌面版" class="headerlink" title="CLI 版 vs 桌面版"></a>CLI 版 vs 桌面版</h3><p>大部分工具同时提供 CLI 和桌面版，两者不是互斥的——可以在不同场景下切换使用：</p>
+<table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>CLI 版</th>
+<th>桌面版</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>适合场景</td>
+<td>SSH 远程、CI&#x2F;CD、快捷键流</td>
+<td>日常开发、项目管理、图形化操作</td>
+</tr>
+<tr>
+<td>第三方模型配置</td>
+<td>原生支持（config &#x2F; env）</td>
+<td>受限，需辅助工具</td>
+</tr>
+<tr>
+<td>资源占用</td>
+<td>轻量</td>
+<td>较重（Electron 等框架）</td>
+</tr>
+<tr>
+<td>学习成本</td>
+<td>需记命令</td>
+<td>所见即所得</td>
+</tr>
+</tbody></table>
+<p>两个方案不冲突，可以混合用。</p>
+<hr>
+<h2 id="一、OpenAI-Codex"><a href="#一、OpenAI-Codex" class="headerlink" title="一、OpenAI Codex"></a>一、OpenAI Codex</h2><p>Codex 是 OpenAI 推出的通用 AI Agent 工具，支持云端模型和本地开源模型。提供 CLI 命令行版和桌面 App。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><pre><code class="hljs bash"><span class="hljs-comment"># npm（推荐，全平台）</span>
+npm install -g @openai/codex
+
+<span class="hljs-comment"># macOS Homebrew</span>
+brew install codex</code></pre>
+
+<h3 id="原生配置第三方模型"><a href="#原生配置第三方模型" class="headerlink" title="原生配置第三方模型"></a>原生配置第三方模型</h3><p>Codex CLI 的 Rust 版本通过 <code>~/.codex/config.toml</code> 原生支持第三方模型提供商。</p>
+<pre><code class="hljs toml"><span class="hljs-attr">model</span> = <span class="hljs-string">&quot;deepseek-chat&quot;</span>
+<span class="hljs-attr">model_provider</span> = <span class="hljs-string">&quot;deepseek&quot;</span>
+
+<span class="hljs-section">[model_providers.deepseek]</span>
+<span class="hljs-attr">name</span> = <span class="hljs-string">&quot;DeepSeek&quot;</span>
+<span class="hljs-attr">base_url</span> = <span class="hljs-string">&quot;https://api.deepseek.com&quot;</span>
+<span class="hljs-attr">env_key</span> = <span class="hljs-string">&quot;DEEPSEEK_API_KEY&quot;</span>
+
+<span class="hljs-section">[model_providers.openrouter]</span>
+<span class="hljs-attr">name</span> = <span class="hljs-string">&quot;OpenRouter&quot;</span>
+<span class="hljs-attr">base_url</span> = <span class="hljs-string">&quot;https://openrouter.ai/api/v1&quot;</span>
+<span class="hljs-attr">env_key</span> = <span class="hljs-string">&quot;OPENROUTER_API_KEY&quot;</span>
+<span class="hljs-attr">wire_api</span> = <span class="hljs-string">&quot;responses&quot;</span>    <span class="hljs-comment"># Codex 要求 Responses API</span>
+
+<span class="hljs-section">[model_providers.ollama]</span>
+<span class="hljs-attr">name</span> = <span class="hljs-string">&quot;Ollama&quot;</span>
+<span class="hljs-attr">base_url</span> = <span class="hljs-string">&quot;http://localhost:11434/v1&quot;</span>
+
+<span class="hljs-section">[profiles.deepseek]</span>
+<span class="hljs-attr">model_provider</span> = <span class="hljs-string">&quot;deepseek&quot;</span>
+<span class="hljs-attr">model</span> = <span class="hljs-string">&quot;deepseek-chat&quot;</span>
+
+<span class="hljs-section">[profiles.local]</span>
+<span class="hljs-attr">model_provider</span> = <span class="hljs-string">&quot;ollama&quot;</span>
+<span class="hljs-attr">model</span> = <span class="hljs-string">&quot;qwen3-coder-30b&quot;</span></code></pre>
+
+<pre><code class="hljs bash"><span class="hljs-comment"># 切换 profile</span>
+codex --profile deepseek
+codex --profile <span class="hljs-built_in">local</span></code></pre>
+
+<p><strong>支持的提供商：</strong> OpenRouter、Azure、DeepSeek、Ollama、Gemini、Mistral、xAI、Groq、LM Studio、MLX 等。</p>
+<p><strong>API Key 环境变量（写入 ~&#x2F;.bashrc &#x2F; ~&#x2F;.zshrc）：</strong></p>
+<pre><code class="hljs bash"><span class="hljs-built_in">export</span> DEEPSEEK_API_KEY=<span class="hljs-string">&quot;sk-xxxx&quot;</span>
+<span class="hljs-built_in">export</span> OPENROUTER_API_KEY=<span class="hljs-string">&quot;sk-or-xxxx&quot;</span></code></pre>
+
+<h3 id="Codex-桌面版"><a href="#Codex-桌面版" class="headerlink" title="Codex 桌面版"></a>Codex 桌面版</h3><p>Codex 除了 CLI 外还提供 <strong>桌面 App</strong>（macOS + Windows），界面类似 ChatGPT，左侧项目列表、右侧对话区。</p>
+<p><strong>下载安装：</strong></p>
+<table>
+<thead>
+<tr>
+<th>平台</th>
+<th>方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>macOS &#x2F; Windows</td>
+<td><a target="_blank" rel="noopener" href="https://developers.openai.com/codex/app">developers.openai.com&#x2F;codex&#x2F;app</a></td>
+</tr>
+<tr>
+<td>登录</td>
+<td>ChatGPT 账号即可登录</td>
+</tr>
+</tbody></table>
+<p><strong>桌面版优势：</strong></p>
+<ul>
+<li><strong>Computer Use</strong>：让 Codex 直接操作你的桌面应用和浏览器</li>
+<li><strong>远程控制</strong>：手机 ChatGPT App 可以查看、审批、指挥桌面 Codex</li>
+<li><strong>项目管理</strong>：基于本地文件夹作为项目上下文</li>
+<li><strong>技能系统</strong>：可复用的指令和工作流</li>
+<li><strong>定时任务</strong>：自动化重复性工作</li>
+</ul>
+<p><strong>桌面版配置第三方模型：</strong> 桌面版暂不支持像 CLI 那样通过 <code>config.toml</code> 直接切换第三方模型。如果要用国内&#x2F;其他模型，需要通过 CC Switch 的本地路由做协议转发。</p>
+<hr>
+<h2 id="二、Anthropic-Claude-Code"><a href="#二、Anthropic-Claude-Code" class="headerlink" title="二、Anthropic Claude Code"></a>二、Anthropic Claude Code</h2><p>Claude Code 是 Anthropic 的 AI 编程 Agent，从 v1.0.61+ 开始原生支持配置第三方 API 端点。提供 CLI 命令行版和桌面版（Claude Desktop）。</p>
+<h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><pre><code class="hljs bash">npm install -g @anthropic-ai/claude-code</code></pre>
+
+<h3 id="原生配置第三方模型-1"><a href="#原生配置第三方模型-1" class="headerlink" title="原生配置第三方模型"></a>原生配置第三方模型</h3><p>核心原理：通过 <code>ANTHROPIC_BASE_URL</code> 把 API 请求转发到指定端点，通过 <code>ANTHROPIC_AUTH_TOKEN</code> 传递第三方 API Key。</p>
+<p><strong>方法一：settings.json（推荐）</strong></p>
+<p>编辑 <code>~/.claude/settings.json</code>：</p>
+<pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+  <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+    <span class="hljs-attr">&quot;ANTHROPIC_AUTH_TOKEN&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;sk-or-xxxx&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;ANTHROPIC_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://openrouter.ai/api&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;ANTHROPIC_MODEL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;anthropic/claude-sonnet-4-6&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;ANTHROPIC_DEFAULT_HAIKU_MODEL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;anthropic/claude-haiku-4-5&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;ANTHROPIC_DEFAULT_SONNET_MODEL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;anthropic/claude-sonnet-4-6&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;ANTHROPIC_DEFAULT_OPUS_MODEL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;anthropic/claude-opus-4-6&quot;</span>
+  <span class="hljs-punctuation">&#125;</span>
+<span class="hljs-punctuation">&#125;</span></code></pre>
+
+<p><strong>方法二：环境变量（临时切换）</strong></p>
+<pre><code class="hljs bash"><span class="hljs-built_in">export</span> ANTHROPIC_BASE_URL=<span class="hljs-string">&quot;https://openrouter.ai/api&quot;</span>
+<span class="hljs-built_in">export</span> ANTHROPIC_AUTH_TOKEN=<span class="hljs-string">&quot;sk-or-xxxx&quot;</span>
+claude</code></pre>
+
+<p><strong>支持直接配置的提供商（具有 Anthropic 兼容端点）：</strong></p>
+<table>
+<thead>
+<tr>
+<th>提供商</th>
+<th>ANTHROPIC_BASE_URL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenRouter</td>
+<td><code>https://openrouter.ai/api</code></td>
+</tr>
+<tr>
+<td>DeepSeek</td>
+<td><code>https://api.deepseek.com/anthropic</code></td>
+</tr>
+<tr>
+<td>智谱 GLM</td>
+<td><code>https://open.bigmodel.cn/api/anthropic</code></td>
+</tr>
+<tr>
+<td>Kimi &#x2F; Moonshot</td>
+<td><code>https://api.moonshot.cn/anthropic</code></td>
+</tr>
+<tr>
+<td>通义千问（百炼）</td>
+<td><code>https://dashscope.aliyuncs.com/apps/anthropic</code></td>
+</tr>
+<tr>
+<td>MiniMax</td>
+<td><code>https://api.minimax.io/anthropic</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><code>ANTHROPIC_AUTH_TOKEN</code> 和 <code>ANTHROPIC_API_KEY</code> 二选一，不要同时设。</p>
+</blockquote>
+<p><strong>原生支持的云平台：</strong></p>
+<table>
+<thead>
+<tr>
+<th>平台</th>
+<th>配置方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AWS Bedrock</td>
+<td><code>CLAUDE_CODE_USE_BEDROCK=1</code> + AWS 凭证</td>
+</tr>
+<tr>
+<td>Google Vertex AI</td>
+<td><code>CLAUDE_CODE_USE_VERTEX=1</code> + GCP 凭证</td>
+</tr>
+<tr>
+<td>Microsoft Foundry</td>
+<td><code>CLAUDE_CODE_USE_FOUNDRY=1</code></td>
+</tr>
+</tbody></table>
+<h3 id="模型别名"><a href="#模型别名" class="headerlink" title="模型别名"></a>模型别名</h3><table>
+<thead>
+<tr>
+<th>别名</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sonnet</code></td>
+<td>日常编码</td>
+</tr>
+<tr>
+<td><code>opus</code></td>
+<td>复杂推理</td>
+</tr>
+<tr>
+<td><code>haiku</code></td>
+<td>轻量快速</td>
+</tr>
+<tr>
+<td><code>fable</code></td>
+<td>最强模型，适合长任务</td>
+</tr>
+<tr>
+<td><code>opusplan</code></td>
+<td>Plan Mode 用 opus，执行用 sonnet</td>
+</tr>
+</tbody></table>
+<pre><code class="hljs bash">claude --model opus
+<span class="hljs-comment"># 进入后 /model opus 切换</span></code></pre>
+
+<h3 id="Claude-Code-汉化"><a href="#Claude-Code-汉化" class="headerlink" title="Claude Code 汉化"></a>Claude Code 汉化</h3><p>Claude Desktop 原生界面为英文，可通过社区汉化补丁实现中文显示。</p>
+<h4 id="方法一：javaht-claude-desktop-zh-cn（推荐）"><a href="#方法一：javaht-claude-desktop-zh-cn（推荐）" class="headerlink" title="方法一：javaht&#x2F;claude-desktop-zh-cn（推荐）"></a>方法一：javaht&#x2F;claude-desktop-zh-cn（推荐）</h4><p>项目：<a target="_blank" rel="noopener" href="https://github.com/javaht/claude-desktop-zh-cn">javaht&#x2F;claude-desktop-zh-cn</a></p>
+<p>一键安装步骤：</p>
+<ol>
+<li><strong>下载并安装 Claude Desktop</strong>：从 <a target="_blank" rel="noopener" href="https://code.claude.com/docs/zh-TW/desktop">code.claude.com&#x2F;docs&#x2F;zh-TW&#x2F;desktop</a> 下载官方安装包</li>
+<li><strong>下载汉化补丁</strong>：克隆或下载 <a target="_blank" rel="noopener" href="https://github.com/javaht/claude-desktop-zh-cn">javaht&#x2F;claude-desktop-zh-cn</a></li>
+<li><strong>退出 Claude Desktop</strong>（一定要完全退出）</li>
+<li><strong>安装汉化</strong>：<ul>
+<li><strong>Windows</strong>：右键 → 管理员身份运行 <code>install-windows.bat</code> → 选择语言（1&#x3D;简体中文，2&#x3D;繁体中文）</li>
+<li><strong>macOS</strong>：双击 <code>install-mac.command</code></li>
+</ul>
+</li>
+<li>安装完成后 Claude 自动重启，界面即显示中文</li>
+</ol>
+<blockquote>
+<p>官方更新后会覆盖汉化文件，每次升级后需重新运行一次安装脚本。</p>
+</blockquote>
+<h4 id="方法二：Qiao-920-claude-desktop-cn"><a href="#方法二：Qiao-920-claude-desktop-cn" class="headerlink" title="方法二：Qiao-920&#x2F;claude-desktop-cn"></a>方法二：Qiao-920&#x2F;claude-desktop-cn</h4><p>项目：<a target="_blank" rel="noopener" href="https://github.com/Qiao-920/claude-desktop-cn">Qiao-920&#x2F;claude-desktop-cn</a></p>
+<p>不单纯是汉化补丁，而是<strong>二次封装的中文桌面客户端</strong>，内置中文界面 + 本地 Code 工作区 + GitHub 导入 + 权限守卫等功能，下载即用，无需原版 Claude Desktop。</p>
+<h3 id="Claude-Desktop-配置第三方模型"><a href="#Claude-Desktop-配置第三方模型" class="headerlink" title="Claude Desktop 配置第三方模型"></a>Claude Desktop 配置第三方模型</h3><p>桌面版不支持直接设 <code>ANTHROPIC_BASE_URL</code> 环境变量，需要依赖辅助工具：</p>
+<ul>
+<li><strong>CC Switch</strong>：开启本地路由，协议转换后指向国内模型供应商（详见第八节）</li>
+<li>或直接在桌面版设置中使用 API Key 连接 Anthropic 官方</li>
+</ul>
+<h3 id="官方文档"><a href="#官方文档" class="headerlink" title="官方文档"></a>官方文档</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://code.claude.com/docs/zh-CN/model-config">模型配置（中文）</a></li>
+<li><a target="_blank" rel="noopener" href="https://code.claude.com/docs/zh-TW/desktop">桌面版文档（中文）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/anthropics/claude-code">GitHub</a></li>
+</ul>
+<hr>
+<h2 id="三、Hermes-Agent"><a href="#三、Hermes-Agent" class="headerlink" title="三、Hermes Agent"></a>三、Hermes Agent</h2><p>Hermes Agent 由 NousResearch 开发，开源的 24&#x2F;7 持久化 AI 编码 Agent，支持 CLI、Telegram、Discord、Slack 等多平台。v0.16.0+ 起正式推出桌面版。</p>
+<h3 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h3><pre><code class="hljs bash"><span class="hljs-comment"># Linux / macOS / WSL2</span>
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+<span class="hljs-built_in">source</span> ~/.zshrc</code></pre>
+
+<pre><code class="hljs powershell"><span class="hljs-comment"># Windows（PowerShell 7+）</span>
+<span class="hljs-built_in">iex</span> (<span class="hljs-built_in">irm</span> https://hermes<span class="hljs-literal">-agent</span>.nousresearch.com/install.ps1)</code></pre>
+
+<h3 id="原生配置第三方模型-2"><a href="#原生配置第三方模型-2" class="headerlink" title="原生配置第三方模型"></a>原生配置第三方模型</h3><p>Hermes 原生支持 200+ 模型，交互式选择即可。</p>
+<pre><code class="hljs bash">hermes setup --portal    <span class="hljs-comment"># Nous Portal 一键登录（推荐）</span>
+hermes model             <span class="hljs-comment"># 或手动选择提供商和模型</span></code></pre>
+
+<p><strong>支持的提供商：</strong></p>
+<table>
+<thead>
+<tr>
+<th>提供商</th>
+<th>环境变量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenRouter</td>
+<td><code>OPENROUTER_API_KEY</code></td>
+</tr>
+<tr>
+<td>Anthropic</td>
+<td><code>ANTHROPIC_API_KEY</code></td>
+</tr>
+<tr>
+<td>OpenAI</td>
+<td><code>OPENAI_API_KEY</code></td>
+</tr>
+<tr>
+<td>智谱 GLM</td>
+<td><code>GLM_API_KEY</code></td>
+</tr>
+<tr>
+<td>Kimi</td>
+<td><code>KIMI_API_KEY</code></td>
+</tr>
+<tr>
+<td>通义千问</td>
+<td><code>DASHSCOPE_API_KEY</code></td>
+</tr>
+<tr>
+<td>DeepSeek</td>
+<td><code>DEEPSEEK_API_KEY</code></td>
+</tr>
+<tr>
+<td>Ollama（本地）</td>
+<td>自定义端点</td>
+</tr>
+<tr>
+<td>LM Studio（本地）</td>
+<td>自定义端点</td>
+</tr>
+</tbody></table>
+<p><strong>CLI 配置：</strong></p>
+<pre><code class="hljs bash">hermes config <span class="hljs-built_in">set</span> model anthropic/claude-opus-4
+hermes config <span class="hljs-built_in">set</span> OPENROUTER_API_KEY sk-or-xxx</code></pre>
+
+<p><strong>配置存放：</strong></p>
+<ul>
+<li>密钥 → <code>~/.hermes/.env</code></li>
+<li>配置 → <code>~/.hermes/config.yaml</code></li>
+</ul>
+<p><strong>验证：</strong></p>
+<pre><code class="hljs bash">hermes doctor    <span class="hljs-comment"># 健康检查</span>
+hermes --tui     <span class="hljs-comment"># 启动 TUI 界面</span></code></pre>
+
+<h3 id="官方文档-1"><a href="#官方文档-1" class="headerlink" title="官方文档"></a>官方文档</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/">官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/NousResearch/hermes-agent">GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs/getting-started/quickstart/">快速开始</a></li>
+</ul>
+<h3 id="Hermes-桌面版"><a href="#Hermes-桌面版" class="headerlink" title="Hermes 桌面版"></a>Hermes 桌面版</h3><p>Hermes Agent 在 v0.16.0（2026.6.5 “Surface Release”）中正式推出了官方桌面版。</p>
+<p><strong>安装方式：</strong></p>
+<table>
+<thead>
+<tr>
+<th>平台</th>
+<th>方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>macOS &#x2F; Windows</td>
+<td>从 <a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/">hermes-agent.nousresearch.com</a> 下载桌面安装程序</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><code>.AppImage</code> &#x2F; <code>.deb</code> &#x2F; <code>.rpm</code></td>
+</tr>
+<tr>
+<td>已有 CLI</td>
+<td>终端运行 <code>hermes desktop</code></td>
+</tr>
+</tbody></table>
+<p><strong>功能特点：</strong></p>
+<ul>
+<li>原生 Electron 桌面应用，支持拖放文件</li>
+<li>Cmd+K 命令面板、状态栏模型选择器</li>
+<li>内置自动更新</li>
+<li>已有简体中文翻译</li>
+</ul>
+<blockquote>
+<p>如果已安装过 CLI 版，桌面版会自动连接已有环境，不会重复创建。CLI 版 <code>hermes config set</code> 配好的模型和 API Key 桌面版直接沿用。</p>
+</blockquote>
+<hr>
+<h2 id="四、Google-Gemini-CLI-→-Antigravity（含桌面版）"><a href="#四、Google-Gemini-CLI-→-Antigravity（含桌面版）" class="headerlink" title="四、Google Gemini CLI → Antigravity（含桌面版）"></a>四、Google Gemini CLI → Antigravity（含桌面版）</h2><h3 id="⚠️-Gemini-CLI-已停服"><a href="#⚠️-Gemini-CLI-已停服" class="headerlink" title="⚠️ Gemini CLI 已停服"></a>⚠️ Gemini CLI 已停服</h3><p><strong>2026 年 6 月 18 日，Google 停止了对个人用户的 Gemini CLI 服务。</strong> 受影响范围包括：</p>
+<ul>
+<li>免费用户</li>
+<li>Google AI Pro &#x2F; Ultra 订阅用户</li>
+<li>个人 Gemini Code Assist &#x2F; GitHub 用户</li>
+</ul>
+<p><strong>不受影响的用户：</strong></p>
+<ul>
+<li>企业版 Gemini Code Assist Standard &#x2F; Enterprise</li>
+<li>Google Cloud 企业客户</li>
+<li>使用付费 Gemini API Key 的用户</li>
+</ul>
+<p>Google 给出的理由是把重心转移到新的多 Agent 平台架构上。</p>
+<h3 id="继任者：Antigravity-CLI"><a href="#继任者：Antigravity-CLI" class="headerlink" title="继任者：Antigravity CLI"></a>继任者：Antigravity CLI</h3><p>Antigravity CLI（命令名 <code>agy</code>）是 Google 推出的继任工具，用 Go 编写，支持异步后台工作流、Agent Skills、Hooks、Subagents、Extensions（现称插件）。新装或迁移都行，它会自动检测并迁移 Gemini CLI 的旧配置（skills、MCP servers、agents、memory 文件）。</p>
+<p><strong>安装：</strong></p>
+<pre><code class="hljs bash"><span class="hljs-comment"># macOS / Linux</span>
+curl -fsSL https://antigravity.google/cli/install.sh | bash</code></pre>
+
+<pre><code class="hljs powershell"><span class="hljs-comment"># Windows PowerShell</span>
+<span class="hljs-built_in">irm</span> https://antigravity.google/<span class="hljs-built_in">cli</span>/install.ps1 | <span class="hljs-built_in">iex</span></code></pre>
+
+<p><strong>配置第三方模型：</strong></p>
+<p>Antigravity CLI 支持多种模型提供商，通过 <code>agy</code> 命令进行操作。具体配置方式请参考官方文档。</p>
+<blockquote>
+<p>Gemini CLI 现有安装对个人用户已无法使用，建议直接迁移到 Antigravity CLI。</p>
+</blockquote>
+<h3 id="官方文档-2"><a href="#官方文档-2" class="headerlink" title="官方文档"></a>官方文档</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/google-gemini/gemini-cli/discussions/27274">Gemini CLI 官方公告</a></li>
+<li><a target="_blank" rel="noopener" href="https://antigravity.google/">Antigravity CLI</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.google.com/blog/topics/developers-practitioners/choosing-your-surface-antigravity-20-antigravity-cli-antigravity-ide-or-antigravity-sdk/">Antigravity 桌面版&#x2F;IDE&#x2F;SDK 介绍</a></li>
+</ul>
+<h3 id="Antigravity-桌面版"><a href="#Antigravity-桌面版" class="headerlink" title="Antigravity 桌面版"></a>Antigravity 桌面版</h3><p>Google 在 <strong>2026 年 5 月 I&#x2F;O 大会</strong> 上发布了 Antigravity 2.0，从一个 AI IDE 扩展为四个产品面：</p>
+<table>
+<thead>
+<tr>
+<th>产品</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Antigravity Desktop</strong></td>
+<td>独立桌面应用——Agent 控制中心，多项目管理台</td>
+</tr>
+<tr>
+<td><strong>Antigravity CLI</strong>（命令 <code>agy</code>）</td>
+<td>终端命令行，无头执行和自动化</td>
+</tr>
+<tr>
+<td><strong>Antigravity IDE</strong></td>
+<td>面向开发者的代码编辑器，与 Agent 并肩协作</td>
+</tr>
+<tr>
+<td><strong>Antigravity SDK</strong></td>
+<td>Python 库，构建和部署自定义 Agent</td>
+</tr>
+</tbody></table>
+<p><strong>Desktop 版核心功能：</strong></p>
+<ul>
+<li><strong>多 Agent 并行</strong>：同时运行多个 Agent 处理不同项目</li>
+<li><strong>动态子 Agent</strong>：主 Agent 自动拆分任务并行执行</li>
+<li><strong>定时任务</strong>：支持 cron 式定时触发</li>
+<li><strong>原生语音命令</strong>：支持语音输入并实时转写</li>
+<li><strong>Project 概念</strong>：一个 Project 可绑定多个本地目录</li>
+<li><strong>工作模式</strong>：Local Mode（直接修改）或 Worktree Mode（隔离分支）</li>
+</ul>
+<p><strong>安装：</strong> 从 <a target="_blank" rel="noopener" href="https://antigravity.google/">antigravity.google</a> 下载桌面安装包，Google 账号登录即可。<br><strong>定价：</strong> Pro 计划个人免费，AI Ultra 计划 $100&#x2F;月。</p>
+<hr>
+<h2 id="五、OpenClaw"><a href="#五、OpenClaw" class="headerlink" title="五、OpenClaw"></a>五、OpenClaw</h2><p>OpenClaw 是一个个人 AI 助手，运行在你自己的设备上。与其说是一个编码 CLI，不如说是一个<strong>全能型的个人 Agent</strong>，它最大的特点是支持超多消息平台（WhatsApp、Telegram、Slack、Discord、微信等），不只局限在终端。目前仅提供 CLI 命令行版，没有官方桌面应用。</p>
+<h3 id="安装-3"><a href="#安装-3" class="headerlink" title="安装"></a>安装</h3><pre><code class="hljs bash"><span class="hljs-comment"># npm 安装</span>
+npm install -g openclaw@latest
+
+<span class="hljs-comment"># 或一键脚本</span>
+curl -fsSL https://openclaw.ai/install.sh | bash</code></pre>
+
+<pre><code class="hljs powershell"><span class="hljs-comment"># Windows PowerShell 一键安装（海外）</span>
+<span class="hljs-built_in">iwr</span> <span class="hljs-literal">-useb</span> https://openclaw.ai/install.ps1 | <span class="hljs-built_in">iex</span>
+
+<span class="hljs-comment"># 国内加速脚本（推荐，避免网络问题）</span>
+<span class="hljs-built_in">iwr</span> <span class="hljs-literal">-useb</span> https://<span class="hljs-built_in">open-claw</span>.org.cn/<span class="hljs-built_in">install-cn</span>.ps1 | <span class="hljs-built_in">iex</span></code></pre>
+
+<blockquote>
+<p>远程脚本执行前建议先审查内容：</p>
+<pre><code class="hljs powershell"><span class="hljs-built_in">iwr</span> <span class="hljs-literal">-useb</span> https://openclaw.ai/install.ps1 <span class="hljs-literal">-OutFile</span> install.ps1
+<span class="hljs-comment"># 用编辑器查看 install.ps1 确认无问题</span>
+.\install.ps1</code></pre></blockquote>
+<p>安装后运行初始化向导：</p>
+<pre><code class="hljs bash">openclaw onboard --install-daemon</code></pre>
+
+<p>这一步会引导你选择模型供应商、设置 API Key，并安装后台守护进程。</p>
+<h3 id="WSL2-部署（官方推荐最稳定）"><a href="#WSL2-部署（官方推荐最稳定）" class="headerlink" title="WSL2 部署（官方推荐最稳定）"></a>WSL2 部署（官方推荐最稳定）</h3><p>如果 Windows 原生运行不稳定，推荐在 WSL2 中部署：</p>
+<pre><code class="hljs powershell"><span class="hljs-comment"># 管理员 PowerShell 安装 WSL2</span>
+wsl <span class="hljs-literal">--install</span></code></pre>
+
+<p>重启后打开 Ubuntu 终端：</p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 安装 Node.js 22+</span>
+curl -fsSL https://deb.nodesource.com/setup_22.x | <span class="hljs-built_in">sudo</span> -E bash -
+<span class="hljs-built_in">sudo</span> apt install -y nodejs
+
+<span class="hljs-comment"># 配置国内镜像</span>
+npm config <span class="hljs-built_in">set</span> registry https://registry.npmmirror.com
+
+<span class="hljs-comment"># 安装 OpenClaw</span>
+npm install -g openclaw@latest
+
+<span class="hljs-comment"># 初始化配置</span>
+openclaw onboard --install-daemon</code></pre>
+
+<h3 id="配置模型"><a href="#配置模型" class="headerlink" title="配置模型"></a>配置模型</h3><p>OpenClaw 支持 OpenAI（OAuth 或 API Key）、Anthropic（API Key 或 OAuth）、Ollama（本地模型）。</p>
+<p><strong>国内推荐 MiniMax（性价比高，稳定）：</strong></p>
+<ol>
+<li>访问 <a target="_blank" rel="noopener" href="https://www.minimaxi.com/">minimaxi.com</a> 注册账号</li>
+<li>完成实名认证</li>
+<li>进入「控制台」→「API 密钥」→ 创建新密钥</li>
+<li>复制密钥并妥善保存（只会显示一次）</li>
+<li>初始化时选择 <strong>MiniMax M2.5 (CN)</strong>，粘贴 API Key 即可</li>
+</ol>
+<p>配置文件 <code>~/.openclaw/openclaw.json</code>：</p>
+<pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+  <span class="hljs-attr">&quot;agent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+    <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;anthropic/claude-opus-4-5&quot;</span>
+  <span class="hljs-punctuation">&#125;</span>
+<span class="hljs-punctuation">&#125;</span></code></pre>
+
+<p><strong>常用命令：</strong></p>
+<pre><code class="hljs bash">openclaw gateway status          <span class="hljs-comment"># 检查网关状态</span>
+openclaw agent --message <span class="hljs-string">&quot;...&quot;</span>   <span class="hljs-comment"># 发送任务</span>
+openclaw dashboard               <span class="hljs-comment"># 打开 Web 管理面板</span>
+openclaw config                  <span class="hljs-comment"># 配置 TUI</span></code></pre>
+
+<h3 id="官方文档-3"><a href="#官方文档-3" class="headerlink" title="官方文档"></a>官方文档</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openclaw.ai/start/getting-started">官网 &#x2F; 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw">GitHub</a></li>
+</ul>
+<blockquote>
+<p>注：OpenClaw 目前只有 CLI 版，没有官方桌面应用。社区有第三方桌面封装（如 ClawX、OpenClaw Desktop），非官方出品。如需要桌面端体验可自行搜索评估。</p>
+</blockquote>
+<hr>
+<h2 id="六、OpenCode"><a href="#六、OpenCode" class="headerlink" title="六、OpenCode"></a>六、OpenCode</h2><p>OpenCode 是一个 Go 语言编写的终端 AI 编码助手，特点是<strong>交互式 TUI 界面</strong>。它模型中立，支持多种提供商。</p>
+<blockquote>
+<p>⚠️ 原仓库 <code>opencode-ai/opencode</code> 已归档。原项目已更名为 <strong>Crush</strong>，由 Charm 团队继续维护。同时社区也有活跃的 fork（如 <code>fuvines/ai-agent-cli-opencode</code>）。</p>
+</blockquote>
+<h3 id="安装-4"><a href="#安装-4" class="headerlink" title="安装"></a>安装</h3><pre><code class="hljs bash"><span class="hljs-comment"># npm</span>
+npm i -g opencode-ai@latest
+
+<span class="hljs-comment"># macOS Homebrew</span>
+brew install anomalyco/tap/opencode
+
+<span class="hljs-comment"># Windows Scoop</span>
+scoop install opencode
+
+<span class="hljs-comment"># 一键脚本</span>
+curl -fsSL https://opencode.ai/install | bash</code></pre>
+
+<h3 id="配置第三方模型"><a href="#配置第三方模型" class="headerlink" title="配置第三方模型"></a>配置第三方模型</h3><p>配置文件 <code>~/.opencode.json</code>：</p>
+<pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+  <span class="hljs-attr">&quot;providers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+    <span class="hljs-attr">&quot;anthropic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;apiKey&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;sk-ant-...&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;disabled&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;openai&quot;</span><span class="hljs-punctuation">:</span>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;apiKey&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;sk-...&quot;</span><span class="hljs-punctuation">,</span>       <span class="hljs-attr">&quot;disabled&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;gemini&quot;</span><span class="hljs-punctuation">:</span>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;apiKey&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;AIza...&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;groq&quot;</span><span class="hljs-punctuation">:</span>      <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;apiKey&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;gsk-...&quot;</span> <span class="hljs-punctuation">&#125;</span>
+  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;agents&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>
+    <span class="hljs-attr">&quot;coder&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;claude-3-7-sonnet&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;maxTokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5000</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;task&quot;</span><span class="hljs-punctuation">:</span>  <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;claude-3-7-sonnet&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;maxTokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5000</span> <span class="hljs-punctuation">&#125;</span>
+  <span class="hljs-punctuation">&#125;</span>
+<span class="hljs-punctuation">&#125;</span></code></pre>
+
+<p>环境变量方式快速上手的也行：</p>
+<pre><code class="hljs bash"><span class="hljs-built_in">export</span> ANTHROPIC_API_KEY=sk-ant-...
+<span class="hljs-built_in">cd</span> my-project
+opencode</code></pre>
+
+<p><strong>内置 Agent 角色：</strong></p>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>build</code>（默认）</td>
+<td>完整权限的编码 Agent</td>
+</tr>
+<tr>
+<td><code>plan</code></td>
+<td>只读，用于分析、探索代码</td>
+</tr>
+<tr>
+<td><code>@general</code></td>
+<td>内部子 Agent，处理复杂多步任务</td>
+</tr>
+</tbody></table>
+<p>TUI 中按 <code>Tab</code> 切换 Agent。</p>
+<h3 id="官方文档-4"><a href="#官方文档-4" class="headerlink" title="官方文档"></a>官方文档</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/opencode-ai/opencode">GitHub（原仓库，已存档）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/fuvines/ai-agent-cli-opencode">社区活跃 Fork</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/charmcli">Crush（继任者）</a></li>
+</ul>
+<hr>
+<h2 id="七、配置方式总览"><a href="#七、配置方式总览" class="headerlink" title="七、配置方式总览"></a>七、配置方式总览</h2><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>配置文件位置</th>
+<th>配置方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Codex CLI</strong></td>
+<td><code>~/.codex/config.toml</code></td>
+<td><code>[model_providers]</code> + <code>[profiles]</code></td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td><code>~/.claude/settings.json</code></td>
+<td><code>env.ANTHROPIC_BASE_URL</code> + <code>env.ANTHROPIC_AUTH_TOKEN</code></td>
+</tr>
+<tr>
+<td><strong>Hermes Agent</strong></td>
+<td><code>~/.hermes/config.yaml</code></td>
+<td><code>hermes model</code> 交互式或 <code>hermes config set</code></td>
+</tr>
+<tr>
+<td><strong>Antigravity CLI</strong></td>
+<td>官方文档指引</td>
+<td>交互式向导</td>
+</tr>
+<tr>
+<td><strong>OpenClaw</strong></td>
+<td><code>~/.openclaw/openclaw.json</code></td>
+<td><code>openclaw onboard</code> 向导</td>
+</tr>
+<tr>
+<td><strong>OpenCode</strong></td>
+<td><code>~/.opencode.json</code></td>
+<td>JSON 配置 providers + agents</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="八、辅助管理工具"><a href="#八、辅助管理工具" class="headerlink" title="八、辅助管理工具"></a>八、辅助管理工具</h2><p>如果你的工作流涉及多个 CLI 工具、多个供应商，手动管理配置文件会变得很烦。下面两个工具可以帮你省事。</p>
+<h3 id="8-1-CC-Switch"><a href="#8-1-CC-Switch" class="headerlink" title="8.1 CC Switch"></a>8.1 CC Switch</h3><blockquote>
+<p>仓库：<a target="_blank" rel="noopener" href="https://github.com/farion1231/cc-switch">farion1231&#x2F;cc-switch</a> ｜ 下载：<a target="_blank" rel="noopener" href="https://github.com/farion1231/cc-switch/releases">Releases</a></p>
+</blockquote>
+<p>基于 Tauri 2.8 + Rust 的开源桌面应用，把六个主流 Agent CLI 工具的配置统一收进一个 GUI：</p>
+<p><strong>支持的工具：</strong> Claude Code、Codex CLI、Gemini CLI、OpenCode、OpenClaw、Hermes Agent</p>
+<p><strong>安装：</strong></p>
+<table>
+<thead>
+<tr>
+<th>平台</th>
+<th>方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>macOS</td>
+<td><code>brew install --cask cc-switch</code></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>下载 <code>.msi</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><code>.deb</code> &#x2F; <code>.rpm</code> &#x2F; <code>.AppImage</code></td>
+</tr>
+</tbody></table>
+<h4 id="核心功能"><a href="#核心功能" class="headerlink" title="核心功能"></a>核心功能</h4><p><strong>① 供应商管理（50+ 预设）</strong></p>
+<p>内置 DeepSeek、GLM、Kimi、SiliconFlow、MiniMax、OpenRouter 等主流供应商，也可自定义添加。</p>
+<p><strong>② 本地路由与协议转换（关键特性）</strong></p>
+<p>CC Switch 在本地启动一个代理服务（默认 <code>127.0.0.1:15721</code>），<strong>自动做 OpenAI Chat Completions ↔ Anthropic Messages 的协议转换</strong>。这让本来只认 Anthropic 格式的 Claude Code 也能调用国内模型。配置时需打开「本地路由」开关，启用 API 并测试确认通。</p>
+<p><strong>③ 模型映射</strong></p>
+<p>Claude Code 有三个角色槽位：Sonnet（主力）、Opus（高级推理）、Haiku（轻量快速）。CC Switch 让你把实际模型名填入对应的槽位，不同档位自动切换模型。</p>
+<p><strong>④ 自动熔断（故障转移）</strong></p>
+<p>配置多个供应商后，CC Switch 定期做健康检测，异常时自动切到备用供应商。</p>
+<p><strong>⑤ 其他功能</strong></p>
+<ul>
+<li>MCP 服务器统一管理（跨应用同步）</li>
+<li>Prompts 提示词 &#x2F; Skills 管理</li>
+<li>会话管理器、模型延迟测试、用量统计</li>
+</ul>
+<h3 id="8-2-EchoBird（回声鸟）"><a href="#8-2-EchoBird（回声鸟）" class="headerlink" title="8.2 EchoBird（回声鸟）"></a>8.2 EchoBird（回声鸟）</h3><blockquote>
+<p>仓库：<a target="_blank" rel="noopener" href="https://github.com/edison7009/EchoBird">edison7009&#x2F;EchoBird</a></p>
+</blockquote>
+<p>同样是基于 Tauri 的桌面应用，但侧重<strong>一键安装和管理 AI Agent 工具本身</strong>——适合刚接触这些工具、不想敲命令行的用户。</p>
+<p><strong>一键安装：</strong></p>
+<pre><code class="hljs powershell"><span class="hljs-comment"># Windows（PowerShell）</span>
+<span class="hljs-built_in">irm</span> https://echobird.ai/install.ps1 | <span class="hljs-built_in">iex</span></code></pre>
+
+<pre><code class="hljs bash"><span class="hljs-comment"># macOS / Linux</span>
+curl -fsSL https://echobird.ai/install.sh | sh</code></pre>
+
+<p><strong>核心功能：</strong></p>
+<ul>
+<li><strong>应用管理</strong>：一键安装 Claude Code、Codex、Hermes、OpenClaw 等 12+ Agent，自动检测环境</li>
+<li><strong>模型中心（Model Nexus）</strong>：一次配好 API Key，所有 Agent 共用</li>
+<li><strong>一键本地模型</strong>：内置 llama.cpp &#x2F; vLLM &#x2F; SGLang，一键拉起 Qwen、DeepSeek 等开源模型</li>
+<li><strong>国内友好</strong>：内置 DeepSeek、GLM、SiliconFlow、MiniMax 等平台预设</li>
+</ul>
+<hr>
+<h2 id="九、关于-MaaS-平台"><a href="#九、关于-MaaS-平台" class="headerlink" title="九、关于 MaaS 平台"></a>九、关于 MaaS 平台</h2><p>除了直接配各家 API 和用辅助工具，还有一个选择是 <strong>MaaS（Model as a Service）平台</strong>——通过一个统一的 OpenAI 兼容 API 端点和一个 API Key，调用多个模型。</p>
+<p>典型例子如 <strong>万界方舟 MaaS</strong>、<strong>SiliconFlow</strong> 等。这类平台适合：</p>
+<ul>
+<li>想用一个 Key 管理多个模型的费用和权限</li>
+<li>不想在每个工具里分别配各个供应商的 Key</li>
+<li>需要国内模型 + 国外模型混合使用</li>
+</ul>
+<p>配置方式就是标准的 OpenAI 端点填法：<code>base_url</code> 指向 MaaS 平台的 API 地址，<code>api_key</code> 填平台的 Key，<code>model</code> 填实际要用的模型名。</p>
+<hr>
+<h2 id="十、彻底卸载各-Agent"><a href="#十、彻底卸载各-Agent" class="headerlink" title="十、彻底卸载各 Agent"></a>十、彻底卸载各 Agent</h2><p>装了不想要了，或者想从零重新配，下面是各工具彻底卸载的方法。</p>
+<blockquote>
+<p>核心原则：<strong>删除安装文件 + 删除配置目录</strong>，两步搞定。</p>
+</blockquote>
+<h3 id="10-1-Codex-CLI-桌面版"><a href="#10-1-Codex-CLI-桌面版" class="headerlink" title="10.1 Codex CLI + 桌面版"></a>10.1 Codex CLI + 桌面版</h3><pre><code class="hljs bash">npm uninstall -g @openai/codex
+<span class="hljs-built_in">rm</span> -rf ~/.codex                    <span class="hljs-comment"># 配置、会话、认证信息</span>
+
+<span class="hljs-comment"># macOS 如果装过 Homebrew 版</span>
+brew uninstall codex
+
+<span class="hljs-comment"># 桌面版卸载</span>
+<span class="hljs-comment"># Windows: 设置 → 应用 → Codex → 卸载</span>
+<span class="hljs-comment"># macOS: 从 Applications 删除 Codex.app</span>
+
+<span class="hljs-comment"># 验证</span>
+<span class="hljs-built_in">command</span> -v codex  <span class="hljs-comment"># 应返回空</span></code></pre>
+
+<h3 id="10-2-Claude-Code（CLI-桌面版）"><a href="#10-2-Claude-Code（CLI-桌面版）" class="headerlink" title="10.2 Claude Code（CLI + 桌面版）"></a>10.2 Claude Code（CLI + 桌面版）</h3><pre><code class="hljs bash">npm uninstall -g @anthropic-ai/claude-code
+<span class="hljs-built_in">rm</span> -rf ~/.claude                    <span class="hljs-comment"># 配置、认证</span>
+<span class="hljs-built_in">rm</span> -rf ~/.cache/claude-code         <span class="hljs-comment"># 缓存</span>
+<span class="hljs-built_in">rm</span> -rf ~/.local/bin/claude          <span class="hljs-comment"># 原生安装的二进制</span>
+<span class="hljs-built_in">rm</span> -rf ~/.local/share/claude        <span class="hljs-comment"># 原生安装的数据</span>
+
+<span class="hljs-comment"># 桌面版卸载</span>
+<span class="hljs-comment"># Windows: 设置 → 应用 → Claude → 卸载</span>
+<span class="hljs-comment"># macOS: 从 Applications 删除 Claude.app</span>
+<span class="hljs-comment"># 汉化补丁不影响卸载，直接删应用即可</span>
+
+<span class="hljs-comment"># 验证</span>
+claude  <span class="hljs-comment"># 应提示 command not found</span></code></pre>
+
+<h3 id="10-3-Hermes-Agent（CLI-桌面版）"><a href="#10-3-Hermes-Agent（CLI-桌面版）" class="headerlink" title="10.3 Hermes Agent（CLI + 桌面版）"></a>10.3 Hermes Agent（CLI + 桌面版）</h3><pre><code class="hljs bash"><span class="hljs-comment"># 方式一：自带卸载命令（推荐）</span>
+hermes uninstall
+
+<span class="hljs-comment"># 按提示选择是否保留 ~/.hermes（含 API Key、会话、记忆）</span>
+<span class="hljs-comment"># 如果想彻底删除：</span>
+<span class="hljs-built_in">rm</span> -rf ~/.hermes
+
+<span class="hljs-comment"># 方式二：手动删除</span>
+<span class="hljs-built_in">rm</span> -f ~/.local/bin/hermes
+<span class="hljs-built_in">rm</span> -rf ~/.hermes
+
+<span class="hljs-comment"># 桌面版卸载（官方 Hermes Desktop）</span>
+<span class="hljs-comment"># Windows: 设置 → 应用 → Hermes → 卸载</span>
+<span class="hljs-comment"># macOS: 从 Applications 删除 Hermes.app</span>
+
+<span class="hljs-comment"># 如果有网关服务</span>
+hermes gateway stop
+<span class="hljs-comment"># Linux:  systemctl --user disable hermes-gateway</span>
+<span class="hljs-comment"># macOS:  launchctl remove ai.hermes.gateway</span></code></pre>
+
+<h3 id="10-4-Antigravity（CLI-桌面版）"><a href="#10-4-Antigravity（CLI-桌面版）" class="headerlink" title="10.4 Antigravity（CLI + 桌面版）"></a>10.4 Antigravity（CLI + 桌面版）</h3><pre><code class="hljs bash"><span class="hljs-comment"># 删除 CLI 二进制</span>
+<span class="hljs-built_in">rm</span> -f ~/.local/bin/agy
+
+<span class="hljs-comment"># 删除所有配置和缓存</span>
+<span class="hljs-built_in">rm</span> -rf ~/.gemini
+<span class="hljs-built_in">rm</span> -rf ~/.antigravity
+<span class="hljs-built_in">rm</span> -rf ~/.cache/antigravity
+<span class="hljs-built_in">rm</span> -rf ~/.config/antigravity
+<span class="hljs-built_in">rm</span> -rf ~/.local/share/antigravity
+
+<span class="hljs-comment"># macOS 额外</span>
+<span class="hljs-built_in">rm</span> -rf ~/Library/Application\ Support/Antigravity
+<span class="hljs-built_in">rm</span> -rf ~/Library/Caches/Antigravity
+
+<span class="hljs-comment"># Windows（PowerShell）</span>
+Remove-Item -Recurse -Force <span class="hljs-string">&quot;<span class="hljs-variable">$env</span>:APPDATA\Antigravity&quot;</span>
+Remove-Item -Recurse -Force <span class="hljs-string">&quot;<span class="hljs-variable">$env</span>:LOCALAPPDATA\Antigravity&quot;</span>
+
+<span class="hljs-comment"># 桌面版卸载</span>
+<span class="hljs-comment"># Windows: 设置 → 应用 → Antigravity → 卸载</span>
+<span class="hljs-comment"># macOS: 从 Applications 删除 Antigravity.app</span>
+<span class="hljs-comment"># Antigravity IDE 同理</span></code></pre>
+
+<h3 id="10-5-OpenClaw"><a href="#10-5-OpenClaw" class="headerlink" title="10.5 OpenClaw"></a>10.5 OpenClaw</h3><pre><code class="hljs bash"><span class="hljs-comment"># 方式一：自带卸载命令（推荐，CLI 仍在时）</span>
+openclaw uninstall --all --<span class="hljs-built_in">yes</span> --non-interactive
+<span class="hljs-comment"># 如果 CLI 坏了但还有 Node.js</span>
+npx -y openclaw uninstall --all --<span class="hljs-built_in">yes</span> --non-interactive
+
+<span class="hljs-comment"># 方式二：手动</span>
+npm <span class="hljs-built_in">rm</span> -g openclaw                 <span class="hljs-comment"># 卸载 CLI</span>
+<span class="hljs-built_in">rm</span> -rf ~/.openclaw                 <span class="hljs-comment"># 删除所有配置和数据</span>
+
+<span class="hljs-comment"># 如果有网关服务（先停掉）</span>
+<span class="hljs-comment"># Windows: schtasks /Delete /F /TN &quot;OpenClaw Gateway&quot;</span>
+<span class="hljs-comment"># macOS:   launchctl bootout gui/$UID/ai.openclaw.gateway</span>
+<span class="hljs-comment"># Linux:   systemctl --user disable --now openclaw-gateway.service</span></code></pre>
+
+<blockquote>
+<p><strong>卸载后的安全补救措施：</strong></p>
+<ol>
+<li>废弃并重新生成 API Key：前往所用模型服务商官网（OpenAI &#x2F; Anthropic &#x2F; MiniMax &#x2F; DeepSeek 等）撤销旧密钥</li>
+<li>检查云端账单：登录服务商后台查看近期用量，如有异常暴涨需联系客服</li>
+<li>检查公网暴露：如有配置远程访问，修改路由器端口转发规则</li>
+</ol>
+</blockquote>
+<h3 id="10-6-OpenCode"><a href="#10-6-OpenCode" class="headerlink" title="10.6 OpenCode"></a>10.6 OpenCode</h3><pre><code class="hljs bash">npm uninstall -g opencode-ai
+<span class="hljs-built_in">rm</span> -rf ~/.config/opencode           <span class="hljs-comment"># 配置文件</span>
+<span class="hljs-comment"># 如果装过 Homebrew 版</span>
+brew uninstall anomalyco/tap/opencode
+
+<span class="hljs-comment"># 验证</span>
+<span class="hljs-built_in">which</span> opencode  <span class="hljs-comment"># 应返回空</span></code></pre>
+
+<h3 id="10-7-CC-Switch"><a href="#10-7-CC-Switch" class="headerlink" title="10.7 CC Switch"></a>10.7 CC Switch</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>卸载方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Windows</td>
+<td>设置 → 应用 → CC Switch → 卸载</td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>从 Applications 删除 CC Switch.app</td>
+</tr>
+<tr>
+<td>macOS（Homebrew）</td>
+<td><code>brew uninstall cc-switch</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>包管理器卸载（apt &#x2F; rpm 等）</td>
+</tr>
+</tbody></table>
+<p>删除配置数据：</p>
+<pre><code class="hljs bash"><span class="hljs-built_in">rm</span> -rf ~/.cc-switch</code></pre>
+
+<blockquote>
+<p>注意：CC Switch 的本地路由代理（默认 127.0.0.1:15721）会随应用退出自动停止，不需要手动关闭。</p>
+</blockquote>
+<h3 id="10-8-EchoBird"><a href="#10-8-EchoBird" class="headerlink" title="10.8 EchoBird"></a>10.8 EchoBird</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>卸载方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Windows</td>
+<td>设置 → 应用 → EchoBird → 卸载</td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>从 Applications 删除 EchoBird.app</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>包管理器卸载</td>
+</tr>
+</tbody></table>
+<h3 id="卸载总结"><a href="#卸载总结" class="headerlink" title="卸载总结"></a>卸载总结</h3><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>卸载命令</th>
+<th>配置目录</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Codex CLI</strong></td>
+<td><code>npm uninstall -g @openai/codex</code></td>
+<td><code>~/.codex</code></td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td><code>npm uninstall -g @anthropic-ai/claude-code</code></td>
+<td><code>~/.claude</code></td>
+</tr>
+<tr>
+<td><strong>Hermes Agent</strong></td>
+<td><code>hermes uninstall</code></td>
+<td><code>~/.hermes</code></td>
+</tr>
+<tr>
+<td><strong>Antigravity CLI</strong></td>
+<td><code>rm -f ~/.local/bin/agy</code></td>
+<td><code>~/.antigravity</code></td>
+</tr>
+<tr>
+<td><strong>OpenClaw</strong></td>
+<td><code>openclaw uninstall --all --yes</code></td>
+<td><code>~/.openclaw</code></td>
+</tr>
+<tr>
+<td><strong>OpenCode</strong></td>
+<td><code>npm uninstall -g opencode-ai</code></td>
+<td><code>~/.config/opencode</code></td>
+</tr>
+<tr>
+<td><strong>CC Switch</strong></td>
+<td>系统设置卸载</td>
+<td><code>~/.cc-switch</code></td>
+</tr>
+<tr>
+<td><strong>EchoBird</strong></td>
+<td>系统设置卸载</td>
+<td>应用数据目录</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十一、总结对比"><a href="#十一、总结对比" class="headerlink" title="十一、总结对比"></a>十一、总结对比</h2><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>类型</th>
+<th>CLI</th>
+<th>桌面版</th>
+<th>安装方式</th>
+<th>适合谁</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Codex</strong></td>
+<td>编程 Agent</td>
+<td>✅ <code>npm install -g @openai/codex</code></td>
+<td>✅ macOS + Windows 桌面 App</td>
+<td>npm &#x2F; brew &#x2F; 官网</td>
+<td>偏 OpenAI 生态</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>编程 Agent CLI</td>
+<td>✅ <code>npm install -g @anthropic-ai/claude-code</code></td>
+<td>✅ <a target="_blank" rel="noopener" href="https://code.claude.com/">code.claude.com</a> 桌面 App</td>
+<td>npm &#x2F; 官网</td>
+<td>复杂编码任务</td>
+</tr>
+<tr>
+<td><strong>Hermes Agent</strong></td>
+<td>持久化 Agent</td>
+<td>✅ curl &#x2F; PowerShell</td>
+<td>✅ 官方 Hermes Desktop（v0.16+）</td>
+<td>curl &#x2F; 官网</td>
+<td>多平台 24h 自动化</td>
+</tr>
+<tr>
+<td><strong>Antigravity</strong></td>
+<td>编程 Agent</td>
+<td>✅ <code>agy</code>（Go 编写）</td>
+<td>✅ Antigravity Desktop + IDE</td>
+<td>curl &#x2F; 官网</td>
+<td>Gemini CLI 迁移用户</td>
+</tr>
+<tr>
+<td><strong>OpenClaw</strong></td>
+<td>个人 AI 助手</td>
+<td>✅ <code>npm install -g openclaw</code></td>
+<td>❌ 仅 CLI</td>
+<td>npm &#x2F; 官网</td>
+<td>全平台消息集成</td>
+</tr>
+<tr>
+<td><strong>OpenCode</strong></td>
+<td>编程 CLI（TUI）</td>
+<td>✅ npm &#x2F; brew &#x2F; scoop</td>
+<td>❌ 纯 CLI&#x2F;TUI</td>
+<td>npm &#x2F; brew &#x2F; scoop</td>
+<td>喜欢 TUI 界面</td>
+</tr>
+<tr>
+<td><strong>CC Switch</strong></td>
+<td>配置管理 GUI</td>
+<td>—</td>
+<td>✅ 桌面 App（Tauri）</td>
+<td>brew &#x2F; msi</td>
+<td>多工具多供应商，需集中配置</td>
+</tr>
+<tr>
+<td><strong>EchoBird</strong></td>
+<td>工具管理 GUI</td>
+<td>—</td>
+<td>✅ 桌面 App（Tauri）</td>
+<td>curl &#x2F; PowerShell</td>
+<td>刚入门，需一键安装</td>
+</tr>
+</tbody></table>
+<h3 id="推荐路线"><a href="#推荐路线" class="headerlink" title="推荐路线"></a>推荐路线</h3><ul>
+<li><strong>刚入门</strong>：用 EchoBird 一键装好工具 → 在工具内用本文的原生方式配模型</li>
+<li><strong>日常使用两三个工具</strong>：原生配置就够了</li>
+<li><strong>工具越来越多、供应商经常切换</strong>：加 CC Switch，统一管理 + 协议转换 + 故障转移</li>
+<li><strong>不想管多个 API Key</strong>：找个 MaaS 平台，所有工具指向同一个端点</li>
+</ul>
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://developers.openai.com/codex/config-basic">OpenAI Codex 官方配置</a></li>
+<li><a target="_blank" rel="noopener" href="https://developers.openai.com/codex/app">OpenAI Codex 桌面 App</a></li>
+<li><a target="_blank" rel="noopener" href="https://code.claude.com/docs/zh-CN/model-config">Claude Code 模型配置（中文）</a></li>
+<li><a target="_blank" rel="noopener" href="https://code.claude.com/docs/zh-TW/desktop">Claude Code 桌面版文档（中文）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/javaht/claude-desktop-zh-cn">Claude Desktop 汉化补丁（javaht）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Qiao-920/claude-desktop-cn">Claude Desktop 中文增强版（Qiao-920）</a></li>
+<li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs/getting-started/quickstart/">Hermes Agent 快速开始</a></li>
+<li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/">Hermes Desktop 官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/google-gemini/gemini-cli/discussions/27274">Google Gemini CLI → Antigravity 公告</a></li>
+<li><a target="_blank" rel="noopener" href="https://antigravity.google/">Antigravity 官方</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.google.com/blog/topics/developers-practitioners/choosing-your-surface-antigravity-20-antigravity-cli-antigravity-ide-or-antigravity-sdk/">Antigravity 桌面版&#x2F;IDE&#x2F;SDK 介绍</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.openclaw.ai/start/getting-started">OpenClaw 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/agentkernel/openclaw-desktop">OpenClaw Desktop（agentkernel）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ValueCell-ai/ClawX">ClawX</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/opencode-ai/opencode">OpenCode（原仓库，已存档）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/farion1231/cc-switch">CC Switch - GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/edison7009/EchoBird">EchoBird - GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.morphllm.com/codex-provider-configuration">Codex 第三方模型配置参考</a></li>
+</ul>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">swfk2154</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://blogbu2154.site/Codex-CLI-Claude-Code-Hermes-%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/">https://blogbu2154.site/Codex-CLI-Claude-Code-Hermes-%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">swfk2154</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/AI%E5%B7%A5%E5%85%B7/">
+                                    <span class="chip bg-color">AI工具</span>
+                                </a>
+                            
+                                <a href="/tags/Codex/">
+                                    <span class="chip bg-color">Codex</span>
+                                </a>
+                            
+                                <a href="/tags/Claude-Code/">
+                                    <span class="chip bg-color">Claude Code</span>
+                                </a>
+                            
+                                <a href="/tags/Hermes/">
+                                    <span class="chip bg-color">Hermes</span>
+                                </a>
+                            
+                                <a href="/tags/Gemini-CLI/">
+                                    <span class="chip bg-color">Gemini CLI</span>
+                                </a>
+                            
+                                <a href="/tags/Antigravity-CLI/">
+                                    <span class="chip bg-color">Antigravity CLI</span>
+                                </a>
+                            
+                                <a href="/tags/OpenClaw/">
+                                    <span class="chip bg-color">OpenClaw</span>
+                                </a>
+                            
+                                <a href="/tags/OpenCode/">
+                                    <span class="chip bg-color">OpenCode</span>
+                                </a>
+                            
+                                <a href="/tags/CC-Switch/">
+                                    <span class="chip bg-color">CC Switch</span>
+                                </a>
+                            
+                                <a href="/tags/EchoBird/">
+                                    <span class="chip bg-color">EchoBird</span>
+                                </a>
+                            
+                                <a href="/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/">
+                                    <span class="chip bg-color">配置指南</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'Ov23li9GpL8Lrygn6GlO',
+        clientSecret: '59d9c3e900f7b7a32d08f23652d74ca75ef1ef9e',
+        repo: 'swfk2154.github.io',
+        owner: 'swfk2154',
+        admin: "swfk2154",
+        id: '2026-06-24T00-00-00',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%A8%EF%BC%88%E4%B8%80%EF%BC%89/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="护网蓝队基础补全（一）——网络基础·漏洞速查·安全加固·面试高频">
+                        
+                        <span class="card-title">护网蓝队基础补全（一）——网络基础·漏洞速查·安全加固·面试高频</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            本篇文章作为《护网-HVV-面试题大全.md》的配套补充，聚焦于护网蓝队面试中的基础知识、常见漏洞原理速查、中间件漏洞、护网流程、安全加固、内网渗透基础、权限提升、内存马分类、渗透测试流程、英语术语等主题。适合初学者系统补全知识体系。
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2026-06-24
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%AE%89%E5%85%A8/" class="post-category">
+                                    安全
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                        <span class="chip bg-color">护网</span>
+                    </a>
+                    
+                    <a href="/tags/HVV/">
+                        <span class="chip bg-color">HVV</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%93%9D%E9%98%9F/">
+                        <span class="chip bg-color">蓝队</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%9D%A2%E8%AF%95/">
+                        <span class="chip bg-color">面试</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/MCP%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="MCP 网络分析工具配置指南：Wireshark、科来与 AI 编码助手联动实战">
+                        
+                        <span class="card-title">MCP 网络分析工具配置指南：Wireshark、科来与 AI 编码助手联动实战</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            真实记录 Wireshark（tshark）与科来网络分析系统（CSNAS）在 Claude Code 中的 MCP 配置全过程，包含踩坑记录、验证方法与工具对比。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-06
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/" class="post-category">
+                                    工具实践
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Wireshark/">
+                        <span class="chip bg-color">Wireshark</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%A7%91%E6%9D%A5/">
+                        <span class="chip bg-color">科来</span>
+                    </a>
+                    
+                    <a href="/tags/MCP/">
+                        <span class="chip bg-color">MCP</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90/">
+                        <span class="chip bg-color">网络分析</span>
+                    </a>
+                    
+                    <a href="/tags/tshark/">
+                        <span class="chip bg-color">tshark</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%8A%93%E5%8C%85/">
+                        <span class="chip bg-color">抓包</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2026</span>
+            
+            <a href="/about" target="_blank">swfk2154</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            
+            <br>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/swfk2154" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+    
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+     
+        <script type="text/javascript">
+            // 只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/libs/others/star.js"><\/script>');
+            }
+        </script>
+    
+
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

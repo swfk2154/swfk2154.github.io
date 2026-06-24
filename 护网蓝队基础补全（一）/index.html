@@ -1,0 +1,2843 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="护网蓝队基础补全（一）——网络基础·漏洞速查·安全加固·面试高频, AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+    <meta name="description" content="本篇文章作为《护网-HVV-面试题大全.md》的配套补充，聚焦于护网蓝队面试中的基础知识、常见漏洞原理速查、中间件漏洞、护网流程、安全加固、内网渗透基础、权限提升、内存马分类、渗透测试流程、英语术语等主题。适合初学者系统补全知识体系。
+
+
+">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>护网蓝队基础补全（一）——网络基础·漏洞速查·安全加固·面试高频 | swfk 的安全笔记</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="swfk 的安全笔记" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">swfk 的安全笔记</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">swfk 的安全笔记</div>
+        <div class="logo-desc">
+            
+            记录 AI 安全、网络安全、工具实践与技术复盘。
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/21.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">护网蓝队基础补全（一）——网络基础·漏洞速查·安全加固·面试高频</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                                <span class="chip bg-color">护网</span>
+                            </a>
+                        
+                            <a href="/tags/HVV/">
+                                <span class="chip bg-color">HVV</span>
+                            </a>
+                        
+                            <a href="/tags/%E8%93%9D%E9%98%9F/">
+                                <span class="chip bg-color">蓝队</span>
+                            </a>
+                        
+                            <a href="/tags/%E9%9D%A2%E8%AF%95/">
+                                <span class="chip bg-color">面试</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E5%AE%89%E5%85%A8/" class="post-category">
+                                安全
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2026-06-24
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <p>本篇文章作为《护网-HVV-面试题大全.md》的配套补充，聚焦于护网蓝队面试中的基础知识、常见漏洞原理速查、中间件漏洞、护网流程、安全加固、内网渗透基础、权限提升、内存马分类、渗透测试流程、英语术语等主题。适合初学者系统补全知识体系。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="一、计算机网络基础"><a href="#一、计算机网络基础" class="headerlink" title="一、计算机网络基础"></a>一、计算机网络基础</h2><h3 id="1-1-OSI-七层模型与各层攻击"><a href="#1-1-OSI-七层模型与各层攻击" class="headerlink" title="1.1 OSI 七层模型与各层攻击"></a>1.1 OSI 七层模型与各层攻击</h3><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>功能</th>
+<th>对应攻击&#x2F;设备</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>物理层</td>
+<td>传输比特流</td>
+<td>物理破坏、搭线窃听</td>
+</tr>
+<tr>
+<td>数据链路层</td>
+<td>MAC 地址、帧</td>
+<td>ARP 欺骗、MAC 泛洪</td>
+</tr>
+<tr>
+<td>网络层</td>
+<td>IP 寻址、路由</td>
+<td>IP 欺骗、Smurf 攻击</td>
+</tr>
+<tr>
+<td>传输层</td>
+<td>TCP&#x2F;UDP、端口</td>
+<td>SYN Flood、端口扫描</td>
+</tr>
+<tr>
+<td>会话层</td>
+<td>会话管理</td>
+<td>会话劫持、令牌窃取</td>
+</tr>
+<tr>
+<td>表示层</td>
+<td>数据编码&#x2F;加密</td>
+<td>SSL 剥离、协议解析绕过</td>
+</tr>
+<tr>
+<td>应用层</td>
+<td>HTTP&#x2F;FTP&#x2F;SMTP</td>
+<td>SQL 注入、XSS、文件上传、RCE</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-TCP-三次握手与四次挥手"><a href="#1-2-TCP-三次握手与四次挥手" class="headerlink" title="1.2 TCP 三次握手与四次挥手"></a>1.2 TCP 三次握手与四次挥手</h3><p><strong>三次握手：</strong></p>
+<ol>
+<li>客户端 → SYN → 服务端（请求建立连接）</li>
+<li>服务端 → SYN+ACK → 客户端（确认并请求建立）</li>
+<li>客户端 → ACK → 服务端（确认建立）</li>
+</ol>
+<p><strong>攻击点：</strong> SYN Flood 攻击只发 SYN 不发第三次握手，耗尽服务端半连接队列。</p>
+<p><strong>四次挥手：</strong></p>
+<ol>
+<li>主动方 → FIN → 被动方（请求断开）</li>
+<li>被动方 → ACK → 主动方（确认收到）</li>
+<li>被动方 → FIN → 主动方（同意断开）</li>
+<li>主动方 → ACK → 被动方（确认断开，进入 TIME_WAIT）</li>
+</ol>
+<h3 id="1-3-TCP-与-UDP-区别"><a href="#1-3-TCP-与-UDP-区别" class="headerlink" title="1.3 TCP 与 UDP 区别"></a>1.3 TCP 与 UDP 区别</h3><table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>TCP</th>
+<th>UDP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>连接状态</td>
+<td>面向连接</td>
+<td>无连接</td>
+</tr>
+<tr>
+<td>可靠性</td>
+<td>保证可靠传输（重传机制）</td>
+<td>不可靠（尽力而为）</td>
+</tr>
+<tr>
+<td>传输效率</td>
+<td>低（需握手确认）</td>
+<td>高</td>
+</tr>
+<tr>
+<td>应用场景</td>
+<td>HTTP、FTP、SSH、SMTP</td>
+<td>DNS、DHCP、视频流、VoIP</td>
+</tr>
+<tr>
+<td>头部大小</td>
+<td>20-60 字节</td>
+<td>8 字节</td>
+</tr>
+<tr>
+<td>流量控制</td>
+<td>有</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<h3 id="1-4-HTTP-协议基础"><a href="#1-4-HTTP-协议基础" class="headerlink" title="1.4 HTTP 协议基础"></a>1.4 HTTP 协议基础</h3><p><strong>HTTP 方法：</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+<th>安全性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td>获取资源</td>
+<td>参数在 URL 中可见，不应传输敏感信息</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>提交资源</td>
+<td>参数在请求体，适合提交数据</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>上传&#x2F;更新</td>
+<td>需防未授权上传</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>删除资源</td>
+<td>需严格鉴权</td>
+</tr>
+<tr>
+<td>OPTIONS</td>
+<td>查询支持方法</td>
+<td>可探测服务器信息</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>部分更新</td>
+<td>需校验权限</td>
+</tr>
+</tbody></table>
+<p><strong>HTTP 状态码速记：</strong></p>
+<ul>
+<li><code>2xx</code>：成功——<code>200 OK</code>、<code>201 Created</code></li>
+<li><code>3xx</code>：重定向——<code>301 永久迁移</code>、<code>302 临时跳转</code></li>
+<li><code>4xx</code>：客户端错误——<code>400 坏请求</code>、<code>401 未认证</code>、<code>403 禁止访问</code>、<code>404 找不到</code>、<code>405 方法不允许</code></li>
+<li><code>5xx</code>：服务端错误——<code>500 服务器内部错误</code>、<code>502 网关错误</code>、<code>503 服务不可用</code></li>
+</ul>
+<p><strong>面试快速答题：</strong> 说 HTTP 状态码时带一句攻击成功判断——例如”HTTP 200 不代表攻击成功，需要看响应体是否包含命令执行结果”。</p>
+<h3 id="1-5-常见端口速查表"><a href="#1-5-常见端口速查表" class="headerlink" title="1.5 常见端口速查表"></a>1.5 常见端口速查表</h3><table>
+<thead>
+<tr>
+<th>端口</th>
+<th>服务</th>
+<th>默认&#x2F;常见漏洞</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>21</td>
+<td>FTP</td>
+<td>弱口令、匿名登录</td>
+</tr>
+<tr>
+<td>22</td>
+<td>SSH</td>
+<td>弱口令、暴力破解</td>
+</tr>
+<tr>
+<td>23</td>
+<td>Telnet</td>
+<td>明文传输、弱口令</td>
+</tr>
+<tr>
+<td>25</td>
+<td>SMTP</td>
+<td>邮件伪造、中继</td>
+</tr>
+<tr>
+<td>53</td>
+<td>DNS</td>
+<td>区域传输、DNS 隧道</td>
+</tr>
+<tr>
+<td>80&#x2F;443</td>
+<td>HTTP&#x2F;HTTPS</td>
+<td>Web 漏洞（SQL 注入、XSS、文件上传等）</td>
+</tr>
+<tr>
+<td>135</td>
+<td>RPC</td>
+<td>MS-RPC 漏洞、DCOM</td>
+</tr>
+<tr>
+<td>139&#x2F;445</td>
+<td>SMB</td>
+<td>EternalBlue（MS17-010）、SMB 爆破</td>
+</tr>
+<tr>
+<td>389</td>
+<td>LDAP</td>
+<td>域控制器信息泄露</td>
+</tr>
+<tr>
+<td>443</td>
+<td>HTTPS</td>
+<td>Web 漏洞、证书验证</td>
+</tr>
+<tr>
+<td>636</td>
+<td>LDAPS</td>
+<td>域控访问</td>
+</tr>
+<tr>
+<td>873</td>
+<td>Rsync</td>
+<td>未授权访问</td>
+</tr>
+<tr>
+<td>1433</td>
+<td>MSSQL</td>
+<td>弱口令、SA 提权</td>
+</tr>
+<tr>
+<td>1521</td>
+<td>Oracle</td>
+<td>弱口令、TNS 漏洞</td>
+</tr>
+<tr>
+<td>2049</td>
+<td>NFS</td>
+<td>未授权挂载</td>
+</tr>
+<tr>
+<td>2375</td>
+<td>Docker API</td>
+<td>未授权访问、容器逃逸</td>
+</tr>
+<tr>
+<td>3306</td>
+<td>MySQL</td>
+<td>弱口令、SQL 注入</td>
+</tr>
+<tr>
+<td>3389</td>
+<td>RDP</td>
+<td>弱口令、BlueKeep（CVE-2019-0708）</td>
+</tr>
+<tr>
+<td>4848</td>
+<td>GlassFish</td>
+<td>管理后台弱口令</td>
+</tr>
+<tr>
+<td>5432</td>
+<td>PostgreSQL</td>
+<td>弱口令</td>
+</tr>
+<tr>
+<td>6379</td>
+<td>Redis</td>
+<td>未授权访问、写 SSH key&#x2F;WebShell</td>
+</tr>
+<tr>
+<td>7001&#x2F;7002</td>
+<td>WebLogic</td>
+<td>反序列化、未授权访问</td>
+</tr>
+<tr>
+<td>8080&#x2F;8089</td>
+<td>Tomcat&#x2F;Jetty</td>
+<td>管理后台弱口令</td>
+</tr>
+<tr>
+<td>8443</td>
+<td>HTTPS（替代端口）</td>
+<td>Web 漏洞</td>
+</tr>
+<tr>
+<td>9090</td>
+<td>WebSphere</td>
+<td>管理后台</td>
+</tr>
+<tr>
+<td>9200</td>
+<td>Elasticsearch</td>
+<td>未授权访问</td>
+</tr>
+<tr>
+<td>11211</td>
+<td>Memcached</td>
+<td>未授权访问、DRDoS 放大</td>
+</tr>
+<tr>
+<td>27017</td>
+<td>MongoDB</td>
+<td>未授权访问</td>
+</tr>
+<tr>
+<td>50070</td>
+<td>Hadoop HDFS</td>
+<td>未授权访问</td>
+</tr>
+<tr>
+<td>50075</td>
+<td>Hadoop DataNode</td>
+<td>未授权访问</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、常见-Web-漏洞原理与修复速查（面试高频）"><a href="#二、常见-Web-漏洞原理与修复速查（面试高频）" class="headerlink" title="二、常见 Web 漏洞原理与修复速查（面试高频）"></a>二、常见 Web 漏洞原理与修复速查（面试高频）</h2><h3 id="2-1-SQL-注入"><a href="#2-1-SQL-注入" class="headerlink" title="2.1 SQL 注入"></a>2.1 SQL 注入</h3><p><strong>原理：</strong> 用户传入的参数未经严格过滤，直接拼接到 SQL 语句中，导致攻击者可以操纵 SQL 查询逻辑。</p>
+<p><strong>常见注入点：</strong> GET 参数、POST 数据、Cookie、Header。</p>
+<p><strong>判断注入存在：</strong></p>
+<ul>
+<li>单引号 <code>&#39;</code> 引发报错</li>
+<li><code>and 1=1</code> vs <code>and 1=2</code> 页面表现不同</li>
+<li><code>sleep(5)</code> 产生延迟</li>
+<li>报错信息泄漏 SQL 语法</li>
+</ul>
+<p><strong>修复：</strong></p>
+<ol>
+<li>参数化查询（PreparedStatement）——最有效</li>
+<li>过滤危险字符（<code>&#39;</code>、<code>&quot;</code>、<code>;</code>、<code>--</code>、<code>#</code>）</li>
+<li>最小数据库权限</li>
+<li>WAF 辅助防御</li>
+</ol>
+<p><strong>面试回答结构：</strong> 原理 → 攻击者如何利用 → 蓝队如何从审计、流量、WAF、日志中确认 → 修复方法。</p>
+<h3 id="2-2-XSS（跨站脚本）"><a href="#2-2-XSS（跨站脚本）" class="headerlink" title="2.2 XSS（跨站脚本）"></a>2.2 XSS（跨站脚本）</h3><p><strong>原理：</strong> 未过滤的用户输入被浏览器当作代码执行。</p>
+<p><strong>分类：</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>特点</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>反射型</td>
+<td>一次性、经过服务器</td>
+<td>恶意脚本在 URL 参数中，通过诱导点击触发</td>
+</tr>
+<tr>
+<td>存储型</td>
+<td>持久性、存储在服务器</td>
+<td>恶意脚本保存到数据库，用户访问页面时自动执行（更危险）</td>
+</tr>
+<tr>
+<td>DOM 型</td>
+<td>一次性、不经过服务器</td>
+<td>纯前端漏洞，JS 直接操作 DOM 导致</td>
+</tr>
+</tbody></table>
+<p><strong>危害：</strong> Cookie 窃取、页面内容篡改、恶意跳转、键盘记录、CSRF 绕过。</p>
+<p><strong>修复：</strong></p>
+<ol>
+<li>输出编码（HTML 实体编码 <code>&amp;lt;</code>、<code>&amp;gt;</code>）</li>
+<li>过滤危险标签（<code>&lt;script&gt;</code>、<code>&lt;iframe&gt;</code>、<code>onclick</code>、<code>onerror</code>）</li>
+<li>HttpOnly（防止 JS 读取 Cookie）</li>
+<li>CSP 安全策略</li>
+<li>富文本场景使用白名单标签</li>
+</ol>
+<p><strong>蓝队判断 XSS 成功（加分点）：</strong> 看状态码 + 看响应体编码 + 前端上下文闭合。例如参数反射在 <code>&lt;input value=&quot;xxx&quot;&gt;</code> 中间，可能闭合后执行 JS。</p>
+<h3 id="2-3-文件上传漏洞"><a href="#2-3-文件上传漏洞" class="headerlink" title="2.3 文件上传漏洞"></a>2.3 文件上传漏洞</h3><p><strong>原理：</strong> 未严格验证上传文件类型，攻击者可上传 WebShell。</p>
+<p><strong>常见绕过手法：</strong></p>
+<table>
+<thead>
+<tr>
+<th>绕过方式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>后缀大小写</td>
+<td><code>.php</code> → <code>.Php</code>、<code>.pHp</code></td>
+</tr>
+<tr>
+<td>后缀双写</td>
+<td><code>.pphphp</code></td>
+</tr>
+<tr>
+<td>后缀加空格</td>
+<td><code>evil.php </code>（空格截断）</td>
+</tr>
+<tr>
+<td>修改 Content-Type</td>
+<td><code>image/jpeg</code> 伪装</td>
+</tr>
+<tr>
+<td>截断上传</td>
+<td><code>evil.php%00.jpg</code>（老版本）</td>
+</tr>
+<tr>
+<td>.htaccess 绕过</td>
+<td>上传 <code>.htaccess</code> 将图片解析为 PHP</td>
+</tr>
+<tr>
+<td>条件竞争</td>
+<td>先上传再校验的间隙访问文件</td>
+</tr>
+</tbody></table>
+<p><strong>修复：</strong></p>
+<ol>
+<li>白名单验证后缀，不依赖黑名单</li>
+<li>重命名文件，不允许用户控制文件名</li>
+<li>限制文件大小</li>
+<li>上传目录禁止解析脚本</li>
+<li>文件内容&#x2F;类型检测</li>
+</ol>
+<h3 id="2-4-CSRF（跨站请求伪造）"><a href="#2-4-CSRF（跨站请求伪造）" class="headerlink" title="2.4 CSRF（跨站请求伪造）"></a>2.4 CSRF（跨站请求伪造）</h3><p><strong>原理：</strong> 攻击者诱导用户点击恶意页面，利用用户已登录状态伪造请求执行操作。</p>
+<p><strong>与 XSS 的区别：</strong> XSS 以用户为受害者执行脚本，CSRF 以用户身份发送伪造请求。</p>
+<p><strong>修复：</strong></p>
+<ol>
+<li>Token 校验（每个表单生成唯一随机 Token）</li>
+<li>Referer 检查（但可被绕过）</li>
+<li>SameSite Cookie 属性</li>
+<li>关键操作二次验证</li>
+</ol>
+<h3 id="2-5-SSRF（服务器端请求伪造）"><a href="#2-5-SSRF（服务器端请求伪造）" class="headerlink" title="2.5 SSRF（服务器端请求伪造）"></a>2.5 SSRF（服务器端请求伪造）</h3><p><strong>原理：</strong> 服务器代为访问外部资源，攻击者可利用服务端绕过网络限制访问内部资源。</p>
+<p><strong>常见利用：</strong> <code>file://</code> 读取本地文件、<code>gopher://</code> 扩展攻击面、<code>dict://</code> 探测端口、内网服务探测、Redis 未授权写 SSH key。</p>
+<p><strong>修复：</strong></p>
+<ol>
+<li>白名单限制可访问的域名&#x2F;IP</li>
+<li>禁用危险协议（<code>file://</code>、<code>gopher://</code>、<code>dict://</code>）</li>
+<li>内网 IP 段过滤</li>
+<li>DNS rebinding 防护</li>
+</ol>
+<p><strong>蓝队视角：</strong> SSRF 告警需关注是否出现了对内网 IP 的探测、是否携带了 <code>file://</code> 协议请求、是否有命令执行后的外传流量。</p>
+<h3 id="2-6-XXE（XML-外部实体注入）"><a href="#2-6-XXE（XML-外部实体注入）" class="headerlink" title="2.6 XXE（XML 外部实体注入）"></a>2.6 XXE（XML 外部实体注入）</h3><p><strong>原理：</strong> 解析 XML 时未禁止外部实体加载，导致可以读取文件、发起 SSRF。</p>
+<p><strong>常见 Payload 特征：</strong> Content-Type 为 <code>application/xml</code>、请求体中包含 <code>&lt;!DOCTYPE</code>、<code>&lt;!ENTITY</code>、<code>SYSTEM</code>、<code>file://</code>。</p>
+<p><strong>修复：</strong></p>
+<ol>
+<li>禁用外部实体解析（PHP：<code>libxml_disable_entity_loader(true)</code>）</li>
+<li>使用 JSON 替代 XML</li>
+<li>过滤 <code>ENTITY</code>、<code>SYSTEM</code> 等关键字</li>
+</ol>
+<h3 id="2-7-命令执行（RCE）"><a href="#2-7-命令执行（RCE）" class="headerlink" title="2.7 命令执行（RCE）"></a>2.7 命令执行（RCE）</h3><p><strong>原理：</strong> 用户输入拼接到系统命令执行函数中。常见危险函数：<code>system()</code>、<code>exec()</code>、<code>shell_exec()</code>、<code>passthru()</code>、<code>pcntl_exec()</code>（PHP）；<code>Runtime.getRuntime().exec()</code>（Java）。</p>
+<p><strong>特征参数拼接：</strong> 命令后接 <code>||</code>、<code>|</code>、<code>&amp;&amp;</code>、<code>&amp;</code>、<code>；</code> 等连接符号执行额外命令。</p>
+<p><strong>修复：</strong></p>
+<ol>
+<li>严格限制输入格式（如 IP 格式校验）</li>
+<li>禁用危险函数</li>
+<li>使用白名单代替黑名单</li>
+</ol>
+<h3 id="2-8-越权漏洞"><a href="#2-8-越权漏洞" class="headerlink" title="2.8 越权漏洞"></a>2.8 越权漏洞</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>水平越权</td>
+<td>A 用户可查看&#x2F;操作 B 用户的资源（同权限级别）</td>
+</tr>
+<tr>
+<td>垂直越权</td>
+<td>普通用户可执行管理员操作（低权限提升）</td>
+</tr>
+</tbody></table>
+<p><strong>修复：</strong> 每次请求验证当前用户对资源的访问权限。使用不可预测的资源 ID。</p>
+<h3 id="2-9-常见组件漏洞速查"><a href="#2-9-常见组件漏洞速查" class="headerlink" title="2.9 常见组件漏洞速查"></a>2.9 常见组件漏洞速查</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>漏洞类型</th>
+<th>简述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Log4j</td>
+<td>RCE（Log4Shell）</td>
+<td><code>${jndi:ldap://...}</code> 触发 JNDI 注入，影响范围极广</td>
+</tr>
+<tr>
+<td>Fastjson</td>
+<td>反序列化 RCE</td>
+<td><code>autoType</code> 机制导致恶意类反序列化</td>
+</tr>
+<tr>
+<td>Shiro</td>
+<td>反序列化 RCE</td>
+<td>RememberMe 硬编码密钥 + 反序列化</td>
+</tr>
+<tr>
+<td>Struts2</td>
+<td>OGNL 注入 RCE</td>
+<td>常用框架历史漏洞多</td>
+</tr>
+<tr>
+<td>ThinkPHP</td>
+<td>RCE</td>
+<td>多版本存在 RCE 漏洞</td>
+</tr>
+<tr>
+<td>Exchange</td>
+<td>多个高危 RCE</td>
+<td>ProxyLogon、ProxyShell 等</td>
+</tr>
+<tr>
+<td>Spring4Shell</td>
+<td>RCE</td>
+<td>Spring 框架类注入</td>
+</tr>
+<tr>
+<td>EternalBlue</td>
+<td>RCE</td>
+<td>MS17-010，SMB 远程执行</td>
+</tr>
+<tr>
+<td>Heartbleed</td>
+<td>信息泄露</td>
+<td>OpenSSL 心脏滴血读取内存</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、中间件常见漏洞"><a href="#三、中间件常见漏洞" class="headerlink" title="三、中间件常见漏洞"></a>三、中间件常见漏洞</h2><h3 id="3-1-IIS"><a href="#3-1-IIS" class="headerlink" title="3.1 IIS"></a>3.1 IIS</h3><table>
+<thead>
+<tr>
+<th>版本</th>
+<th>漏洞</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IIS 6.0</td>
+<td>解析漏洞</td>
+<td><code>/xxx.asp/xxx.jpg</code> 将图片当作 ASP 解析</td>
+</tr>
+<tr>
+<td>IIS 7.0</td>
+<td>解析漏洞</td>
+<td><code>xxx.jpg/xxx.php</code> 将图片当作 PHP 解析（配合 FastCGI）</td>
+</tr>
+<tr>
+<td>IIS</td>
+<td>PUT 漏洞</td>
+<td>允许上传任意文件</td>
+</tr>
+<tr>
+<td>IIS</td>
+<td>短文件名泄露</td>
+<td>获取 8.3 格式短文件名猜测文件存在</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-Nginx"><a href="#3-2-Nginx" class="headerlink" title="3.2 Nginx"></a>3.2 Nginx</h3><table>
+<thead>
+<tr>
+<th>漏洞</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>解析漏洞</td>
+<td><code>xxx.jpg/xxx.php</code> 将图片解析为 PHP（FastCGI 配置不当）</td>
+</tr>
+<tr>
+<td>目录穿越</td>
+<td><code>alias</code> 配置缺少结尾 <code>/</code> 导致文件读取</td>
+</tr>
+<tr>
+<td>CRLF 注入</td>
+<td>未过滤回车换行导致 HTTP 响应头拆分</td>
+</tr>
+<tr>
+<td>整数溢出</td>
+<td>旧版本 Range 请求处理</td>
+</tr>
+</tbody></table>
+<h3 id="3-3-Apache"><a href="#3-3-Apache" class="headerlink" title="3.3 Apache"></a>3.3 Apache</h3><table>
+<thead>
+<tr>
+<th>漏洞&#x2F;配置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>解析漏洞</td>
+<td>多后缀解析，<code>xxx.php.abc</code> 可被解析为 PHP</td>
+</tr>
+<tr>
+<td>.htaccess</td>
+<td>上传恶意配置文件重写规则</td>
+</tr>
+<tr>
+<td>HTTPoxy</td>
+<td>CGI 环境中 <code>Proxy</code> 头注入</td>
+</tr>
+<tr>
+<td>Log4j 模块</td>
+<td>Apache HTTP Server Log4j 模块 RCE</td>
+</tr>
+</tbody></table>
+<h3 id="3-4-Tomcat"><a href="#3-4-Tomcat" class="headerlink" title="3.4 Tomcat"></a>3.4 Tomcat</h3><table>
+<thead>
+<tr>
+<th>漏洞&#x2F;配置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>管理后台弱口令</td>
+<td><code>/manager/html</code> 弱口令上传 WAR 包 getshell</td>
+</tr>
+<tr>
+<td>AJP 协议漏洞</td>
+<td>Ghostcat（CVE-2020-1938），文件包含&#x2F;RCE</td>
+</tr>
+<tr>
+<td>示例文件夹</td>
+<td><code>/examples/</code> 未删除可能导致信息泄露</td>
+</tr>
+<tr>
+<td>反序列化</td>
+<td>配合 Java 反序列化漏洞</td>
+</tr>
+</tbody></table>
+<h3 id="3-5-JBoss"><a href="#3-5-JBoss" class="headerlink" title="3.5 JBoss"></a>3.5 JBoss</h3><table>
+<thead>
+<tr>
+<th>漏洞</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>未授权访问</td>
+<td>管理控制台无认证</td>
+</tr>
+<tr>
+<td>反序列化</td>
+<td>JMX 控制台反序列化 RCE</td>
+</tr>
+<tr>
+<td>CVE-2017-7504</td>
+<td>JBoss 反序列化远程命令执行</td>
+</tr>
+<tr>
+<td>CVE-2017-12149</td>
+<td>JBoss 5.x&#x2F;6.x 反序列化</td>
+</tr>
+</tbody></table>
+<h3 id="3-6-WebLogic"><a href="#3-6-WebLogic" class="headerlink" title="3.6 WebLogic"></a>3.6 WebLogic</h3><table>
+<thead>
+<tr>
+<th>漏洞</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>反序列化 RCE（CVE-2015-4852 等）</td>
+<td>T3 协议反序列化</td>
+</tr>
+<tr>
+<td>未授权访问（CVE-2018-2894）</td>
+<td>上传 getshell</td>
+</tr>
+<tr>
+<td>未授权访问（CVE-2020-14882）</td>
+<td>绕过控制台权限</td>
+</tr>
+<tr>
+<td>权限绕过 + 远程代码执行</td>
+<td>CVE-2021-2109 等</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四、护网英语术语中英对照（面试加分）"><a href="#四、护网英语术语中英对照（面试加分）" class="headerlink" title="四、护网英语术语中英对照（面试加分）"></a>四、护网英语术语中英对照（面试加分）</h2><p><strong>攻击&#x2F;防御术语：</strong></p>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>中文</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Phishing</td>
+<td>钓鱼攻击</td>
+<td>邮件&#x2F;链接诱导</td>
+</tr>
+<tr>
+<td>Spear Phishing</td>
+<td>鱼叉式钓鱼</td>
+<td>精准目标</td>
+</tr>
+<tr>
+<td>Brute Force</td>
+<td>暴力破解</td>
+<td>枚举尝试</td>
+</tr>
+<tr>
+<td>Dictionary Attack</td>
+<td>字典攻击</td>
+<td>基于字典的破解</td>
+</tr>
+<tr>
+<td>Credential Stuffing</td>
+<td>撞库</td>
+<td>用已泄露账号批量登录</td>
+</tr>
+<tr>
+<td>Port Scan</td>
+<td>端口扫描</td>
+<td>探测开放端口</td>
+</tr>
+<tr>
+<td>RCE</td>
+<td>远程代码执行</td>
+<td>高危漏洞</td>
+</tr>
+<tr>
+<td>SQLi</td>
+<td>SQL 注入</td>
+<td>数据库注入</td>
+</tr>
+<tr>
+<td>XSS</td>
+<td>跨站脚本</td>
+<td>浏览器执行恶意脚本</td>
+</tr>
+<tr>
+<td>CSRF</td>
+<td>跨站请求伪造</td>
+<td>伪造用户请求</td>
+</tr>
+<tr>
+<td>SSRF</td>
+<td>服务器端请求伪造</td>
+<td>服务器替攻击者访问</td>
+</tr>
+<tr>
+<td>XXE</td>
+<td>XML 外部实体注入</td>
+<td>文件读取 &#x2F; SSRF</td>
+</tr>
+<tr>
+<td>LFI&#x2F;RFI</td>
+<td>文件包含</td>
+<td>本地&#x2F;远程文件包含</td>
+</tr>
+<tr>
+<td>0day</td>
+<td>零日漏洞</td>
+<td>无补丁的漏洞</td>
+</tr>
+<tr>
+<td>1day</td>
+<td>已公开但未修补的漏洞</td>
+<td>危险期</td>
+</tr>
+<tr>
+<td>Nday</td>
+<td>已有补丁的漏洞</td>
+<td>未及时修复仍危险</td>
+</tr>
+<tr>
+<td>Exploit</td>
+<td>漏洞利用代码</td>
+<td>Exp</td>
+</tr>
+<tr>
+<td>Payload</td>
+<td>攻击载荷</td>
+<td>漏洞触发后的恶意代码</td>
+</tr>
+<tr>
+<td>PoC</td>
+<td>概念验证</td>
+<td>证明漏洞存在</td>
+</tr>
+<tr>
+<td>Beacon</td>
+<td>信标</td>
+<td>C2 心跳通信</td>
+</tr>
+<tr>
+<td>Privilege Escalation</td>
+<td>提权</td>
+<td>获取更高权限</td>
+</tr>
+<tr>
+<td>Lateral Movement</td>
+<td>横向移动</td>
+<td>内网扩散</td>
+</tr>
+<tr>
+<td>Persistence</td>
+<td>权限维持</td>
+<td>留后门保上线</td>
+</tr>
+<tr>
+<td>Exfiltration</td>
+<td>数据外传</td>
+<td>窃取数据发出</td>
+</tr>
+<tr>
+<td>Pivot</td>
+<td>跳板</td>
+<td>通过已控主机攻击内网</td>
+</tr>
+<tr>
+<td>Cover Tracks</td>
+<td>清除痕迹</td>
+<td>清理日志等</td>
+</tr>
+</tbody></table>
+<p><strong>安全设备术语：</strong></p>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>中文</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FW</td>
+<td>防火墙</td>
+<td>访问控制</td>
+</tr>
+<tr>
+<td>WAF</td>
+<td>Web 应用防火墙</td>
+<td>防 Web 攻击</td>
+</tr>
+<tr>
+<td>IDS</td>
+<td>入侵检测系统</td>
+<td>只检测不阻断</td>
+</tr>
+<tr>
+<td>IPS</td>
+<td>入侵防御系统</td>
+<td>检测+阻断</td>
+</tr>
+<tr>
+<td>EDR</td>
+<td>终端检测响应</td>
+<td>主机侧安全</td>
+</tr>
+<tr>
+<td>NDR</td>
+<td>网络检测响应</td>
+<td>网络侧检测</td>
+</tr>
+<tr>
+<td>SIEM</td>
+<td>安全信息与事件管理</td>
+<td>日志集中分析</td>
+</tr>
+<tr>
+<td>SOC</td>
+<td>安全运营中心</td>
+<td>人员+流程+平台</td>
+</tr>
+<tr>
+<td>NAC</td>
+<td>网络准入控制</td>
+<td>身份准入</td>
+</tr>
+<tr>
+<td>HIDS</td>
+<td>主机入侵检测</td>
+<td>主机侧检测</td>
+</tr>
+<tr>
+<td>NGFW</td>
+<td>下一代防火墙</td>
+<td>集成多功能的防火墙</td>
+</tr>
+<tr>
+<td>SOAR</td>
+<td>安全编排自动化响应</td>
+<td>自动化处置</td>
+</tr>
+</tbody></table>
+<p><strong>告警&#x2F;取证术语：</strong></p>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>中文</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Alert</td>
+<td>告警</td>
+<td>安全设备通知</td>
+</tr>
+<tr>
+<td>False Positive (FP)</td>
+<td>误报</td>
+<td>不是真实攻击</td>
+</tr>
+<tr>
+<td>True Positive (TP)</td>
+<td>真实告警</td>
+<td>确认的攻击</td>
+</tr>
+<tr>
+<td>False Negative (FN)</td>
+<td>漏报</td>
+<td>真实攻击未检出</td>
+</tr>
+<tr>
+<td>IOC</td>
+<td>失陷指标</td>
+<td>IP&#x2F;域名&#x2F;哈希等</td>
+</tr>
+<tr>
+<td>TTP</td>
+<td>战术技术流程</td>
+<td>ATT&amp;CK 框架</td>
+</tr>
+<tr>
+<td>Threat Intelligence</td>
+<td>威胁情报</td>
+<td>攻击者信息</td>
+</tr>
+<tr>
+<td>RDP Brute Force</td>
+<td>RDP 暴力破解</td>
+<td>常见告警</td>
+</tr>
+<tr>
+<td>Pass-the-Hash (PtH)</td>
+<td>哈希传递</td>
+<td>内网横向</td>
+</tr>
+<tr>
+<td>Pass-the-Ticket (PtT)</td>
+<td>票据传递</td>
+<td>域内横向</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五、护网整体流程"><a href="#五、护网整体流程" class="headerlink" title="五、护网整体流程"></a>五、护网整体流程</h2><h3 id="5-1-护网分级"><a href="#5-1-护网分级" class="headerlink" title="5.1 护网分级"></a>5.1 护网分级</h3><table>
+<thead>
+<tr>
+<th>级别</th>
+<th>时间</th>
+<th>范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>国家级</td>
+<td>7-8 月，1-2 个月</td>
+<td>重点企事业单位</td>
+</tr>
+<tr>
+<td>省级</td>
+<td>约 2 周</td>
+<td>省市级关键信息基础设施</td>
+</tr>
+<tr>
+<td>市级</td>
+<td>约 1 周</td>
+<td>市级单位</td>
+</tr>
+<tr>
+<td>常态&#x2F;企业级</td>
+<td>不定期</td>
+<td>企业内部</td>
+</tr>
+</tbody></table>
+<h3 id="5-2-角色分工"><a href="#5-2-角色分工" class="headerlink" title="5.2 角色分工"></a>5.2 角色分工</h3><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>负责内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>红队（攻击队）</td>
+<td>模拟攻击，发现系统漏洞</td>
+</tr>
+<tr>
+<td>蓝队（防守队）</td>
+<td>监控告警、应急处置、主动防御</td>
+</tr>
+<tr>
+<td>紫队</td>
+<td>协调红蓝，复盘优化</td>
+</tr>
+<tr>
+<td>研判&#x2F;专家组</td>
+<td>判定是否失陷、是否违规</td>
+</tr>
+<tr>
+<td>指挥中心</td>
+<td>7×24 值守，统一指挥</td>
+</tr>
+</tbody></table>
+<h3 id="5-3-战前、战中、战后"><a href="#5-3-战前、战中、战后" class="headerlink" title="5.3 战前、战中、战后"></a>5.3 战前、战中、战后</h3><p><strong>战前准备阶段：</strong></p>
+<ul>
+<li>梳理资产、加固系统、打补丁</li>
+<li>关闭不必要业务系统和端口</li>
+<li>优化安全设备策略，统一日志格式</li>
+<li>人员排班、应急演练、指挥部搭建</li>
+<li>VPN 远程办公入口加固</li>
+</ul>
+<p><strong>战中进行阶段：</strong></p>
+<ul>
+<li>7×24 小时值守，监控安全设备告警</li>
+<li>发现异常 IP&#x2F;登录&#x2F;文件及时上报</li>
+<li>协助封禁恶意 IP、研判攻击</li>
+<li>发现 WebShell、异常外联、挖矿等立即处置</li>
+<li>记录值守日志，每日总结</li>
+</ul>
+<p><strong>战后总结阶段：</strong></p>
+<ul>
+<li>汇总防守成果（拦截次数、发现事件数、溯源成功数）</li>
+<li>输出技战法（攻击现象→分析方法→处置方法→防护建议）</li>
+<li>提交防守报告（攻击方特征、时间线、影响范围、加固建议）</li>
+</ul>
+<h3 id="5-4-蓝队加分与扣分"><a href="#5-4-蓝队加分与扣分" class="headerlink" title="5.4 蓝队加分与扣分"></a>5.4 蓝队加分与扣分</h3><p><strong>常见加分项：</strong></p>
+<ul>
+<li>发现攻击并成功拦截</li>
+<li>快速应急响应，及时上报</li>
+<li>封禁恶意 IP</li>
+<li>发现 WebShell</li>
+<li>发现异常外联或 C2 通信</li>
+<li>成功溯源攻击者</li>
+<li>零失陷（全部防守成功）</li>
+<li>输出高质量技战法&#x2F;防守报告</li>
+</ul>
+<p><strong>常见扣分项：</strong></p>
+<ul>
+<li>弱口令（123456、公司名+年份）</li>
+<li>系统未打补丁</li>
+<li>安全设备无人管理、日志没人看</li>
+<li>员工被钓鱼成功</li>
+<li>核心系统被攻破（域控、数据库、OA）</li>
+<li>发生重大失陷（权限被获取、数据被窃取）</li>
+</ul>
+<p><strong>扣分后怎么办：</strong> 先快速处置攻击（隔离 → 修复漏洞），防止继续失陷；然后进行溯源和全面排查；通过及时发现后续攻击、提高响应效率、保持零失陷逐步追回分数。安全比赛没结束就有翻盘机会。</p>
+<h3 id="5-5-防守目标"><a href="#5-5-防守目标" class="headerlink" title="5.5 防守目标"></a>5.5 防守目标</h3><p>防守不是”不被攻击”，而是：</p>
+<ul>
+<li>能发现攻击（知道有人进来了）</li>
+<li>能及时响应（10 分钟内发现并处置）</li>
+<li>能守住核心系统（域控、数据库、核心业务）</li>
+<li>能溯源取证并输出报告</li>
+</ul>
+<p>只要攻击了没被发现，蓝队就不算丢分。</p>
+<h3 id="5-6-技战法怎么写？"><a href="#5-6-技战法怎么写？" class="headerlink" title="5.6 技战法怎么写？"></a>5.6 技战法怎么写？</h3><p>标准结构：</p>
+<ol>
+<li><strong>攻击现象：</strong> 描述告警或事件的表现</li>
+<li><strong>分析方法：</strong> 如何通过日志&#x2F;流量&#x2F;主机证据分析</li>
+<li><strong>处置方法：</strong> 采取了什么措施（封禁、隔离、清除后门）</li>
+<li><strong>防护建议：</strong> 事后如何加固避免复发</li>
+</ol>
+<hr>
+<h2 id="六、安全加固清单"><a href="#六、安全加固清单" class="headerlink" title="六、安全加固清单"></a>六、安全加固清单</h2><h3 id="6-1-Linux-安全加固"><a href="#6-1-Linux-安全加固" class="headerlink" title="6.1 Linux 安全加固"></a>6.1 Linux 安全加固</h3><ul>
+<li>修改默认 SSH 端口（22 → 非标准端口）</li>
+<li>SSH 禁止 root 直接登录（<code>PermitRootLogin no</code>）</li>
+<li>禁用密码登录，使用 SSH Key</li>
+<li>关闭不需要的服务和端口</li>
+<li>配置防火墙（iptables&#x2F;firewalld），只放行业务端口</li>
+<li>定期更新系统补丁</li>
+<li>限制重要文件权限（<code>/etc/shadow</code>、<code>/etc/passwd</code>）</li>
+<li>配置日志审计（<code>auditd</code>）</li>
+<li>安装并配置 SELinux&#x2F;AppArmor</li>
+<li>限制 <code>/tmp</code>、<code>/var/tmp</code>、<code>/dev/shm</code> 的可执行权限（<code>noexec</code>）</li>
+<li>配置合理密码策略（长度、复杂度、有效期）</li>
+<li><code>/var/log/</code> 目录集中管理，设置日志保留时间</li>
+</ul>
+<h3 id="6-2-Windows-安全加固"><a href="#6-2-Windows-安全加固" class="headerlink" title="6.2 Windows 安全加固"></a>6.2 Windows 安全加固</h3><ul>
+<li>修改 Administrators 组默认管理员名称</li>
+<li>禁用不必要的服务和端口</li>
+<li>配置防火墙入站规则，只允许必需端口</li>
+<li>配置日志策略，安全日志保留时间足够长</li>
+<li>开启 Windows 防火墙</li>
+<li>关闭不必要的共享</li>
+<li>启用 UAC</li>
+<li>配置密码策略和账户锁定策略</li>
+<li>安装防病毒&#x2F;EDR 客户端</li>
+<li>禁用 Guest 账户</li>
+<li>定期扫描漏洞并更新补丁</li>
+<li>配置 AppLocker 或软件限制策略</li>
+</ul>
+<hr>
+<h2 id="七、内网渗透基础（从防守视角理解）"><a href="#七、内网渗透基础（从防守视角理解）" class="headerlink" title="七、内网渗透基础（从防守视角理解）"></a>七、内网渗透基础（从防守视角理解）</h2><h3 id="7-1-域环境基础"><a href="#7-1-域环境基础" class="headerlink" title="7.1 域环境基础"></a>7.1 域环境基础</h3><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>域控（DC）</td>
+<td>Windows 域的核心服务器，管理所有域用户和计算机</td>
+</tr>
+<tr>
+<td>AD</td>
+<td>Active Directory，目录服务数据库</td>
+</tr>
+<tr>
+<td>组织单位 OU</td>
+<td>组织单位，用于分组管理</td>
+</tr>
+<tr>
+<td>域用户</td>
+<td>在域中创建的账号，可登录域内任何授权计算机</td>
+</tr>
+<tr>
+<td>工作组</td>
+<td>对等网络，没有集中管理</td>
+</tr>
+</tbody></table>
+<h3 id="7-2-黄金票据与白银票据"><a href="#7-2-黄金票据与白银票据" class="headerlink" title="7.2 黄金票据与白银票据"></a>7.2 黄金票据与白银票据</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+<th>检测重点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>黄金票据（Golden Ticket）</td>
+<td>伪造 KRBTGT 账户的 TGT，拥有域内最高权限</td>
+<td>注意 KRBTGT 账户 Hash 是否泄露；异常 TGT 生命周期</td>
+</tr>
+<tr>
+<td>白银票据（Silver Ticket）</td>
+<td>伪造服务的 TGS，只能访问特定服务</td>
+<td>注意服务账号 Hash 泄露；异常的 Kerberos 服务票据</td>
+</tr>
+</tbody></table>
+<p><strong>防守方：</strong> 域控安全是核心。保护好 KRBTGT Hash、监控异常 kerberos 请求、使用日志 ID 4768&#x2F;4769 检测异常票据行为。</p>
+<h3 id="7-3-PTH-PTT-PTK"><a href="#7-3-PTH-PTT-PTK" class="headerlink" title="7.3 PTH&#x2F;PTT&#x2F;PTK"></a>7.3 PTH&#x2F;PTT&#x2F;PTK</h3><table>
+<thead>
+<tr>
+<th>缩写</th>
+<th>全称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PTH</td>
+<td>Pass-the-Hash</td>
+<td>哈希传递，用 NTLM Hash 替代密码认证</td>
+</tr>
+<tr>
+<td>PTT</td>
+<td>Pass-the-Ticket</td>
+<td>票据传递，窃取 Kerberos 票据认证</td>
+</tr>
+<tr>
+<td>PTK</td>
+<td>Pass-the-Key</td>
+<td>密钥传递，用 AES Key 认证</td>
+</tr>
+</tbody></table>
+<p><strong>防守方：</strong> 开启 Credential Guard、限制管理员本地登录、监控异常登录类型（Logon Type 3&#x2F;9&#x2F;10）。</p>
+<h3 id="7-4-DCSync"><a href="#7-4-DCSync" class="headerlink" title="7.4 DCSync"></a>7.4 DCSync</h3><p>攻击者模拟域控向目标域控请求账号密码哈希。</p>
+<p><strong>防守检测：</strong> 监控 4662（ACL 变更）和异常 DC 同步请求；分配最小权限，严格限制域复制权限（Replication）。</p>
+<h3 id="7-5-MS14-068"><a href="#7-5-MS14-068" class="headerlink" title="7.5 MS14-068"></a>7.5 MS14-068</h3><p>域控漏洞，普通域用户可伪造票据成为域管理员。</p>
+<hr>
+<h2 id="八、权限提升"><a href="#八、权限提升" class="headerlink" title="八、权限提升"></a>八、权限提升</h2><h3 id="8-1-Windows-提权"><a href="#8-1-Windows-提权" class="headerlink" title="8.1 Windows 提权"></a>8.1 Windows 提权</h3><p><strong>常见提权方式：</strong></p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>系统内核漏洞</td>
+<td>利用 OS 漏洞（如 MS16-032、MS17-010）</td>
+</tr>
+<tr>
+<td>服务漏洞</td>
+<td>服务权限配置不当、路径带空格</td>
+</tr>
+<tr>
+<td>弱密码</td>
+<td>本地管理员密码弱</td>
+</tr>
+<tr>
+<td>Token 窃取</td>
+<td><code>Incognito</code>、<code>SeImpersonatePrivilege</code></td>
+</tr>
+<tr>
+<td>UAC 绕过</td>
+<td>从标准用户绕过 UAC 到管理员</td>
+</tr>
+<tr>
+<td>土豆家族</td>
+<td><code>RottenPotato</code>、<code>JuicyPotato</code>、<code>PrintSpoofer</code> 等（利用 COM 提权）</td>
+</tr>
+<tr>
+<td>DLL 劫持</td>
+<td>替换系统加载的 DLL</td>
+</tr>
+<tr>
+<td>不安全的注册表权限</td>
+<td>当前用户可修改服务的注册表键值</td>
+</tr>
+</tbody></table>
+<p><strong>土豆家族提权原理：</strong> 利用 Windows COM 接口和 Token 机制，通过欺骗 SYSTEM 账户连接到攻击者控制的 RPC 服务器，获得 SYSTEM Token。</p>
+<h3 id="8-2-Linux-提权"><a href="#8-2-Linux-提权" class="headerlink" title="8.2 Linux 提权"></a>8.2 Linux 提权</h3><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SUID 提权</td>
+<td>查找设置了 SUID 的二进制文件，利用其高权限执行命令</td>
+</tr>
+<tr>
+<td>脏牛漏洞</td>
+<td>CVE-2016-5195，内核竞争条件，可写内存映射</td>
+</tr>
+<tr>
+<td>内核漏洞</td>
+<td>利用内核漏洞（如 <code>dirty_pipe</code>、<code>overlayfs</code> 等）</td>
+</tr>
+<tr>
+<td>计划任务</td>
+<td>可写脚本&#x2F;二进制被 root 定时执行</td>
+</tr>
+<tr>
+<td>SUDO 配置不当</td>
+<td><code>/etc/sudoers</code> 中某些命令可以免密执行</td>
+</tr>
+<tr>
+<td>环境变量劫持</td>
+<td><code>$PATH</code> 中包含可写目录时劫持同名命令</td>
+</tr>
+</tbody></table>
+<p><strong>SUID 查找命令：</strong> <code>find / -perm -4000 2&gt;/dev/null</code></p>
+<hr>
+<h2 id="九、内存马完整分类"><a href="#九、内存马完整分类" class="headerlink" title="九、内存马完整分类"></a>九、内存马完整分类</h2><h3 id="9-1-什么是内存马？"><a href="#9-1-什么是内存马？" class="headerlink" title="9.1 什么是内存马？"></a>9.1 什么是内存马？</h3><p>内存马是一种只存在于内存中的 WebShell 后门，无文件落地，隐蔽性强，常规文件查杀无法发现。通常利用漏洞（反序列化、JNDI 注入等）动态注入恶意类到运行中的 JVM。</p>
+<p><strong>传统 WebShell vs 内存马：</strong></p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>传统 WebShell</th>
+<th>内存马</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文件落地</td>
+<td>有文件</td>
+<td>无文件，只在内存中</td>
+</tr>
+<tr>
+<td>查杀难度</td>
+<td>文件查杀可发现</td>
+<td>需内存扫描或流量检测</td>
+</tr>
+<tr>
+<td>持久化</td>
+<td>重启后消失（需重写）</td>
+<td>重启后消失</td>
+</tr>
+<tr>
+<td>注入方式</td>
+<td>文件上传</td>
+<td>反序列化、JNDI 注入、表达式注入</td>
+</tr>
+</tbody></table>
+<h3 id="9-2-Java-内存马分类"><a href="#9-2-Java-内存马分类" class="headerlink" title="9.2 Java 内存马分类"></a>9.2 Java 内存马分类</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>原理</th>
+<th>检测方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Servlet 内存马</td>
+<td>动态注册 Servlet</td>
+<td>查看活跃 Servlet 列表</td>
+</tr>
+<tr>
+<td>Filter 内存马</td>
+<td>动态注册 Filter 拦截请求（最常见）</td>
+<td>对比 Filter 链，查找可疑 Filter</td>
+</tr>
+<tr>
+<td>Listener 内存马</td>
+<td>动态注册 Listener</td>
+<td>查看 Listener 列表</td>
+</tr>
+<tr>
+<td>Agent 内存马</td>
+<td>Java Agent 技术修改字节码</td>
+<td>对比 JMX、查看 Agent jar</td>
+</tr>
+<tr>
+<td>Interceptor 内存马</td>
+<td>Spring 拦截器注入</td>
+<td>查看拦截器注册情况</td>
+</tr>
+<tr>
+<td>Valve 内存马</td>
+<td>Tomcat Pipeline 组件注入</td>
+<td>查看 Valve 链</td>
+</tr>
+</tbody></table>
+<h3 id="9-3-内存马的排查思路"><a href="#9-3-内存马的排查思路" class="headerlink" title="9.3 内存马的排查思路"></a>9.3 内存马的排查思路</h3><ol>
+<li>对比内存中注册的 Filter&#x2F;Listener&#x2F;Servlet 与配置文件是否一致</li>
+<li>使用工具（如 <code>java -javaagent</code>、<code>arthas</code>）dump 所有类分析</li>
+<li>流量侧关注异常的 POST 请求和加密通信</li>
+<li>重启后内存马消失（可作为确认手段，但影响业务）</li>
+<li>内存扫描工具（如 <code>Copagent</code>、<code>Alibaba</code> 开源的 <code>Arthas</code>）</li>
+</ol>
+<hr>
+<h2 id="十、渗透测试完整流程（蓝队防守视角）"><a href="#十、渗透测试完整流程（蓝队防守视角）" class="headerlink" title="十、渗透测试完整流程（蓝队防守视角）"></a>十、渗透测试完整流程（蓝队防守视角）</h2><p>理解攻击路径，才能提前布防。</p>
+<h3 id="10-1-信息收集"><a href="#10-1-信息收集" class="headerlink" title="10.1 信息收集"></a>10.1 信息收集</h3><table>
+<thead>
+<tr>
+<th>收集内容</th>
+<th>蓝队防守</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>子域名</td>
+<td>最小化子域名暴露；关闭测试&#x2F;开发子域名</td>
+</tr>
+<tr>
+<td>开放端口</td>
+<td>仅开放业务必需端口；关闭管理端口公网暴露</td>
+</tr>
+<tr>
+<td>敏感路径</td>
+<td>隐藏后台&#x2F;API 路径；删除默认文件</td>
+</tr>
+<tr>
+<td>CMS 指纹</td>
+<td>修改默认路径、去除版本号</td>
+</tr>
+<tr>
+<td>真实 IP</td>
+<td>仅通过 CDN&#x2F;WAF 回源；不泄漏源站 IP</td>
+</tr>
+<tr>
+<td>邮件头&#x2F;SSL 证书</td>
+<td>邮件头不写源 IP；使用 CDN 证书</td>
+</tr>
+<tr>
+<td>邮箱&#x2F;员工信息</td>
+<td>限制”忘记密码”处手机号&#x2F;邮箱枚举</td>
+</tr>
+</tbody></table>
+<h3 id="10-2-漏洞发现与利用"><a href="#10-2-漏洞发现与利用" class="headerlink" title="10.2 漏洞发现与利用"></a>10.2 漏洞发现与利用</h3><p><strong>蓝队防守重点：</strong></p>
+<ul>
+<li>监控扫描器流量（高频请求、大量 404、payload 模式）</li>
+<li>封禁扫描 IP，但需区分是否为真实攻击</li>
+<li>对已知漏洞组件及时更新补丁</li>
+<li>对反序列化、命令执行等高危漏洞重点防护</li>
+</ul>
+<h3 id="10-3-后渗透阶段"><a href="#10-3-后渗透阶段" class="headerlink" title="10.3 后渗透阶段"></a>10.3 后渗透阶段</h3><p><strong>蓝队防守重点：</strong></p>
+<ul>
+<li>监控异常进程（Web 服务拉起 shell、powershell、cmd）</li>
+<li>监控异常外联（C2 通信、矿池、数据外传）</li>
+<li>监控账号异常登录</li>
+<li>监控计划任务&#x2F;服务&#x2F;注册表变更</li>
+</ul>
+<hr>
+<h2 id="十一、WebShell-流量特征速查"><a href="#十一、WebShell-流量特征速查" class="headerlink" title="十一、WebShell 流量特征速查"></a>十一、WebShell 流量特征速查</h2><h3 id="11-1-菜刀（Chopper）"><a href="#11-1-菜刀（Chopper）" class="headerlink" title="11.1 菜刀（Chopper）"></a>11.1 菜刀（Chopper）</h3><table>
+<thead>
+<tr>
+<th>特征</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>参数固定</td>
+<td><code>z0</code>、<code>z1</code> 等固定参数名</td>
+</tr>
+<tr>
+<td>交互模式</td>
+<td>频繁访问同一脚本</td>
+</tr>
+<tr>
+<td>通信方式</td>
+<td>Base64 编码的 POST 请求，相对规整</td>
+</tr>
+<tr>
+<td>响应结果</td>
+<td>返回目录信息、文件管理、命令执行结果</td>
+</tr>
+</tbody></table>
+<h3 id="11-2-蚁剑（AntSword）"><a href="#11-2-蚁剑（AntSword）" class="headerlink" title="11.2 蚁剑（AntSword）"></a>11.2 蚁剑（AntSword）</h3><table>
+<thead>
+<tr>
+<th>特征</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>编码方式</td>
+<td>可自定义编码器和解码器</td>
+</tr>
+<tr>
+<td>常见特征</td>
+<td>请求体含 <code>@ini_set(&quot;display_errors&quot;,&quot;0&quot;)</code> 等初始化代码</td>
+</tr>
+<tr>
+<td>参数名特征</td>
+<td>以 <code>_0x</code> 开头的参数名，后面为加密数据（常见识别特征）</td>
+</tr>
+<tr>
+<td>数据编码</td>
+<td>默认使用 Base64 编码</td>
+</tr>
+<tr>
+<td>交互模式</td>
+<td>区分文件管理、命令执行、数据库交互等操作</td>
+</tr>
+</tbody></table>
+<h3 id="11-3-冰蝎-3-0（Behinder-3-0）"><a href="#11-3-冰蝎-3-0（Behinder-3-0）" class="headerlink" title="11.3 冰蝎 3.0（Behinder 3.0）"></a>11.3 冰蝎 3.0（Behinder 3.0）</h3><table>
+<thead>
+<tr>
+<th>特征</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Content-Type</td>
+<td>固定为 <code>application/octet-stream</code></td>
+</tr>
+<tr>
+<td>User-Agent</td>
+<td>内置 16 个固定 UA 列表</td>
+</tr>
+<tr>
+<td>密钥</td>
+<td>默认 <code>e45e329feb5d925b</code>（连接密码 MD5 前 16 位）</td>
+</tr>
+<tr>
+<td>通信</td>
+<td>PHP 中参数名 <code>$k</code> 为 16 位加密 key</td>
+</tr>
+<tr>
+<td>加密</td>
+<td>全程 AES 加密</td>
+</tr>
+</tbody></table>
+<h3 id="11-4-冰蝎-4-0（Behinder-4-0）"><a href="#11-4-冰蝎-4-0（Behinder-4-0）" class="headerlink" title="11.4 冰蝎 4.0（Behinder 4.0）"></a>11.4 冰蝎 4.0（Behinder 4.0）<!-- 核心变化：协议完全自定义，传统特征检测基本失效 --></h3><table>
+<thead>
+<tr>
+<th>变化</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>协议</td>
+<td>支持完全自定义的传输协议</td>
+</tr>
+<tr>
+<td>生成方式</td>
+<td>不再自带 server 文件夹，需要先选协议再生成</td>
+</tr>
+<tr>
+<td>检测方向</td>
+<td>从特征匹配转向行为检测</td>
+</tr>
+</tbody></table>
+<h3 id="11-5-哥斯拉（Godzilla）"><a href="#11-5-哥斯拉（Godzilla）" class="headerlink" title="11.5 哥斯拉（Godzilla）"></a>11.5 哥斯拉（Godzilla）</h3><table>
+<thead>
+<tr>
+<th>特征</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cookie 特征</td>
+<td>Cookie 末尾通常带 <code>;</code></td>
+</tr>
+<tr>
+<td>Accept</td>
+<td><code>text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</code></td>
+</tr>
+<tr>
+<td>响应头特征</td>
+<td><code>Cache-Control: no-store, no-cache, must-revalidate</code></td>
+</tr>
+<tr>
+<td>加密</td>
+<td>支持多种加密方式</td>
+</tr>
+<tr>
+<td>动态生成</td>
+<td>WebShell 是动态生成的，每次生成特征可能不同</td>
+</tr>
+</tbody></table>
+<h3 id="11-6-Cobalt-Strike（CS）"><a href="#11-6-Cobalt-Strike（CS）" class="headerlink" title="11.6 Cobalt Strike（CS）"></a>11.6 Cobalt Strike（CS）</h3><table>
+<thead>
+<tr>
+<th>特征</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Beacon 通信</td>
+<td>周期性心跳（默认 60 秒），可加 jitter 抖动</td>
+</tr>
+<tr>
+<td>默认 URI</td>
+<td><code>/__utm.gif</code>、<code>/ajax</code>、<code>/jquery</code> 等伪装</td>
+</tr>
+<tr>
+<td>通信模型</td>
+<td>HTTP&#x2F;HTTPS&#x2F;DNS&#x2F;SMB 多通道</td>
+</tr>
+<tr>
+<td>默认端口</td>
+<td>50050（团队服务器）、可自定义</td>
+</tr>
+<tr>
+<td>JA3 指纹</td>
+<td>默认特征可识别，Malleable C2 可改变</td>
+</tr>
+<tr>
+<td>内存特征</td>
+<td>注入进程运行，可关联 YARA 规则检测</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十二、安全设备对比速查"><a href="#十二、安全设备对比速查" class="headerlink" title="十二、安全设备对比速查"></a>十二、安全设备对比速查</h2><table>
+<thead>
+<tr>
+<th>设备</th>
+<th>部署方式</th>
+<th>能否阻断</th>
+<th>检测范围</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>防火墙（FW）</td>
+<td>串联</td>
+<td>能</td>
+<td>IP、端口、协议</td>
+<td>最基本的访问控制</td>
+</tr>
+<tr>
+<td>WAF</td>
+<td>串联&#x2F;反向代理</td>
+<td>能</td>
+<td>Web 攻击（SQLi、XSS、文件上传等）</td>
+<td>针对 HTTP&#x2F;HTTPS</td>
+</tr>
+<tr>
+<td>IDS</td>
+<td>旁路</td>
+<td>不能，只告警</td>
+<td>网络攻击流量</td>
+<td>不会影响业务</td>
+</tr>
+<tr>
+<td>IPS</td>
+<td>串联</td>
+<td>能</td>
+<td>网络攻击 + 阻断</td>
+<td>误报可能影响业务</td>
+</tr>
+<tr>
+<td>EDR</td>
+<td>终端 Agent</td>
+<td>能（隔离）</td>
+<td>进程、文件、注册表、网络、账号</td>
+<td>对无文件攻击和横向移动有效</td>
+</tr>
+<tr>
+<td>NDR</td>
+<td>旁路&#x2F;流量镜像</td>
+<td>不能</td>
+<td>网络流量异常行为</td>
+<td>东西向流量分析</td>
+</tr>
+<tr>
+<td>SIEM&#x2F;态势感知</td>
+<td>集中平台</td>
+<td>不能</td>
+<td>多源日志关联分析</td>
+<td>设备的大脑</td>
+</tr>
+<tr>
+<td>堡垒机</td>
+<td>代理</td>
+<td>能（阻断会话）</td>
+<td>运维行为审计</td>
+<td>管控运维登录</td>
+</tr>
+<tr>
+<td>蜜罐</td>
+<td>旁路</td>
+<td>不能</td>
+<td>诱捕攻击者</td>
+<td>高交互需隔离</td>
+</tr>
+<tr>
+<td>SOAR</td>
+<td>编排平台</td>
+<td>能（联动其他设备）</td>
+<td>自动化响应</td>
+<td>需充分测试避免误封</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十三、源-IP-识别与日志分析"><a href="#十三、源-IP-识别与日志分析" class="headerlink" title="十三、源 IP 识别与日志分析"></a>十三、源 IP 识别与日志分析</h2><h3 id="13-1-如何判断目标是否使用-CDN"><a href="#13-1-如何判断目标是否使用-CDN" class="headerlink" title="13.1 如何判断目标是否使用 CDN"></a>13.1 如何判断目标是否使用 CDN</h3><ol>
+<li><strong>多地 Ping：</strong> 不同地区 Ping 得到的 IP 不同，说明可能有 CDN</li>
+<li><strong>nslookup：</strong> 查看 CNAME 记录，CDN 通常指向 CDN 服务商域名</li>
+<li><strong>IP 归属查询：</strong> IP 属于阿里云&#x2F;腾讯云&#x2F;Cloudflare&#x2F;Akamai 等 CDN 厂商</li>
+<li><strong>SSL 证书：</strong> CDN 节点上的证书包含 CDN 厂商信息</li>
+</ol>
+<h3 id="13-2-绕过-CDN-找真实-IP（了解攻防，用于防守）"><a href="#13-2-绕过-CDN-找真实-IP（了解攻防，用于防守）" class="headerlink" title="13.2 绕过 CDN 找真实 IP（了解攻防，用于防守）"></a>13.2 绕过 CDN 找真实 IP（了解攻防，用于防守）</h3><ul>
+<li>历史 DNS 记录（SecurityTrails、微步在线）</li>
+<li>SSL 证书透明度日志（crt.sh）</li>
+<li>子域名：CDN 配置可能只覆盖主域名，子域名直接解析到源站</li>
+<li>邮件头：通过发送邮件获取源站 IP</li>
+<li>搜索引擎缓存记录</li>
+</ul>
+<p><strong>防守方应对：</strong> 所有子域名统一接入 CDN&#x2F;WAF，源站仅允许 CDN&#x2F;WAF 回源 IP 访问，关闭非 80&#x2F;443 端口的外网访问。</p>
+<hr>
+<h2 id="十四、面试高频问题汇总"><a href="#十四、面试高频问题汇总" class="headerlink" title="十四、面试高频问题汇总"></a>十四、面试高频问题汇总</h2><h3 id="14-1-面试常见问题（从参考文件中整理）"><a href="#14-1-面试常见问题（从参考文件中整理）" class="headerlink" title="14.1 面试常见问题（从参考文件中整理）"></a>14.1 面试常见问题（从参考文件中整理）</h3><ul>
+<li><strong>常用的渗透测试工具有哪些？</strong> Nmap、Burp Suite、AWVS、Fscan、Wireshark、Nessus 等</li>
+<li><strong>描述一个完整的渗透测试流程：</strong> 信息收集 → 漏洞扫描 → 漏洞利用 → 权限提升 → 权限维持 → 报告输出</li>
+<li><strong>SQL 注入原理和修复方法是什么？</strong>（见第二章）</li>
+<li><strong>RDP 3389 有哪些漏洞？</strong> 弱口令、BlueKeep（CVE-2019-0708）、CVE-2020-0618 等</li>
+<li><strong>正向 Shell 和反向 Shell 的区别：</strong> 正向 Shell：攻击者连接受害者的监听端口；反向 Shell：受害者连接到攻击者的监听端口（更常见，可穿越 NAT）</li>
+<li><strong>Cookie 和 Session 的区别：</strong> Cookie 存客户端，Session 存服务端</li>
+</ul>
+<h3 id="14-2-蓝队自我介绍模板"><a href="#14-2-蓝队自我介绍模板" class="headerlink" title="14.2 蓝队自我介绍模板"></a>14.2 蓝队自我介绍模板</h3><blockquote>
+<p>面试官好，我叫 <code>[姓名]</code>，毕业于 <code>[学校]</code>。我具备一定的计算机网络与 Web 安全基础，了解 SQL 注入、XSS、文件上传等常见漏洞原理，能够使用 Burp Suite、Nmap、Wireshark 等工具进行基础的漏洞测试与流量分析。平时我也会通过靶场复现漏洞场景，学习护网相关知识，并自学 Python 脚本来提高效率。对 Linux 基础命令、日志排查以及基础应急响应流程也有一定了解。希望能够在护网实战中不断提升自己，并认真完成工作任务。</p>
+</blockquote>
+<h3 id="14-3-如何判断误报和真实攻击？"><a href="#14-3-如何判断误报和真实攻击？" class="headerlink" title="14.3 如何判断误报和真实攻击？"></a>14.3 如何判断误报和真实攻击？</h3><table>
+<thead>
+<tr>
+<th>误报特征</th>
+<th>真实攻击特征</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>只有扫描无后续利用</td>
+<td>持续攻击</td>
+</tr>
+<tr>
+<td>状态码正常</td>
+<td>有异常回显</td>
+</tr>
+<tr>
+<td>无异常响应体</td>
+<td>存在 Payload</td>
+</tr>
+<tr>
+<td>请求来源为内部扫描器</td>
+<td>存在后续攻击行为</td>
+</tr>
+<tr>
+<td>单次请求未重试</td>
+<td>多次重试</td>
+</tr>
+</tbody></table>
+<h3 id="14-4-如何优化安全设备减少误报？"><a href="#14-4-如何优化安全设备减少误报？" class="headerlink" title="14.4 如何优化安全设备减少误报？"></a>14.4 如何优化安全设备减少误报？</h3><ul>
+<li>建立内部扫描器和监控系统白名单（打标签）</li>
+<li>调整告警阈值，降低低置信规则权重</li>
+<li>关闭无关规则</li>
+<li>日志关联分析（关联 WAF + EDR + 流量）</li>
+<li>结合业务流量判断</li>
+<li>回归验证：用真实攻击样本验证规则有效性</li>
+<li>周期性复盘误报原因</li>
+</ul>
+<h3 id="14-5-什么是聚合降噪？"><a href="#14-5-什么是聚合降噪？" class="headerlink" title="14.5 什么是聚合降噪？"></a>14.5 什么是聚合降噪？</h3><p>聚合降噪是把大量分散重复的安全告警，通过去重、过滤、关联分析，合并成少量高价值事件，帮助护网期间快速发现真正需要处置的攻击行为。</p>
+<p><strong>具体做法：</strong> 白名单过滤 → 重复告警合并 → 时间窗口聚合 → 资产重要性加权 → 威胁情报匹配 → 同源同目标关联 → 结合主机&#x2F;网络&#x2F;应用日志做攻击链还原。最终目标不是看每一条告警，而是把告警转成可闭环处置的事件。</p>
+<h3 id="14-6-什么是-IOC？"><a href="#14-6-什么是-IOC？" class="headerlink" title="14.6 什么是 IOC？"></a>14.6 什么是 IOC？</h3><p>IOC（Indicator of Compromise，失陷指标）是用于判断系统是否被攻击的痕迹证据，包括：恶意 IP、文件 Hash、恶意域名、WebShell 路径、恶意进程名等。蓝队通过 IOC 进行威胁狩猎和确认失陷范围。</p>
+<hr>
+<h2 id="十五、补充应急排查命令速查"><a href="#十五、补充应急排查命令速查" class="headerlink" title="十五、补充应急排查命令速查"></a>十五、补充应急排查命令速查</h2><h3 id="15-1-Windows-排查命令"><a href="#15-1-Windows-排查命令" class="headerlink" title="15.1 Windows 排查命令"></a>15.1 Windows 排查命令</h3><table>
+<thead>
+<tr>
+<th>目的</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看进程</td>
+<td><code>tasklist</code> &#x2F; 任务管理器</td>
+</tr>
+<tr>
+<td>查看端口连接</td>
+<td><code>netstat -ano</code></td>
+</tr>
+<tr>
+<td>查看系统用户</td>
+<td><code>net user</code> &#x2F; <code>lusrmgr.msc</code></td>
+</tr>
+<tr>
+<td>查看计划任务</td>
+<td><code>schtasks</code></td>
+</tr>
+<tr>
+<td>查看服务</td>
+<td><code>services.msc</code> &#x2F; <code>sc query</code></td>
+</tr>
+<tr>
+<td>查看启动项</td>
+<td><code>msconfig</code> &#x2F; <code>regedit</code> 检查 <code>Run</code> 键</td>
+</tr>
+<tr>
+<td>查看安全日志</td>
+<td><code>eventvwr.msc</code>（4624 成功登录、4625 失败登录、4672 特殊登录、7045 服务创建）</td>
+</tr>
+<tr>
+<td>查看文件修改</td>
+<td><code>dir /s /od</code> 排序最近文件</td>
+</tr>
+</tbody></table>
+<h3 id="15-2-Linux-排查命令"><a href="#15-2-Linux-排查命令" class="headerlink" title="15.2 Linux 排查命令"></a>15.2 Linux 排查命令</h3><table>
+<thead>
+<tr>
+<th>目的</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看进程</td>
+<td><code>ps -ef</code> &#x2F; <code>top</code> &#x2F; <code>htop</code></td>
+</tr>
+<tr>
+<td>查看端口连接</td>
+<td><code>netstat -antlp</code> &#x2F; <code>ss -antlp</code></td>
+</tr>
+<tr>
+<td>查看计划任务</td>
+<td><code>crontab -l</code> &#x2F; <code>cat /etc/crontab</code></td>
+</tr>
+<tr>
+<td>查看服务</td>
+<td><code>systemctl list-units</code></td>
+</tr>
+<tr>
+<td>查看登录日志</td>
+<td><code>last</code> &#x2F; <code>lastb</code></td>
+</tr>
+<tr>
+<td>查看系统日志</td>
+<td><code>/var/log/messages</code>、<code>/var/log/secure</code>、<code>/var/log/auth.log</code></td>
+</tr>
+<tr>
+<td>查看 SUID 文件</td>
+<td><code>find / -perm -4000 2&gt;/dev/null</code></td>
+</tr>
+<tr>
+<td>查看历史命令</td>
+<td><code>history</code> &#x2F; <code>cat ~/.bash_history</code></td>
+</tr>
+<tr>
+<td>查看网络连接</td>
+<td><code>lsof -i</code></td>
+</tr>
+<tr>
+<td>查找近期修改文件</td>
+<td><code>find / -mtime -1 -type f 2&gt;/dev/null</code></td>
+</tr>
+<tr>
+<td>查看进程打开文件</td>
+<td><code>lsof -p &lt;PID&gt;</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十六、资源汇总"><a href="#十六、资源汇总" class="headerlink" title="十六、资源汇总"></a>十六、资源汇总</h2><p><strong>威胁情报平台：</strong> 微步在线（ti.qianxin.com）、Virustotal、奇安信威胁情报</p>
+<p><strong>攻防演练参考框架：</strong> MITRE ATT&amp;CK</p>
+<p><strong>WAF 厂商：</strong> 长亭雷池、阿里云 WAF、腾讯云 WAF、Cloudflare WAF、Imperva、ModSecurity</p>
+<p><strong>EDR 厂商：</strong> 深信服 EDR、奇安信网神云锁、青藤云安全、360 本地安全大脑</p>
+<p><strong>态势感知：</strong> 奇安信新一代威胁感知系统、深信服 SIP、长亭万象 Cosmos</p>
+<p><strong>蜜罐：</strong> HFish（默安科技）、Cowrie</p>
+<hr>
+<blockquote>
+<p><strong>声明：</strong> 本文所有内容仅用于合法的安全防御学习、蓝队能力建设和护网演练准备。禁止用于未授权的网络攻击行为。</p>
+</blockquote>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">swfk2154</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://blogbu2154.site/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%A8%EF%BC%88%E4%B8%80%EF%BC%89/">https://blogbu2154.site/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%A8%EF%BC%88%E4%B8%80%EF%BC%89/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">swfk2154</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                                    <span class="chip bg-color">护网</span>
+                                </a>
+                            
+                                <a href="/tags/HVV/">
+                                    <span class="chip bg-color">HVV</span>
+                                </a>
+                            
+                                <a href="/tags/%E8%93%9D%E9%98%9F/">
+                                    <span class="chip bg-color">蓝队</span>
+                                </a>
+                            
+                                <a href="/tags/%E9%9D%A2%E8%AF%95/">
+                                    <span class="chip bg-color">面试</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'Ov23li9GpL8Lrygn6GlO',
+        clientSecret: '59d9c3e900f7b7a32d08f23652d74ca75ef1ef9e',
+        repo: 'swfk2154.github.io',
+        owner: 'swfk2154',
+        admin: "swfk2154",
+        id: '2026-06-24T11-59-59',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%AE%9E%E6%88%98%E6%93%8D%E4%BD%9C%E8%A1%A5%E5%85%A8%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E5%BA%94%E6%80%A5%E6%8E%92%E6%9F%A5%E5%AE%9E%E6%93%8D%C2%B7%E6%B7%B1%E5%BA%A6%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%C2%B7%E6%8F%90%E6%9D%83%E6%89%8B%E6%B3%95%E4%B8%8E%E6%BA%AF%E6%BA%90%E5%8F%8D%E5%88%B6/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="护网蓝队实战操作补全（二）——应急排查实操·深度漏洞分析·提权手法与溯源反制">
+                        
+                        <span class="card-title">护网蓝队实战操作补全（二）——应急排查实操·深度漏洞分析·提权手法与溯源反制</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            本篇文章作为《护网-HVV-面试题大全.md》和《护网蓝队基础补全（一）》的第二弹配套补充，聚焦于面试中容易问到的深度技术细节和实战操作，涵盖 SQL 注入深度补充、提权手法详解、应急排查标准操作、反序列化利用与防御、不出网场景处理、Win
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2026-06-24
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%AE%89%E5%85%A8/" class="post-category">
+                                    安全
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%8A%A4%E7%BD%91/">
+                        <span class="chip bg-color">护网</span>
+                    </a>
+                    
+                    <a href="/tags/HVV/">
+                        <span class="chip bg-color">HVV</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%93%9D%E9%98%9F/">
+                        <span class="chip bg-color">蓝队</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%9D%A2%E8%AF%95/">
+                        <span class="chip bg-color">面试</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/Codex-CLI-Claude-Code-Hermes-%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="AI 编程 CLI + 桌面版工具大全｜安装、配置第三方模型、辅助管理工具">
+                        
+                        <span class="card-title">AI 编程 CLI + 桌面版工具大全｜安装、配置第三方模型、辅助管理工具</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-06-24
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/AI%E5%B7%A5%E5%85%B7/" class="post-category">
+                                    AI工具
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/AI%E5%B7%A5%E5%85%B7/">
+                        <span class="chip bg-color">AI工具</span>
+                    </a>
+                    
+                    <a href="/tags/Codex/">
+                        <span class="chip bg-color">Codex</span>
+                    </a>
+                    
+                    <a href="/tags/Claude-Code/">
+                        <span class="chip bg-color">Claude Code</span>
+                    </a>
+                    
+                    <a href="/tags/Hermes/">
+                        <span class="chip bg-color">Hermes</span>
+                    </a>
+                    
+                    <a href="/tags/Gemini-CLI/">
+                        <span class="chip bg-color">Gemini CLI</span>
+                    </a>
+                    
+                    <a href="/tags/Antigravity-CLI/">
+                        <span class="chip bg-color">Antigravity CLI</span>
+                    </a>
+                    
+                    <a href="/tags/OpenClaw/">
+                        <span class="chip bg-color">OpenClaw</span>
+                    </a>
+                    
+                    <a href="/tags/OpenCode/">
+                        <span class="chip bg-color">OpenCode</span>
+                    </a>
+                    
+                    <a href="/tags/CC-Switch/">
+                        <span class="chip bg-color">CC Switch</span>
+                    </a>
+                    
+                    <a href="/tags/EchoBird/">
+                        <span class="chip bg-color">EchoBird</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/">
+                        <span class="chip bg-color">配置指南</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2026</span>
+            
+            <a href="/about" target="_blank">swfk2154</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            
+            <br>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/swfk2154" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+    
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+     
+        <script type="text/javascript">
+            // 只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/libs/others/star.js"><\/script>');
+            }
+        </script>
+    
+
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

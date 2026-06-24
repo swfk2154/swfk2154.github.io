@@ -45,6 +45,8 @@
 
 
     
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
 
 
 
@@ -1446,8 +1448,68 @@
                 </div>
             </div>
             
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'Ov23li9GpL8Lrygn6GlO',
+        clientSecret: '59d9c3e900f7b7a32d08f23652d74ca75ef1ef9e',
+        repo: 'swfk2154.github.io',
+        owner: 'swfk2154',
+        admin: "swfk2154",
+        id: '2026-03-19T14-01-00',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
 
     
 
@@ -1538,32 +1600,29 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/%E5%A6%82%E4%BD%95%E5%8D%B8%E8%BD%BDOpenClaw/">
+                <a href="/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2(%E4%BC%98%E5%8C%96%E5%90%8E)/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="如何卸载 OpenClaw">
                         
-                        <span class="card-title">如何卸载 OpenClaw</span>
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="如何搭建 Hexo 博客 - 完整教程">
+                        
+                        <span class="card-title">如何搭建 Hexo 博客 - 完整教程</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            完整记录 OpenClaw 的三种卸载方式（官方命令、手动卸载、彻底清理），以及卸载后的安全补救措施：API Key 撤销、账单检查、端口排查。
+                            
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2026-03-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2026-01-29
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/" class="post-category">
-                                    工具实践
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            swfk2154
                             
                         </span>
                     </div>
@@ -1571,20 +1630,16 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/OpenClaw/">
-                        <span class="chip bg-color">OpenClaw</span>
+                    <a href="/tags/Hexo/">
+                        <span class="chip bg-color">Hexo</span>
                     </a>
                     
-                    <a href="/tags/%E5%8D%B8%E8%BD%BD/">
-                        <span class="chip bg-color">卸载</span>
+                    <a href="/tags/%E5%8D%9A%E5%AE%A2/">
+                        <span class="chip bg-color">博客</span>
                     </a>
                     
-                    <a href="/tags/AI%E5%8A%A9%E6%89%8B/">
-                        <span class="chip bg-color">AI助手</span>
-                    </a>
-                    
-                    <a href="/tags/%E5%AE%89%E5%85%A8/">
-                        <span class="chip bg-color">安全</span>
+                    <a href="/tags/GitHub-Pages/">
+                        <span class="chip bg-color">GitHub Pages</span>
                     </a>
                     
                 </div>
