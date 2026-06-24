@@ -20,9 +20,15 @@
     top: 64px;
 }
 
+.toc-fixed #toc-content {
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
 .toc-widget {
     width: 345px;
     padding-left: 20px;
+    overflow: hidden;
 }
 
 .toc-widget .toc-title {
