@@ -300,12 +300,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/AI%E5%B7%A5%E5%85%B7/">
-                                <span class="chip bg-color">AI工具</span>
-                            </a>
-                        
                             <a href="/tags/Agent/">
                                 <span class="chip bg-color">Agent</span>
+                            </a>
+                        
+                            <a href="/tags/AI%E5%B7%A5%E5%85%B7/">
+                                <span class="chip bg-color">AI工具</span>
                             </a>
                         
                             <a href="/tags/CC-Switch/">
@@ -394,7 +394,7 @@
 <tr>
 <td>第三方模型配置</td>
 <td>原生支持（config &#x2F; env）</td>
-<td>受限，需辅助工具</td>
+<td>部分支持，见各工具详情</td>
 </tr>
 <tr>
 <td>资源占用</td>
@@ -452,24 +452,27 @@ codex --profile <span class="hljs-built_in">local</span></code></pre>
 <pre><code class="hljs bash"><span class="hljs-built_in">export</span> DEEPSEEK_API_KEY=<span class="hljs-string">&quot;sk-xxxx&quot;</span>
 <span class="hljs-built_in">export</span> OPENROUTER_API_KEY=<span class="hljs-string">&quot;sk-or-xxxx&quot;</span></code></pre>
 
-<h3 id="Codex-桌面版"><a href="#Codex-桌面版" class="headerlink" title="Codex 桌面版"></a>Codex 桌面版</h3><p>Codex 除了 CLI 外还提供 <strong>桌面 App</strong>（macOS + Windows），界面类似 ChatGPT，左侧项目列表、右侧对话区。</p>
-<p><strong>下载安装：</strong></p>
-<table>
-<thead>
-<tr>
-<th>平台</th>
-<th>方式</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>macOS &#x2F; Windows</td>
-<td><a target="_blank" rel="noopener" href="https://developers.openai.com/codex/app">developers.openai.com&#x2F;codex&#x2F;app</a></td>
-</tr>
-<tr>
-<td>登录</td>
-<td>ChatGPT 账号即可登录</td>
-</tr>
-</tbody></table>
+<h3 id="Codex-桌面版配置第三方模型"><a href="#Codex-桌面版配置第三方模型" class="headerlink" title="Codex 桌面版配置第三方模型"></a>Codex 桌面版配置第三方模型</h3><p>Codex 桌面版（v0.138+，2026 年 6 月起）已正式支持第三方模型。配置方式与 CLI 版完全一致——修改 <code>~/.codex/config.toml</code>，<strong>配置一次，CLI、桌面版、IDE 插件全端生效</strong>。</p>
+<pre><code class="hljs toml"><span class="hljs-comment"># ~/.codex/config.toml</span>
+<span class="hljs-attr">model</span> = <span class="hljs-string">&quot;deepseek-chat&quot;</span>
+<span class="hljs-attr">model_provider</span> = <span class="hljs-string">&quot;deepseek&quot;</span>
+
+<span class="hljs-section">[model_providers.deepseek]</span>
+<span class="hljs-attr">name</span> = <span class="hljs-string">&quot;DeepSeek&quot;</span>
+<span class="hljs-attr">base_url</span> = <span class="hljs-string">&quot;https://api.deepseek.com&quot;</span>
+<span class="hljs-attr">env_key</span> = <span class="hljs-string">&quot;DEEPSEEK_API_KEY&quot;</span>
+
+<span class="hljs-section">[model_providers.openrouter]</span>
+<span class="hljs-attr">name</span> = <span class="hljs-string">&quot;OpenRouter&quot;</span>
+<span class="hljs-attr">base_url</span> = <span class="hljs-string">&quot;https://openrouter.ai/api/v1&quot;</span>
+<span class="hljs-attr">env_key</span> = <span class="hljs-string">&quot;OPENROUTER_API_KEY&quot;</span></code></pre>
+
+<p><strong>⚠️ 注意事项：</strong></p>
+<ul>
+<li>Codex 已弃用 Chat Completions API，必须使用 Responses API 兼容的提供商。如果提供商只支持 <code>/v1/chat/completions</code>，需要加一层协议转换（如 OpenRouter、LiteLLM）</li>
+<li>云端模式（远程任务队列）和 GitHub PR 自动化仍需 OpenAI 官方认证</li>
+<li>本地模型走 OSS 模式：<code>codex --oss</code>，使用 Ollama&#x2F;LM Studio 的专属配置块</li>
+</ul>
 <p><strong>桌面版优势：</strong></p>
 <ul>
 <li><strong>Computer Use</strong>：让 Codex 直接操作你的桌面应用和浏览器</li>
@@ -478,7 +481,6 @@ codex --profile <span class="hljs-built_in">local</span></code></pre>
 <li><strong>技能系统</strong>：可复用的指令和工作流</li>
 <li><strong>定时任务</strong>：自动化重复性工作</li>
 </ul>
-<p><strong>桌面版配置第三方模型：</strong> 桌面版暂不支持像 CLI 那样通过 <code>config.toml</code> 直接切换第三方模型。如果要用国内&#x2F;其他模型，需要通过 CC Switch 的本地路由做协议转发。</p>
 <hr>
 <h2 id="二、Anthropic-Claude-Code"><a href="#二、Anthropic-Claude-Code" class="headerlink" title="二、Anthropic Claude Code"></a>二、Anthropic Claude Code</h2><p>Claude Code 是 Anthropic 的 AI 编程 Agent，从 v1.0.61+ 开始原生支持配置第三方 API 端点。提供 CLI 命令行版和桌面版（Claude Desktop）。</p>
 <h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><pre><code class="hljs bash">npm install -g @anthropic-ai/claude-code</code></pre>
@@ -609,11 +611,48 @@ claude</code></pre>
 </blockquote>
 <h4 id="方法二：Qiao-920-claude-desktop-cn"><a href="#方法二：Qiao-920-claude-desktop-cn" class="headerlink" title="方法二：Qiao-920&#x2F;claude-desktop-cn"></a>方法二：Qiao-920&#x2F;claude-desktop-cn</h4><p>项目：<a target="_blank" rel="noopener" href="https://github.com/Qiao-920/claude-desktop-cn">Qiao-920&#x2F;claude-desktop-cn</a></p>
 <p>不单纯是汉化补丁，而是<strong>二次封装的中文桌面客户端</strong>，内置中文界面 + 本地 Code 工作区 + GitHub 导入 + 权限守卫等功能，下载即用，无需原版 Claude Desktop。</p>
-<h3 id="Claude-Desktop-配置第三方模型"><a href="#Claude-Desktop-配置第三方模型" class="headerlink" title="Claude Desktop 配置第三方模型"></a>Claude Desktop 配置第三方模型</h3><p>桌面版不支持直接设 <code>ANTHROPIC_BASE_URL</code> 环境变量，需要依赖辅助工具：</p>
-<ul>
-<li><strong>CC Switch</strong>：开启本地路由，协议转换后指向国内模型供应商（详见第八节）</li>
-<li>或直接在桌面版设置中使用 API Key 连接 Anthropic 官方</li>
-</ul>
+<h3 id="Claude-Desktop-配置第三方模型"><a href="#Claude-Desktop-配置第三方模型" class="headerlink" title="Claude Desktop 配置第三方模型"></a>Claude Desktop 配置第三方模型</h3><p>Claude Desktop 在 2026 年 5 月加入了官方第三方模型接入能力（需开启开发者模式），但有所限制，以下是完整说明。</p>
+<h4 id="支持官方-Gateway-方式"><a href="#支持官方-Gateway-方式" class="headerlink" title="支持官方 Gateway 方式"></a>支持官方 Gateway 方式</h4><p>通过 Developer Mode → Configure Third-Party Inference 可配置三种连接类型：</p>
+<table>
+<thead>
+<tr>
+<th>连接类型</th>
+<th>说明</th>
+<th>配置方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Gateway</strong>（通用网关）</td>
+<td>OpenRouter、LiteLLM、Portkey 等</td>
+<td>填入 Base URL + API Key</td>
+</tr>
+<tr>
+<td><strong>Amazon Bedrock</strong></td>
+<td>AWS 云直连</td>
+<td>AWS 凭证认证</td>
+</tr>
+<tr>
+<td><strong>Google Vertex AI</strong></td>
+<td>GCP 云直连</td>
+<td>GCP 凭证认证</td>
+</tr>
+<tr>
+<td><strong>Azure AI Foundry</strong></td>
+<td>微软云直连</td>
+<td>Azure 凭证认证</td>
+</tr>
+</tbody></table>
+<p><strong>配置步骤：</strong></p>
+<ol>
+<li><code>Help → Troubleshooting → Enable Developer Mode</code> 开启开发者模式</li>
+<li><code>Developer → Configure Third-Party Inference</code> 打开配置面板</li>
+<li>选择连接类型（Gateway &#x2F; Bedrock &#x2F; Vertex &#x2F; Foundry）</li>
+<li>填入 Base URL（必须是 HTTPS）、API Key</li>
+<li><code>Apply locally</code> → <code>Relaunch now</code>，重启后选择 <code>Continue with Gateway</code></li>
+</ol>
+<h4 id="⚠️-模型-ID-白名单限制（关键限制）"><a href="#⚠️-模型-ID-白名单限制（关键限制）" class="headerlink" title="⚠️ 模型 ID 白名单限制（关键限制）"></a>⚠️ 模型 ID 白名单限制（关键限制）</h4><p>2026 年 5 月 6 日，Anthropic 推送了 <strong>1.6259.1 版本更新</strong>，新增了模型 ID 白名单——Gateway 模式只允许以 <code>claude-</code> 或 <code>anthropic-</code> 开头的模型名通过。非官方模型（如 DeepSeek、GPT、Grok 等）无法直接在桌面版中使用，手动配置会报错 <code>&quot;configured model is not an Anthropic model&quot;</code>。</p>
+<p><strong>社区规避方案：</strong> 使用本地代理服务将第三方模型名映射为 <code>claude-sonnet-4-6</code> 等官方格式（如 GitHub 上 <code>wanghao9610/Claude-Model-Proxy</code> 项目）。但绕过方案随时可能失效。</p>
+<p><strong>总结：</strong> 桌面版配第三方模型从”开放了两周后收紧”——官方 Gateway 方式确实存在，但白名单限制了非 <code>claude-*</code> 模型。因此国内&#x2F;第三方模型的稳定使用仍依赖辅助工具（CC Switch 的本地路由或社区代理方案）。</p>
 <h3 id="官方文档"><a href="#官方文档" class="headerlink" title="官方文档"></a>官方文档</h3><ul>
 <li><a target="_blank" rel="noopener" href="https://code.claude.com/docs/zh-CN/model-config">模型配置（中文）</a></li>
 <li><a target="_blank" rel="noopener" href="https://code.claude.com/docs/zh-TW/desktop">桌面版文档（中文）</a></li>
@@ -1408,12 +1447,12 @@ brew uninstall anomalyco/tap/opencode
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/AI%E5%B7%A5%E5%85%B7/">
-                                    <span class="chip bg-color">AI工具</span>
-                                </a>
-                            
                                 <a href="/tags/Agent/">
                                     <span class="chip bg-color">Agent</span>
+                                </a>
+                            
+                                <a href="/tags/AI%E5%B7%A5%E5%85%B7/">
+                                    <span class="chip bg-color">AI工具</span>
                                 </a>
                             
                                 <a href="/tags/CC-Switch/">
