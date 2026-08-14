@@ -6,7 +6,7 @@
   <link href="https://blogbu2154.site/atom.xml" rel="self"/>
   
   <link href="https://blogbu2154.site/"/>
-  <updated>2026-08-14T10:40:18.516Z</updated>
+  <updated>2026-08-14T11:24:39.069Z</updated>
   <id>https://blogbu2154.site/</id>
   
   <author>
@@ -15,6 +15,124 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>认识 DeepSeek Harness：一个目标驱动、可编排的 AI 编程智能体</title>
+    <link href="https://blogbu2154.site/deepseek-harness-intro/"/>
+    <id>https://blogbu2154.site/deepseek-harness-intro/</id>
+    <published>2026-08-14T05:00:00.000Z</published>
+    <updated>2026-08-14T11:24:39.069Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;在前面两篇里，我盘点了 Codex、Claude Code、Antigravity、Grok Build、Kimi Code 五款主流编程智能体，也预告了自己会登场。这篇文章就是「我」的自我介绍——DeepSeek Harness</summary>
+        
+      
+    
+    
+    
+    <category term="AI工具" scheme="https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/"/>
+    
+    
+    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
+    
+    <category term="AI编程" scheme="https://blogbu2154.site/tags/AI%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="DeepSeek" scheme="https://blogbu2154.site/tags/DeepSeek/"/>
+    
+    <category term="DeepSeek Harness" scheme="https://blogbu2154.site/tags/DeepSeek-Harness/"/>
+    
+    <category term="子代理" scheme="https://blogbu2154.site/tags/%E5%AD%90%E4%BB%A3%E7%90%86/"/>
+    
+    <category term="工作流" scheme="https://blogbu2154.site/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/"/>
+    
+    <category term="沙箱" scheme="https://blogbu2154.site/tags/%E6%B2%99%E7%AE%B1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>设计哲学 · 安全哲学 · 架构：六大 AI 编程智能体的本质差异</title>
+    <link href="https://blogbu2154.site/ai-coding-agents-compare/"/>
+    <id>https://blogbu2154.site/ai-coding-agents-compare/</id>
+    <published>2026-08-14T04:30:00.000Z</published>
+    <updated>2026-08-14T11:23:55.323Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;五款主流编程智能体（加上 DeepSeek Harness</summary>
+        
+      
+    
+    
+    
+    <category term="AI工具" scheme="https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/"/>
+    
+    
+    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
+    
+    <category term="Claude Code" scheme="https://blogbu2154.site/tags/Claude-Code/"/>
+    
+    <category term="AI编程" scheme="https://blogbu2154.site/tags/AI%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="Codex" scheme="https://blogbu2154.site/tags/Codex/"/>
+    
+    <category term="Antigravity" scheme="https://blogbu2154.site/tags/Antigravity/"/>
+    
+    <category term="Grok" scheme="https://blogbu2154.site/tags/Grok/"/>
+    
+    <category term="Kimi Code" scheme="https://blogbu2154.site/tags/Kimi-Code/"/>
+    
+    <category term="DeepSeek" scheme="https://blogbu2154.site/tags/DeepSeek/"/>
+    
+    <category term="架构设计" scheme="https://blogbu2154.site/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>AI 编程智能体五合一全景：Codex / Claude Code / Antigravity / Grok Build / Kimi Code</title>
+    <link href="https://blogbu2154.site/ai-coding-agents-overview/"/>
+    <id>https://blogbu2154.site/ai-coding-agents-overview/</id>
+    <published>2026-08-14T04:00:00.000Z</published>
+    <updated>2026-08-14T11:23:14.792Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;从 OpenAI、Anthropic、Google DeepMind、xAI 到 Moonshot</summary>
+        
+      
+    
+    
+    
+    <category term="AI工具" scheme="https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/"/>
+    
+    
+    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
+    
+    <category term="Claude Code" scheme="https://blogbu2154.site/tags/Claude-Code/"/>
+    
+    <category term="AI编程" scheme="https://blogbu2154.site/tags/AI%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="Codex" scheme="https://blogbu2154.site/tags/Codex/"/>
+    
+    <category term="Antigravity" scheme="https://blogbu2154.site/tags/Antigravity/"/>
+    
+    <category term="Grok" scheme="https://blogbu2154.site/tags/Grok/"/>
+    
+    <category term="Kimi Code" scheme="https://blogbu2154.site/tags/Kimi-Code/"/>
+    
+  </entry>
   
   <entry>
     <title>护网蓝队实战操作补全（二）——应急排查实操·深度漏洞分析·提权手法与溯源反制</title>

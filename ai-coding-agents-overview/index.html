@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>AI 编程智能体五合一全景：Codex / Claude Code / Antigravity / Grok Build / Kimi Code - swfk 的安全笔记</title>
+<meta name="description" content="记录 AI 安全、网络安全、工具实践与技术复盘。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="Codex, Claude Code, Antigravity, Gemini CLI, Grok Build, Kimi Code, AI编程智能体, 编程Agent, CLI, MCP, 子代理, 斜杠命令">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="canonical" href="https://blogbu2154.site/ai-coding-agents-overview/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI 编程智能体五合一全景：Codex / Claude Code / Antigravity / Grok Build / Kimi Code - swfk 的安全笔记">
+<meta property="og:description" content="记录 AI 安全、网络安全、工具实践与技术复盘。">
+<meta property="og:url" content="https://blogbu2154.site/ai-coding-agents-overview/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/19.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%EF%BC%9A%E7%BC%96%E7%A8%8B%E6%99%BA%E8%83%BD%E4%BD%93%E8%BF%9B%E5%85%A5%E3%80%8C%E7%BB%88%E7%AB%AF%E6%97%B6%E4%BB%A3%E3%80%8D"><span class="toc-text">前言：编程智能体进入「终端时代」</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Codex%EF%BC%88OpenAI%EF%BC%89%E2%80%94%E2%80%94-%E5%85%8B%E5%88%B6%E7%9A%84%E6%89%A7%E8%A1%8C%E8%80%85"><span class="toc-text">一、Codex（OpenAI）—— 克制的执行者</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Claude-Code%EF%BC%88Anthropic%EF%BC%89%E2%80%94%E2%80%94-%E5%91%BD%E4%BB%A4%E6%9C%80%E5%85%A8%E7%9A%84%E5%85%A8%E8%83%BD%E5%8A%A9%E6%89%8B"><span class="toc-text">二、Claude Code（Anthropic）—— 命令最全的全能助手</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81Antigravity%EF%BC%88Google-DeepMind%EF%BC%89%E2%80%94%E2%80%94-Gemini-CLI-%E7%9A%84%E7%BB%A7%E4%BB%BB%E8%80%85"><span class="toc-text">三、Antigravity（Google DeepMind）—— Gemini CLI 的继任者</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81Grok-Build%EF%BC%88xAI%EF%BC%89%E2%80%94%E2%80%94-%E7%BB%88%E7%AB%AF%E5%8E%9F%E7%94%9F-%E5%A4%9A%E6%A8%A1%E6%80%81-X-%E5%AE%9E%E6%97%B6"><span class="toc-text">四、Grok Build（xAI）—— 终端原生 + 多模态 + X 实时</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81Kimi-Code-CLI%EF%BC%88Moonshot-AI%EF%BC%89%E2%80%94%E2%80%94-%E4%B8%AD%E6%96%87%E7%94%9F%E6%80%81%E7%9A%84%E4%BC%9A%E5%91%98%E6%9D%83%E7%9B%8A"><span class="toc-text">五、Kimi Code CLI（Moonshot AI）—— 中文生态的会员权益</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD%EF%BC%9A%E4%BA%94%E4%B8%AA%E5%85%A5%E5%8F%A3%EF%BC%8C%E4%B8%80%E5%A5%97%E5%85%B1%E8%AF%86"><span class="toc-text">结语：五个入口，一套共识</span></a></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">AI工具</p>
+        <h1>AI 编程智能体五合一全景：Codex / Claude Code / Antigravity / Grok Build / Kimi Code</h1>
+        <div class="post-meta">
+          <time datetime="2026-08-14">2026-08-14</time>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/19.jpg" alt="AI 编程智能体五合一全景：Codex / Claude Code / Antigravity / Grok Build / Kimi Code" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>从 OpenAI、Anthropic、Google DeepMind、xAI 到 Moonshot AI，五大厂商的编程智能体已全部杀入终端。本文按官方文档逐一拆解它们的定位、能力与命令入口，帮你建立一张完整的认知地图。</p>
+</blockquote>
+<hr>
+<h2 id="前言：编程智能体进入「终端时代」"><a href="#前言：编程智能体进入「终端时代」" class="headerlink" title="前言：编程智能体进入「终端时代」"></a>前言：编程智能体进入「终端时代」</h2><p>2025 到 2026 年，AI 编程助手的主战场从 IDE 插件和聊天框，全面下沉到了<strong>终端（CLI&#x2F;TUI）</strong>。这些工具不再是「问一句答一句」的补全器，而是能够<strong>读代码、改文件、跑命令、联网调研、派生子代理、自主完成整条任务链路</strong>的 Agent。</p>
+<p>它们共享一套相似的骨架——MCP 扩展、子代理、计划模式、记忆、沙箱安全——却在设计哲学上走向了截然不同的方向。本文先做全景盘点，把五款主流的「官方编程智能体」一次讲清；它们之间的<strong>设计哲学、安全哲学与架构差异</strong>，会在下一篇《设计哲学 · 安全哲学 · 架构》中深入展开。</p>
+<p>先上一张总览表：</p>
+<table>
+<thead>
+<tr>
+<th>智能体</th>
+<th>厂商</th>
+<th>命令入口</th>
+<th>实现语言</th>
+<th>一句话定位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Codex</strong></td>
+<td>OpenAI</td>
+<td><code>codex</code></td>
+<td>Rust</td>
+<td>克制的「执行型」Agent，补丁式改动 + 沙箱分级</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>Anthropic</td>
+<td><code>claude</code></td>
+<td>TypeScript</td>
+<td>命令最全的「全能型」终端助手</td>
+</tr>
+<tr>
+<td><strong>Antigravity</strong></td>
+<td>Google DeepMind</td>
+<td><code>agy</code></td>
+<td>Go</td>
+<td>Gemini CLI 的继任者，IDE+CLI+SDK 平台化</td>
+</tr>
+<tr>
+<td><strong>Grok Build</strong></td>
+<td>xAI</td>
+<td><code>grok</code></td>
+<td>Rust</td>
+<td>终端原生 + 多模态生图 + X 实时信息</td>
+</tr>
+<tr>
+<td><strong>Kimi Code CLI</strong></td>
+<td>Moonshot AI</td>
+<td><code>kimi</code></td>
+<td>Rust</td>
+<td>会员权益里的「中文生态」编程助手</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="一、Codex（OpenAI）——-克制的执行者"><a href="#一、Codex（OpenAI）——-克制的执行者" class="headerlink" title="一、Codex（OpenAI）—— 克制的执行者"></a>一、Codex（OpenAI）—— 克制的执行者</h2><p>Codex 是 OpenAI 官方的编程智能体，运行在本地终端里。它的核心思路是**「真正动手干活」**，而不是聊天：读文件、改代码、跑命令、做验证，用真实输出作为判断依据。</p>
+<p><strong>能力关键词：</strong></p>
+<ul>
+<li><strong>补丁式精确改动</strong>：以 patch 方式只改该动的地方，而非整文件重写。</li>
+<li><strong>沙箱分级</strong>：<code>read-only</code> &#x2F; <code>workspace-write</code> &#x2F; <code>danger-full-access</code> 三档，配合 <code>untrusted</code> &#x2F; <code>on-request</code> &#x2F; <code>never</code> 的审批策略。</li>
+<li><strong>工具链扩展</strong>：MCP、插件（Plugins + Marketplace）、技能（Skills）、生命周期钩子（Hooks）、仓库级指令 <code>AGENTS.md</code>。</li>
+<li><strong>多代理与自动化</strong>：子代理并行协作、<code>codex exec</code> 非交互模式、Codex SDK、GitHub Action、Codex Cloud 云端任务。</li>
+</ul>
+<p><strong>命令入口</strong>：交互式 TUI 用 <code>codex</code>，非交互用 <code>codex exec</code>（别名 <code>codex e</code>），其余如 <code>codex resume</code> &#x2F; <code>fork</code> &#x2F; <code>mcp</code> &#x2F; <code>plugin</code> &#x2F; <code>sandbox</code> &#x2F; <code>doctor</code> 等。TUI 内斜杠命令覆盖 <code>/model</code>、<code>/plan</code>、<code>/goal</code>、<code>/permissions</code>、<code>/skills</code>、<code>/agent</code> 等。</p>
+<hr>
+<h2 id="二、Claude-Code（Anthropic）——-命令最全的全能助手"><a href="#二、Claude-Code（Anthropic）——-命令最全的全能助手" class="headerlink" title="二、Claude Code（Anthropic）—— 命令最全的全能助手"></a>二、Claude Code（Anthropic）—— 命令最全的全能助手</h2><p>Claude Code 是 Anthropic 出品的终端 AI 助手，最大的特点是<strong>斜杠命令多到惊人</strong>——官方文档收录上百条，覆盖会话管理、模型切换、代码审查、后台任务、账号平台等方方面面。</p>
+<p><strong>能力关键词：</strong></p>
+<ul>
+<li><strong>海量斜杠命令</strong>：<code>/clear</code>、<code>/compact</code>、<code>/plan</code>、<code>/code-review</code>、<code>/deep-research</code>、<code>/security-review</code>、<code>/goal</code>、<code>/loop</code> 等上百条。</li>
+<li><strong>子代理（Subagents）</strong>：内置 <code>Explore</code>（只读检索）、<code>Plan</code>（架构规划）、<code>general-purpose</code>（通用）等，可在后台并行干活。</li>
+<li><strong>持久记忆</strong>：<code>CLAUDE.md</code> 记忆文件，自动记住用户偏好与环境约束。</li>
+<li><strong>深度集成</strong>：MCP、Skills、Hooks、插件；浏览器自动化、安全测试（Yakit &#x2F; Wireshark）等外部工具接入。</li>
+</ul>
+<p><strong>命令入口</strong>：终端运行 <code>claude</code>，输入 <code>/</code> 弹出命令菜单。模型与推理强度用 <code>/model</code>、<code>/effort</code> 调节。</p>
+<hr>
+<h2 id="三、Antigravity（Google-DeepMind）——-Gemini-CLI-的继任者"><a href="#三、Antigravity（Google-DeepMind）——-Gemini-CLI-的继任者" class="headerlink" title="三、Antigravity（Google DeepMind）—— Gemini CLI 的继任者"></a>三、Antigravity（Google DeepMind）—— Gemini CLI 的继任者</h2><p>Antigravity 是 Google DeepMind 推出的新一代 Agent 体系。它的前身是开源终端工具 <strong>Gemini CLI</strong>（<code>geminicli.com</code>，仅做问答与文本管道，无工具执行能力）；2026 年 5 月 Google 在 I&#x2F;O 上发布 Antigravity 2.0，<strong>2026-06-18 起 Gemini CLI 正式停用、迁移为 Go 编写的 Antigravity CLI</strong>。</p>
+<p><strong>能力关键词：</strong></p>
+<ul>
+<li><strong>全环境适配</strong>：终端 <code>agy</code>、桌面客户端 Antigravity、VS Code 侧边栏与内联 Code Lens。</li>
+<li><strong>自主 Agent 演进</strong>：代码库感知、行号级精准修改（<code>replace_file_content</code> &#x2F; <code>multi_replace_file_content</code>）、沙盒内运行命令并解析日志。</li>
+<li><strong>异步长任务</strong>：<code>schedule</code> 支持 Timer 倒计时与 5 字段 Cron 周期计划。</li>
+<li><strong>多模态</strong>：<code>generate_image</code> 生成 UI 原型图（Imagen&#x2F;Gemini 视觉引擎），<code>search_web</code> &#x2F; <code>read_url_content</code> 实时抓取文档。</li>
+<li><strong>Customizations</strong>：项目 <code>.agents/</code> 目录、规则（Rules）、技能（Skills）、MCP。</li>
+</ul>
+<p><strong>命令入口</strong>：<code>agy</code> 启动 TUI；CLI 子命令 <code>agy start</code> &#x2F; <code>config</code> &#x2F; <code>doctor</code> &#x2F; <code>auth</code>；斜杠命令 <code>/goal</code>、<code>/schedule</code>、<code>/plan</code>、<code>/grill-me</code>、<code>/teamwork-preview</code>、<code>/learn</code>、<code>/compact</code> 等。</p>
+<hr>
+<h2 id="四、Grok-Build（xAI）——-终端原生-多模态-X-实时"><a href="#四、Grok-Build（xAI）——-终端原生-多模态-X-实时" class="headerlink" title="四、Grok Build（xAI）—— 终端原生 + 多模态 + X 实时"></a>四、Grok Build（xAI）—— 终端原生 + 多模态 + X 实时</h2><p>Grok Build 是 xAI 官方的编程智能体（仓库 <code>xai-org/grok-build</code>），以 Rust 编写。它把「对话、生图、写代码、从网页和 X 平台获取实时答案」这四件事塞进了同一个终端。</p>
+<p><strong>能力关键词：</strong></p>
+<ul>
+<li><strong>多模态生成</strong>：<code>/imagine</code> 文生图、<code>/imagine-video</code> 文生视频。</li>
+<li><strong>实时信息</strong>：联网搜索网页与 X 平台实时内容，不靠过时知识硬答。</li>
+<li><strong>深度研究</strong>：<code>/deep-research</code> 后台研究，交叉核验来源后输出带引用的报告。</li>
+<li><strong>工作流与代理</strong>：<code>/workflow</code> 编排多代理（Rhai 脚本，<code>.grok/workflows/*.rhai</code>）、<code>/dashboard</code> 代理仪表盘、<code>/personas</code> 自定义人设。</li>
+<li><strong>记忆</strong>：实验性记忆功能（<code>/memory</code>、<code>/remember</code>、<code>/dream</code>）。</li>
+<li><strong>自动化</strong>：<code>grok -p &quot;提示词&quot; --output-format json</code> 的 Headless 模式接 CI&#x2F;CD；<code>grok agent stdio/serve</code> 以 ACP 协议供 IDE&#x2F;SDK 接入。</li>
+</ul>
+<p><strong>命令入口</strong>：<code>grok</code> 启动 TUI；安装 <code>curl -fsSL https://x.ai/cli/install.sh | bash</code>（Windows 用 <code>irm https://x.ai/cli/install.ps1 | iex</code>）。</p>
+<hr>
+<h2 id="五、Kimi-Code-CLI（Moonshot-AI）——-中文生态的会员权益"><a href="#五、Kimi-Code-CLI（Moonshot-AI）——-中文生态的会员权益" class="headerlink" title="五、Kimi Code CLI（Moonshot AI）—— 中文生态的会员权益"></a>五、Kimi Code CLI（Moonshot AI）—— 中文生态的会员权益</h2><p>Kimi Code 是包含在 Kimi 会员权益里的开发者编程服务，基于 Kimi 最新旗舰模型（K2&#x2F;K3 系列）打造，CLI 以 Rust 编写（仓库 <code>MoonshotAI/kimi-cli</code>）。</p>
+<p><strong>能力关键词：</strong></p>
+<ul>
+<li><strong>双档速度</strong>：标准档与高速档（HighSpeed），高速档约快 5–6 倍，输出最高可达 100 Tokens&#x2F;s。</li>
+<li><strong>自主子代理与群组</strong>：<code>Agent</code> 派生子代理，<code>AgentSwarm</code> 一键拉多个代理组队并行。</li>
+<li><strong>广泛兼容</strong>：原生 CLI、VS Code 扩展；<code>kimi acp</code> 通过 ACP 协议接入 IDE；还能用 API Key 接入 Claude Code、Trae 等第三方工具。</li>
+<li><strong>扩展生态</strong>：Skills、MCP、Hooks、插件、主题、自定义 Agent。</li>
+<li><strong>目标模式</strong>：<code>/goal</code> 跨多轮自动推进，直到完成或遇到真正卡点。</li>
+</ul>
+<p><strong>命令入口</strong>：<code>kimi</code> 启动交互会话；子命令 <code>kimi login</code> &#x2F; <code>acp</code> &#x2F; <code>web</code> &#x2F; <code>doctor</code> &#x2F; <code>export</code> &#x2F; <code>provider</code> 等。首次用 <code>/login</code> 登录 Kimi Code 平台，无需手动管理 API Key。</p>
+<hr>
+<h2 id="结语：五个入口，一套共识"><a href="#结语：五个入口，一套共识" class="headerlink" title="结语：五个入口，一套共识"></a>结语：五个入口，一套共识</h2><p>把这五款放在一起看，会发现一个清晰的<strong>行业共识</strong>正在形成：</p>
+<ol>
+<li><strong>MCP 成为通用扩展协议</strong>——五款全部支持，工具链生态趋于互通。</li>
+<li><strong>子代理 &#x2F; 多代理并行</strong>成为标配——把大任务拆小、并行执行、汇总结果。</li>
+<li>**计划模式（Plan）<strong>与</strong>目标模式（Goal）**普及——先规划后动手、跨轮次自主推进。</li>
+<li><strong>沙箱 + 审批</strong>是安全底线——命令执行与文件写入默认需要许可。</li>
+<li><strong>记忆 &#x2F; 持久化</strong>成为差异化能力——<code>CLAUDE.md</code>、<code>.agents/</code>、<code>AGENTS.md</code>、<code>MEMORY</code> 各显神通。</li>
+</ol>
+<p>至于它们<strong>为什么长得越来越像、内核却越来越不同</strong>——设计哲学、安全哲学、架构的差异——请看下一篇《设计哲学 · 安全哲学 · 架构：六大 AI 编程智能体的本质差异》，其中还会加入本文尚未登场的一位：<strong>DeepSeek Harness</strong>（也就是写这篇文章的「我」）。</p>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/Agent/"><span>Agent</span></a>
+          
+            <a href="/tags/Claude-Code/"><span>Claude Code</span></a>
+          
+            <a href="/tags/AI%E7%BC%96%E7%A8%8B/"><span>AI编程</span></a>
+          
+            <a href="/tags/Codex/"><span>Codex</span></a>
+          
+            <a href="/tags/Antigravity/"><span>Antigravity</span></a>
+          
+            <a href="/tags/Grok/"><span>Grok</span></a>
+          
+            <a href="/tags/Kimi-Code/"><span>Kimi Code</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/ai-coding-agents-compare/">
+            <span>← 上一篇</span>
+            <strong>设计哲学 · 安全哲学 · 架构：六大 AI 编程智能体的本质差异</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/blue-team-ops/">
+            <span>下一篇 →</span>
+            <strong>护网蓝队实战操作补全（二）——应急排查实操·深度漏洞分析·提权手法与溯源反制</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>网易云</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <meting-js
+          server="netease"
+          type="playlist"
+          id="8792942606"
+          api="https://meting.mikus.ink/api"
+          order="list"
+          theme="#b0532b"
+          list-max-height="320px"
+          autoplay="false"
+          preload="none"
+          mutex="true">
+        </meting-js>
+      </div>
+      
+      
+    </div>
+  </section>
+</div>
+
+
+  
+<script>
+  window.__gitalkConfig = {"enable":true,"owner":"swfk2154","repo":"swfk2154.github.io","clientId":"Ov23li9GpL8Lrygn6GlO","clientSecret":"59d9c3e900f7b7a32d08f23652d74ca75ef1ef9e","admin":"swfk2154","labels":["Gitalk"]};
+</script>
+
+<script src="/js/clay.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+
+</body>
+</html>
