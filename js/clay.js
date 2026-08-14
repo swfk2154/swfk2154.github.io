@@ -96,6 +96,45 @@
     }
   }
 
+  /* ================= 评论（Gitalk）按需动态加载 ================= */
+  var lastGitalkEl = null;
+  function renderGitalk() {
+    var el = document.getElementById('gitalk-container');
+    if (!el || !window.__gitalkConfig) return;
+    if (el === lastGitalkEl) return;
+    lastGitalkEl = el;
+
+    function doRender(target) {
+      var cfg = window.__gitalkConfig;
+      target.innerHTML = '';
+      var gitalk = new Gitalk({
+        clientID: cfg.clientId,
+        clientSecret: cfg.clientSecret,
+        repo: cfg.repo,
+        owner: cfg.owner,
+        admin: [cfg.admin || cfg.owner],
+        id: location.pathname,
+        distractionFreeMode: false
+      });
+      gitalk.render(target);
+    }
+
+    if (typeof Gitalk !== 'undefined') {
+      doRender(el);
+    } else if (!window.__gitalkLoading) {
+      window.__gitalkLoading = true;
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js';
+      s.onload = function () {
+        window.__gitalkLoading = false;
+        var cur = document.getElementById('gitalk-container');
+        if (cur) doRender(cur);
+      };
+      s.onerror = function () { window.__gitalkLoading = false; };
+      document.body.appendChild(s);
+    }
+  }
+
   /* ================= 内容初始化（每次换页后重跑） ================= */
   var revealObserver = null;
 
@@ -228,8 +267,8 @@
     // 导航高亮
     updateNavActive();
 
-    // 评论（Gitalk）按需初始化：PJAX 换页后也会渲染
-    if (window.__initGitalk) window.__initGitalk();
+    // 评论（Gitalk）按需动态加载渲染
+    renderGitalk();
   }
 
   function updateNavActive() {

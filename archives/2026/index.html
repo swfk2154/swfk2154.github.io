@@ -385,31 +385,8 @@ npm -v
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
 <script>
-  (function () {
-    var cfg = {"enable":true,"owner":"swfk2154","repo":"swfk2154.github.io","clientId":"Ov23li9GpL8Lrygn6GlO","clientSecret":"59d9c3e900f7b7a32d08f23652d74ca75ef1ef9e","admin":"swfk2154","labels":["Gitalk"]};
-    var lastEl = null;
-    // 可复用的 Gitalk 初始化：PJAX 换页后也会调用
-    window.__initGitalk = function () {
-      var el = document.getElementById('gitalk-container');
-      if (!el || typeof Gitalk === 'undefined') return;
-      if (el === lastEl) return;   // 同一个容器已渲染过
-      lastEl = el;
-      el.innerHTML = '';
-      var gitalk = new Gitalk({
-        clientID: cfg.clientId,
-        clientSecret: cfg.clientSecret,
-        repo: cfg.repo,
-        owner: cfg.owner,
-        admin: [cfg.admin || cfg.owner],
-        id: decodeURIComponent(location.pathname),
-        distractionFreeMode: false
-      });
-      gitalk.render(el);
-    };
-    if (document.getElementById('gitalk-container')) window.__initGitalk();
-  })();
+  window.__gitalkConfig = {"enable":true,"owner":"swfk2154","repo":"swfk2154.github.io","clientId":"Ov23li9GpL8Lrygn6GlO","clientSecret":"59d9c3e900f7b7a32d08f23652d74ca75ef1ef9e","admin":"swfk2154","labels":["Gitalk"]};
 </script>
 
 
