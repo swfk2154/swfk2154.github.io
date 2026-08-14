@@ -119,6 +119,7 @@
         admin: [cfg.admin || cfg.owner],
         id: pageId,
         title: pageId,
+        labels: [],
         distractionFreeMode: false
       });
       gitalk.render(target);
