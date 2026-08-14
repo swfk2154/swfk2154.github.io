@@ -106,6 +106,10 @@
 
     function doRender(target) {
       var cfg = window.__gitalkConfig;
+      // 用解码后的短路径作为 Issue 标识，避免中文标题 URL 编码后超过 256 字符导致 "Validation Failed"
+      var pageId = '';
+      try { pageId = decodeURIComponent(location.pathname); } catch (e) { pageId = location.pathname; }
+      if (pageId.length > 200) pageId = pageId.slice(0, 200);
       target.innerHTML = '';
       var gitalk = new Gitalk({
         clientID: cfg.clientId,
@@ -113,7 +117,8 @@
         repo: cfg.repo,
         owner: cfg.owner,
         admin: [cfg.admin || cfg.owner],
-        id: location.pathname,
+        id: pageId,
+        title: pageId,
         distractionFreeMode: false
       });
       gitalk.render(target);
