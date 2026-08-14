@@ -227,6 +227,9 @@
 
     // 导航高亮
     updateNavActive();
+
+    // 评论（Gitalk）按需初始化：PJAX 换页后也会渲染
+    if (window.__initGitalk) window.__initGitalk();
   }
 
   function updateNavActive() {
