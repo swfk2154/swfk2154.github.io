@@ -4,7 +4,7 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- 主题切换 ---------- */
+  /* ================= 主题切换（全局，一次） ================= */
   function currentTheme() {
     return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
   }
@@ -17,7 +17,6 @@
     }
   }
   applyTheme(currentTheme(), false);
-
   var toggle = document.querySelector('[data-theme-toggle]');
   if (toggle) {
     toggle.addEventListener('click', function () {
@@ -25,23 +24,61 @@
     });
   }
 
-  /* ---------- 滚动入场动画 ---------- */
-  var revealEls = document.querySelectorAll('.reveal');
-  if (reduceMotion || !('IntersectionObserver' in window)) {
-    revealEls.forEach(function (el) { el.classList.add('is-revealed'); });
-  } else {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-revealed');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0, rootMargin: '0px 0px -6% 0px' });
-    revealEls.forEach(function (el) { io.observe(el); });
+  /* ================= 回到顶部（全局，一次） ================= */
+  var toTop = document.querySelector('.to-top');
+  if (toTop) {
+    toTop.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
   }
 
-  /* ---------- 代码复制 ---------- */
+  /* ========== 阅读进度 + TOC：滚动时读取「当前页」的引用 ========== */
+  var currentBar = null;
+  var currentArticle = null;
+  var currentTocItems = [];
+
+  function updateReadingProgress() {
+    var y = window.scrollY;
+    if (currentBar && currentArticle) {
+      var start = currentArticle.offsetTop;
+      var total = currentArticle.offsetHeight - window.innerHeight;
+      var p = total > 0 ? (y - start) / total : 0;
+      currentBar.style.transform = 'scaleX(' + Math.min(1, Math.max(0, p)) + ')';
+    }
+    if (toTop) toTop.classList.toggle('is-visible', y > 600);
+  }
+
+  function syncToc() {
+    if (!currentTocItems.length) return;
+    var offset = 130;
+    var active = currentTocItems[0].link;
+    for (var i = 0; i < currentTocItems.length; i++) {
+      if (currentTocItems[i].heading.getBoundingClientRect().top <= offset) active = currentTocItems[i].link;
+      else break;
+    }
+    if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 60) {
+      active = currentTocItems[currentTocItems.length - 1].link;
+    }
+    var cur = document.querySelector('.toc a.is-active');
+    if (cur !== active) {
+      if (cur) cur.classList.remove('is-active');
+      active.classList.add('is-active');
+    }
+  }
+
+  var scrollTick = false;
+  window.addEventListener('scroll', function () {
+    if (!scrollTick) {
+      scrollTick = true;
+      window.requestAnimationFrame(function () {
+        scrollTick = false;
+        updateReadingProgress();
+        syncToc();
+      });
+    }
+  }, { passive: true });
+
+  /* ================= 工具函数 ================= */
   function writeClipboard(text, done) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
@@ -58,118 +95,90 @@
       done(ok);
     }
   }
-  document.querySelectorAll('.post-content pre').forEach(function (pre) {
-    if (pre.querySelector('[data-copy-code]')) return;
-    var code = pre.querySelector('code');
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'copy-code-button';
-    btn.textContent = '复制';
-    btn.setAttribute('aria-label', '复制代码');
-    pre.appendChild(btn);
-    btn.addEventListener('click', function () {
-      var text = code ? code.innerText : pre.innerText.replace(btn.innerText, '');
-      writeClipboard(text.trimEnd(), function (ok) {
-        btn.textContent = ok ? '已复制' : '复制失败';
-        btn.classList.add('is-copied');
-        window.setTimeout(function () {
-          btn.textContent = '复制';
-          btn.classList.remove('is-copied');
-        }, 1800);
+
+  /* ================= 内容初始化（每次换页后重跑） ================= */
+  var revealObserver = null;
+
+  function initContent() {
+    // 滚动入场动画
+    if (revealObserver) revealObserver.disconnect();
+    var revealEls = document.querySelectorAll('.reveal');
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      revealEls.forEach(function (el) { el.classList.add('is-revealed'); });
+    } else {
+      revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0, rootMargin: '0px 0px -6% 0px' });
+      revealEls.forEach(function (el) { revealObserver.observe(el); });
+    }
+
+    // 代码复制
+    document.querySelectorAll('.post-content pre').forEach(function (pre) {
+      if (pre.querySelector('[data-copy-code]')) return;
+      var code = pre.querySelector('code');
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy-code-button';
+      btn.textContent = '复制';
+      btn.setAttribute('aria-label', '复制代码');
+      pre.appendChild(btn);
+      btn.addEventListener('click', function () {
+        var text = code ? code.innerText : pre.innerText.replace(btn.innerText, '');
+        writeClipboard(text.trimEnd(), function (ok) {
+          btn.textContent = ok ? '已复制' : '复制失败';
+          btn.classList.add('is-copied');
+          window.setTimeout(function () {
+            btn.textContent = '复制';
+            btn.classList.remove('is-copied');
+          }, 1800);
+        });
       });
     });
-  });
 
-  /* ---------- 代码语言标签 ---------- */
-  document.querySelectorAll('.post-content pre').forEach(function (pre) {
-    var code = pre.querySelector('code');
-    if (!code || pre.querySelector('[data-code-lang]')) return;
-    var m = (code.className || '').match(/language-([\w#+-]+)/);
-    if (m && m[1] && m[1] !== 'plaintext') {
-      var lang = document.createElement('span');
-      lang.className = 'code-lang';
-      lang.setAttribute('data-code-lang', '');
-      lang.textContent = m[1];
-      pre.appendChild(lang);
-      pre.classList.add('has-lang');
-    }
-  });
-
-  /* ---------- 表格滚动包裹 ---------- */
-  document.querySelectorAll('.post-content table').forEach(function (t) {
-    if (t.parentElement && t.parentElement.classList.contains('table-wrap')) return;
-    var wrap = document.createElement('div');
-    wrap.className = 'table-wrap';
-    t.parentNode.insertBefore(wrap, t);
-    wrap.appendChild(t);
-  });
-
-  /* ---------- 阅读进度 + 回到顶部 ---------- */
-  var bar = document.querySelector('[data-reading-progress]');
-  var article = document.querySelector('.article');
-  var toTop = document.querySelector('.to-top');
-  var ticking = false;
-
-  function updateScroll() {
-    ticking = false;
-    var y = window.scrollY;
-    if (bar && article) {
-      var start = article.offsetTop;
-      var total = article.offsetHeight - window.innerHeight;
-      var p = total > 0 ? (y - start) / total : 0;
-      bar.style.transform = 'scaleX(' + Math.min(1, Math.max(0, p)) + ')';
-    }
-    if (toTop) toTop.classList.toggle('is-visible', y > 600);
-  }
-  window.addEventListener('scroll', function () {
-    if (!ticking) { ticking = true; window.requestAnimationFrame(updateScroll); }
-  }, { passive: true });
-  window.addEventListener('resize', updateScroll, { passive: true });
-  updateScroll();
-
-  if (toTop) {
-    toTop.addEventListener('click', function () {
-      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    // 代码语言标签
+    document.querySelectorAll('.post-content pre').forEach(function (pre) {
+      var code = pre.querySelector('code');
+      if (!code || pre.querySelector('[data-code-lang]')) return;
+      var m = (code.className || '').match(/language-([\w#+-]+)/);
+      if (m && m[1] && m[1] !== 'plaintext') {
+        var lang = document.createElement('span');
+        lang.className = 'code-lang';
+        lang.setAttribute('data-code-lang', '');
+        lang.textContent = m[1];
+        pre.appendChild(lang);
+        pre.classList.add('has-lang');
+      }
     });
-  }
 
-  /* ---------- TOC 滚动高亮 ---------- */
-  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
-  if (tocLinks.length) {
-    var items = tocLinks.map(function (link) {
-      var id = decodeURIComponent(link.getAttribute('href').slice(1));
-      return { link: link, heading: document.getElementById(id) };
-    }).filter(function (it) { return it.heading; });
+    // 表格滚动包裹
+    document.querySelectorAll('.post-content table').forEach(function (t) {
+      if (t.parentElement && t.parentElement.classList.contains('table-wrap')) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'table-wrap';
+      t.parentNode.insertBefore(wrap, t);
+      wrap.appendChild(t);
+    });
 
-    if (items.length) {
-      var current = null;
-      function setActive(link) {
-        if (current === link) return;
-        if (current) current.classList.remove('is-active');
-        link.classList.add('is-active');
-        current = link;
-      }
-      var tocTick = false;
-      function syncToc() {
-        tocTick = false;
-        var offset = 130;
-        var active = items[0].link;
-        for (var i = 0; i < items.length; i++) {
-          if (items[i].heading.getBoundingClientRect().top <= offset) active = items[i].link;
-          else break;
-        }
-        if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 60) {
-          active = items[items.length - 1].link;
-        }
-        setActive(active);
-      }
-      window.addEventListener('scroll', function () {
-        if (!tocTick) { tocTick = true; window.requestAnimationFrame(syncToc); }
-      }, { passive: true });
-      syncToc();
+    // 阅读进度引用（当前页）
+    currentBar = document.querySelector('[data-reading-progress]');
+    currentArticle = document.querySelector('.article');
+    updateReadingProgress();
 
-      // 点击目录 → 手动平滑滚动定位（带导航偏移），保证跳转
-      items.forEach(function (item) {
+    // TOC 滚动高亮 + 点击跳转
+    currentTocItems = [];
+    var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+    if (tocLinks.length) {
+      currentTocItems = tocLinks.map(function (link) {
+        var id = decodeURIComponent(link.getAttribute('href').slice(1));
+        return { link: link, heading: document.getElementById(id) };
+      }).filter(function (it) { return it.heading; });
+
+      currentTocItems.forEach(function (item) {
         item.link.addEventListener('click', function (e) {
           e.preventDefault();
           var top = item.heading.getBoundingClientRect().top + window.scrollY - 90;
@@ -179,44 +188,58 @@
           }
         });
       });
+      syncToc();
     }
+
+    // 图片灯箱
+    document.querySelectorAll('.post-content img').forEach(function (img) {
+      img.addEventListener('click', function () {
+        if (reduceMotion) return;
+        var overlay = document.createElement('div');
+        overlay.className = 'lightbox';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-label', img.alt || '图片预览');
+        var full = document.createElement('img');
+        full.src = img.currentSrc || img.src;
+        full.alt = img.alt || '';
+        overlay.appendChild(full);
+        var close = function () {
+          overlay.classList.remove('is-open');
+          document.removeEventListener('keydown', onKey);
+          window.setTimeout(function () { overlay.remove(); }, 200);
+        };
+        var onKey = function (e) { if (e.key === 'Escape') close(); };
+        document.addEventListener('keydown', onKey);
+        overlay.addEventListener('click', close);
+        document.body.appendChild(overlay);
+        requestAnimationFrame(function () { overlay.classList.add('is-open'); });
+      });
+    });
+
+    // 打赏展开
+    var rewardToggle = document.querySelector('[data-reward-toggle]');
+    var rewardBox = document.querySelector('[data-reward-box]');
+    if (rewardToggle && rewardBox) {
+      rewardToggle.addEventListener('click', function () {
+        rewardBox.classList.toggle('is-open');
+      });
+    }
+
+    // 导航高亮
+    updateNavActive();
   }
 
-  /* ---------- 图片灯箱 ---------- */
-  document.querySelectorAll('.post-content img').forEach(function (img) {
-    img.addEventListener('click', function () {
-      if (reduceMotion) return;
-      var overlay = document.createElement('div');
-      overlay.className = 'lightbox';
-      overlay.setAttribute('role', 'dialog');
-      overlay.setAttribute('aria-label', img.alt || '图片预览');
-      var full = document.createElement('img');
-      full.src = img.currentSrc || img.src;
-      full.alt = img.alt || '';
-      overlay.appendChild(full);
-      var close = function () {
-        overlay.classList.remove('is-open');
-        document.removeEventListener('keydown', onKey);
-        window.setTimeout(function () { overlay.remove(); }, 200);
-      };
-      var onKey = function (e) { if (e.key === 'Escape') close(); };
-      document.addEventListener('keydown', onKey);
-      overlay.addEventListener('click', close);
-      document.body.appendChild(overlay);
-      requestAnimationFrame(function () { overlay.classList.add('is-open'); });
-    });
-  });
-
-  /* ---------- 打赏展开 ---------- */
-  var rewardToggle = document.querySelector('[data-reward-toggle]');
-  var rewardBox = document.querySelector('[data-reward-box]');
-  if (rewardToggle && rewardBox) {
-    rewardToggle.addEventListener('click', function () {
-      rewardBox.classList.toggle('is-open');
+  function updateNavActive() {
+    var path = location.pathname.replace(/\/+$/, '');
+    document.querySelectorAll('.site-nav__pill a[href]').forEach(function (a) {
+      var href = a.getAttribute('href');
+      var clean = href.replace(/\/+$/, '');
+      var active = (clean === path) || (clean !== '/' && clean !== '' && path.indexOf(clean) === 0);
+      a.classList.toggle('is-current', active);
     });
   }
 
-  /* ---------- 悬浮音乐播放器 ---------- */
+  /* ================= 悬浮音乐播放器（全局，一次） ================= */
   var musicPlayer = document.querySelector('[data-music-player]');
   if (musicPlayer) {
     var mToggle = musicPlayer.querySelector('[data-music-toggle]');
@@ -245,7 +268,6 @@
       });
     });
 
-    // 同步 APlayer 播放状态到唱片按钮（封面 + 旋转 + 脉冲）
     var discCover = musicPlayer.querySelector('[data-music-cover]');
     var discNote = musicPlayer.querySelector('.music-player__disc-note');
     function getAplayer() {
@@ -284,7 +306,6 @@
         }
       });
     }
-    // 构建自定义控制区（进度条 + 大播放键 + 上下曲/模式），隐藏 APlayer 默认控制器
     function buildCustomControls(ap) {
       var apEl = musicPlayer.querySelector('.aplayer');
       var info = apEl && apEl.querySelector('.aplayer-info');
@@ -295,8 +316,7 @@
         play: '<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>',
         pause: '<svg viewBox="0 0 24 24"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z" fill="currentColor"/></svg>',
         prev: '<svg viewBox="0 0 24 24"><path d="M7 5h2.4v14H7zM18.5 5v14L9.5 12z" fill="currentColor"/></svg>',
-        next: '<svg viewBox="0 0 24 24"><path d="M14.6 5H17v14h-2.4zM5.5 5v14l9-7z" fill="currentColor"/></svg>',
-        mode: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>'
+        next: '<svg viewBox="0 0 24 24"><path d="M14.6 5H17v14h-2.4zM5.5 5v14l9-7z" fill="currentColor"/></svg>'
       };
 
       var box = document.createElement('div');
@@ -353,7 +373,6 @@
         played.style.width = (ratio * 100) + '%';
       });
 
-      // 播放列表计数头
       var head = document.createElement('div');
       head.className = 'mp-listhead';
       head.innerHTML = '<span>播放列表</span><small data-mp-count></small>';
@@ -383,7 +402,7 @@
         addListCovers(ap);
         buildCustomControls(ap);
 
-        // —— 播放状态持久化：跳转页面后自动续播 ——
+        // 播放状态持久化：整页刷新时自动续播（PJAX 情况下用不到，作为兜底）
         function savePlayback() {
           try {
             var state = {
@@ -428,4 +447,56 @@
       }
     }, 300);
   }
+
+  /* ================= PJAX 无刷新导航（音乐不间断的关键） ================= */
+  function loadPage(url, push) {
+    fetch(url, { headers: { 'X-Requested-With': 'fetch' } })
+      .then(function (resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var newMain = doc.querySelector('main#main');
+        var curMain = document.querySelector('main#main');
+        if (!newMain || !curMain) throw new Error('no main');
+        var newTitle = doc.querySelector('title');
+        if (newTitle) document.title = newTitle.textContent;
+        document.body.className = doc.body.className;
+        curMain.innerHTML = newMain.innerHTML;
+        if (push && window.history) history.pushState(null, '', url);
+        window.scrollTo(0, 0);
+        initContent();
+      })
+      .catch(function () {
+        location.href = url;
+      });
+  }
+
+  function setupPjax() {
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented) return;
+      var link = e.target.closest ? e.target.closest('a') : null;
+      if (!link) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      if (link.target === '_blank' || link.hasAttribute('download')) return;
+      var href = link.getAttribute('href');
+      if (!href || href.charAt(0) === '#' || href.indexOf('javascript:') === 0 || href.indexOf('mailto:') === 0) return;
+      var url;
+      try { url = new URL(href, location.href); } catch (err) { return; }
+      if (url.origin !== location.origin) return;
+      if (/\.(xml|json|txt|png|jpe?g|gif|svg|webp|css|js|pdf|zip|ico|woff2?|ttf)$/i.test(url.pathname)) return;
+
+      e.preventDefault();
+      loadPage(url.href, true);
+    });
+
+    window.addEventListener('popstate', function () {
+      loadPage(location.href, false);
+    });
+  }
+
+  /* ================= 启动 ================= */
+  initContent();
+  setupPjax();
 })();
