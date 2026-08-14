@@ -112,7 +112,7 @@
 <hr>
 <h2 id="二、安全哲学：六套不同的「信任边界」"><a href="#二、安全哲学：六套不同的「信任边界」" class="headerlink" title="二、安全哲学：六套不同的「信任边界」"></a>二、安全哲学：六套不同的「信任边界」</h2><p>安全哲学的本质是回答一个问题：<strong>在把终端和文件系统交给 AI 之前，你愿意在多大程度上「先授权、后执行」？</strong></p>
 <blockquote>
-<p>严谨性说明：本节中 Claude Code、Antigravity、Kimi Code 三款的权限&#x2F;沙箱档位，为<strong>直接调用本机 CLI 自述</strong>所得（<code>claude -p</code> &#x2F; <code>agy -p</code> &#x2F; <code>kimi -p</code>），比二手资料更贴近实际。</p>
+<p>严谨性说明：本节六款的权限&#x2F;沙箱档位，为<strong>直接调用本机 CLI 自述 + <code>--help</code> 交叉核对</strong>所得（<code>codex</code> &#x2F; <code>claude -p</code> &#x2F; <code>agy -p</code> &#x2F; <code>grok -p</code> &#x2F; <code>kimi -p</code>），比二手资料更贴近实际。工具自述可能存在小偏差（漏档、多档），故一律以 <code>--help</code> 的 <code>[possible values]</code> 为准。</p>
 </blockquote>
 <h3 id="1-沙箱分级"><a href="#1-沙箱分级" class="headerlink" title="1. 沙箱分级"></a>1. 沙箱分级</h3><table>
 <thead>
@@ -152,11 +152,11 @@
 <li><strong>Codex</strong>：审批策略 <code>untrusted</code> &#x2F; <code>on-request</code> &#x2F; <code>never</code>，另有极度危险的 <code>--dangerously-bypass-approvals-and-sandbox</code>（别名 <code>--yolo</code>）。</li>
 <li><strong>Claude Code</strong>：<code>--permission-mode</code> 四档——<code>default</code>（敏感操作逐个询问）&#x2F; <code>acceptEdits</code>（自动接受文件编辑）&#x2F; <code>plan</code>（只读规划）&#x2F; <code>bypassPermissions</code>（跳过所有审批），再叠加可选的 OS 级沙箱。</li>
 <li><strong>Antigravity</strong>：工具执行策略（Tool Execution Policy）四档——<code>always-proceed</code>（自动执行）&#x2F; <code>request-review</code>（请求审核）&#x2F; <code>strict</code>（严格限制）&#x2F; <code>proceed-in-sandbox</code>（沙箱隔离运行），配合文件与网络的 <code>allow</code> &#x2F; <code>ask</code> &#x2F; <code>deny</code> 三级。</li>
-<li><strong>Grok Build</strong>：<code>/always-approve</code>（<code>Ctrl+O</code> 切换，等效 <code>--yolo</code>）、<code>/auto</code>（分类器自动批准安全操作）。</li>
+<li><strong>Grok Build</strong>：<code>--permission-mode</code> 六档——<code>default</code>（逐次询问）&#x2F; <code>acceptEdits</code>（自动接受编辑）&#x2F; <code>auto</code>（分类器自动批准安全操作）&#x2F; <code>dontAsk</code>（不询问）&#x2F; <code>bypassPermissions</code>（跳过所有审批）&#x2F; <code>plan</code>（只读规划），另配 <code>--sandbox</code> 沙箱档（<code>workspace</code> &#x2F; <code>read-only</code> &#x2F; <code>strict</code> &#x2F; <code>project</code>）。</li>
 <li><strong>Kimi Code</strong>：权限三档——<code>manual</code>（每次询问，默认）&#x2F; <code>yolo</code>（自动批准常规调用）&#x2F; <code>auto</code>（完全自主），辅以 Plan 模式与静态 <code>permission.rules</code>（allow&#x2F;deny&#x2F;ask）。</li>
 <li><strong>DeepSeek Harness</strong>：审批提示（approval prompts）+ 沙箱三档，PowerShell 在只读态下运行于 ConstrainedLanguage 约束模式。</li>
 </ul>
-<p><strong>关键区别</strong>在于「放权」的<strong>默认姿态</strong>：Codex 和 DeepSeek Harness 用「dangerously-bypass」这种措辞把风险前置告知，默认最小权限；Claude Code &#x2F; Antigravity 则把「询问 &#x2F; 沙箱」做成<strong>语义清晰的显式档位</strong>（<code>request-review</code> &#x2F; <code>proceed-in-sandbox</code>），可组合、可审计；Kimi 和 Grok 把 <code>--yolo</code> 做成了快捷键级的便利开关。<strong>前者更保守，后者更顺手</strong>——这是安全哲学上最直观的分野。</p>
+<p><strong>关键区别</strong>在于「放权」的<strong>建模方式</strong>：Codex 和 DeepSeek Harness 用「<strong>沙箱档位 + 审批策略</strong>」两层模型（沙箱管「能碰哪里」，审批管「何时问」），把风险前置、默认最小权限；Claude Code &#x2F; Grok &#x2F; Antigravity 则收敛到<strong>同一个「权限模式」枚举</strong>（<code>default</code> &#x2F; <code>acceptEdits</code> &#x2F; <code>plan</code> &#x2F; <code>bypassPermissions</code> 这一套命名几乎互通），把沙箱做成其中的一个可选项；Kimi 最简，只有 <code>manual</code> &#x2F; <code>yolo</code> &#x2F; <code>auto</code> 三档。<strong>前者更保守、更分层，后者更统一、更可组合</strong>——这是安全哲学上最直观的分野。</p>
 <h3 id="3-钩子与「事前约束」"><a href="#3-钩子与「事前约束」" class="headerlink" title="3. 钩子与「事前约束」"></a>3. 钩子与「事前约束」</h3><ul>
 <li>Codex、Claude Code、Grok Build、Kimi Code 都支持 <strong>Hooks</strong>：在工具调用前后插入自定义脚本，强制拦截危险操作。</li>
 <li>Codex 的 <code>--dangerously-bypass-hook-trust</code> 和 Grok 的 <code>/hooks-trust</code> 都提示「钩子信任」是一个需要显式维护的边界。</li>

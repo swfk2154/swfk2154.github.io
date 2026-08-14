@@ -233,9 +233,8 @@
 <hr>
 <h2 id="附：验证方法"><a href="#附：验证方法" class="headerlink" title="附：验证方法"></a>附：验证方法</h2><p>为严谨起见，本文除联网核实官方文档外，还<strong>直接调用了本机安装的五款 CLI</strong> 交叉验证（实测版本：<code>codex</code> 0.147.0、<code>claude</code> 2.1.232、<code>agy</code> 1.1.12、<code>grok</code> 1.0.3、<code>kimi</code> 0.36.0）：</p>
 <ul>
-<li><strong>Claude Code</strong>（<code>claude -p</code>）、<strong>Antigravity</strong>（<code>agy -p</code>）、<strong>Kimi Code</strong>（<code>kimi -p</code>）三款均成功自述，并给出了官方权限&#x2F;沙箱档位的精确命名。</li>
-<li><strong>Codex</strong> 本机被配置为走 DeepSeek 第三方 provider，因缺少 <code>DEEPSEEK_API_KEY</code> 未能完成自述，其沙箱档位以官方 openai&#x2F;codex 文档为准。</li>
-<li><strong>Grok Build</strong> 因本机未登录（401，需 <code>grok login</code>）未能完成自述，其命令与能力以官方 <code>xai-org/grok-build</code> 文档为准。</li>
+<li>五款 CLI <strong>均成功自述</strong>：<strong>Claude Code</strong>（<code>claude -p</code>）、<strong>Antigravity</strong>（<code>agy -p</code>）、<strong>Kimi Code</strong>（<code>kimi -p</code>）、<strong>Grok Build</strong>（<code>grok -p</code>）、<strong>Codex</strong>（<code>codex exec -m deepseek-v4-pro</code>，需先加载用户级 <code>DEEPSEEK_API_KEY</code>）。</li>
+<li>重要提示：工具的「自述」<strong>并非 100% 可靠</strong>——例如 Grok 自述的权限档位漏了 <code>auto</code>、<code>dontAsk</code> 两档，Codex 自述多出一个并不存在的 <code>on-failure</code> 档。故本文所有档位均以 <code>--help</code> 的 <code>[possible values]</code> 与官方文档为准交叉核对。</li>
 </ul>
 <p>这些一手的权限档位细节，已吸收进下一篇对比文章的安全哲学部分。</p>
 
