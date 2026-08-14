@@ -6,7 +6,7 @@
   <link href="https://blogbu2154.site/atom.xml" rel="self"/>
   
   <link href="https://blogbu2154.site/"/>
-  <updated>2026-06-24T04:45:17.710Z</updated>
+  <updated>2026-08-14T09:52:40.149Z</updated>
   <id>https://blogbu2154.site/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://blogbu2154.site/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%AE%9E%E6%88%98%E6%93%8D%E4%BD%9C%E8%A1%A5%E5%85%A8%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E5%BA%94%E6%80%A5%E6%8E%92%E6%9F%A5%E5%AE%9E%E6%93%8D%C2%B7%E6%B7%B1%E5%BA%A6%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%C2%B7%E6%8F%90%E6%9D%83%E6%89%8B%E6%B3%95%E4%B8%8E%E6%BA%AF%E6%BA%90%E5%8F%8D%E5%88%B6/"/>
     <id>https://blogbu2154.site/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%AE%9E%E6%88%98%E6%93%8D%E4%BD%9C%E8%A1%A5%E5%85%A8%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E5%BA%94%E6%80%A5%E6%8E%92%E6%9F%A5%E5%AE%9E%E6%93%8D%C2%B7%E6%B7%B1%E5%BA%A6%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%C2%B7%E6%8F%90%E6%9D%83%E6%89%8B%E6%B3%95%E4%B8%8E%E6%BA%AF%E6%BA%90%E5%8F%8D%E5%88%B6/</id>
     <published>2026-06-24T06:00:00.000Z</published>
-    <updated>2026-06-24T04:45:17.710Z</updated>
+    <updated>2026-08-14T09:52:40.149Z</updated>
     
     
     <summary type="html">&lt;p&gt;本篇文章作为《护网-HVV-面试题大全.md》和《护网蓝队基础补全（一）》的第二弹配套补充，聚焦于面试中容易问到的深度技术细节和实战操作，涵盖 SQL 注入深度补充、提权手法详解、应急排查标准操作、反序列化利用与防御、不出网场景处理、Windows 主机排查实操等内容。&lt;/p&gt;</summary>
@@ -46,7 +46,7 @@
     <link href="https://blogbu2154.site/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%A8%EF%BC%88%E4%B8%80%EF%BC%89/"/>
     <id>https://blogbu2154.site/%E6%8A%A4%E7%BD%91%E8%93%9D%E9%98%9F%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%A8%EF%BC%88%E4%B8%80%EF%BC%89/</id>
     <published>2026-06-24T03:59:59.000Z</published>
-    <updated>2026-06-24T04:45:00.336Z</updated>
+    <updated>2026-08-14T09:52:40.141Z</updated>
     
     
     <summary type="html">&lt;p&gt;本篇文章作为《护网-HVV-面试题大全.md》的配套补充，聚焦于护网蓝队面试中的基础知识、常见漏洞原理速查、中间件漏洞、护网流程、安全加固、内网渗透基础、权限提升、内存马分类、渗透测试流程、英语术语等主题。适合初学者系统补全知识体系。&lt;/p&gt;</summary>
@@ -71,7 +71,7 @@
     <link href="https://blogbu2154.site/Codex-CLI-Claude-Code-Hermes-%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/"/>
     <id>https://blogbu2154.site/Codex-CLI-Claude-Code-Hermes-%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/</id>
     <published>2026-06-23T16:00:00.000Z</published>
-    <updated>2026-06-24T05:13:36.770Z</updated>
+    <updated>2026-08-14T09:52:40.188Z</updated>
     
     
       
@@ -91,9 +91,9 @@
     <category term="AI工具" scheme="https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/"/>
     
     
-    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
-    
     <category term="AI工具" scheme="https://blogbu2154.site/tags/AI%E5%B7%A5%E5%85%B7/"/>
+    
+    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
     
     <category term="CC Switch" scheme="https://blogbu2154.site/tags/CC-Switch/"/>
     
@@ -281,9 +281,9 @@
     
     <category term="LLM" scheme="https://blogbu2154.site/tags/LLM/"/>
     
-    <category term="AI" scheme="https://blogbu2154.site/tags/AI/"/>
-    
     <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
+    
+    <category term="AI" scheme="https://blogbu2154.site/tags/AI/"/>
     
     <category term="入门" scheme="https://blogbu2154.site/tags/%E5%85%A5%E9%97%A8/"/>
     
@@ -296,32 +296,11 @@
   </entry>
   
   <entry>
-    <title>如何搭建Hexo博客</title>
-    <link href="https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/"/>
-    <id>https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/</id>
-    <published>2026-01-29T12:50:20.000Z</published>
-    <updated>2026-01-29T13:22:54.594Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;1-安装Node-js&quot;&gt;&lt;a href=&quot;#1-安装Node-js&quot; class=&quot;headerlink&quot; title=&quot;1 安装Node.js&quot;&gt;&lt;/a&gt;1 安装Node.js&lt;/h2&gt;&lt;p&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
     <title>如何搭建 Hexo 博客 - 完整教程</title>
     <link href="https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2(%E4%BC%98%E5%8C%96%E5%90%8E)/"/>
     <id>https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2(%E4%BC%98%E5%8C%96%E5%90%8E)/</id>
     <published>2026-01-29T12:50:20.000Z</published>
-    <updated>2026-03-19T07:51:37.134Z</updated>
+    <updated>2026-08-14T09:52:40.161Z</updated>
     
     
       
@@ -344,6 +323,27 @@
     <category term="博客" scheme="https://blogbu2154.site/tags/%E5%8D%9A%E5%AE%A2/"/>
     
     <category term="GitHub Pages" scheme="https://blogbu2154.site/tags/GitHub-Pages/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何搭建Hexo博客</title>
+    <link href="https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/"/>
+    <id>https://blogbu2154.site/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/</id>
+    <published>2026-01-29T12:50:20.000Z</published>
+    <updated>2026-08-14T09:52:40.155Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;1-安装Node-js&quot;&gt;&lt;a href=&quot;#1-安装Node-js&quot; class=&quot;headerlink&quot; title=&quot;1 安装Node.js&quot;&gt;&lt;/a&gt;1 安装Node.js&lt;/h2&gt;&lt;p&gt;&lt;a</summary>
+        
+      
+    
+    
+    
     
   </entry>
   
