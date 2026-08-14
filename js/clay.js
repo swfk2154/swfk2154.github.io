@@ -382,6 +382,47 @@
         syncDiscCover();
         addListCovers(ap);
         buildCustomControls(ap);
+
+        // —— 播放状态持久化：跳转页面后自动续播 ——
+        function savePlayback() {
+          try {
+            var state = {
+              index: ap.list.index,
+              time: (ap.audio && isFinite(ap.audio.currentTime)) ? ap.audio.currentTime : 0,
+              playing: !!(ap.audio && !ap.audio.paused)
+            };
+            localStorage.setItem('clay-music-state', JSON.stringify(state));
+          } catch (e) {}
+        }
+        function restorePlayback() {
+          try {
+            var raw = localStorage.getItem('clay-music-state');
+            if (!raw) return;
+            var state = JSON.parse(raw);
+            if (state.index == null || !ap.list.audios || !ap.list.audios[state.index]) return;
+            ap.list.switch(state.index);
+            var audio = ap.audio;
+            if (audio && state.time > 1) {
+              var onMeta = function () {
+                try { audio.currentTime = state.time; } catch (e) {}
+                audio.removeEventListener('loadedmetadata', onMeta);
+              };
+              audio.addEventListener('loadedmetadata', onMeta);
+            }
+            if (state.playing) {
+              try { ap.play(); } catch (e) {}
+            }
+          } catch (e) {}
+        }
+        var lastSave = 0;
+        ap.on('timeupdate', function () {
+          var now = Date.now();
+          if (now - lastSave > 2000) { lastSave = now; savePlayback(); }
+        });
+        ap.on('play', savePlayback);
+        ap.on('pause', savePlayback);
+        ap.on('ended', savePlayback);
+        restorePlayback();
       } else if (apTries > 100) {
         clearInterval(apTimer);
       }
