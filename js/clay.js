@@ -15,6 +15,16 @@
     if (persist !== false) {
       try { localStorage.setItem('clay-theme', theme); } catch (e) {}
     }
+    // 同步 giscus 评论框主题
+    var giscusFrame = document.querySelector('iframe.giscus-frame');
+    if (giscusFrame) {
+      try {
+        giscusFrame.contentWindow.postMessage(
+          { giscus: { setConfig: { theme: theme === 'dark' ? 'dark' : 'light' } } },
+          'https://giscus.app'
+        );
+      } catch (e) {}
+    }
   }
   applyTheme(currentTheme(), false);
   var toggle = document.querySelector('[data-theme-toggle]');
@@ -96,49 +106,30 @@
     }
   }
 
-  /* ================= 评论（Gitalk）按需动态加载 ================= */
-  var lastGitalkEl = null;
-  function renderGitalk() {
+  /* ================= 评论（giscus）按需动态加载 ================= */
+  function renderGiscus() {
     var el = document.getElementById('gitalk-container');
-    if (!el || !window.__gitalkConfig) return;
-    if (el === lastGitalkEl) return;
-    lastGitalkEl = el;
+    var cfg = window.__giscusConfig;
+    if (!el || !cfg || !cfg.repoId || !cfg.categoryId) return;
+    if (el.querySelector('.giscus, iframe.giscus-frame')) return;
 
-    function doRender(target) {
-      var cfg = window.__gitalkConfig;
-      // 用解码后的短路径作为 Issue 标识，避免中文标题 URL 编码后超过 256 字符导致 "Validation Failed"
-      var pageId = '';
-      try { pageId = decodeURIComponent(location.pathname); } catch (e) { pageId = location.pathname; }
-      if (pageId.length > 200) pageId = pageId.slice(0, 200);
-      target.innerHTML = '';
-      var gitalk = new Gitalk({
-        clientID: cfg.clientId,
-        clientSecret: cfg.clientSecret,
-        repo: cfg.repo,
-        owner: cfg.owner,
-        admin: [cfg.admin || cfg.owner],
-        id: pageId,
-        title: pageId,
-        labels: [],
-        distractionFreeMode: false
-      });
-      gitalk.render(target);
-    }
-
-    if (typeof Gitalk !== 'undefined') {
-      doRender(el);
-    } else if (!window.__gitalkLoading) {
-      window.__gitalkLoading = true;
-      var s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js';
-      s.onload = function () {
-        window.__gitalkLoading = false;
-        var cur = document.getElementById('gitalk-container');
-        if (cur) doRender(cur);
-      };
-      s.onerror = function () { window.__gitalkLoading = false; };
-      document.body.appendChild(s);
-    }
+    el.innerHTML = '';
+    var s = document.createElement('script');
+    s.src = 'https://giscus.app/client.js';
+    s.setAttribute('data-repo', cfg.repo);
+    s.setAttribute('data-repo-id', cfg.repoId);
+    s.setAttribute('data-category', cfg.category);
+    s.setAttribute('data-category-id', cfg.categoryId);
+    s.setAttribute('data-mapping', cfg.mapping || 'pathname');
+    s.setAttribute('data-strict', '0');
+    s.setAttribute('data-reactions-enabled', cfg.reactionsEnabled === false ? '0' : '1');
+    s.setAttribute('data-emit-metadata', '0');
+    s.setAttribute('data-input-position', cfg.inputPosition || 'top');
+    s.setAttribute('data-theme', document.documentElement.dataset.theme === 'dark' ? 'dark' : (cfg.theme || 'light'));
+    s.setAttribute('data-lang', cfg.lang || 'zh-CN');
+    s.setAttribute('crossorigin', 'anonymous');
+    s.async = true;
+    el.appendChild(s);
   }
 
   /* ================= 内容初始化（每次换页后重跑） ================= */
@@ -273,8 +264,8 @@
     // 导航高亮
     updateNavActive();
 
-    // 评论（Gitalk）按需动态加载渲染
-    renderGitalk();
+    // 评论（giscus）按需动态加载渲染
+    renderGiscus();
   }
 
   function updateNavActive() {
