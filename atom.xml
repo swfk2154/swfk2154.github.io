@@ -141,14 +141,14 @@
     <link href="https://blogbu2154.site/blue-team-ops/"/>
     <id>https://blogbu2154.site/blue-team-ops/</id>
     <published>2026-06-24T06:00:00.000Z</published>
-    <updated>2026-08-14T10:40:18.516Z</updated>
+    <updated>2026-08-27T06:23:39.850Z</updated>
     
     
     <summary type="html">&lt;p&gt;本篇文章作为《护网-HVV-面试题大全.md》和《护网蓝队基础补全（一）》的第二弹配套补充，聚焦于面试中容易问到的深度技术细节和实战操作，涵盖 SQL 注入深度补充、提权手法详解、应急排查标准操作、反序列化利用与防御、不出网场景处理、Windows 主机排查实操等内容。&lt;/p&gt;</summary>
     
     
     
-    <category term="安全" scheme="https://blogbu2154.site/categories/%E5%AE%89%E5%85%A8/"/>
+    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
     
     
     <category term="护网" scheme="https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/"/>
@@ -166,14 +166,14 @@
     <link href="https://blogbu2154.site/blue-team-basics/"/>
     <id>https://blogbu2154.site/blue-team-basics/</id>
     <published>2026-06-24T03:59:59.000Z</published>
-    <updated>2026-08-14T10:40:18.511Z</updated>
+    <updated>2026-08-27T06:23:39.846Z</updated>
     
     
     <summary type="html">&lt;p&gt;本篇文章作为《护网-HVV-面试题大全.md》的配套补充，聚焦于护网蓝队面试中的基础知识、常见漏洞原理速查、中间件漏洞、护网流程、安全加固、内网渗透基础、权限提升、内存马分类、渗透测试流程、英语术语等主题。适合初学者系统补全知识体系。&lt;/p&gt;</summary>
     
     
     
-    <category term="安全" scheme="https://blogbu2154.site/categories/%E5%AE%89%E5%85%A8/"/>
+    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
     
     
     <category term="护网" scheme="https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/"/>
@@ -324,9 +324,9 @@
     <category term="工具实践" scheme="https://blogbu2154.site/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/"/>
     
     
-    <category term="AI安全" scheme="https://blogbu2154.site/tags/AI%E5%AE%89%E5%85%A8/"/>
-    
     <category term="Claude Code" scheme="https://blogbu2154.site/tags/Claude-Code/"/>
+    
+    <category term="AI安全" scheme="https://blogbu2154.site/tags/AI%E5%AE%89%E5%85%A8/"/>
     
     <category term="MCP" scheme="https://blogbu2154.site/tags/MCP/"/>
     
@@ -399,9 +399,9 @@
     <category term="AI入门" scheme="https://blogbu2154.site/categories/AI%E5%85%A5%E9%97%A8/"/>
     
     
-    <category term="LLM" scheme="https://blogbu2154.site/tags/LLM/"/>
-    
     <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
+    
+    <category term="LLM" scheme="https://blogbu2154.site/tags/LLM/"/>
     
     <category term="AI" scheme="https://blogbu2154.site/tags/AI/"/>
     
@@ -420,7 +420,7 @@
     <link href="https://blogbu2154.site/hexo-setup-optimized/"/>
     <id>https://blogbu2154.site/hexo-setup-optimized/</id>
     <published>2026-01-29T12:50:20.000Z</published>
-    <updated>2026-08-14T10:40:18.527Z</updated>
+    <updated>2026-08-27T06:23:37.097Z</updated>
     
     
       
@@ -437,33 +437,14 @@
     
     
     
+    <category term="工具实践" scheme="https://blogbu2154.site/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/"/>
+    
     
     <category term="Hexo" scheme="https://blogbu2154.site/tags/Hexo/"/>
     
     <category term="博客" scheme="https://blogbu2154.site/tags/%E5%8D%9A%E5%AE%A2/"/>
     
     <category term="GitHub Pages" scheme="https://blogbu2154.site/tags/GitHub-Pages/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>如何搭建Hexo博客</title>
-    <link href="https://blogbu2154.site/hexo-setup/"/>
-    <id>https://blogbu2154.site/hexo-setup/</id>
-    <published>2026-01-29T12:50:20.000Z</published>
-    <updated>2026-08-14T10:40:18.519Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;1-安装Node-js&quot;&gt;&lt;a href=&quot;#1-安装Node-js&quot; class=&quot;headerlink&quot; title=&quot;1 安装Node.js&quot;&gt;&lt;/a&gt;1 安装Node.js&lt;/h2&gt;&lt;p&gt;&lt;a</summary>
-        
-      
-    
-    
-    
     
   </entry>
   

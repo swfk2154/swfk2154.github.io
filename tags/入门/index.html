@@ -10,6 +10,7 @@
 <meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
 <meta name="theme-color" id="theme-color" content="#f8f7f4">
 <link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
 <link rel="canonical" href="https://blogbu2154.site/tags/%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="swfk 的安全笔记">
@@ -54,6 +55,9 @@
       
     
     
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
       <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
         <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
       </a>
@@ -134,6 +138,20 @@
   </div>
 </footer>
 
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
   <button type="button" class="to-top" aria-label="回到顶部">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
   </button>
@@ -152,7 +170,7 @@
     <div class="music-player__panel-head">
       <div class="music-player__head-copy">
         <span class="music-player__eyebrow">MUSIC</span>
-        <h2>网易云</h2>
+        <h2>BGM</h2>
       </div>
       <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
     </div>
@@ -164,7 +182,7 @@
           server="netease"
           type="playlist"
           id="8792942606"
-          api="https://meting.mikus.ink/api"
+          api="https://api.injahow.cn/meting/?server=:server&amp;type=:type&amp;id=:id"
           order="list"
           theme="#b0532b"
           list-max-height="320px"
@@ -176,6 +194,7 @@
       
       
     </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
   </section>
 </div>
 
@@ -186,6 +205,7 @@
 </script>
 
 <script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>

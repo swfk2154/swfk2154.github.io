@@ -1123,3 +1123,170 @@ html { scrollbar-color: var(--border-strong) transparent; }
 /* 当前曲目标题橙色 + 列表去掉上边框（计数头已提供分隔线） */
 .music-player__box .aplayer .aplayer-list { border-top: 0; }
 .music-player__box .aplayer .aplayer-list ol li.aplayer-list-light .aplayer-list-title { color: var(--brand); font-weight: 700; }
+
+/* ================= 站内搜索 ================= */
+.search-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: color-mix(in srgb, var(--bg) 55%, rgba(20, 24, 32, 0.45));
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 12vh 1rem 2rem;
+}
+.search-overlay[hidden] { display: none; }
+
+.search-panel {
+  width: min(640px, 100%);
+  max-height: 72vh;
+  display: flex; flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.search-bar {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--text-muted);
+}
+.search-input {
+  flex: 1; border: 0; outline: 0; background: transparent;
+  font: inherit; font-size: 1.02rem; color: var(--text);
+}
+.search-input::placeholder { color: var(--text-faint); }
+.search-esc {
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: transparent; color: var(--text-faint);
+  font-size: 0.72rem; font-weight: 700; padding: 0.22rem 0.5rem;
+  cursor: pointer;
+}
+.search-esc:hover { color: var(--text); border-color: var(--border-strong); }
+
+.search-results {
+  list-style: none; margin: 0; padding: 0.4rem;
+  overflow-y: auto; flex: 1;
+}
+.search-item {
+  padding: 0.65rem 0.75rem; border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.search-item.is-active { background: var(--surface-muted); }
+.search-item__title {
+  font-weight: 650; font-size: 0.98rem; color: var(--text); line-height: 1.4;
+}
+.search-item__meta {
+  margin-top: 0.15rem;
+  font-size: 0.74rem; color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+.search-item__snippet {
+  margin-top: 0.3rem;
+  font-size: 0.85rem; color: var(--text-muted); line-height: 1.55;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.search-item mark, .search-empty mark {
+  background: var(--brand-soft); color: var(--brand-strong);
+  padding: 0 0.12em; border-radius: 4px; font-weight: 700;
+}
+.search-empty {
+  padding: 1.6rem 1rem; text-align: center;
+  color: var(--text-muted); font-size: 0.92rem;
+}
+
+.search-hint {
+  padding: 0.5rem 1.1rem;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.72rem; color: var(--text-faint);
+  letter-spacing: 0.05em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-overlay { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+
+/* ---------- 音乐播放器 · UI 精致化 ---------- */
+
+/* 按钮：按压回弹手感 */
+.music-player__toggle:active { scale: 0.93; }
+
+/* 唱片盘面重绘：斜向扫光 + 陶土标签盘区 + 细密黑胶纹路 */
+.music-player__disc {
+  background:
+    conic-gradient(from 210deg,
+      rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 26%,
+      rgba(255, 255, 255, 0) 60%, rgba(255, 255, 255, 0.08)),
+    radial-gradient(circle closest-side at center,
+      var(--brand) 0 27%,
+      color-mix(in srgb, var(--brand) 52%, #000) 27% 31%,
+      transparent 32%),
+    repeating-radial-gradient(circle at center,
+      #363a41 0 1.6px, #21242a 1.6px 3.4px);
+}
+
+/* 关闭钮：圆形化，悬停轻旋 */
+.music-player__close {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 1.02rem;
+  transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out),
+    rotate var(--t-base) var(--ease-spring);
+}
+.music-player__close:hover { rotate: 90deg; }
+
+/* 面板眉题前的小圆点 */
+.music-player__eyebrow::before {
+  content: "";
+  flex: none;
+  width: 0.38rem;
+  height: 0.38rem;
+  border-radius: 50%;
+  background: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-soft);
+}
+
+/* 面板加宽一档 */
+.music-player__panel { width: min(21.5rem, calc(100vw - 2rem)); }
+
+/* 曲目列表：加高可点面积、当前曲目前置陶土竖条 + 渐隐色块 */
+.music-player__box .aplayer-list ol li { height: 38px; line-height: 38px; padding-right: 12px; cursor: pointer; }
+.music-player__box .aplayer-list ol li.aplayer-list-light {
+  position: relative;
+  background: linear-gradient(to right, var(--brand-soft), transparent 65%);
+}
+.music-player__box .aplayer-list ol li.aplayer-list-light::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  translate: 0 -50%;
+  width: 3px;
+  height: 55%;
+  border-radius: 99px;
+  background: var(--brand);
+}
+
+/* 进度圆点与音量条的细节打磨 */
+.music-player__box .aplayer .aplayer-thumb { box-shadow: 0 0 0 3px var(--surface); }
+.music-player__box .aplayer-volume-wrap .aplayer-volume-bar-wrap .aplayer-volume-bar { border-radius: 99px; }
+
+/* 面板底注脚 */
+.music-player__foot {
+  margin: 0;
+  padding: 0.5rem 1rem 0.7rem;
+  border-top: 1px solid var(--hairline);
+  color: var(--text-faint);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+@media (max-width: 460px) {
+  .music-player__panel { width: min(21.5rem, calc(100vw - 1.5rem)); }
+}
