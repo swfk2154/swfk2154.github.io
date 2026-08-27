@@ -390,24 +390,14 @@
     <div class="music-player__box">
       
       <div class="music-player__pane is-active" data-music-pane="0">
-        <meting-js
-          server="netease"
-          type="playlist"
-          id="8792942606"
-          api="https://api.injahow.cn/meting/?server=:server&amp;type=:type&amp;id=:id"
-          order="list"
-          theme="#b0532b"
-          list-max-height="320px"
-          autoplay="false"
-          preload="none"
-          mutex="true">
-        </meting-js>
+        <div class="music-player__mount" data-ap-mount="0"></div>
       </div>
       
       
     </div>
     <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
   </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
 </div>
 
 
@@ -420,7 +410,7 @@
 <script src="/js/search.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>
+<script src="/js/music-loader.js"></script>
 
 
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>

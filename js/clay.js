@@ -351,6 +351,8 @@
     var discCover = musicPlayer.querySelector('[data-music-cover]');
     var discNote = musicPlayer.querySelector('.music-player__disc-note');
     function getAplayer() {
+      var arr = window.__CLAY_APLAYER__;
+      if (arr && arr[0]) return arr[0];
       var metingEl = musicPlayer.querySelector('meting-js') || document.querySelector('meting-js');
       return (metingEl && metingEl.aplayer) ? metingEl.aplayer : null;
     }
