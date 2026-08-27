@@ -1290,3 +1290,74 @@ html { scrollbar-color: var(--border-strong) transparent; }
 @media (max-width: 460px) {
   .music-player__panel { width: min(21.5rem, calc(100vw - 1.5rem)); }
 }
+
+/* =====================================================================
+   Daydream 移植增强：首屏入场编排 · 漂浮装饰 · 指针微视差
+   ===================================================================== */
+.hero { position: relative; }
+
+.hero-scene {
+  position: absolute;
+  inset: -12% -14% auto -14%;
+  height: 124%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.float-orb {
+  position: absolute;
+  display: block;
+  will-change: transform;
+}
+
+.float-orb::before {
+  content: "";
+  display: block;
+  width: var(--s, 56px);
+  height: var(--s, 56px);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 46%),
+    radial-gradient(circle at 70% 80%, rgba(20, 24, 32, 0.10), rgba(20, 24, 32, 0) 54%),
+    var(--c, #d9915f);
+  box-shadow: var(--shadow-sm);
+}
+
+.float-orb--a { --s: 44px; --c: #e3c39a; top: -2%; right: 30%; --dur: 8.5s; --del: 0s; }
+.float-orb--b { --s: 74px; --c: #d08452; top: 46%; right: 2.5%; --dur: 11s; --del: -3s; }
+.float-orb--c { --s: 22px; --c: #a8542e; left: 30%; top: 88%; --dur: 7s; --del: -1.6s; }
+
+html[data-theme="dark"] .float-orb::before {
+  opacity: 0.82;
+  filter: saturate(0.92) brightness(0.86);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* 首屏入场：hero 元素自上而下错峰浮现（head 内联脚本已同步打标记，无闪烁） */
+  .js.boot .hero__intro > * { animation: boot-rise 0.72s var(--ease-out) both; }
+  .js.boot .hero__intro > *:nth-child(2) { animation-delay: 0.07s; }
+  .js.boot .hero__intro > *:nth-child(3) { animation-delay: 0.14s; }
+  .js.boot .hero__intro > *:nth-child(4) { animation-delay: 0.21s; }
+  .js.boot .hero__intro > *:nth-child(5) { animation-delay: 0.28s; }
+
+  /* 浮球待机漂浮 */
+  .float-orb::before {
+    animation: orb-drift var(--dur, 9s) ease-in-out infinite alternate;
+    animation-delay: var(--del, 0s);
+  }
+}
+
+@keyframes boot-rise {
+  from { opacity: 0; transform: translateY(18px) scale(0.985); filter: blur(3px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes orb-drift {
+  from { transform: translateY(-6px); }
+  to { transform: translateY(7px); }
+}
+
+/* 小屏收起装饰层，把空间留给内容 */
+@media (max-width: 860px) {
+  .hero-scene { display: none; }
+}

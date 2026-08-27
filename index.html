@@ -37,6 +37,19 @@
   })();
 </script>
 
+<script>
+  // 首屏入场编排标记：首页且允许动态时才启用（禁 JS / 减少动态偏好自动降级）
+  (function () {
+    try {
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('js');
+        document.documentElement.classList.add('boot');
+      }
+    } catch (e) {}
+  })();
+</script>
+
+
 <body class="home-page">
   <a class="skip-link" href="#main">跳到正文</a>
   <header class="site-nav">
@@ -72,6 +85,11 @@
   <main id="main">
     
 <section class="hero">
+  <div class="hero-scene" aria-hidden="true">
+    <span class="float-orb float-orb--a" data-depth="26"></span>
+    <span class="float-orb float-orb--b" data-depth="-38"></span>
+    <span class="float-orb float-orb--c" data-depth="14"></span>
+  </div>
   <div class="hero__intro">
     <img class="hero__avatar" src="/images/clay-avatar.svg" alt="swfk2154" width="80" height="80">
     <p class="eyebrow">AI 安全 · 网络安全 · 工程实践</p>

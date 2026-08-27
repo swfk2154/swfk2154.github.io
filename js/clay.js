@@ -4,6 +4,11 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* 入场编排结束后移除标记，避免 both 填充的残留 filter/transform 合成层 */
+  if (document.documentElement.classList.contains('boot')) {
+    window.setTimeout(function () { document.documentElement.classList.remove('boot'); }, 1600);
+  }
+
   /* ================= 主题切换（全局，一次） ================= */
   function currentTheme() {
     return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
@@ -33,6 +38,42 @@
       applyTheme(currentTheme() === 'dark' ? 'light' : 'dark');
     });
   }
+
+  /* ========== Hero 装饰微视差（Daydream 移植）：仅精确指针 + 允许动态 ========== */
+  (function () {
+    var scene = document.querySelector('.hero-scene');
+    var heroEl = document.querySelector('.hero');
+    if (!scene || !heroEl || reduceMotion) return;
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    var orbs = scene.querySelectorAll('[data-depth]');
+    if (!orbs.length) return;
+
+    var cx = 0, cy = 0, tx = 0, ty = 0, rafId = null;
+    function step() {
+      cx += (tx - cx) * 0.085;
+      cy += (ty - cy) * 0.085;
+      for (var i = 0; i < orbs.length; i++) {
+        var d = parseFloat(orbs[i].getAttribute('data-depth')) || 0;
+        orbs[i].style.transform =
+          'translate3d(' + (cx * d).toFixed(2) + 'px,' + (cy * d * 0.7).toFixed(2) + 'px,0)';
+      }
+      if (Math.abs(tx - cx) > 0.001 || Math.abs(ty - cy) > 0.001) {
+        rafId = window.requestAnimationFrame(step);
+      } else {
+        rafId = null;
+      }
+    }
+    function wake() { if (rafId === null) rafId = window.requestAnimationFrame(step); }
+
+    heroEl.addEventListener('pointermove', function (e) {
+      var r = heroEl.getBoundingClientRect();
+      tx = Math.max(-1, Math.min(1, ((e.clientX - r.left) / Math.max(1, r.width) - 0.5) * 2));
+      ty = Math.max(-1, Math.min(1, ((e.clientY - r.top) / Math.max(240, r.height) - 0.5) * 2));
+      wake();
+    });
+    heroEl.addEventListener('pointerleave', function () { tx = 0; ty = 0; wake(); });
+    window.addEventListener('blur', function () { tx = 0; ty = 0; wake(); });
+  })();
 
   /* ================= 回到顶部（全局，一次） ================= */
   var toTop = document.querySelector('.to-top');
