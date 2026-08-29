@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>域环境搭建 - swfk 的安全笔记</title>
+<meta name="description" content="Windows 域控与域内主机的搭建流程、常见枚举命令，为域渗透练习打底。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/ad-environment-setup/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="域环境搭建 - swfk 的安全笔记">
+<meta property="og:description" content="Windows 域控与域内主机的搭建流程、常见枚举命令，为域渗透练习打底。">
+<meta property="og:url" content="https://blogbu2154.site/ad-environment-setup/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/23.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85"><span class="toc-text">系统镜像安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85vmtools"><span class="toc-text">安装vmtools</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85AD-%EF%BC%88windows-server-2012-%EF%BC%89"><span class="toc-text">安装AD （windows server 2012 ）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81-ip-%EF%BC%88%E6%88%90%E4%B8%BA%E5%9F%9F%E6%8E%A7%E5%BF%85%E9%A1%BB%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81IP%EF%BC%89"><span class="toc-text">1  配置静态 ip （成为域控必须配置静态IP）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%87%8D%E5%91%BD%E5%90%8D%E8%AE%A1%E7%AE%97%E6%9C%BA-%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%8C-%E9%BB%98%E8%AE%A4hostname%E6%98%AF%E9%9A%8F%E6%9C%BA%E5%90%8D%EF%BC%89"><span class="toc-text">2  重命名计算机 （可选， 默认hostname是随机名）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%AE%89%E8%A3%85ad"><span class="toc-text">3  安装ad</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E5%8D%87%E6%9C%BA%E5%99%A8%E4%B8%BA%E5%9F%9F%E6%8E%A7-%EF%BC%88windows-server-2012%EF%BC%89"><span class="toc-text">提升机器为域控 （windows server 2012）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%90%E5%91%98%E4%B8%BB%E6%9C%BA%E5%8A%A0%E5%85%A5%E5%9F%9F"><span class="toc-text">成员主机加入域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#windows-7"><span class="toc-text">windows 7</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81ip%EF%BC%88dns%E5%9C%B0%E5%9D%80%E9%9C%80%E8%A6%81%E6%9C%89%E4%B8%80%E4%B8%AA%E6%98%AF-%E5%9F%9F%E6%8E%A7%E7%9A%84ip%EF%BC%89"><span class="toc-text">1  配置静态ip（dns地址需要有一个是 域控的ip）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%BF%AE%E6%94%B9%E4%B8%BB%E6%9C%BA%E5%90%8D"><span class="toc-text">2  修改主机名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%8A%A0%E5%85%A5%E5%9F%9F%E7%8E%AF%E5%A2%83"><span class="toc-text">3  加入域环境</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#windows-server-2008"><span class="toc-text">windows server 2008</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81ip"><span class="toc-text">1  配置静态ip</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%94%B9%E4%B8%BB%E6%9C%BA%E5%90%8D"><span class="toc-text">2  改主机名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%8A%A0%E5%85%A5%E5%9F%9F%E7%8E%AF%E5%A2%83-1"><span class="toc-text">3 加入域环境</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%90%E5%91%98%E4%B8%BB%E6%9C%BA%E5%85%A5%E5%9F%9F%E5%90%8E%EF%BC%8C%E7%94%A8%E6%88%B7%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88%E5%8F%98%E5%8C%96"><span class="toc-text">成员主机入域后，用户发生了什么变化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%9F%E7%8E%AF%E5%A2%83%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C"><span class="toc-text">域环境基础操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#computers-%E5%AE%B9%E5%99%A8"><span class="toc-text">computers 容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#user-%E5%AE%B9%E5%99%A8"><span class="toc-text">user 容器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%99%AE%E9%80%9A%E7%9A%84%E5%9F%9F%E7%94%A8%E6%88%B7"><span class="toc-text">新建一个普通的域用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%9F%9F%E7%AE%A1%E7%90%86%E5%91%98%E7%94%A8%E6%88%B7"><span class="toc-text">新建一个域管理员用户</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%9F%E7%8E%AF%E5%A2%83%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">域环境信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E6%98%AF%E5%9F%9F%E7%8E%AF%E5%A2%83"><span class="toc-text">判断是否是域环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF"><span class="toc-text">用户信息</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%9F%9F%E7%94%A8%E6%88%B7"><span class="toc-text">查看域用户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%9F%9F%E7%94%A8%E6%88%B7%E7%BB%84"><span class="toc-text">查看域用户组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%88%90%E5%91%98%E4%B8%BB%E6%9C%BA"><span class="toc-text">查看成员主机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%9F%9F%E6%8E%A7"><span class="toc-text">查看域控</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%9F%9F%E7%AE%A1%E7%90%86%E5%91%98%E7%94%A8%E6%88%B7"><span class="toc-text">查看域管理员用户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7%E6%98%AF%E5%90%A6%E6%98%AF%E5%9F%9F%E7%AE%A1%E7%90%86%E5%91%98-%EF%BC%88%E6%98%AF%E5%90%A6%E5%9C%A8%E5%9F%9F%E7%AE%A1%E7%90%86%E5%91%98%E7%94%A8%E6%88%B7%E7%BB%84%E4%B8%AD%EF%BC%89"><span class="toc-text">查看当前用户是否是域管理员 （是否在域管理员用户组中）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%BD%8D%E5%9F%9F%E6%8E%A7"><span class="toc-text">定位域控</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-ping-%E5%9F%9F%E5%90%8D-nslookup-%E5%9F%9F%E5%90%8D"><span class="toc-text">1 ping 域名 &#x2F; nslookup 域名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-dns-%E5%9C%B0%E5%9D%80"><span class="toc-text">2 dns 地址</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-ldap-%E6%9F%A5%E8%AF%A2"><span class="toc-text">3 ldap 查询</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-spn-%E6%9F%A5%E8%AF%A2"><span class="toc-text">4 spn 查询</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%9F%E7%8E%AF%E5%A2%83%E5%AF%86%E7%A0%81%E5%87%AD%E8%AF%81%E8%8E%B7%E5%8F%96"><span class="toc-text">域环境密码凭证获取</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%9F%E7%AE%A1%E8%AF%BB%E5%8F%96ntds-dit"><span class="toc-text">域管读取ntds.dit</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%9F%E6%8E%A7%E8%AF%BB%E5%8F%96ntds-dt"><span class="toc-text">域控读取ntds.dt</span></a></li></ol></li></ol></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>域环境搭建</h1>
+        <div class="post-meta">
+          <time datetime="2026-01-29">2026-01-29</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/23.jpg" alt="域环境搭建" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="系统镜像安装"><a href="#系统镜像安装" class="headerlink" title="系统镜像安装"></a>系统镜像安装</h2><p>windows 7</p>
+<p>windows 2008</p>
+<p>windows 2012</p>
+<p>用户名设置为 administrator ，节省手动激活 administrator 的时间 （windows 默认禁用 administrator）</p>
+<h2 id="安装vmtools"><a href="#安装vmtools" class="headerlink" title="安装vmtools"></a>安装vmtools</h2><p>之前老版本的vmtools</p>
+<h2 id="安装AD-（windows-server-2012-）"><a href="#安装AD-（windows-server-2012-）" class="headerlink" title="安装AD （windows server 2012 ）"></a>安装AD （windows server 2012 ）</h2><h3 id="1-配置静态-ip-（成为域控必须配置静态IP）"><a href="#1-配置静态-ip-（成为域控必须配置静态IP）" class="headerlink" title="1  配置静态 ip （成为域控必须配置静态IP）"></a>1  配置静态 ip （成为域控必须配置静态IP）</h3><h3 id="2-重命名计算机-（可选，-默认hostname是随机名）"><a href="#2-重命名计算机-（可选，-默认hostname是随机名）" class="headerlink" title="2  重命名计算机 （可选， 默认hostname是随机名）"></a>2  重命名计算机 （可选， 默认hostname是随机名）</h3><h3 id="3-安装ad"><a href="#3-安装ad" class="headerlink" title="3  安装ad"></a>3  安装ad</h3><h2 id="提升机器为域控-（windows-server-2012）"><a href="#提升机器为域控-（windows-server-2012）" class="headerlink" title="提升机器为域控 （windows server 2012）"></a>提升机器为域控 （windows server 2012）</h2><p>点击“将此服务器提升为域控制器”</p>
+<p> 设置任意域名</p>
+<p>一个windows server 从普通的机器工作组环境变成域控时，用户发生了什么变化：</p>
+<ul>
+<li>安装域环境前的工作组管理员用户： administrator</li>
+<li>安装域环境后的域用户： 域名\administrator</li>
+</ul>
+<p>从工作组管理员变成了域管理员，密码未发生改变</p>
+<h2 id="成员主机加入域"><a href="#成员主机加入域" class="headerlink" title="成员主机加入域"></a>成员主机加入域</h2><h3 id="windows-7"><a href="#windows-7" class="headerlink" title="windows 7"></a>windows 7</h3><h4 id="1-配置静态ip（dns地址需要有一个是-域控的ip）"><a href="#1-配置静态ip（dns地址需要有一个是-域控的ip）" class="headerlink" title="1  配置静态ip（dns地址需要有一个是 域控的ip）"></a>1  配置静态ip（dns地址需要有一个是 域控的ip）</h4><h4 id="2-修改主机名"><a href="#2-修改主机名" class="headerlink" title="2  修改主机名"></a>2  修改主机名</h4><h4 id="3-加入域环境"><a href="#3-加入域环境" class="headerlink" title="3  加入域环境"></a>3  加入域环境</h4><p> 输入域控机器的用户名和密码</p>
+<h3 id="windows-server-2008"><a href="#windows-server-2008" class="headerlink" title="windows server 2008"></a>windows server 2008</h3><h4 id="1-配置静态ip"><a href="#1-配置静态ip" class="headerlink" title="1  配置静态ip"></a>1  配置静态ip</h4><h4 id="2-改主机名"><a href="#2-改主机名" class="headerlink" title="2  改主机名"></a>2  改主机名</h4><h4 id="3-加入域环境-1"><a href="#3-加入域环境-1" class="headerlink" title="3 加入域环境"></a>3 加入域环境</h4><h2 id="成员主机入域后，用户发生了什么变化"><a href="#成员主机入域后，用户发生了什么变化" class="headerlink" title="成员主机入域后，用户发生了什么变化"></a>成员主机入域后，用户发生了什么变化</h2><p>系统原有的工作组用户，无变化，成员入域后依然可以登录到本地的工作组 主机名\用户名 ，如 PC1-windows7\administrator 简写 .\administrator</p>
+<p>成员主机也可以登录域用户 域名\用户名 ，如 baidu.com\administrator</p>
+<h2 id="域环境基础操作"><a href="#域环境基础操作" class="headerlink" title="域环境基础操作"></a>域环境基础操作</h2><h2 id="computers-容器"><a href="#computers-容器" class="headerlink" title="computers 容器"></a>computers 容器</h2><p>保存了成员主机的信息</p>
+<h2 id="user-容器"><a href="#user-容器" class="headerlink" title="user 容器"></a>user 容器</h2><h3 id="新建一个普通的域用户"><a href="#新建一个普通的域用户" class="headerlink" title="新建一个普通的域用户"></a>新建一个普通的域用户</h3><p>用户名：user01</p>
+<p>密码：<code>1qaz@WSX</code></p>
+<p> 普通域用户，成员主机可以登录</p>
+<h3 id="新建一个域管理员用户"><a href="#新建一个域管理员用户" class="headerlink" title="新建一个域管理员用户"></a>新建一个域管理员用户</h3><p>用户名：admin01</p>
+<p>密码：1qaz@WSX3edc</p>
+<h2 id="域环境信息收集"><a href="#域环境信息收集" class="headerlink" title="域环境信息收集"></a>域环境信息收集</h2><h3 id="判断是否是域环境"><a href="#判断是否是域环境" class="headerlink" title="判断是否是域环境"></a>判断是否是域环境</h3><p>用户名判断 ： 域名\用户名</p>
+<p> ipconfig &#x2F;all 判断：域环境会直接看到域名</p>
+<h3 id="用户信息"><a href="#用户信息" class="headerlink" title="用户信息"></a>用户信息</h3><h4 id="查看域用户"><a href="#查看域用户" class="headerlink" title="查看域用户"></a>查看域用户</h4><p><code>net  user  /domain</code></p>
+<h4 id="查看域用户组"><a href="#查看域用户组" class="headerlink" title="查看域用户组"></a>查看域用户组</h4><p><code>net  group  /domain</code></p>
+<h4 id="查看成员主机"><a href="#查看成员主机" class="headerlink" title="查看成员主机"></a>查看成员主机</h4><p><code>net group &quot;domain computers&quot; /domain </code></p>
+<h4 id="查看域控"><a href="#查看域控" class="headerlink" title="查看域控"></a>查看域控</h4><p><code>net  group  &quot;domain  controllers&quot;  /domain </code></p>
+<h4 id="查看域管理员用户"><a href="#查看域管理员用户" class="headerlink" title="查看域管理员用户"></a>查看域管理员用户</h4><p> <code>net group &quot;domain admins&quot; /domain  </code></p>
+<h4 id="查看当前用户是否是域管理员-（是否在域管理员用户组中）"><a href="#查看当前用户是否是域管理员-（是否在域管理员用户组中）" class="headerlink" title="查看当前用户是否是域管理员 （是否在域管理员用户组中）"></a>查看当前用户是否是域管理员 （是否在域管理员用户组中）</h4><p> <code>net user 用户名 /domain  </code></p>
+<h3 id="定位域控"><a href="#定位域控" class="headerlink" title="定位域控"></a>定位域控</h3><h4 id="1-ping-域名-nslookup-域名"><a href="#1-ping-域名-nslookup-域名" class="headerlink" title="1 ping 域名 &#x2F; nslookup 域名"></a>1 ping 域名 &#x2F; nslookup 域名</h4><h4 id="2-dns-地址"><a href="#2-dns-地址" class="headerlink" title="2 dns 地址"></a>2 dns 地址</h4><p>不标准：域控和DNS服务在同一台主机中才行，而实际中，域控和 DNS是分开的，判断就会有误差</p>
+<h4 id="3-ldap-查询"><a href="#3-ldap-查询" class="headerlink" title="3 ldap 查询"></a>3 ldap 查询</h4><p> <code>nslookup  _LDAP._TCP.dc._msdcs.域名  </code></p>
+<h4 id="4-spn-查询"><a href="#4-spn-查询" class="headerlink" title="4 spn 查询"></a>4 spn 查询</h4><p>spn 服务主体名称，域环境中只有注册了spn的服务才会使用 kerberos 认证，否则会被降级为网络认证</p>
+<p>spn 会有自己的名字，如 host 是 smb服务、 termsrv 是 rdp 服务</p>
+<table>
+<thead>
+<tr>
+<th><strong>服务类型 (Service Class)</strong></th>
+<th><strong>对应功能&#x2F;服务名称</strong></th>
+<th><strong>典型用途</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>HOST</strong></td>
+<td>核心宿主服务</td>
+<td>涵盖 SMB、注册表访问、受限委派等，是默认的“全能”SPN。</td>
+</tr>
+<tr>
+<td><strong>TERMSRV</strong></td>
+<td>远程桌面服务 (RDP)</td>
+<td>用于通过 Kerberos 验证的远程桌面连接。</td>
+</tr>
+<tr>
+<td><strong>MSSQLSvc</strong></td>
+<td>Microsoft SQL Server</td>
+<td>数据库服务的 Kerberos 身份验证（需指定端口）。</td>
+</tr>
+<tr>
+<td><strong>HTTP</strong></td>
+<td>Web 服务 &#x2F; WinRM</td>
+<td>用于 IIS 网站、WS-Management (PowerShell Remoting) 或 SSRS。</td>
+</tr>
+<tr>
+<td><strong>CIFS</strong></td>
+<td>通用互联网文件系统</td>
+<td>专门用于 SMB 共享（通常在 HOST 下已包含，但 NAS 设备常显式映射）。</td>
+</tr>
+<tr>
+<td><strong>LDAP</strong></td>
+<td>轻量级目录访问协议</td>
+<td>域控制器上的目录服务。</td>
+</tr>
+<tr>
+<td><strong>GC</strong></td>
+<td>全局编录 (Global Catalog)</td>
+<td>域控跨域查询服务。</td>
+</tr>
+<tr>
+<td><strong>DNS</strong></td>
+<td>域名系统</td>
+<td>域控提供的 DNS 解析服务。</td>
+</tr>
+<tr>
+<td><strong>WSMAN</strong></td>
+<td>Windows 远程管理</td>
+<td>WinRM 服务的另一种表现形式。</td>
+</tr>
+<tr>
+<td><strong>RestrictedKrbHost</strong></td>
+<td>受限 Kerberos 宿主</td>
+<td>用于不支持完全主机 SPN 的受限场景。</td>
+</tr>
+<tr>
+<td><strong>ExchangeMDB</strong></td>
+<td>Exchange 数据库服务</td>
+<td>企业邮箱 Exchange Server 相关服务。</td>
+</tr>
+<tr>
+<td><strong>MAPSRVC</strong></td>
+<td>微软安装程序服务</td>
+<td>软件分发与管理。</td>
+</tr>
+</tbody></table>
+<h3 id="域环境密码凭证获取"><a href="#域环境密码凭证获取" class="headerlink" title="域环境密码凭证获取"></a>域环境密码凭证获取</h3><h4 id="域管读取ntds-dit"><a href="#域管读取ntds-dit" class="headerlink" title="域管读取ntds.dit"></a>域管读取ntds.dit</h4><p>前提：登录域管理员</p>
+<p><strong>C:\Windows\NTDS\ntds.dit</strong></p>
+<p><code>**lsadump::dcsync /all /csv**</code></p>
+<h5 id="dcsync-域控同步服务"><a href="#dcsync-域控同步服务" class="headerlink" title="dcsync 域控同步服务"></a>dcsync 域控同步服务</h5><h4 id="域控读取ntds-dt"><a href="#域控读取ntds-dt" class="headerlink" title="域控读取ntds.dt"></a>域控读取ntds.dt</h4><p><strong>前提: 登录到域控</strong></p>
+<p>**vss 服务：volume shadow copy service 卷影复制服务。用于windows备份、windows还原点  **</p>
+<h5 id="1-为域控的c盘创建一个副本（快照）"><a href="#1-为域控的c盘创建一个副本（快照）" class="headerlink" title="1 为域控的c盘创建一个副本（快照）"></a>1 为域控的c盘创建一个副本（快照）</h5><p><code>**vssadmin create shadow /for=c:**</code></p>
+<p><code>\\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1</code></p>
+<h5 id="2-从副本中把ntds-dit复制出来"><a href="#2-从副本中把ntds-dit复制出来" class="headerlink" title="2 从副本中把ntds.dit复制出来"></a>2 从副本中把ntds.dit复制出来</h5><p><code>copy   \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\ windows\ntds\ntds.dit   C:\ntds.dit</code></p>
+<h5 id="3-导出为-system-文件"><a href="#3-导出为-system-文件" class="headerlink" title="3 导出为 system 文件"></a>3 导出为 system 文件</h5><p><code>reg  save  HKLM\system  C:\system</code></p>
+<p><code>**secretsdump.exe -system system -ntds ntds.dit LOCAL**</code></p>
+<h5 id="4-把system文件和ntds-dit都传输到攻击机"><a href="#4-把system文件和ntds-dit都传输到攻击机" class="headerlink" title="4 把system文件和ntds.dit都传输到攻击机"></a>4 把system文件和ntds.dit都传输到攻击机</h5><hr>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/"><span>域渗透</span></a>
+          
+            <a href="/tags/AD/"><span>AD</span></a>
+          
+            <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"><span>环境搭建</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/hexo-setup-optimized/">
+            <span>← 上一篇</span>
+            <strong>如何搭建 Hexo 博客 - 完整教程</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/persistence-techniques/">
+            <span>下一篇 →</span>
+            <strong>权限维持</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

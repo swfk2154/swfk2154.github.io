@@ -362,6 +362,13 @@ html[data-theme="dark"] .theme-toggle__sun { opacity: 1; rotate: 0deg; scale: 1;
   font-size: 0.72rem; font-weight: 700;
 }
 .term-list a:hover small { background: var(--surface); color: var(--brand); }
+.term-list a.cat-child {
+  margin-left: 1.1rem;
+  background: transparent; border-style: dashed;
+  font-weight: 500; color: var(--text-muted);
+}
+.term-list a.cat-child small { background: transparent; }
+.term-list a.cat-child:hover { color: var(--brand); background: var(--accent-soft); }
 
 /* ---------- 归档 ---------- */
 .archive-page { width: 100%; margin: 0 auto; }

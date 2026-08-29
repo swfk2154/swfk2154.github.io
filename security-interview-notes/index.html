@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>安全岗位面试实录 - swfk 的安全笔记</title>
+<meta name="description" content="一线安全岗真实面试问答复盘：CTF、Python、小程序漏洞、应急响应与渗透思路的表达方式。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/security-interview-notes/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安全岗位面试实录 - swfk 的安全笔记">
+<meta property="og:description" content="一线安全岗真实面试问答复盘：CTF、Python、小程序漏洞、应急响应与渗透思路的表达方式。">
+<meta property="og:url" content="https://blogbu2154.site/security-interview-notes/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/11.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article ">
+  <div class="article__body">
+    
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>安全岗位面试实录</h1>
+        <div class="post-meta">
+          <time datetime="2026-02-15">2026-02-15</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/11.jpg" alt="安全岗位面试实录" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<p>1 你打过CTF 比赛吗</p>
+<p>没有，刷过CTF的题</p>
+<p>2 刷过CTF 方面的题，是什么方向的，在哪些平台刷题的，有哪些平台</p>
+<p>Web方向的题</p>
+<p>平台：CTFHub，攻防世界</p>
+<p>3 你熟悉那些编程语言</p>
+<p>python语言</p>
+<p>4 Python 是干什么的，主要是在哪方面</p>
+<p> python是解释型语言，在脚本，爬虫方面应用偏多</p>
+<p>5 Python 的虚拟环境怎么管理，用什么工具</p>
+<p>conda 工具</p>
+<p>6 讲一讲微信小程序的漏洞</p>
+<p>在微信小程序中，我通过 解包主包与子包（wxapkg）,可以寻找到appsecret 泄露，通过这个我可以访问 小程序的任意接口</p>
+<p>7 找到appsecret 之后，访问哪些接口来证明危害</p>
+<p>访问客服接口伪造成客服人员，访问员工&#x2F;客户管理接口 窃取敏感信息</p>
+<p>8 偏向于渗透测试 还是安全运维</p>
+<p>安全运维</p>
+<p>9 讲一下安全运维的工作职责是什么</p>
+<p>我认为是对设备的维护与升级，及时打漏洞补丁，了解设备的用途与作用</p>
+<p>10 用过哪些安全设备</p>
+<p>了解过下一代防火墙</p>
+<p>11 下一代防火墙，它有什么用途，哪家的产品</p>
+<p>下一代防火墙是对应用数据的监控 可以识别具体的应用，防御SQL注入攻击等，奇安信的</p>
+<p>12 部署过下一代防火墙吗，下一代防火墙的部署模式是什么</p>
+<p>没有，不了解</p>
+<p>部署模式：网关模式，透明模式，旁路模式，高可用模式</p>
+<p>13 旁路由了解过吗，VPN 了解过吗，有没有部署过VPN，实际部署过哪些产品</p>
+<p>不了解，VPN是虚拟专用网 用来加密数据，没部署过</p>
+<p> 旁路由  ： 不作为主网关，而是“旁边辅助处理部分流量”的路由设备</p>
+<p>14 什么是 IPS，IDS 有什么作用</p>
+<p>IPS：入侵防御系统   可以在检测到攻击后实时拦截数据包</p>
+<p>IDS：入侵检测系统  主要用于监控和告警，不阻断攻击</p>
+<p>15  什么叫做从终端部署详细描述一下，从终端部署就是你用过哪些厂商的IDS、IPS</p>
+<p>不了解</p>
+<p> 什么是终端部署 ： 把安全系统直接安装在每一台终端设备上，由终端自己负责检测和防御攻击</p>
+<p>16 有没有了解过长期安全设备的漏洞，深信服VPN的漏洞，有没有了解过自己的一个还没有去看前沿性的这个防火墙的漏洞？有没有了解过。如果就是你在护网期间或工作期间，某一个防火墙出现了一个漏洞，现在有了一个补丁，你怎么去配置这个补丁，怎么去修补？</p>
+<p>不了解，我通常会看官方文档来操作</p>
+<p>17 路由器熟悉吗？路由器两种路由器常用的操作系统是什么？</p>
+<p>不了解</p>
+<p> 常见的路由器操作系统包括商业厂商的 Cisco IOS、华为 VRP</p>
+<p> 开源系统 OpenWrt 和 MikroTik RouterOS</p>
+<p> 企业级网络多使用 Cisco 和华为系统，而实验环境或中小企业常用 OpenWrt 或 RouterOS</p>
+<p>18 windows可以做路由器的操作系统吗？我看了一下，你还了解过很多云服务，你能讲一下这个CDN吗？CDN是什么？</p>
+<p>可以做路由器的操作系统（不常用：性能低、不稳定、不安全、功能受限）</p>
+<p>CDN 是内容网络分发</p>
+<p>19 用过哪些厂家的CDN</p>
+<p>阿里的</p>
+<p>20 阿里的cdn是吧，讲一下阿里的CDN怎么去配置。</p>
+<p>我一般是参考官方说明去配置，具体操作不记得了</p>
+<p>21 你有用过堡垒机吗？哪家的产品</p>
+<p>堡垒机：运维统一管理平台  ，绿盟</p>
+<p>22 绿盟的堡垒机如何添加一个SSH资产</p>
+<p>不了解</p>
+<p>23 堡垒机如何去连接它相应的服务器</p>
+<p>不了解</p>
+<p>24 怎么规划这个资产，怎么去配置</p>
+<p>不了解</p>
+<p>25 有实际做过运维工作吗？或者是了解过运维工作，去了解过程，有没有接触过企业的主管</p>
+<p>没有</p>
+<p>26 一个企业，它的一个DMZ应该配置哪些防护设备和防护措施</p>
+<p>不清楚</p>
+<p> DMZ  是企业网络中：对外提供服务，但与内网隔离的安全缓冲区（ 外网不能直接访问内网，<br>先进入 DMZ，再通过严格控制访问内网  ）</p>
+<p>27 你能说一下什么叫做边缘服务吗？有没有在运维工作中实际配置或者是使用过边缘服务？</p>
+<p>不了解</p>
+<p> 边缘服务  ：在靠近用户或数据源的网络边缘提供的服务，用于加速响应、减少延迟、提升安全和可用性</p>
+<p>28 submit，有了解过吗？</p>
+<p>不了解</p>
+<p> submit 在 Web 前端中表示“提交表单”，可以是用户点击 submit 按钮，也可以通过 JavaScript 的 <code>form.submit()</code> 方法触发。它会将表单数据发送到服务器，常用 POST 或 GET 方法。在安全角度，需要注意 SQL 注入、XSS、CSRF 等风险</p>
+<p>29 我看了一下你熟悉linux的命令，对吧？你linux的这个命令，我问一问，这个linux的网络配置，我想问一下linux这个配置DNS配过吧？说一下Ubuntu怎么配置DNS地址</p>
+<p>&#x2F;etc&#x2F;netplan&#x2F;01-network-manager-all.yaml 下修改，配置想要修改的DNS，一般我会选择阿里的DNS</p>
+<p>30 阿里的DNS, 它一般情况下这个迭代查询跟递归查询的区别有什么，DNS是明文传输的还是加密传输的</p>
+<p>忘了，加密的</p>
+<p> 递归查询  ： 通常是 本地 DNS 客户端&#x2F;本地解析器</p>
+<p>** **迭代查询 ** ： **通常是 DNS 服务器之间</p>
+<p> 传统 DNS 是明文传输，但阿里公共 DNS 也支持 DNS over TLS 或 DNS over HTTPS 进行加密查询，以提高安全性</p>
+<p>31 企业中配置上网行为管理，那这个DNS这个部分我们要有哪些限制</p>
+<p>不了解</p>
+<p> 强制使用企业 DNS  、 拦截公共 DNS  、 配置黑白名单  、 日志与监控</p>
+<p>32 有分析过流量吗。wireshark有用过吗</p>
+<p>没有</p>
+<p>33 有了解HTTPS的原理，你说一说HTTPS的原理</p>
+<p> HTTPS 是在 HTTP 基础上通过 TLS&#x2F;SSL 加密传输，保证数据机密性、完整性和身份认证。客户端访问服务器时，先进行 TLS 握手，服务器提供数字证书验证身份，双方通过非对称加密交换对称会话密钥，然后使用对称加密进行数据传输。TLS 1.3 进一步优化握手，减少延迟并提高安全性</p>
+<p>34 HTTPS分析过吗，分析的是HTTPS的哪一个版本</p>
+<p>HTTP 2.0</p>
+<p>35 你都是用过哪些大模型</p>
+<p>ChatGPT5.2、Gemini3</p>
+<p>36 有没有使用过code x的codex?</p>
+<p>没有</p>
+<p>37 结合大模型编写过shell脚本来辅助工作，提高效率。你能讲一讲你是用了什么大模型，使用了什么样的工具，编写了什么样的shell, 脚本，如何提高工作效率的，详细说一说</p>
+<p>结合AI编写给Linux系统换源的脚本</p>
+<p>38 一般情况下，这些国内的IPT源地址中都有设置一键配置 源的功能，那为什么还要去问大模型呢？能不能举一个你是如何提高工作效率的场景？</p>
+<p>编写漏洞攻击脚本，漏洞检测脚本</p>
+<p>我会把我所需要的各种信息，以及我所处在环境是什么给AI，告诉AI我正在做CTF题，进行简单的绕过</p>
+<p>39 你了解过前端加密和前端签名和破解加密，你能讲一下前端加密的作用和前端签名的作用吗？</p>
+<p>前端加密  ： 保护数据的<strong>私密性</strong>，防止敏感信息在传输过程中或在日志中以明文形式暴露</p>
+<p>前端签名 ： 保证数据的<strong>完整性</strong>和<strong>不可否认性</strong>，防止请求被篡改（防篡改）</p>
+<p>40 信息收集都收集哪些信息？</p>
+<p>主域名与子域名信息收集，IP信息收集，企业资源信息收集</p>
+<p>41 你说一下nmap怎么调用它的脚本</p>
+<p> 使用 <code>--script</code> 指定脚本</p>
+<p>42 了解过反序列化漏洞的产生原因吗？</p>
+<p>用户可以通过 HTTP、或其他网络协议向服务器发送任意的序列化字符串或字节码，服务器未经严格验证就进行了反序列化</p>
+<p>43 用java chains讲一下这个java反序列化漏洞的产生原因</p>
+<p> Java 反序列化漏洞的产生，核心是程序反序列化了来自不可信来源的对象，触发了对象中的魔术方法和依赖库中的 Gadget Chain，最终导致攻击者能够执行任意代码</p>
+<p>44 说一下CB 链</p>
+<p>CB 链依赖 Commons-BeanUtils，通过 BeanComparator 或 PropertyUtilsBean 的方法链触发执行</p>
+<p>CB 链不依赖特定的 CC 版本（CC3.1 或 4.0），只要目标环境有 <code>commons-beanutils</code> 且没有对 <code>BeanComparator</code> 做黑名单防御，成功率极高</p>
+<p>45 个人评价里面有写愿意主动学习新知识，最近学习了什么新知识？举个例子</p>
+<p>了解过最近比较火的openclaw</p>
+<p>46 Agent有了解过吗？</p>
+<p>AI 智能体</p>
+<p>47 说一个你印象最深刻的智能体，介绍一下他你如何使用的辅助，你做了什么事情。他主要就是可以帮助我进行工作，进行什么工作。</p>
+<p>我用它帮我检测数据，搜集敏感信息</p>
+<p>48 主要就是监控进行分析流量，对吧？监测流量好吧，你是监测了，你监测了当时有什么成果，出了什么成果</p>
+<p>没有成果</p>
+<p>49 你是河北的是吧？为什么要来上海？</p>
+<p>上海的互联网环境，政策比较好</p>
+<p>50  哪些政策，了解过吗？</p>
+<p>没有</p>
+<p>51 这三个城市你在选择上有什么优先级吗？或者是说你主要考虑哪些因素查询</p>
+<p>优先选择北京，离家比较近</p>
+<p>52 地理趋势是你选择这个工作意向城市的标准是吧？</p>
+<p>标准之一吧</p>
+<p>53 如果就是你在北京，我们这个岗位就是经常安抚，经常出差。我们有可能会在南方，比如说一些南宁、广州，我们有的时候给甲方去部署一些设备，做一些渗透。要在两三个月，你能接受吗？</p>
+<p> 可以</p>
+<p>54 你接受的原因是什么</p>
+<p>时间不长，可以开阔自己的视野</p>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/%E9%9D%A2%E8%AF%95/"><span>面试</span></a>
+          
+            <a href="/tags/%E5%AE%89%E5%85%A8%E5%B2%97/"><span>安全岗</span></a>
+          
+            <a href="/tags/%E6%B1%82%E8%81%8C/"><span>求职</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/ai-concepts/">
+            <span>← 上一篇</span>
+            <strong>AI 入门必看！一篇文章搞懂 LLM、Token、Prompt、Context、Agent、Tool、Workflow、RAG、Embedding</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/red-blue-teaming/">
+            <span>下一篇 →</span>
+            <strong>红蓝对抗</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

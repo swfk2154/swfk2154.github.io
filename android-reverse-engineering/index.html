@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>安卓逆向学习笔记 - swfk 的安全笔记</title>
+<meta name="description" content="APK 结构、反编译工具链、Frida 动态调试与 Log 插桩，以及去广告、VIP 分析的实战记录。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/android-reverse-engineering/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安卓逆向学习笔记 - swfk 的安全笔记">
+<meta property="og:description" content="APK 结构、反编译工具链、Frida 动态调试与 Log 插桩，以及去广告、VIP 分析的实战记录。">
+<meta property="og:url" content="https://blogbu2154.site/android-reverse-engineering/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/14.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9AAPK-%E7%BB%93%E6%9E%84%E4%B8%8E%E5%9F%BA%E7%A1%80"><span class="toc-text">第一部分：APK 结构与基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Apk%E7%BB%93%E6%9E%84"><span class="toc-text">Apk结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E5%BC%80%E5%8F%8A%E5%8E%9F%E7%90%86"><span class="toc-text">双开及原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%89%E5%8C%96APK"><span class="toc-text">汉化APK</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-text">流程图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E8%AF%86AndroidManifest-xml"><span class="toc-text">初识AndroidManifest.xml</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%EF%BC%9A%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E4%B8%8E-Log-%E6%8F%92%E6%A1%A9"><span class="toc-text">第二部分：动态调试与 Log 插桩</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95"><span class="toc-text">什么是动态调试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%AD%A5%E9%AA%A4"><span class="toc-text">动态调试步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9debug%E6%9D%83%E9%99%90"><span class="toc-text">修改debug权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91%E4%BB%A5%E5%8F%8A%E5%BC%80%E5%90%AFadb%E6%9D%83%E9%99%90"><span class="toc-text">端口转发以及开启adb权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8B%E6%AE%B5%E7%82%B9"><span class="toc-text">下段点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#debug%E6%A8%A1%E5%BC%8F%E5%90%AF%E5%8A%A8"><span class="toc-text">debug模式启动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Jeb%E9%99%84%E5%8A%A0%E8%B0%83%E8%AF%95%E8%BF%9B%E7%A8%8B"><span class="toc-text">Jeb附加调试进程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Log%E6%8F%92%E6%A1%A9"><span class="toc-text">Log插桩</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E9%83%A8%E5%88%86%EF%BC%9A%E5%8E%BB%E9%99%A4%E5%B9%BF%E5%91%8A"><span class="toc-text">第三部分：去除广告</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%BF%E5%91%8A%E7%B1%BB%E5%9E%8B"><span class="toc-text">广告类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%8D%93%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6"><span class="toc-text">安卓四大组件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#activity%E7%9A%84%E5%88%87%E6%8D%A2"><span class="toc-text">activity的切换</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Activity%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-text">Activity生命周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%B9%E7%AA%97%E5%AE%9A%E4%BD%8D-%E5%A0%86%E6%A0%88%E5%88%86%E6%9E%90"><span class="toc-text">弹窗定位&amp;堆栈分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%83%E5%B1%80%E4%BC%98%E5%8C%96"><span class="toc-text">布局优化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E9%83%A8%E5%88%86%EF%BC%9A%E5%AE%9E%E6%88%98%EF%BC%9AVIP-%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90"><span class="toc-text">第四部分：实战：VIP 功能分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFJVM%E3%80%81Dalvik%E3%80%81ART"><span class="toc-text">什么是JVM、Dalvik、ART</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#smali%E5%8F%8A%E5%85%B6%E8%AF%AD%E6%B3%95"><span class="toc-text">smali及其语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-text">寄存器</span></a></li></ol></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>安卓逆向学习笔记</h1>
+        <div class="post-meta">
+          <time datetime="2026-03-26">2026-03-26</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/14.jpg" alt="安卓逆向学习笔记" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<hr>
+<h2 id="第一部分：APK-结构与基础"><a href="#第一部分：APK-结构与基础" class="headerlink" title="第一部分：APK 结构与基础"></a>第一部分：APK 结构与基础</h2><h3 id="Apk结构"><a href="#Apk结构" class="headerlink" title="Apk结构"></a>Apk结构</h3><p> apk全称Android Package，它相当于一个压缩文件，只要在电脑上将apk后缀改为rar即可解压</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>assets目录</td>
+<td>存放APK的静态资源文件，比如视频、音频、图片等</td>
+</tr>
+<tr>
+<td>lib目录</td>
+<td>armeabi-v7a基本通用所有android设备，arm64-v8a只适用于64位的android设备，x86常见用于android模拟器，其目录下的.so文件是c或c++编译的动态链接库文件</td>
+</tr>
+<tr>
+<td>META-INF目录</td>
+<td>保存应用的签名信息，签名信息可以验证APK文件的完整性，相当于APK的身份证（验证文件是否又被修改）</td>
+</tr>
+<tr>
+<td>res目录</td>
+<td>res目录存放资源文件，包括图片、字符串等，APK的脸蛋由他的layout文件设计</td>
+</tr>
+<tr>
+<td>AndroidManifest.xml文件</td>
+<td>APK的应用清单信息，它描述了应用的名字、版本、权限、引用的库文件等信息</td>
+</tr>
+<tr>
+<td>classes.dex文件</td>
+<td>classes.dex是java源码编译后生成的java字节码文件，APK运行的主要逻辑</td>
+</tr>
+<tr>
+<td>resources.arsc文件</td>
+<td>resources.arsc是编译后的二进制资源文件，它是一个映射表，映射着资源和id，通过R文件中的id就可以找到对应的资源</td>
+</tr>
+</tbody></table>
+<h3 id="双开及原理"><a href="#双开及原理" class="headerlink" title="双开及原理"></a>双开及原理</h3><p> 双开：简单来说，就是手机同时运行两个或多个相同的应用，例如同时运行两个微信</p>
+<table>
+<thead>
+<tr>
+<th>原理</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>修改包名</td>
+<td>让手机系统认为这是2个APP，这样的话就能生成2个数据存储路径，此时的多开就等于你打开了两个互不干扰的APP</td>
+</tr>
+<tr>
+<td>修改Framework</td>
+<td>对于有系统修改权限的厂商，可以修改Framework来实现双开的目的，例如：小米自带多开</td>
+</tr>
+<tr>
+<td>通过虚拟化技术实现</td>
+<td>虚拟Framework层、虚拟文件系统、模拟Android对组件的管理、虚拟应用进程管理 等一整套虚拟技术，将APK复制一份到虚拟空间中运行，例如：平行空间</td>
+</tr>
+<tr>
+<td>以插件机制运行</td>
+<td>利用反射替换，动态代{过}{滤}理，hook了系统的大部分与system—server进程通讯的函数，以此作为“欺上瞒下”的目的，欺骗系统“以为”只有一个apk在运行，瞒过插件让其“认为”自己已经安装。例如：VirtualApp</td>
+</tr>
+</tbody></table>
+<h3 id="汉化APK"><a href="#汉化APK" class="headerlink" title="汉化APK"></a>汉化APK</h3><p> 汉化：使用专门的工具对外文版的软件资源进行读取、翻译、修改、回写等一系列处理，使软件的菜单、对话框、提示等用户界面显示为中文，而程序的内核和功能保持不变，这个过程即为软件汉化</p>
+<p>**基本上字符串都是在arsc里，建议一键汉化，然后再润色。<br>**<strong>少量没汉化到的字符串参考视频中的方法定位去逐个汉化</strong></p>
+<h4 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a><strong>流程图</strong></h4><p> 这里还需要注意的是，如果要直装应用，那就应该先签名安装，看看是否有签名校验导致的闪退</p>
+<h3 id="初识AndroidManifest-xml"><a href="#初识AndroidManifest-xml" class="headerlink" title="初识AndroidManifest.xml"></a>初识AndroidManifest.xml</h3><p> AndroidManifest.xml文件是整个应用程序的信息描述文件，定义了应用程序中包含的Activity,Service,Content provider和BroadcastReceiver组件信息。每个应用程序在根目录下必须包含一个AndroidManifest.xml文件，且文件名不能修改。它描述了package中暴露的组件，他们各自的实现类，各种能被处理的数据和启动位置。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>定义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>versionCode</td>
+<td>版本号，主要用来更新，例如:12</td>
+</tr>
+<tr>
+<td>versionName</td>
+<td>版本名，给用户看的，例如:1.2</td>
+</tr>
+<tr>
+<td>package</td>
+<td>包名，例如：com.zj.52pj.demo</td>
+</tr>
+<tr>
+<td>uses-permission android:name&#x3D;””</td>
+<td>应用权限，例如：android.permission.INTERNET 代表网络权限</td>
+</tr>
+<tr>
+<td>android:label&#x3D;”@string&#x2F;app_name”</td>
+<td>应用名称</td>
+</tr>
+<tr>
+<td>android:icon&#x3D;”@mipmap&#x2F;ic_launcher”</td>
+<td>应用图标路径</td>
+</tr>
+<tr>
+<td>android:debuggable&#x3D;”true”</td>
+<td>应用是否开启debug权限</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="第二部分：动态调试与-Log-插桩"><a href="#第二部分：动态调试与-Log-插桩" class="headerlink" title="第二部分：动态调试与 Log 插桩"></a>第二部分：动态调试与 Log 插桩</h2><h3 id="什么是动态调试"><a href="#什么是动态调试" class="headerlink" title="什么是动态调试"></a>什么是动态调试</h3><p> 动态调试是指自带的调试器跟踪自己软件的运行，可以在调试的过程中知道参数或者局部变量的值以及履清代码运行的先后顺序。多用于爆破注册码(CTF必备技能)</p>
+<h3 id="动态调试步骤"><a href="#动态调试步骤" class="headerlink" title="动态调试步骤"></a>动态调试步骤</h3><h4 id="修改debug权限"><a href="#修改debug权限" class="headerlink" title="修改debug权限"></a>修改debug权限</h4><p> 方法一:在AndroidManifest.xml里添加可调试权限</p>
+<pre><code class="hljs python">android:debuggable=<span class="hljs-string">&quot;true&quot;</span></code></pre>
+
+<p> 方法二：XappDebug模块hook对应的app</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Palatis/XAppDebug">https://github.com/Palatis/XAppDebug</a></p>
+<p> 方法三：Magisk命令(重启失效)</p>
+<pre><code class="hljs python"><span class="hljs-number">1.</span>  adb shell <span class="hljs-comment">#adb进入命令行模式</span>
+
+<span class="hljs-number">2.</span>  su <span class="hljs-comment">#切换至超级用户</span>
+
+<span class="hljs-number">3.</span>  magisk resetprop ro.debuggable <span class="hljs-number">1</span>
+
+<span class="hljs-number">4.</span>  stop;start; <span class="hljs-comment">#一定要通过该方式重启</span></code></pre>
+
+<p> 方法四:刷入MagiskHide Props Config模块(永久有效)</p>
+<p> 一般来说，在4选项中如果有ro.debuggable那就直接修改<br>没有的话就选5</p>
+<p> 修改ro.debuggable的值为1</p>
+<h4 id="端口转发以及开启adb权限"><a href="#端口转发以及开启adb权限" class="headerlink" title="端口转发以及开启adb权限"></a>端口转发以及开启adb权限</h4><p>版本号点击七次开启开发者模式并开启adb调试权限</p>
+<p>夜神模拟器：adb connect 127.0.0.1:62001</p>
+<h4 id="下段点"><a href="#下段点" class="headerlink" title="下段点"></a>下段点</h4><p> ctrl+b下断点</p>
+<h4 id="debug模式启动"><a href="#debug模式启动" class="headerlink" title="debug模式启动"></a>debug模式启动</h4><pre><code class="hljs python">adb shell am start -D -n com.zj.wuaipojie/.ui.MainActivity</code></pre>
+
+<p>adb shell am start -D -n<br>adb shell am start -D -n 包名&#x2F;类名<br>am start -n 表示启动一个activity<br>am start -D 表示将应用设置为可调试模式</p>
+<h4 id="Jeb附加调试进程"><a href="#Jeb附加调试进程" class="headerlink" title="Jeb附加调试进程"></a>Jeb附加调试进程</h4><p>激活jeb</p>
+<p>在线python运行</p>
+<p><a target="_blank" rel="noopener" href="https://tool.lu/pyc/">https://tool.lu/pyc/</a></p>
+<p> 算号代码：</p>
+<pre><code class="hljs python"><span class="hljs-comment">#https://bbs.pediy.com/</span>
+<span class="hljs-comment">#!/usr/bin/env python</span>
+<span class="hljs-keyword">import</span> os, sys, struct, time, binascii, hashlib
+
+RC4_Key2= <span class="hljs-string">&#x27;Eg\xa2\x99_\x83\xf1\x10&#x27;</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">rc4</span>(<span class="hljs-params">Key, inData</span>):
+    Buf = <span class="hljs-string">&quot;&quot;</span>
+    S = <span class="hljs-built_in">range</span>(<span class="hljs-number">256</span>)
+    K = (<span class="hljs-built_in">map</span>(<span class="hljs-keyword">lambda</span> x:<span class="hljs-built_in">ord</span>(x), Key) * (<span class="hljs-number">256</span> / <span class="hljs-built_in">len</span>(Key) + <span class="hljs-number">1</span>))[:<span class="hljs-number">256</span>]
+    j = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">256</span>):
+        j = (S[i] + K[i] + j) % <span class="hljs-number">256</span>
+        S[i], S[j] = S[j], S[i]
+    i, j = <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(inData)):
+        i = (i + <span class="hljs-number">1</span>) % <span class="hljs-number">256</span>
+        j = (j + S[i]) % <span class="hljs-number">256</span>
+        S[i], S[j] = S[j], S[i]
+        Buf += <span class="hljs-built_in">chr</span>(S[(S[j] + S[i]) % <span class="hljs-number">256</span>] ^ <span class="hljs-built_in">ord</span>(inData[x]))
+    <span class="hljs-keyword">return</span> Buf
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">Long2Int</span>(<span class="hljs-params">longdata</span>):
+    lo = longdata &amp; <span class="hljs-number">0xFFFFFFFF</span>
+    hi = (longdata &gt;&gt; <span class="hljs-number">32</span>) &amp; <span class="hljs-number">0x7FFFFFFF</span>
+    <span class="hljs-keyword">return</span> hi, lo
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">KeygenSN</span>(<span class="hljs-params">LicenseSerial, MachineID</span>):
+    mhi, mlo = Long2Int(MachineID)
+    lhi, llo = Long2Int(LicenseSerial)
+    hi_Key = (mhi - lhi + <span class="hljs-number">0x55667788</span>) &amp; <span class="hljs-number">0x7FFFFFFF</span>
+    lo_Key = (mlo + llo + <span class="hljs-number">0x11223344</span>) &amp; <span class="hljs-number">0xFFFFFFFF</span>
+    Z0, = struct.unpack(<span class="hljs-string">&#x27;&lt;Q&#x27;</span>, struct.pack(<span class="hljs-string">&#x27;&lt;LL&#x27;</span>, lo_Key, hi_Key))
+    Z1 = <span class="hljs-built_in">int</span>(time.time()) ^ <span class="hljs-number">0x56739ACD</span>
+    s = <span class="hljs-built_in">sum</span>(<span class="hljs-built_in">map</span>(<span class="hljs-keyword">lambda</span> x:<span class="hljs-built_in">int</span>(x, <span class="hljs-number">16</span>), <span class="hljs-string">&quot;%x&quot;</span> % Z1)) % <span class="hljs-number">10</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;%dZ%d%d&quot;</span> % (Z0, Z1, s)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">ParsePost</span>(<span class="hljs-params">buf</span>):
+    Info = struct.unpack(<span class="hljs-string">&#x27;&lt;3L2Q4LQ3L&#x27;</span>, buf[:<span class="hljs-number">0x40</span>])
+    flag, CRC, UserSerial, LicenseSerial, MachineID, build_type, \
+          Ver_Major, Ver_Minor, Ver_Buildid, Ver_Timestamp, \
+          TimeOffset, Kclass, Random2 = Info
+    SysInfoData = buf[<span class="hljs-number">0x40</span>:]
+    <span class="hljs-keyword">assert</span> CRC == binascii.crc32(buf[<span class="hljs-number">8</span>:]) &amp; <span class="hljs-number">0xFFFFFFFF</span>
+    <span class="hljs-keyword">return</span> Info, SysInfoData
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">DecodeRc4Str</span>(<span class="hljs-params">buf</span>):
+    buf = buf.decode(<span class="hljs-string">&#x27;hex&#x27;</span>)
+    i, s = ParsePost(rc4(buf[:<span class="hljs-number">8</span>] + RC4_Key2, buf[<span class="hljs-number">8</span>:]))
+    <span class="hljs-keyword">return</span> i, s
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">GetJebLicenseKey</span>():
+    licdata = <span class="hljs-string">&quot;&quot;</span>
+    <span class="hljs-keyword">if</span> licdata:
+        i, MachineID = DecodeRc4Str(licdata)
+        SN = KeygenSN(i[<span class="hljs-number">3</span>], i[<span class="hljs-number">4</span>])
+        <span class="hljs-built_in">print</span> <span class="hljs-string">&quot;JEB License Key:&quot;</span>, SN
+        <span class="hljs-keyword">return</span> SN
+
+GetJebLicenseKey()
+raw_input(<span class="hljs-string">&quot;Enter to Exit...&quot;</span>)
+</code></pre>
+
+<p> 快捷键：<br>^F6进入方法<br>F6跳过方法<br>F7从方法中跳出来<br>R运行到光标处</p>
+<p>flag{54uZ5q2XDAUM}</p>
+<h3 id="Log插桩"><a href="#Log插桩" class="headerlink" title="Log插桩"></a>Log插桩</h3><p>定义：Log插桩指的是反编译APK文件时，在对应的smali文件里，添加相应的smali代码，将程序中的关键信息，以log日志的形式进行输出。</p>
+<p>调用命令</p>
+<pre><code class="hljs python">invoke-static &#123;对应寄存器&#125;, Lcom/mtools/LogUtils;-&gt;v(Ljava/lang/Object;)V</code></pre>
+
+<hr>
+<h2 id="第三部分：去除广告"><a href="#第三部分：去除广告" class="headerlink" title="第三部分：去除广告"></a>第三部分：去除广告</h2><h3 id="广告类型"><a href="#广告类型" class="headerlink" title="广告类型"></a>广告类型</h3><p> 启动广告     弹窗&amp;更新广告   横幅广告</p>
+<h3 id="安卓四大组件"><a href="#安卓四大组件" class="headerlink" title="安卓四大组件"></a>安卓四大组件</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Activity(活动)</td>
+<td>在应用中的一个Activity可以用来表示一个界面，意思可以理解为“活动”，即一个活动开始，代表 Activity组件启动，活动结束，代表一个Activity的生命周期结束。一个Android应用必须通过Activity来运行和启动，Activity的生命周期交给系统统一管理。</td>
+</tr>
+<tr>
+<td>Service(服务)</td>
+<td>Service它可以在后台执行长时间运行操作而没有用户界面的应用组件，不依赖任何用户界面，例如后台播放音乐，后台下载文件等。</td>
+</tr>
+<tr>
+<td>Broadcast Receiver(广播接收器)</td>
+<td>一个用于接收广播信息，并做出对应处理的组件。比如我们常见的系统广播：通知时区改变、电量低、用户改变了语言选项等。</td>
+</tr>
+<tr>
+<td>Content Provider(内容提供者)</td>
+<td>作为应用程序之间唯一的共享数据的途径，Content Provider主要的功能就是存储并检索数据以及向其他应用程序提供访问数据的接口。Android内置的许多数据都是使用Content Provider形式，供开发者调用的（如视频，音频，图片，通讯录等）</td>
+</tr>
+</tbody></table>
+<h4 id="activity的切换"><a href="#activity的切换" class="headerlink" title="activity的切换"></a>activity的切换</h4><pre><code class="hljs python">&lt;!---声明实现应用部分可视化界面的 Activity，必须使用 AndroidManifest 中的 &lt;activity&gt; 元素表示所有 Activity。系统不会识别和运行任何未进行声明的Activity。-----&gt;
+&lt;activity
+    android:label=<span class="hljs-string">&quot;@string/app_name&quot;</span>
+    android:name=<span class="hljs-string">&quot;com.zj.wuaipojie.ui.MainActivity&quot;</span>
+    android:exported=<span class="hljs-string">&quot;true&quot;</span>&gt;  &lt;!--当前Activity是否可以被另一个Application的组件启动：true允许被启动；false不允许被启动--&gt;
+    &lt;!---指明这个activity可以以什么样的意图(intent)启动---&gt;
+    &lt;intent-<span class="hljs-built_in">filter</span>&gt;
+        &lt;!--表示activity作为一个什么动作启动，android.intent.action.MAIN表示作为主activity启动---&gt;
+        &lt;action
+            android:name=<span class="hljs-string">&quot;android.intent.action.MAIN&quot;</span> /&gt;
+        &lt;!--这是action元素的额外类别信息，android.intent.category.LAUNCHER表示这个activity为当前应用程序优先级最高的Activity--&gt;
+        &lt;category
+            android:name=<span class="hljs-string">&quot;android.intent.category.LAUNCHER&quot;</span> /&gt;
+    &lt;/intent-<span class="hljs-built_in">filter</span>&gt;
+&lt;/activity&gt;
+&lt;activity
+    android:name=<span class="hljs-string">&quot;com.zj.wuaipojie.ui.ChallengeFirst&quot;</span> /&gt;
+&lt;activity
+    android:name=<span class="hljs-string">&quot;com.zj.wuaipojie.ui.ChallengeFifth&quot;</span>
+    android:exported=<span class="hljs-string">&quot;true&quot;</span> /&gt;
+&lt;activity
+    android:name=<span class="hljs-string">&quot;com.zj.wuaipojie.ui.ChallengeFourth&quot;</span>
+    android:exported=<span class="hljs-string">&quot;true&quot;</span> /&gt;
+&lt;activity
+    android:name=<span class="hljs-string">&quot;com.zj.wuaipojie.ui.ChallengeThird&quot;</span>
+    android:exported=<span class="hljs-string">&quot;false&quot;</span> /&gt;
+&lt;activity
+    android:name=<span class="hljs-string">&quot;com.zj.wuaipojie.ui.ChallengeSecond&quot;</span>
+    android:exported=<span class="hljs-string">&quot;false&quot;</span> /&gt;
+&lt;activity
+    android:name=<span class="hljs-string">&quot;com.zj.wuaipojie.ui.AdActivity&quot;</span> /&gt;</code></pre>
+
+<p>启动广告流程：<br>启动Activity-&gt;广告Activity-&gt;主页Activity</p>
+<p>修改方法：<br>1.修改加载时间<br>2.Acitivity切换定位，修改Intent的Activity类名</p>
+<pre><code class="hljs python">switch (position) &#123;
+    <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>:
+        Intent intent = new Intent();
+        intent.setClass(it.getContext(), ChallengeFirst.<span class="hljs-keyword">class</span>);
+        it.getContext().startActivity(intent);
+        <span class="hljs-keyword">return</span>;
+    <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+        Intent intent2 = new Intent();
+        intent2.setClass(it.getContext(), ChallengeSecond.<span class="hljs-keyword">class</span>);
+        it.getContext().startActivity(intent2);
+        <span class="hljs-keyword">return</span>;
+    <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+        Intent intent3 = new Intent();  //new一个Intent，
+        intent3.setClass(it.getContext(), AdActivity.<span class="hljs-keyword">class</span>);  //传入要切换的Acitivity的类名
+        it.getContext().startActivity(intent3);  //启动对应的Activity
+        <span class="hljs-keyword">return</span>;
+    <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>:
+        Intent intent4 = new Intent();
+        intent4.setClass(it.getContext(), ChallengeFourth.<span class="hljs-keyword">class</span>);
+        it.getContext().startActivity(intent4);
+        <span class="hljs-keyword">return</span>;
+    default:
+        <span class="hljs-keyword">return</span>;
+&#125;
+</code></pre>
+
+<h3 id="Activity生命周期"><a href="#Activity生命周期" class="headerlink" title="Activity生命周期"></a>Activity生命周期</h3><table>
+<thead>
+<tr>
+<th>函数名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>onCreate()</td>
+<td>一个Activity启动后第一个被调用的函数，常用来在此方法中进行Activity的一些初始化操作。例如创建View，绑定数据，注册监听，加载参数等。</td>
+</tr>
+<tr>
+<td>onStart()</td>
+<td>当Activity显示在屏幕上时，此方法被调用但此时还无法进行与用户的交互操作。</td>
+</tr>
+<tr>
+<td>onResume()</td>
+<td>这个方法在onStart()之后调用，也就是在Activity准备好与用户进行交互的时候调用，此时的Activity一定位于Activity栈顶，处于运行状态。</td>
+</tr>
+<tr>
+<td>onPause()</td>
+<td>这个方法是在系统准备去启动或者恢复另外一个Activity的时候调用，通常在这个方法中执行一些释放资源的方法，以及保存一些关键数据。</td>
+</tr>
+<tr>
+<td>onStop()</td>
+<td>这个方法是在Activity完全不可见的时候调用的。</td>
+</tr>
+<tr>
+<td>onDestroy()</td>
+<td>这个方法在Activity销毁之前调用，之后Activity的状态为销毁状态。</td>
+</tr>
+<tr>
+<td>onRestart()</td>
+<td>当Activity从停止stop状态恢进入start状态时调用状态。</td>
+</tr>
+</tbody></table>
+<h3 id="弹窗定位-堆栈分析"><a href="#弹窗定位-堆栈分析" class="headerlink" title="弹窗定位&amp;堆栈分析"></a>弹窗定位&amp;堆栈分析</h3><p> 修改方法：<br>1.修改xml中的versiocode<br>2.Hook弹窗(推荐算法助手开启弹窗定位)<br>3.修改dex弹窗代码<br>4.抓包修改响应体(也可以路由器拦截)</p>
+<h3 id="布局优化"><a href="#布局优化" class="headerlink" title="布局优化"></a>布局优化</h3><p> 1.开发者助手抓布局<br>2.MT管理器xml搜索定位<br>3.修改xml代码</p>
+<p><code>android:visibility=&quot;gone&quot;</code></p>
+<hr>
+<h2 id="第四部分：实战：VIP-功能分析"><a href="#第四部分：实战：VIP-功能分析" class="headerlink" title="第四部分：实战：VIP 功能分析"></a>第四部分：实战：VIP 功能分析</h2><h3 id="什么是JVM、Dalvik、ART"><a href="#什么是JVM、Dalvik、ART" class="headerlink" title="什么是JVM、Dalvik、ART"></a>什么是JVM、Dalvik、ART</h3><p> JVM是JAVA虚拟机，运行JAVA字节码程序<br>Dalvik是Google专门为Android设计的一个虚拟机，Dalvik有专属的文件执行格式dex(Dalvik executable)<br>Art(Android Runtime)相当于Dalvik的升级版，本质与Dalvik无异</p>
+<h3 id="smali及其语法"><a href="#smali及其语法" class="headerlink" title="smali及其语法"></a>smali及其语法</h3><p> smali是Dalvik的寄存器语言，smali代码是dex反编译而来的。</p>
+<p> 关键字</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.class</td>
+<td>类名</td>
+</tr>
+<tr>
+<td>.super</td>
+<td>父类名，继承的上级类名名称</td>
+</tr>
+<tr>
+<td>.source</td>
+<td>源名</td>
+</tr>
+<tr>
+<td>.field</td>
+<td>变量</td>
+</tr>
+<tr>
+<td>.method</td>
+<td>方法名</td>
+</tr>
+<tr>
+<td>.register</td>
+<td>寄存器</td>
+</tr>
+<tr>
+<td>.end method</td>
+<td>方法名的结束</td>
+</tr>
+<tr>
+<td>public</td>
+<td>公有</td>
+</tr>
+<tr>
+<td>protected</td>
+<td>半公开，只有同一家人才能用</td>
+</tr>
+<tr>
+<td>private</td>
+<td>私有，只能自己使用</td>
+</tr>
+<tr>
+<td>.parameter</td>
+<td>方法参数</td>
+</tr>
+<tr>
+<td>.prologue</td>
+<td>方法开始</td>
+</tr>
+<tr>
+<td>.line xxx</td>
+<td>位于第xxx行</td>
+</tr>
+</tbody></table>
+<p> 数据类型对应</p>
+<table>
+<thead>
+<tr>
+<th>smali类型</th>
+<th>java类型</th>
+<th>注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>V</td>
+<td>void</td>
+<td>无返回值</td>
+</tr>
+<tr>
+<td>Z</td>
+<td>boolean</td>
+<td>布尔值类型，返回0或1</td>
+</tr>
+<tr>
+<td>B</td>
+<td>byte</td>
+<td>字节类型，返回字节</td>
+</tr>
+<tr>
+<td>S</td>
+<td>short</td>
+<td>短整数类型，返回数字</td>
+</tr>
+<tr>
+<td>C</td>
+<td>char</td>
+<td>字符类型，返回字符</td>
+</tr>
+<tr>
+<td>I</td>
+<td>int</td>
+<td>整数类型，返回数字</td>
+</tr>
+<tr>
+<td>J</td>
+<td>long （64位 需要2个寄存器存储）</td>
+<td>长整数类型，返回数字</td>
+</tr>
+<tr>
+<td>F</td>
+<td>float</td>
+<td>单浮点类型，返回数字</td>
+</tr>
+<tr>
+<td>D</td>
+<td>double （64位 需要2个寄存器存储）</td>
+<td>双浮点类型，返回数字</td>
+</tr>
+<tr>
+<td>string</td>
+<td>String</td>
+<td>文本类型，返回字符串</td>
+</tr>
+<tr>
+<td>Lxxx&#x2F;xxx&#x2F;xxx</td>
+<td>object</td>
+<td>对象类型，返回对象</td>
+</tr>
+</tbody></table>
+<p> 常用指令</p>
+<table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>const</td>
+<td>重写整数属性，真假属性内容，只能是数字类型</td>
+</tr>
+<tr>
+<td>const-string</td>
+<td>重写字符串内容</td>
+</tr>
+<tr>
+<td>const-wide</td>
+<td>重写长整数类型，多用于修改到期时间。</td>
+</tr>
+<tr>
+<td>return</td>
+<td>返回指令</td>
+</tr>
+<tr>
+<td>if-eq</td>
+<td>全称equal(a&#x3D;b)，比较寄存器ab内容，相同则跳</td>
+</tr>
+<tr>
+<td>if-ne</td>
+<td>全称not equal(a!&#x3D;b)，ab内容不相同则跳</td>
+</tr>
+<tr>
+<td>if-eqz</td>
+<td>全称equal zero(a&#x3D;0)，z即是0的标记，a等于0则跳</td>
+</tr>
+<tr>
+<td>if-nez</td>
+<td>全称not equal zero(a!&#x3D;0)，a不等于0则跳</td>
+</tr>
+<tr>
+<td>if-ge</td>
+<td>全称greater equal(a&gt;&#x3D;b)，a大于或等于则跳</td>
+</tr>
+<tr>
+<td>if-le</td>
+<td>全称little equal(a&lt;&#x3D;b)，a小于或等于则跳</td>
+</tr>
+<tr>
+<td>goto</td>
+<td>强制跳到指定位置</td>
+</tr>
+<tr>
+<td>switch</td>
+<td>分支跳转，一般会有多个分支线，并根据指令跳转到适当位置</td>
+</tr>
+<tr>
+<td>iget</td>
+<td>获取寄存器数据</td>
+</tr>
+</tbody></table>
+<p> 其余指令可用语法工具查询</p>
+<p> 定位方法：搜索弹窗关键字、抓取按钮id</p>
+<p> 例子：</p>
+<pre><code class="hljs python">//一个私有、静态、不可变的方法   方法名
+.method private static final onCreate$<span class="hljs-keyword">lambda</span>-<span class="hljs-number">2</span>(Lkotlin/jvm/internal/Ref$IntRef;Lcom/zj/wuaipojie/ui/ChallengeSecond;Landroid/widget/ImageView;Landroid/widget/ImageView;Landroid/widget/ImageView;Landroid/view/View;)Z //(这里面是方法的参数)这里是方法返回值类型，表示布尔值类型，返回假或真
+    .registers <span class="hljs-number">7</span>  //寄存器数量
+
+    .line <span class="hljs-number">33</span>  //代码所在的行数
+    iget p0, p0, Lkotlin/jvm/internal/Ref$IntRef;-&gt;element:I  //读取p0(第一个参数，参考寄存器知识)中element的值赋值给p0
+
+    const/<span class="hljs-number">4</span> p5, <span class="hljs-number">0x1</span>  //p5赋值<span class="hljs-number">1</span>
+
+    const/<span class="hljs-number">16</span> v0, <span class="hljs-number">0xa</span> //v0赋值<span class="hljs-number">10</span>，在<span class="hljs-number">16</span>进制里a表示<span class="hljs-number">10</span>
+
+    <span class="hljs-keyword">if</span>-ge p0, v0, :cond_15  //判断p0的值是否大于或等于v0的值(即p0的值是否大于或等于<span class="hljs-number">10</span>)，如果大于或等于则跳转到:cond_15
+
+    .line <span class="hljs-number">34</span>  //以下是常见的Toast弹窗代码
+    check-cast p1, Landroid/content/Context; //检查Context对象引用
+
+    const-string p0, <span class="hljs-string">&quot;请先获取10个硬币哦&quot;</span> //弹窗文本信息，把<span class="hljs-string">&quot;&quot;</span>里的字符串数据赋值给p0
+
+    check-cast p0, Ljava/lang/CharSequence; //检查CharSequence对象引用
+
+    invoke-static &#123;p1, p0, p5&#125;, Landroid/widget/Toast;-&gt;makeText(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;
+    //将弹窗文本、显示时间等信息传给p1
+
+    move-result-<span class="hljs-built_in">object</span> p0  //结果传递给p0
+
+    invoke-virtual &#123;p0&#125;, Landroid/widget/Toast;-&gt;show()V  //当看到这个Toast;-&gt;show你就应该反应过来这里是弹窗代码
+
+    goto :goto_31  //跳转到:goto_31
+
+    :cond_15 //跳转的一个地址
+
+    invoke-virtual &#123;p1&#125;, Lcom/zj/wuaipojie/ui/ChallengeSecond;-&gt;isvip()Z  //判断isvip方法的返回值是否为真(即结果是否为<span class="hljs-number">1</span>)
+
+    move-result p0  //结果赋值给p0
+
+    <span class="hljs-keyword">if</span>-eqz p0, :cond_43 //如果结果为<span class="hljs-number">0</span>则跳转cond_43地址
+
+    const p0, <span class="hljs-number">0x7f0d0018</span>  //在arsc中的<span class="hljs-built_in">id</span>索引，这个值可以进行查询
+
+    .line <span class="hljs-number">37</span>
+    invoke-virtual &#123;p2, p0&#125;, Landroid/widget/ImageView;-&gt;setImageResource(I)V //设置图片资源
+
+    const p0, <span class="hljs-number">0x7f0d0008</span>
+
+    .line <span class="hljs-number">38</span>
+    invoke-virtual &#123;p3, p0&#125;, Landroid/widget/ImageView;-&gt;setImageResource(I)V
+
+    const p0, <span class="hljs-number">0x7f0d000a</span>
+
+    .line <span class="hljs-number">39</span>
+    invoke-virtual &#123;p4, p0&#125;, Landroid/widget/ImageView;-&gt;setImageResource(I)V
+
+    .line <span class="hljs-number">40</span>
+    sget-<span class="hljs-built_in">object</span> p0, Lcom/zj/wuaipojie/util/SPUtils;-&gt;INSTANCE:Lcom/zj/wuaipojie/util/SPUtils;
+
+    check-cast p1, Landroid/content/Context;
+
+    const/<span class="hljs-number">4</span> p2, <span class="hljs-number">0x2</span> //p2赋值<span class="hljs-number">2</span>
+
+    const-string p3, <span class="hljs-string">&quot;level&quot;</span> //sp的索引
+
+    invoke-virtual &#123;p0, p1, p3, p2&#125;, Lcom/zj/wuaipojie/util/SPUtils;-&gt;saveInt(Landroid/content/Context;Ljava/lang/String;I)V //写入数据
+
+    goto :goto_50 //跳转地址
+
+    :cond_43
+
+    check-cast p1, Landroid/content/Context;
+
+    const-string p0, <span class="hljs-string">&quot;\u8bf7\u5148\u5145\u503c\u5927\u4f1a\u5458\u54e6\uff01&quot;</span> //请先充值大会员哦！
+
+    check-cast p0, Ljava/lang/CharSequence;
+
+    invoke-static &#123;p1, p0, p5&#125;, Landroid/widget/Toast;-&gt;makeText(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;
+
+    move-result-<span class="hljs-built_in">object</span> p0
+
+    invoke-virtual &#123;p0&#125;, Landroid/widget/Toast;-&gt;show()V
+
+    :goto_50
+    <span class="hljs-keyword">return</span> p5  //返回p5的值
+.end method //方法结束
+
+//判断是否是大会员的方法
+.method public final isvip()Z
+    .registers <span class="hljs-number">2</span>
+
+    const/<span class="hljs-number">4</span> v0, <span class="hljs-number">0x0</span> //v0赋值<span class="hljs-number">0</span>
+
+    <span class="hljs-keyword">return</span> v0 //返回v0的值
+
+.end method
+</code></pre>
+
+<p> 修改方法：修改判断、强制跳转、修改寄存器的值</p>
+<h3 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h3><p> 在smali里的所有操作都必须经过寄存器来进行:本地寄存器用v开头数字结尾的符号来表示，如v0、 v1、v2。 参数寄存器则使用p开头数字结尾的符号来表示，如p0、p1、p2。特别注意的是，p0不一定是函数中的第一个参数，在非static函数中，p0代指“this”，p1表示函数的第一个 参数，p2代表函数中的第二个参数。而在static函数中p0才对应第一个参数(因为Java的static方法中没有this方法）</p>
+<p> 通过修改 Smali 分支指令（if → goto &#x2F; 注释）来绕过客户端校验，实现逻辑短路的逆向破解手段</p>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91/"><span>安卓逆向</span></a>
+          
+            <a href="/tags/Frida/"><span>Frida</span></a>
+          
+            <a href="/tags/%E8%84%B1%E5%A3%B3/"><span>脱壳</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/ai-security-atlas/">
+            <span>← 上一篇</span>
+            <strong>AI 与网络安全资源全景报告：中国、欧美、俄罗斯教程、工具与文档</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/ai-concepts/">
+            <span>下一篇 →</span>
+            <strong>AI 入门必看！一篇文章搞懂 LLM、Token、Prompt、Context、Agent、Tool、Workflow、RAG、Embedding</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

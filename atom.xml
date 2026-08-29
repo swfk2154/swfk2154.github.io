@@ -6,7 +6,7 @@
   <link href="https://blogbu2154.site/atom.xml" rel="self"/>
   
   <link href="https://blogbu2154.site/"/>
-  <updated>2026-08-14T11:24:39.069Z</updated>
+  <updated>2026-08-29T04:24:38.893Z</updated>
   <id>https://blogbu2154.site/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://blogbu2154.site/deepseek-harness-intro/"/>
     <id>https://blogbu2154.site/deepseek-harness-intro/</id>
     <published>2026-08-14T05:00:00.000Z</published>
-    <updated>2026-08-14T11:24:39.069Z</updated>
+    <updated>2026-08-29T04:24:38.893Z</updated>
     
     
       
@@ -97,11 +97,11 @@
   </entry>
   
   <entry>
-    <title>AI 编程智能体六合一全景：Codex / Claude Code / Antigravity / Grok Build / Kimi Code / DeepSeek Harness</title>
+    <title>AI 编程智能体七合一全景：Codex / Claude Code / Antigravity / Grok Build / Kimi Code / DeepSeek Harness / ZCode</title>
     <link href="https://blogbu2154.site/ai-coding-agents-overview/"/>
     <id>https://blogbu2154.site/ai-coding-agents-overview/</id>
     <published>2026-08-14T04:00:00.000Z</published>
-    <updated>2026-08-14T11:45:11.030Z</updated>
+    <updated>2026-08-29T04:30:00.000Z</updated>
     
     
       
@@ -134,6 +134,10 @@
     
     <category term="DeepSeek" scheme="https://blogbu2154.site/tags/DeepSeek/"/>
     
+    <category term="ZCode" scheme="https://blogbu2154.site/tags/ZCode/"/>
+    
+    <category term="GLM" scheme="https://blogbu2154.site/tags/GLM/"/>
+    
   </entry>
   
   <entry>
@@ -151,13 +155,13 @@
     <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
     
     
-    <category term="HVV" scheme="https://blogbu2154.site/tags/HVV/"/>
+    <category term="面试" scheme="https://blogbu2154.site/tags/%E9%9D%A2%E8%AF%95/"/>
     
     <category term="护网" scheme="https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/"/>
     
-    <category term="蓝队" scheme="https://blogbu2154.site/tags/%E8%93%9D%E9%98%9F/"/>
+    <category term="HVV" scheme="https://blogbu2154.site/tags/HVV/"/>
     
-    <category term="面试" scheme="https://blogbu2154.site/tags/%E9%9D%A2%E8%AF%95/"/>
+    <category term="蓝队" scheme="https://blogbu2154.site/tags/%E8%93%9D%E9%98%9F/"/>
     
   </entry>
   
@@ -176,13 +180,13 @@
     <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
     
     
-    <category term="HVV" scheme="https://blogbu2154.site/tags/HVV/"/>
+    <category term="面试" scheme="https://blogbu2154.site/tags/%E9%9D%A2%E8%AF%95/"/>
     
     <category term="护网" scheme="https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/"/>
     
-    <category term="蓝队" scheme="https://blogbu2154.site/tags/%E8%93%9D%E9%98%9F/"/>
+    <category term="HVV" scheme="https://blogbu2154.site/tags/HVV/"/>
     
-    <category term="面试" scheme="https://blogbu2154.site/tags/%E9%9D%A2%E8%AF%95/"/>
+    <category term="蓝队" scheme="https://blogbu2154.site/tags/%E8%93%9D%E9%98%9F/"/>
     
   </entry>
   
@@ -248,6 +252,8 @@
     <category term="工具实践" scheme="https://blogbu2154.site/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/"/>
     
     
+    <category term="抓包" scheme="https://blogbu2154.site/tags/%E6%8A%93%E5%8C%85/"/>
+    
     <category term="Wireshark" scheme="https://blogbu2154.site/tags/Wireshark/"/>
     
     <category term="科来" scheme="https://blogbu2154.site/tags/%E7%A7%91%E6%9D%A5/"/>
@@ -257,8 +263,6 @@
     <category term="网络分析" scheme="https://blogbu2154.site/tags/%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90/"/>
     
     <category term="tshark" scheme="https://blogbu2154.site/tags/tshark/"/>
-    
-    <category term="抓包" scheme="https://blogbu2154.site/tags/%E6%8A%93%E5%8C%85/"/>
     
   </entry>
   
@@ -285,17 +289,17 @@
     <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
     
     
+    <category term="护网" scheme="https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/"/>
+    
+    <category term="安全运营" scheme="https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/"/>
+    
     <category term="HVV" scheme="https://blogbu2154.site/tags/HVV/"/>
     
-    <category term="护网" scheme="https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/"/>
+    <category term="蓝队" scheme="https://blogbu2154.site/tags/%E8%93%9D%E9%98%9F/"/>
     
     <category term="面试题" scheme="https://blogbu2154.site/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
     
     <category term="应急响应" scheme="https://blogbu2154.site/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/"/>
-    
-    <category term="蓝队" scheme="https://blogbu2154.site/tags/%E8%93%9D%E9%98%9F/"/>
-    
-    <category term="安全运营" scheme="https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/"/>
     
   </entry>
   
@@ -324,9 +328,9 @@
     <category term="工具实践" scheme="https://blogbu2154.site/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/"/>
     
     
-    <category term="AI安全" scheme="https://blogbu2154.site/tags/AI%E5%AE%89%E5%85%A8/"/>
-    
     <category term="Claude Code" scheme="https://blogbu2154.site/tags/Claude-Code/"/>
+    
+    <category term="AI安全" scheme="https://blogbu2154.site/tags/AI%E5%AE%89%E5%85%A8/"/>
     
     <category term="MCP" scheme="https://blogbu2154.site/tags/MCP/"/>
     
@@ -377,6 +381,33 @@
   </entry>
   
   <entry>
+    <title>安卓逆向学习笔记</title>
+    <link href="https://blogbu2154.site/android-reverse-engineering/"/>
+    <id>https://blogbu2154.site/android-reverse-engineering/</id>
+    <published>2026-03-26T02:36:19.000Z</published>
+    <updated>2026-08-29T03:44:24.401Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="移动安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E7%A7%BB%E5%8A%A8%E5%AE%89%E5%85%A8/"/>
+    
+    
+    <category term="安卓逆向" scheme="https://blogbu2154.site/tags/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91/"/>
+    
+    <category term="Frida" scheme="https://blogbu2154.site/tags/Frida/"/>
+    
+    <category term="脱壳" scheme="https://blogbu2154.site/tags/%E8%84%B1%E5%A3%B3/"/>
+    
+  </entry>
+  
+  <entry>
     <title>AI 入门必看！一篇文章搞懂 LLM、Token、Prompt、Context、Agent、Tool、Workflow、RAG、Embedding</title>
     <link href="https://blogbu2154.site/ai-concepts/"/>
     <id>https://blogbu2154.site/ai-concepts/</id>
@@ -399,9 +430,9 @@
     <category term="AI入门" scheme="https://blogbu2154.site/categories/AI%E5%85%A5%E9%97%A8/"/>
     
     
-    <category term="LLM" scheme="https://blogbu2154.site/tags/LLM/"/>
-    
     <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
+    
+    <category term="LLM" scheme="https://blogbu2154.site/tags/LLM/"/>
     
     <category term="AI" scheme="https://blogbu2154.site/tags/AI/"/>
     
@@ -412,6 +443,141 @@
     <category term="RAG" scheme="https://blogbu2154.site/tags/RAG/"/>
     
     <category term="Embedding" scheme="https://blogbu2154.site/tags/Embedding/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>安全岗位面试实录</title>
+    <link href="https://blogbu2154.site/security-interview-notes/"/>
+    <id>https://blogbu2154.site/security-interview-notes/</id>
+    <published>2026-02-14T22:19:29.000Z</published>
+    <updated>2026-08-29T03:44:24.404Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="面试实战" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E9%9D%A2%E8%AF%95%E5%AE%9E%E6%88%98/"/>
+    
+    
+    <category term="面试" scheme="https://blogbu2154.site/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+    <category term="安全岗" scheme="https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E5%B2%97/"/>
+    
+    <category term="求职" scheme="https://blogbu2154.site/tags/%E6%B1%82%E8%81%8C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>红蓝对抗</title>
+    <link href="https://blogbu2154.site/red-blue-teaming/"/>
+    <id>https://blogbu2154.site/red-blue-teaming/</id>
+    <published>2026-02-04T06:56:25.000Z</published>
+    <updated>2026-08-29T03:44:24.403Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="安全运营" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/"/>
+    
+    
+    <category term="红蓝对抗" scheme="https://blogbu2154.site/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/"/>
+    
+    <category term="护网" scheme="https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/"/>
+    
+    <category term="安全运营" scheme="https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>安全产品与安全设备全景</title>
+    <link href="https://blogbu2154.site/security-products-and-devices/"/>
+    <id>https://blogbu2154.site/security-products-and-devices/</id>
+    <published>2026-02-02T17:14:43.000Z</published>
+    <updated>2026-08-29T03:44:24.402Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="安全运营" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/"/>
+    
+    
+    <category term="安全设备" scheme="https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%AE%BE%E5%A4%87/"/>
+    
+    <category term="WAF" scheme="https://blogbu2154.site/tags/WAF/"/>
+    
+    <category term="态势感知" scheme="https://blogbu2154.site/tags/%E6%80%81%E5%8A%BF%E6%84%9F%E7%9F%A5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>域渗透思路与实践</title>
+    <link href="https://blogbu2154.site/domain-penetration/"/>
+    <id>https://blogbu2154.site/domain-penetration/</id>
+    <published>2026-02-01T17:29:39.000Z</published>
+    <updated>2026-08-29T03:44:24.389Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="内网渗透" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
+    
+    
+    <category term="域渗透" scheme="https://blogbu2154.site/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/"/>
+    
+    <category term="Kerberoasting" scheme="https://blogbu2154.site/tags/Kerberoasting/"/>
+    
+    <category term="PTH" scheme="https://blogbu2154.site/tags/PTH/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>横向移动技术</title>
+    <link href="https://blogbu2154.site/lateral-movement/"/>
+    <id>https://blogbu2154.site/lateral-movement/</id>
+    <published>2026-01-29T17:32:31.000Z</published>
+    <updated>2026-08-29T03:44:24.392Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="内网渗透" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
+    
+    
+    <category term="内网渗透" scheme="https://blogbu2154.site/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
+    
+    <category term="横向移动" scheme="https://blogbu2154.site/tags/%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/"/>
+    
+    <category term="IPC$" scheme="https://blogbu2154.site/tags/IPC/"/>
     
   </entry>
   
@@ -445,6 +611,60 @@
     <category term="博客" scheme="https://blogbu2154.site/tags/%E5%8D%9A%E5%AE%A2/"/>
     
     <category term="GitHub Pages" scheme="https://blogbu2154.site/tags/GitHub-Pages/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>域环境搭建</title>
+    <link href="https://blogbu2154.site/ad-environment-setup/"/>
+    <id>https://blogbu2154.site/ad-environment-setup/</id>
+    <published>2026-01-28T21:40:52.000Z</published>
+    <updated>2026-08-29T03:44:24.388Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="内网渗透" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
+    
+    
+    <category term="域渗透" scheme="https://blogbu2154.site/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/"/>
+    
+    <category term="AD" scheme="https://blogbu2154.site/tags/AD/"/>
+    
+    <category term="环境搭建" scheme="https://blogbu2154.site/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>权限维持</title>
+    <link href="https://blogbu2154.site/persistence-techniques/"/>
+    <id>https://blogbu2154.site/persistence-techniques/</id>
+    <published>2026-01-27T22:23:38.000Z</published>
+    <updated>2026-08-29T03:44:24.394Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="内网渗透" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
+    
+    
+    <category term="权限维持" scheme="https://blogbu2154.site/tags/%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/"/>
+    
+    <category term="后门" scheme="https://blogbu2154.site/tags/%E5%90%8E%E9%97%A8/"/>
+    
+    <category term="隐藏" scheme="https://blogbu2154.site/tags/%E9%9A%90%E8%97%8F/"/>
     
   </entry>
   

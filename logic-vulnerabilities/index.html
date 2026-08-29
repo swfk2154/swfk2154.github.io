@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>逻辑漏洞挖掘实战 - swfk 的安全笔记</title>
+<meta name="description" content="支付、验证码、越权、密码找回、抽奖等常见逻辑漏洞的场景、挖掘思路与案例。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/logic-vulnerabilities/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="逻辑漏洞挖掘实战 - swfk 的安全笔记">
+<meta property="og:description" content="支付、验证码、越权、密码找回、抽奖等常见逻辑漏洞的场景、挖掘思路与案例。">
+<meta property="og:url" content="https://blogbu2154.site/logic-vulnerabilities/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/5.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E4%B8%BE%E4%BE%8B"><span class="toc-text">业务逻辑漏洞举例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2016%E5%B9%B4%E5%89%8D%E4%B9%8C%E4%BA%91%E6%A1%88%E4%BE%8B"><span class="toc-text">2016年前乌云案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%94%AF%E4%BB%98%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E"><span class="toc-text">1.支付逻辑漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%AF%E4%BB%98%E8%BF%87%E7%A8%8B%E4%B8%AD%E5%8F%AF%E7%9B%B4%E6%8E%A5%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%8C%85%E4%B8%AD%E7%9A%84%E6%94%AF%E4%BB%98%E9%87%91%E9%A2%9D"><span class="toc-text">支付过程中可直接修改数据包中的支付金额</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B2%A1%E6%9C%89%E5%AF%B9%E8%B4%AD%E4%B9%B0%E6%95%B0%E9%87%8F%E8%BF%9B%E8%A1%8C%E8%B4%9F%E6%95%B0%E9%99%90%E5%88%B6"><span class="toc-text">没有对购买数量进行负数限制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E9%87%8D%E6%94%BE"><span class="toc-text">请求重放</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%8F%82%E6%95%B0%E5%B9%B2%E6%89%B0"><span class="toc-text">其他参数干扰</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93"><span class="toc-text">2.密码找回逻辑漏洞总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E5%87%AD%E8%AF%81%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3"><span class="toc-text">用户凭证暴力破解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%94%E5%9B%9E%E5%87%AD%E8%AF%81%EF%BC%88URL-%E9%A1%B5%E9%9D%A2%E6%B3%84%E9%9C%B2%EF%BC%89"><span class="toc-text">返回凭证（URL&#x2F;页面泄露）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%B1-Token-%E7%AE%97%E6%B3%95%E7%BC%BA%E9%99%B7"><span class="toc-text">弱 Token &amp; 算法缺陷</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E5%87%AD%E8%AF%81%E6%9C%89%E6%95%88%E6%80%A7-%E8%B6%8A%E6%9D%83%E4%BF%AE%E6%94%B9"><span class="toc-text">用户凭证有效性&#x2F;越权修改</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E6%96%B0%E7%BB%91%E5%AE%9A-%E9%80%BB%E8%BE%91%E8%A6%86%E7%9B%96"><span class="toc-text">重新绑定&#x2F;逻辑覆盖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%AA%8C%E8%AF%81%E7%BB%95%E8%BF%87"><span class="toc-text">服务器验证绕过</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%BE%E5%9B%9E%E6%AD%A5%E9%AA%A4%E8%B7%B3%E8%BF%87-%E6%9C%AC%E5%9C%B0%E9%AA%8C%E8%AF%81%E5%8F%AF%E6%8E%A7"><span class="toc-text">找回步骤跳过&#x2F;本地验证可控</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%EF%BC%88%E6%B3%A8%E5%85%A5-%E7%BB%91%E5%AE%9A%E7%BC%BA%E9%99%B7%EF%BC%89"><span class="toc-text">其他（注入&#x2F;绑定缺陷）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E9%80%BB%E8%BE%91%E9%94%99%E8%AF%AF%E6%80%BB%E7%BB%93"><span class="toc-text">3.应用程序逻辑错误总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AC%BA%E9%AA%97%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E%E5%8A%9F%E8%83%BD"><span class="toc-text">欺骗密码找回功能</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%84%E9%81%BF%E4%BA%A4%E6%98%93%E9%99%90%E5%88%B6"><span class="toc-text">规避交易限制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B6%8A%E6%9D%83%E7%BC%BA%E9%99%B7"><span class="toc-text">越权缺陷</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#cookies%E5%92%8Csession%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">cookies和session的问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C%E7%BC%BA%E9%99%B7%EF%BC%88%E5%BC%BA%E5%88%B6%E6%B5%8F%E8%A7%88%EF%BC%89"><span class="toc-text">顺序执行缺陷（强制浏览）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E5%88%B7%E6%96%B0%E7%BC%BA%E9%99%B7"><span class="toc-text">时间刷新缺陷</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%88%91%E7%9A%84%E8%B6%8A%E6%9D%83%E4%B9%8B%E9%81%93"><span class="toc-text">4.我的越权之道</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A2%9E%E5%8A%A0%E6%95%B0%E6%8D%AE%EF%BC%88Insert%EF%BC%89%E8%B6%8A%E6%9D%83"><span class="toc-text">增加数据（Insert）越权</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%EF%BC%88Delete%EF%BC%89%E8%B6%8A%E6%9D%83"><span class="toc-text">删除数据（Delete）越权</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E6%95%B0%E6%8D%AE%EF%BC%88Update%EF%BC%89%E8%B6%8A%E6%9D%83"><span class="toc-text">更改数据（Update）越权</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE%EF%BC%88Select%EF%BC%89%E8%B6%8A%E6%9D%83"><span class="toc-text">查询数据（Select）越权</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E4%B8%AD%E7%9A%84%E8%B6%8A%E6%9D%83"><span class="toc-text">链接参数中的越权</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB"><span class="toc-text">5.验证码安全问题汇总</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%97%AE%E9%A2%98"><span class="toc-text">客户端问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%80%BB%E8%BE%91%E9%97%AE%E9%A2%98%EF%BC%88%E5%A4%8D%E7%94%A8%E4%B8%8E%E9%9D%9E%E7%A9%BA%EF%BC%89"><span class="toc-text">服务端逻辑问题（复用与非空）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%95%E8%BF%87%E7%BC%BA%E9%99%B7%E4%B8%8E%E2%80%9C%E4%B8%87%E8%83%BD%E9%AA%8C%E8%AF%81%E7%A0%81%E2%80%9D"><span class="toc-text">绕过缺陷与“万能验证码”</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E7%A0%81%E5%BC%BA%E5%BA%A6%E4%B8%8D%E8%B6%B3%EF%BC%88OCR%E6%98%93%E8%AF%86%E5%88%AB%EF%BC%89"><span class="toc-text">验证码强度不足（OCR易识别）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-JS%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2"><span class="toc-text">6.JS敏感信息泄露</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#JS%E6%96%87%E4%BB%B6%E6%B3%84%E9%9C%B2%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E6%95%8F%E6%84%9F%E8%B7%AF%E5%BE%84%E5%8F%8AAPI"><span class="toc-text">JS文件泄露后台管理敏感路径及API</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B5%E9%9D%A2%E5%86%85JS%E6%B3%84%E9%9C%B2-http-only-%E4%BF%9D%E6%8A%A4%E7%9A%84-Cookie"><span class="toc-text">页面内JS泄露 http-only 保护的 Cookie</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B5%E9%9D%A2%E5%86%85JS%E5%8F%8AAJAX%E8%AF%B7%E6%B1%82%E6%B3%84%E9%9C%B2%E7%94%A8%E6%88%B7%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF"><span class="toc-text">页面内JS及AJAX请求泄露用户敏感信息</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E5%88%86%E7%B1%BB"><span class="toc-text">业务逻辑漏洞分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E9%9D%B6%E5%9C%BA"><span class="toc-text">业务逻辑漏洞靶场</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E6%8C%96%E6%BC%8F%E6%B4%9E"><span class="toc-text">怎么挖漏洞</span></a></li></ol></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>逻辑漏洞挖掘实战</h1>
+        <div class="post-meta">
+          <time datetime="2026-01-06">2026-01-06</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/5.jpg" alt="逻辑漏洞挖掘实战" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<p>0x1. 逻辑漏洞</p>
+<h2 id="业务逻辑漏洞举例"><a href="#业务逻辑漏洞举例" class="headerlink" title="业务逻辑漏洞举例"></a>业务逻辑漏洞举例</h2><ul>
+<li>2021年 美团 app 忘记密码<ol>
+<li>手机号</li>
+<li>补全身份证 （刚好是出生年月日）</li>
+</ol>
+</li>
+<li>首次充值漏洞<ol>
+<li>黑胶vip 首次充值 1.99 元&#x2F;月</li>
+<li>A 手机打开首次充值优惠界面，卡在支付界面，输入密码</li>
+<li>B 手机登录网易账号（这时 A 手机可能会被登出），也打开首次充值优惠界面</li>
+<li>A 手机支付 、 B 手机也支付， 用了两次首次充值优惠</li>
+</ol>
+</li>
+</ul>
+<h2 id="2016年前乌云案例"><a href="#2016年前乌云案例" class="headerlink" title="2016年前乌云案例"></a>2016年前乌云案例</h2><blockquote>
+<p>乌云镜像站：<a target="_blank" rel="noopener" href="https://wy.zone.ci/">https://wy.zone.ci/</a></p>
+</blockquote>
+<h3 id="1-支付逻辑漏洞"><a href="#1-支付逻辑漏洞" class="headerlink" title="1.支付逻辑漏洞"></a>1.支付逻辑漏洞</h3><p><a target="_blank" rel="noopener" href="https://wooyun.kieran.top/#!/drops/47.%E5%9C%A8%E7%BA%BF%E6%94%AF%E4%BB%98%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93">在线支付逻辑漏洞总结</a></p>
+<h4 id="支付过程中可直接修改数据包中的支付金额"><a href="#支付过程中可直接修改数据包中的支付金额" class="headerlink" title="支付过程中可直接修改数据包中的支付金额"></a>支付过程中可直接修改数据包中的支付金额</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-05503">必胜客宅急送支付表单伪造金额</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-05444">肯德基宅急送支付表单伪造金额</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-05316">新浪微号存在支付绕过漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-07293">淘宝网某处存在严重支付漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-09375">佳域手机官方商城支付漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-08745">91分站存在支付绕过</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-08031">江西移动1元钱买手机漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-010614">爱拍主站存在严重漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-010561">再爆苏宁某站点重大漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-010351">苏宁某站点存在严重漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-012749">TP-Link官方商城支付漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-012542">鲜果网支付漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-012528">京东商城购买商品时，可以修改商品金额，并且支付成功</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-012189">京东团购订单金额可在客户端修改并提交网银支付</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-012167">网通营业厅客户信息泄露、充值支付价格修改漏洞</a></li>
+</ul>
+<h4 id="没有对购买数量进行负数限制"><a href="#没有对购买数量进行负数限制" class="headerlink" title="没有对购买数量进行负数限制"></a>没有对购买数量进行负数限制</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-07997">百脑汇商城支付漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-06708">m1905电影网存在严重支付漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-07471">国美网上商城支付漏洞1元订购Iphone 4S！</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-06589">又拍网旗下某站存在严重支付漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-07738">新蛋中国支付漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-011465">拉卡拉商店0元购支付问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-015067">中粮52buy商城的支付漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-05353">115网盘存在支付绕过</a></li>
+</ul>
+<h4 id="请求重放"><a href="#请求重放" class="headerlink" title="请求重放"></a>请求重放</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-05173">豆丁网购买豆元后可以将豆元倍增</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2011-03009">阿里云0元订单，服务器随便买</a></li>
+</ul>
+<h4 id="其他参数干扰"><a href="#其他参数干扰" class="headerlink" title="其他参数干扰"></a>其他参数干扰</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-019761">新东方逻辑支付漏洞</a></li>
+</ul>
+<h3 id="2-密码找回逻辑漏洞总结"><a href="#2-密码找回逻辑漏洞总结" class="headerlink" title="2.密码找回逻辑漏洞总结"></a>2.密码找回逻辑漏洞总结</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://wooyun.kieran.top/#!/drops/494.%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93">密码找回逻辑漏洞总结</a></li>
+</ul>
+<h4 id="用户凭证暴力破解"><a href="#用户凭证暴力破解" class="headerlink" title="用户凭证暴力破解"></a>用户凭证暴力破解</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-011833">当当网任意用户密码修改漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-011720">微信任意用户密码修改漏洞</a></li>
+</ul>
+<h4 id="返回凭证（URL-页面泄露）"><a href="#返回凭证（URL-页面泄露）" class="headerlink" title="返回凭证（URL&#x2F;页面泄露）"></a>返回凭证（URL&#x2F;页面泄露）</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-05630">走秀网秀团任意密码修改缺陷</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-058210">天天网任意账户密码重置（二）</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-04728">sohu邮箱任意用户密码重置</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-085124">新浪某站任意用户密码修改（验证码与取回逻辑设计不当）</a></li>
+</ul>
+<h4 id="弱-Token-算法缺陷"><a href="#弱-Token-算法缺陷" class="headerlink" title="弱 Token &amp; 算法缺陷"></a>弱 Token &amp; 算法缺陷</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-08333">奇虎360任意用户密码修改漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2015-090226">中兴某网站任意用户密码重置漏洞（经典设计缺陷案例）</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2015-094242">天天网任意账号密码重置(非暴力温柔修改)</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2015-095729">天天网再一次重置任意账号密码(依旧非暴力)</a></li>
+</ul>
+<h4 id="用户凭证有效性-越权修改"><a href="#用户凭证有效性-越权修改" class="headerlink" title="用户凭证有效性&#x2F;越权修改"></a>用户凭证有效性&#x2F;越权修改</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-053349">OPPO手机重置任意账户密码（3）</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-053079">第二次重置OPPO手机官网任意账户密码（秒改）</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-020032">OPPO修改任意帐号密码</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-012572">身份通任意密码修改-泄漏大量公民信息</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-078208">魅族的账号系统内存在漏洞可导致任意账户的密码重置</a></li>
+</ul>
+<h4 id="重新绑定-逻辑覆盖"><a href="#重新绑定-逻辑覆盖" class="headerlink" title="重新绑定&#x2F;逻辑覆盖"></a>重新绑定&#x2F;逻辑覆盖</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-08307">网易邮箱可直接修改其他用户密码</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-081467">12308可修改任意用户密码</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2015-092319">某彩票设计缺陷可修改任意用户密码</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-086726">中国工控网任意用户密码重置漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-088708">中铁快运奇葩方式重置任意用户密码(admin用户演示)</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-085843">聚美优品任意修改用户密码(非爆破)</a></li>
+</ul>
+<h4 id="服务器验证绕过"><a href="#服务器验证绕过" class="headerlink" title="服务器验证绕过"></a>服务器验证绕过</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-018263">携程旅行网任意老板密码修改</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-080278">AA拼车网之任意密码找回2</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-082582">四川我要去哪517旅行网重置任意账号密码漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-088927">某政企使用邮件系统疑似存在通用设计问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2015-091216">和讯网修改任意用户密码漏洞</a></li>
+</ul>
+<h4 id="找回步骤跳过-本地验证可控"><a href="#找回步骤跳过-本地验证可控" class="headerlink" title="找回步骤跳过&#x2F;本地验证可控"></a>找回步骤跳过&#x2F;本地验证可控</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-042404">OPPO手机同步密码随意修改，短信通讯录随意查看</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2015-098765">中国电信某IDC机房信息安全管理系统设计缺陷致使系统沦陷</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-083035">看我如何重置乐峰网供应商管理系统任意用户密码</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-069987">oppo重置任意用户密码漏洞(4)</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-020532">OPPO修改任意帐号密码-3</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-020425">OPPO修改任意帐号密码-2</a></li>
+</ul>
+<h4 id="其他（注入-绑定缺陷）"><a href="#其他（注入-绑定缺陷）" class="headerlink" title="其他（注入&#x2F;绑定缺陷）"></a>其他（注入&#x2F;绑定缺陷）</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-075941">上海电信通行证任意密码重置</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-068060">用友人力资源管理软件（e-HR）另一处SQL注入漏洞</a></li>
+</ul>
+<h3 id="3-应用程序逻辑错误总结"><a href="#3-应用程序逻辑错误总结" class="headerlink" title="3.应用程序逻辑错误总结"></a>3.应用程序逻辑错误总结</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://wooyun.kieran.top/#!/drops/219.%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E9%80%BB%E8%BE%91%E9%94%99%E8%AF%AF%E6%80%BB%E7%BB%93">应用程序逻辑错误总结</a></li>
+</ul>
+<h4 id="欺骗密码找回功能"><a href="#欺骗密码找回功能" class="headerlink" title="欺骗密码找回功能"></a>欺骗密码找回功能</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-054068">华为网盘部分用户密码修改</a></li>
+</ul>
+<h4 id="规避交易限制"><a href="#规避交易限制" class="headerlink" title="规避交易限制"></a>规避交易限制</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-050481">destoon无限制增加帐号资金</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-048591">UCloud 另一处严重支付逻辑错误 导致可刷余额</a></li>
+</ul>
+<h4 id="越权缺陷"><a href="#越权缺陷" class="headerlink" title="越权缺陷"></a>越权缺陷</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-051497">益云公益广告越权修改漏洞</a></li>
+</ul>
+<h4 id="cookies和session的问题"><a href="#cookies和session的问题" class="headerlink" title="cookies和session的问题"></a>cookies和session的问题</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-051424">益云广告平台任意帐号登录</a></li>
+</ul>
+<h4 id="顺序执行缺陷（强制浏览）"><a href="#顺序执行缺陷（强制浏览）" class="headerlink" title="顺序执行缺陷（强制浏览）"></a>顺序执行缺陷（强制浏览）</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-050488">中国教师资格网绕过验证(可遍历全国教师身份信息)</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-047677">万达某分站逻辑错误可绕过支付直接获得取票密码</a></li>
+</ul>
+<h4 id="时间刷新缺陷"><a href="#时间刷新缺陷" class="headerlink" title="时间刷新缺陷"></a>时间刷新缺陷</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-048391">12306自动刷票时间可更改漏洞</a></li>
+</ul>
+<h3 id="4-我的越权之道"><a href="#4-我的越权之道" class="headerlink" title="4.我的越权之道"></a>4.我的越权之道</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://wooyun.kieran.top/#!/drops/107.%E6%88%91%E7%9A%84%E8%B6%8A%E6%9D%83%E4%B9%8B%E9%81%93">我的越权之道</a></li>
+</ul>
+<h4 id="增加数据（Insert）越权"><a href="#增加数据（Insert）越权" class="headerlink" title="增加数据（Insert）越权"></a>增加数据（Insert）越权</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-033542">爱拍越权漏洞及设计不合理漏洞大礼包（妹子哭了）</a></li>
+</ul>
+<h4 id="删除数据（Delete）越权"><a href="#删除数据（Delete）越权" class="headerlink" title="删除数据（Delete）越权"></a>删除数据（Delete）越权</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-039358">百度创意专家某功能平行权限漏洞（可删除他人素材）</a></li>
+</ul>
+<h4 id="更改数据（Update）越权"><a href="#更改数据（Update）越权" class="headerlink" title="更改数据（Update）越权"></a>更改数据（Update）越权</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-036411">搜狐白社会任意用户信息修改漏洞</a></li>
+</ul>
+<h4 id="查询数据（Select）越权"><a href="#查询数据（Select）越权" class="headerlink" title="查询数据（Select）越权"></a>查询数据（Select）越权</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-033748">Like团用户信息泄露+越权漏洞（可获取大量用户住址联系信息）</a></li>
+</ul>
+<h4 id="链接参数中的越权"><a href="#链接参数中的越权" class="headerlink" title="链接参数中的越权"></a>链接参数中的越权</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-031826">虾米网送娃娃漏洞（平行权限漏洞）</a></li>
+</ul>
+<h3 id="5-验证码安全问题汇总"><a href="#5-验证码安全问题汇总" class="headerlink" title="5.验证码安全问题汇总"></a>5.验证码安全问题汇总</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://wooyun.kieran.top/#!/drops/525.%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB">验证码安全问题汇总</a></li>
+</ul>
+<h4 id="客户端问题"><a href="#客户端问题" class="headerlink" title="客户端问题"></a>客户端问题</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-082411">南开大学信息门户网站设计不当可以爆破用户密码</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-06634">索尼验证码实现缺陷</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-063644">某会考报名系统验证码绕过可暴力破解</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-086797">吉祥航空任意客票遍历</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-05151">5173验证码可被绕过</a></li>
+</ul>
+<h4 id="服务端逻辑问题（复用与非空）"><a href="#服务端逻辑问题（复用与非空）" class="headerlink" title="服务端逻辑问题（复用与非空）"></a>服务端逻辑问题（复用与非空）</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2015-093065">苏宁易购某系统后台验证码可重复利用</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-083050">cmseasy后台暴力破解验证码绕过</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-082981">ecshop后台暴力破解验证码绕过</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-025065">ecshop绕过验证码暴利破解2</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-025245">139邮箱图验证码绕过漏洞（可预测案例）</a></li>
+</ul>
+<h4 id="绕过缺陷与“万能验证码”"><a href="#绕过缺陷与“万能验证码”" class="headerlink" title="绕过缺陷与“万能验证码”"></a>绕过缺陷与“万能验证码”</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-071289">阿里巴巴某员工登录接口验证码绕过</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-014563">凡客某处验证码绕过漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-026219">财付通商户版登录验证码绕过</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-021692">正方教务管理系统设计错误，可绕过验证码进行暴破</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2013-020517">网宿某站SQL注入漏洞及验证码绕过</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-05095">百度空间用户登录绕过验证码验证</a></li>
+</ul>
+<h4 id="验证码强度不足（OCR易识别）"><a href="#验证码强度不足（OCR易识别）" class="headerlink" title="验证码强度不足（OCR易识别）"></a>验证码强度不足（OCR易识别）</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2015-092497">招商银行设计缺陷可被穷举攻击</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2015-092415">光大证券交易系统资金账号可被穷举攻击</a></li>
+</ul>
+<h3 id="6-JS敏感信息泄露"><a href="#6-JS敏感信息泄露" class="headerlink" title="6.JS敏感信息泄露"></a>6.JS敏感信息泄露</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://wooyun.kieran.top/#!/drops/625.JS%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%EF%BC%9A%E4%B8%8D%E5%AE%B9%E5%BF%BD%E8%A7%86%E7%9A%84WEB%E6%BC%8F%E6%B4%9E">JS敏感信息泄露</a></li>
+</ul>
+<h4 id="JS文件泄露后台管理敏感路径及API"><a href="#JS文件泄露后台管理敏感路径及API" class="headerlink" title="JS文件泄露后台管理敏感路径及API"></a>JS文件泄露后台管理敏感路径及API</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2012-013530">PKAV腾讯专场 - 2. 腾讯产品交流平台的一个js文件泄漏了一个url之后</a></li>
+</ul>
+<h4 id="页面内JS泄露-http-only-保护的-Cookie"><a href="#页面内JS泄露-http-only-保护的-Cookie" class="headerlink" title="页面内JS泄露 http-only 保护的 Cookie"></a>页面内JS泄露 http-only 保护的 Cookie</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-072951">我是如何窃取到百度受http-only保护的cookie的(3)</a></li>
+</ul>
+<h4 id="页面内JS及AJAX请求泄露用户敏感信息"><a href="#页面内JS及AJAX请求泄露用户敏感信息" class="headerlink" title="页面内JS及AJAX请求泄露用户敏感信息"></a>页面内JS及AJAX请求泄露用户敏感信息</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-049775">百度某站设计缺陷2：获取匿名用户手机号漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2014-049759">百度某站一处设计缺陷导致部分用户手机号与邮箱等信息泄漏</a></li>
+</ul>
+<h2 id="业务逻辑漏洞分类"><a href="#业务逻辑漏洞分类" class="headerlink" title="业务逻辑漏洞分类"></a>业务逻辑漏洞分类</h2><p>自己画思维导图（脑图）</p>
+<p><a target="_blank" rel="noopener" href="https://www.yuque.com/attachments/yuque/0/2026/pdf/61901569/1767717552563-1ba77fe5-c913-465b-987b-9ba36a4fd1cc.pdf">2026.1.6高华峰业务逻辑漏洞.pdf</a></p>
+<h2 id="业务逻辑漏洞靶场"><a href="#业务逻辑漏洞靶场" class="headerlink" title="业务逻辑漏洞靶场"></a>业务逻辑漏洞靶场</h2><p>burpsuite 靶场</p>
+<p><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/all-labs">https://portswigger.net/web-security/all-labs</a></p>
+<h3 id="怎么挖漏洞"><a href="#怎么挖漏洞" class="headerlink" title="怎么挖漏洞"></a>怎么挖漏洞</h3><p>全局代理：<a target="_blank" rel="noopener" href="https://ip.skk.moe/split-tunnel">https://ip.skk.moe/split-tunnel</a></p>
+<p>方法1：<br>补天公益 <a target="_blank" rel="noopener" href="https://www.butian.net/Reward/plan/2">https://www.butian.net/Reward/plan/2</a> -&gt; 得到域名 -&gt; fofa&#x2F;hunter 信息收集 -&gt; 每个站点点开后使用 findsomethings 找接口&#x2F; 点击网站的功能 -&gt; 分别测</p>
+<p>方法2：<br>教育src （全国大学只要是域名为 edu.cn 结尾的都是）-&gt; 确定大学目标 -&gt; fofa&#x2F;hunter 信息收集 -&gt; 每个站点点开后使用 findsomethings 找接口&#x2F; 点击网站的功能 -&gt; 分别测</p>
+<p>注意：不要用任何扫描器，信息收集用fofa&#x2F;hunter</p>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E/"><span>逻辑漏洞</span></a>
+          
+            <a href="/tags/%E8%B6%8A%E6%9D%83/"><span>越权</span></a>
+          
+            <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"><span>渗透测试</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/android-app-pentest/">
+            <span>← 上一篇</span>
+            <strong>安卓 App 渗透测试：客户端与服务端</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/waf-bypass-techniques/">
+            <span>下一篇 →</span>
+            <strong>WAF 绕过技术</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

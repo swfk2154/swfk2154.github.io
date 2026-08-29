@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>渗透测试信息收集方法论 - swfk 的安全笔记</title>
+<meta name="description" content="域名、子域名、端口、指纹、敏感信息等维度的收集工具与思路，以及企业信息与社工库入口。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/information-gathering/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渗透测试信息收集方法论 - swfk 的安全笔记">
+<meta property="og:description" content="域名、子域名、端口、指纹、敏感信息等维度的收集工具与思路，以及企业信息与社工库入口。">
+<meta property="og:url" content="https://blogbu2154.site/information-gathering/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/9.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%88%86%E7%B1%BB"><span class="toc-text">渗透测试分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BB%91%E7%9B%92%E6%B5%8B%E8%AF%95"><span class="toc-text">黑盒测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BD%E7%9B%92%E6%B5%8B%E8%AF%95"><span class="toc-text">白盒测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%81%B0%E7%9B%92%E6%B5%8B%E8%AF%95"><span class="toc-text">灰盒测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%B1%BB"><span class="toc-text">分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">主动信息收集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A2%AB%E5%8A%A8%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">被动信息收集</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9F%9F%E5%90%8D%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">1 域名信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%BB%E5%9F%9F%E5%90%8D-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">1 主域名 信息收集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%AD%90%E5%9F%9F%E5%90%8D-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">2 子域名 信息收集</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-IP%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">2 IP信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E4%B8%BA-IP-%E5%9C%B0%E5%9D%80"><span class="toc-text">1 域名解析为 IP 地址</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-CDN-%E5%88%A4%E6%96%AD"><span class="toc-text">2 CDN 判断</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-CDN-%E7%BB%95%E8%BF%87"><span class="toc-text">3 CDN 绕过</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-C-%E6%AE%B5%E6%9F%A5%E8%AF%A2"><span class="toc-text">4 C 段查询</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F"><span class="toc-text">5 端口扫描</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">3 网站信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%8C%87%E7%BA%B9%E4%BF%A1%E6%81%AF"><span class="toc-text">1 指纹信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%8C%87%E7%BA%B9"><span class="toc-text">什么是指纹</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ELK%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86%E4%B8%8E%E5%88%86%E6%9E%90%E6%8A%80%E6%9C%AF%E6%A0%88"><span class="toc-text">ELK日志管理与分析技术栈</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%9B%AE%E5%BD%95%E6%8E%A2%E6%B5%8B"><span class="toc-text">2 目录探测</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%BD%91%E7%AB%99%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF%E6%8F%90%E5%8F%96"><span class="toc-text">3  网站敏感信息提取</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E4%BC%81%E4%B8%9A%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">4  企业信息收集</span></a></li></ol></li></ol></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>渗透测试信息收集方法论</h1>
+        <div class="post-meta">
+          <time datetime="2025-11-26">2025-11-26</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/9.jpg" alt="渗透测试信息收集方法论" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="渗透测试分类"><a href="#渗透测试分类" class="headerlink" title="渗透测试分类"></a>渗透测试分类</h2><h2 id="黑盒测试"><a href="#黑盒测试" class="headerlink" title="黑盒测试"></a>黑盒测试</h2><p>没有后端代码 ，根据网站的业务逻辑，挖掘后端漏洞</p>
+<h2 id="白盒测试"><a href="#白盒测试" class="headerlink" title="白盒测试"></a>白盒测试</h2><p>有后端代码，根据后端代码的算法，进行调试，分析是否存在安全漏洞 （代码审计）</p>
+<h2 id="灰盒测试"><a href="#灰盒测试" class="headerlink" title="灰盒测试"></a>灰盒测试</h2><p>有一定的后端代码 或服务器信息，如 甲方预先给你提供了 网站的后台密码、VPN、数据库密码</p>
+<h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><p>渗透测试的关键</p>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><h4 id="主动信息收集"><a href="#主动信息收集" class="headerlink" title="主动信息收集"></a>主动信息收集</h4><p>直接与目标进行 交互的信息收集方法</p>
+<h4 id="被动信息收集"><a href="#被动信息收集" class="headerlink" title="被动信息收集"></a>被动信息收集</h4><p>不与目标直接交互，使用第三方平台、第三方网站进行信息收集</p>
+<p>信息收集能力：</p>
+<p>1 长亭法人是谁？ 创始人是谁？创始人毕业于哪个大学？创始人故乡是哪？</p>
+<p>2  微博公司名字是什么？微博总部地址在哪？</p>
+<h3 id="1-域名信息收集"><a href="#1-域名信息收集" class="headerlink" title="1 域名信息收集"></a>1 域名信息收集</h3><h4 id="1-主域名-信息收集"><a href="#1-主域名-信息收集" class="headerlink" title="1 主域名 信息收集"></a>1 主域名 信息收集</h4><h5 id="1-ICP-备案收集"><a href="#1-ICP-备案收集" class="headerlink" title="1 ICP 备案收集"></a>1 ICP 备案收集</h5><p>（只针对境内网站）</p>
+<p>ICP备案：ICP备案是中国对在中国境内提供互联网信息服务的单位或个人进行登记备案的管理制度。所有在中国大陆架设的网站，包括APP和小程序，都需要进行ICP备案，才能正常访问。未完成备案的网站将无法解析和访问。</p>
+<p> ICP备案查询：  <a target="_blank" rel="noopener" href="https://www.beianx.cn/search">https://www.beianx.cn/search</a></p>
+<p>1  通过主域名找公司名</p>
+<p>2  通过公司名找其他主域名</p>
+<h5 id="2-whois-信息"><a href="#2-whois-信息" class="headerlink" title="2 whois 信息"></a>2 whois 信息</h5><h6 id="whois："><a href="#whois：" class="headerlink" title="whois："></a>whois：</h6><h6 id="是一种用于查询域名注册信息的协议和服务。"><a href="#是一种用于查询域名注册信息的协议和服务。" class="headerlink" title="是一种用于查询域名注册信息的协议和服务。"></a>是一种用于查询域名注册信息的协议和服务。</h6><p>通过 WHOIS 查询，可以获取域名的注册人信息、联系方式、注册商、注册和到期日期、域名服务器等公开数据。</p>
+<p> 站长之家：  <a target="_blank" rel="noopener" href="https://whois.chinaz.com/">https://whois.chinaz.com/</a></p>
+<pre><code class="hljs plain">whois   baidu.com</code></pre>
+
+<h5 id="3-域名-权重"><a href="#3-域名-权重" class="headerlink" title="3 域名 权重"></a>3 域名 权重</h5><p>** **<strong>域名权重</strong>：<strong>衡量一个网站在搜索引擎中的综合排名实力的指标，用于预测其在搜索结果中的排名能力</strong></p>
+<p>SEO：Search Engine Optimization（搜索引擎优化）的英文缩写，它是一种数字营销做法， 旨在提高网站在搜索引擎（如谷歌、百度等）自然（非付费）搜索结果页面中的可见性和排名</p>
+<p>权重越高，相同类型漏洞的危害越大</p>
+<p><a target="_blank" rel="noopener" href="https://www.aizhan.com/cha">https://www.aizhan.com/cha</a></p>
+<h5 id="4-whois-反向查询-境外"><a href="#4-whois-反向查询-境外" class="headerlink" title="4 whois 反向查询(境外)"></a>4 whois 反向查询(境外)</h5><p>（常用于境外网站 ）</p>
+<p>通过域名的注册人信息，查询相同注册人的其他域名</p>
+<p><a target="_blank" rel="noopener" href="https://www.ggcx.com/">https://www.ggcx.com/</a></p>
+<h5 id="5-IP-地址反向查询域名"><a href="#5-IP-地址反向查询域名" class="headerlink" title="5 IP 地址反向查询域名"></a>5 IP 地址反向查询域名</h5><p>应用场景：一个IP可能有多个网站，同一个IP的不同站点称为”旁站”</p>
+<p>DNS 默认是已知域名，查询 IP</p>
+<p>DNS 已知IP ，查询域名：DNS需要预先配置了 PTR 解析记录，才能够通过IP反向找到域名 (一 般域名不会配置 PTR 记录)</p>
+<p>1 ：PTR 记录</p>
+<p>2： 第三方网站查询（不准）</p>
+<p><a target="_blank" rel="noopener" href="https://dns.aizhan.com/">https://dns.aizhan.com/</a></p>
+<h4 id="2-子域名-信息收集"><a href="#2-子域名-信息收集" class="headerlink" title="2 子域名 信息收集"></a>2 子域名 信息收集</h4><p>主域名：baidu.com</p>
+<p>子域名：<a target="_blank" rel="noopener" href="http://www.baidu.com/">www.baidu.com</a> 、news.baidu.com、abc.news.baidu.com</p>
+<h5 id="1-爆破子域名"><a href="#1-爆破子域名" class="headerlink" title="1 爆破子域名"></a>1 爆破子域名</h5><p>子域名字典: <a target="_blank" rel="noopener" href="https://github.com/TheKingOfDuck/fuzzDicts/blob/master/subdomainDicts/main.txt">https://github.com/TheKingOfDuck/fuzzDicts/blob/master/subdomainDicts/main.txt</a></p>
+<p>工具：<a target="_blank" rel="noopener" href="https://github.com/knownsec/ksubdomain">https://github.com/knownsec/ksubdomain</a></p>
+<p> <a target="_blank" rel="noopener" href="https://github.com/euphrat1ca/LayerDomainFinder">https://github.com/euphrat1ca/LayerDomainFinder</a></p>
+<h5 id="2-证书透明度查询"><a href="#2-证书透明度查询" class="headerlink" title="2 证书透明度查询"></a>2 证书透明度查询</h5><p><a target="_blank" rel="noopener" href="https://crt.sh/">https://crt.sh/</a></p>
+<p>证书透明度查询的结果不准，因为企业有很多域名并不会做域名解析，或提供网站服务</p>
+<h5 id="3-搜索引擎"><a href="#3-搜索引擎" class="headerlink" title="3 搜索引擎"></a>3 搜索引擎</h5><p>寻找baidu子域名</p>
+<pre><code class="hljs plain">site:baidu.com
+site:.edu.cn</code></pre>
+
+<p>寻找清华大学子域名</p>
+<pre><code class="hljs plain">site:tsinghua.edu.cn</code></pre>
+
+<p>寻找中国大学及教育机构子域名</p>
+<pre><code class="hljs plain">site:.edu.cn</code></pre>
+
+<h5 id="4-网络空间-测绘平台"><a href="#4-网络空间-测绘平台" class="headerlink" title="4 网络空间 测绘平台"></a>4 网络空间 测绘平台</h5><p>使用此类工具，主要是看帮助手册 :  <a target="_blank" rel="noopener" href="https://fofa.info/">https://fofa.info/</a></p>
+<pre><code class="hljs plain">domain=&quot;tsinghua.edu.cn&quot;</code></pre>
+
+<p> 其他语法</p>
+<pre><code class="hljs plain">domain=&quot;tsinghua.edu.cn&quot; &amp;&amp; body=&quot;后台&quot;</code></pre>
+
+<p>hunter  :  <a target="_blank" rel="noopener" href="https://hunter.qianxin.com/">https://hunter.qianxin.com/</a></p>
+<p>360 quake  ：  <a target="_blank" rel="noopener" href="https://quake.360.net/quake/#/index">https://quake.360.net/quake/#/index</a></p>
+<p>zoomeye  ：<a target="_blank" rel="noopener" href="https://www.zoomeye.ai/">https://www.zoomeye.ai/</a></p>
+<p>零零信安  ：<a target="_blank" rel="noopener" href="https://0.zone/">https://0.zone/</a></p>
+<p>shodan：  <a target="_blank" rel="noopener" href="https://www.shodan.io/">https://www.shodan.io/</a></p>
+<h5 id="5-自动化工具-oneforall"><a href="#5-自动化工具-oneforall" class="headerlink" title="5 自动化工具 oneforall"></a>5 自动化工具 oneforall</h5><p>**注意：**运行python一般都会使用虚拟环境</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/shmilylty/OneForAll">https://github.com/shmilylty/OneForAll</a></p>
+<p>安装 （注意 python 版本 不要 太高）</p>
+<pre><code class="hljs plain">git clone https://github.com/shmilylty/OneForAll.git
+cd OneForAll
+pip install -r requirements.txt</code></pre>
+
+<p>**注意：**requirements.txt 是python的依赖模块，一般在运行python之前，都需要安装 pip install -r requirements.txt</p>
+<p>使用</p>
+<p>查看 oneforall 的帮助信息</p>
+<pre><code class="hljs plain">python oneforall.py</code></pre>
+
+<pre><code class="hljs plain">python oneforall.py --target 主域名 run</code></pre>
+
+<p>配置</p>
+<pre><code class="hljs plain">config/api.py 配置付费接口,比如 fofa、hunter 等测绘平台接口
+config/settings.py 设置,是否开启爆破、是否开启递归、是否使用代理等
+config/default.py 默认配置,比如端口范围</code></pre>
+
+<h3 id="2-IP信息收集"><a href="#2-IP信息收集" class="headerlink" title="2 IP信息收集"></a>2 IP信息收集</h3><h4 id="1-域名解析为-IP-地址"><a href="#1-域名解析为-IP-地址" class="headerlink" title="1 域名解析为 IP 地址"></a>1 域名解析为 IP 地址</h4><pre><code class="hljs plain">nslookup www.baidu.com</code></pre>
+
+<h4 id="2-CDN-判断"><a href="#2-CDN-判断" class="headerlink" title="2 CDN 判断"></a>2 CDN 判断</h4><h5 id="1-nslookup"><a href="#1-nslookup" class="headerlink" title="1 nslookup"></a>1 nslookup</h5><p> 使用CDN的网站：</p>
+<pre><code class="hljs plain">出现多个ip地址
+有cname特征</code></pre>
+
+<h5 id="2-多地ping"><a href="#2-多地ping" class="headerlink" title="2 多地ping"></a>2 多地ping</h5><p>不同的地方ping同一个网站，ip解析结果不同，且具有地理趋向，可以判断网站使用了CDN服务</p>
+<h4 id="3-CDN-绕过"><a href="#3-CDN-绕过" class="headerlink" title="3 CDN 绕过"></a>3 CDN 绕过</h4><p>绕过cdn，找到服务器真实ip地址</p>
+<h5 id="1-DNS-历史解析"><a href="#1-DNS-历史解析" class="headerlink" title="1 DNS 历史解析"></a>1 DNS 历史解析</h5><p>如： 有域名 <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> ， 2024年开设网站时，没有cdn服务，2025年才购买cdn服 务。 只需找到 2024年 <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> 解析记录，即可找到真实IP</p>
+<p><a target="_blank" rel="noopener" href="https://securitytrails.com/">https://securitytrails.com/</a></p>
+<h5 id="2-子域名的DNS-记录"><a href="#2-子域名的DNS-记录" class="headerlink" title="2 子域名的DNS 记录"></a>2 子域名的DNS 记录</h5><h5 id="3-DNS-配置缺陷"><a href="#3-DNS-配置缺陷" class="headerlink" title="3 DNS 配置缺陷"></a>3 DNS 配置缺陷</h5><h5 id="4-国外-ping"><a href="#4-国外-ping" class="headerlink" title="4 国外 ping"></a>4 国外 ping</h5><p>有些CDN只能在国内提供服务，如果从国外ping域名，得到的即为 域名的真实 ip 地址 （已淘汰，现在cdn都有海外节点）</p>
+<h5 id="5-原始邮件头"><a href="#5-原始邮件头" class="headerlink" title="5 原始邮件头"></a>5 原始邮件头</h5><p>邮件收发使用的是 SMTP 协议，不能使用cdn服务，如果一个公司的网站服务刚好和邮件服务在同一个服务器上，就可能造成真实 ip 泄露  （已淘汰：现在的公司会直接购买 阿里云、腾讯云提供的邮件收发服务，原始邮件头看到的是 阿里云或腾讯云随机分配的ip地址，没有用）</p>
+<h5 id="6-网站敏感信息泄露"><a href="#6-网站敏感信息泄露" class="headerlink" title="6 网站敏感信息泄露"></a>6 网站敏感信息泄露</h5><p><code>phpinfo SERVER_ADDR 可能会泄露服务器的真实地址  </code></p>
+<h5 id="7-扫描全网"><a href="#7-扫描全网" class="headerlink" title="7 扫描全网"></a>7 扫描全网</h5><p><a target="_blank" rel="noopener" href="https://github.com/superfish9/hackcdn">https://github.com/superfish9/hackcdn</a></p>
+<h4 id="4-C-段查询"><a href="#4-C-段查询" class="headerlink" title="4 C 段查询"></a>4 C 段查询</h4><p>（网站没有使用cdn，才可以进行C段查询）</p>
+<p>假设 <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> 的ip是 150.165.96.0&#x2F;24 ，那么 150.165.96.0&#x2F;24 一个网段，很可能存在其他ip 地址也属于同一个公司  （已淘汰， 云服务一般不会连续分配公网ip）</p>
+<p>C段查询一般针对内网扫描：<a target="_blank" rel="noopener" href="https://github.com/lcvvvv/kscan">https://github.com/lcvvvv/kscan</a></p>
+<p>防火绒杀毒：（设置文件夹信任区）</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/shadow1ng/fscan">https://github.com/shadow1ng/fscan</a></p>
+<p><a target="_blank" rel="noopener" href="https://gobysec.net/">https://gobysec.net/</a></p>
+<h4 id="5-端口扫描"><a href="#5-端口扫描" class="headerlink" title="5 端口扫描"></a>5 端口扫描</h4><p>kscan、 fscan、 goby 都能进行端口扫描</p>
+<p>windows nmap 安装：  <a target="_blank" rel="noopener" href="https://nmap.org/dist/nmap-7.98-setup.exe">https://nmap.org/dist/nmap-7.98-setup.exe</a></p>
+<h5 id="1-默认扫描"><a href="#1-默认扫描" class="headerlink" title="1  默认扫描"></a>1  默认扫描</h5><pre><code class="hljs plain">nmap 192.168.2.111
+nmap 192.168.2.0/24</code></pre>
+
+<h5 id="2-TCP-快速扫描"><a href="#2-TCP-快速扫描" class="headerlink" title="2  TCP 快速扫描"></a>2  TCP 快速扫描</h5><pre><code class="hljs plain">nmap -sT -T4 192.168.2.111
+nmap -sT -T4 192.168.2.111/24
+-sT : TCP 端口扫描
+-T4 ：速度，0-5 ，0最慢，5最快</code></pre>
+
+<h5 id="3-指定端口扫描"><a href="#3-指定端口扫描" class="headerlink" title="3  指定端口扫描"></a>3  指定端口扫描</h5><pre><code class="hljs plain">nmap -sT -T4 -p445 192.168.2.111
+-p445 只扫描445端口
+
+扫描全端口
+nmap -sT -T4 -p0-65535 192.168.2.111
+nmap -sT -T4 -p- 192.168.2.111</code></pre>
+
+<h5 id="4-禁用ICMP，直接扫描"><a href="#4-禁用ICMP，直接扫描" class="headerlink" title="4  禁用ICMP，直接扫描"></a>4  禁用ICMP，直接扫描</h5><h6 id="nmap默认情况下，"><a href="#nmap默认情况下，" class="headerlink" title="nmap默认情况下，"></a>nmap默认情况下，</h6><h6 id="扫描前需要是否能ping通，"><a href="#扫描前需要是否能ping通，" class="headerlink" title="扫描前需要是否能ping通，"></a>扫描前需要是否能ping通，</h6><h6 id="如果ping不通，"><a href="#如果ping不通，" class="headerlink" title="如果ping不通，"></a>如果ping不通，</h6><p>就忽略了</p>
+<pre><code class="hljs plain">nmap -sT -T4 -Pn 192.168.2.111
+-Pn 扫描前不用ping，直接开扫(nmap默认情况下，扫描前需要是否能ping通，如果ping不通，
+就忽略了)</code></pre>
+
+<h5 id="5-扫描服务版本"><a href="#5-扫描服务版本" class="headerlink" title="5  扫描服务版本"></a>5  扫描服务版本</h5><pre><code class="hljs plain">nmap -sT -T4 -Pn -sV 192.168.2.131
+-sV 扫描详细的服务版本（不准）</code></pre>
+
+<h5 id="6-扫描操作系统版本"><a href="#6-扫描操作系统版本" class="headerlink" title="6  扫描操作系统版本"></a>6  扫描操作系统版本</h5><pre><code class="hljs plain">nmap -O 192.168.2.111
+-O 扫描操作系统版本</code></pre>
+
+<h5 id="7-不进行端口扫描，直接Ping探测"><a href="#7-不进行端口扫描，直接Ping探测" class="headerlink" title="7  不进行端口扫描，直接Ping探测"></a>7  不进行端口扫描，直接Ping探测</h5><pre><code class="hljs plain">nmap -sn 192.168.2.0/24
+nmap -sn -PE 192.168.2.0/24
+-sn 不扫描端口，直接进行存活探测
+-PE 进行ping扫描</code></pre>
+
+<h5 id="8-UDP端口扫描"><a href="#8-UDP端口扫描" class="headerlink" title="8  UDP端口扫描"></a>8  UDP端口扫描</h5><pre><code class="hljs plain">nmap -sU -p5900 192.168.2.111
+-sU 扫描UDP端口</code></pre>
+
+<h5 id="9-半开扫描"><a href="#9-半开扫描" class="headerlink" title="9  半开扫描"></a>9  半开扫描</h5><pre><code class="hljs plain">nmap -sS -T4 192.168.2.111
+-sS TCP半开扫描，只进行 SYN 握手</code></pre>
+
+<h5 id="10-半开扫描-ACK"><a href="#10-半开扫描-ACK" class="headerlink" title="10  半开扫描 ACK"></a>10  半开扫描 ACK</h5><pre><code class="hljs plain">nmap -sA -T4 192.168.2.111
+-sA TCP ACK 扫描</code></pre>
+
+<h5 id="11-NSE-脚本"><a href="#11-NSE-脚本" class="headerlink" title="11  NSE 脚本"></a>11  NSE 脚本</h5><pre><code class="hljs plain">nmap 拓展脚本
+nmap 拓展脚本是 nse 脚本，nse 脚本涵盖漏洞扫描、敏感信息探测等功能</code></pre>
+
+<p>调用脚本</p>
+<pre><code class="hljs plain">nmap -sU -p137 --script=nbstat.nse 192.168.2.0/24</code></pre>
+
+<h5 id="12-扫描结果"><a href="#12-扫描结果" class="headerlink" title="12  扫描结果"></a>12  扫描结果</h5><pre><code class="hljs plain">open 打开
+filtered 未知，可能是被防火墙拦截
+closed 关闭</code></pre>
+
+<h3 id="3-网站信息收集"><a href="#3-网站信息收集" class="headerlink" title="3 网站信息收集"></a>3 网站信息收集</h3><h4 id="1-指纹信息"><a href="#1-指纹信息" class="headerlink" title="1 指纹信息"></a>1 指纹信息</h4><h5 id="收集指纹的作用"><a href="#收集指纹的作用" class="headerlink" title="收集指纹的作用"></a>收集指纹的作用</h5><p>攻击网站和服务一般都是使用历史漏洞，如 目标有1000 个网站，快速的判断 1000个网站中，有哪些网站是 thinkphp 框架写的，如有 就可以尝试** thinkphp** 的历史漏洞进行攻击</p>
+<h4 id="什么是指纹"><a href="#什么是指纹" class="headerlink" title="什么是指纹"></a>什么是指纹</h4><p>1 网站使用了什么<strong>编程语言</strong>：前端（vue、flutter、react）、后端（php、java、python、go、asp.net）</p>
+<p>2 网站 <strong>web 服务器中间件</strong> ：tomcat、apache、nginx、jboss、weblogic、iis、caddy、tengine、</p>
+<p>东方通、宝兰德</p>
+<p>3 网站使用了什么<strong>操作系统</strong>：Linux、Windows</p>
+<p>4 网站使用了 什么<strong>后端开发框架</strong>：springboot、spring mvc、struts2、django、flask、fastapi、gin、thinkphp</p>
+<p>5 网站使用了什么<strong>CMS系统</strong>（内容管理系统）：discuz、wordpress、drupal、joomla、织梦cms</p>
+<p>6 网站使用了什么 <strong>开发组件、开发库</strong>：搜索引擎（Elasticsearch、solr）、JSON解析引擎（fastjson、jackson）、安全框架（Spring Security、Apache shiro）、日志记录（log4j2、logback）、数据库连接池（c3p0、Alibaba Druid）、ORM框架（mybatis、hibernate）、富文本编辑器（FCKeditor、Kindeditor、ueditor）</p>
+<p>7 网站使用了什么** dbms（数据库管理引擎）**：mysql、mssql、postgresql</p>
+<p>8 网站使用了什么** waf （web 应用防火墙）**：雷池、安全狗、云锁、G01、宝塔、云WAF</p>
+<p>9 网站使用了什么 **OA (**办公自动化)：（泛微、通达、用友、金碟、致远、金和、禅道、蓝凌）</p>
+<h4 id="ELK日志管理与分析技术栈"><a href="#ELK日志管理与分析技术栈" class="headerlink" title="ELK日志管理与分析技术栈"></a>ELK日志管理与分析技术栈</h4><p>是一个由三个开源项目组成的日志管理与分析技术栈的简称，这三个项目分别是：</p>
+<p>Elasticsearch</p>
+<p>Logstash</p>
+<p>Kibana</p>
+<h5 id="自动化工具"><a href="#自动化工具" class="headerlink" title="自动化工具"></a>自动化工具</h5><p>工具好不好用，在于指纹库的丰富度</p>
+<p>工作时，可能项目会有成千上万个网站，需要自动化批量进行指纹信息识别</p>
+<p>指纹库：  <a target="_blank" rel="noopener" href="https://github.com/0x727/FingerprintHub">https://github.com/0x727/FingerprintHub</a></p>
+<p>工具：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/lcvvvv/kscan">https://github.com/lcvvvv/kscan</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/emo-crab/observer_ward">https://github.com/emo-crab/observer_ward</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/P1-Team/AlliN">https://github.com/P1-Team/AlliN</a></p>
+<p>其他工具：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/EdgeSecurityTeam/EHole">https://github.com/EdgeSecurityTeam/EHole</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/chaitin/xapp">https://github.com/chaitin/xapp</a></p>
+<p> <strong>浏览器插件  ：</strong></p>
+<p><strong>wappalyzer</strong></p>
+<p>⚠ wappalyzer 经常会被缓存影响，需要手动清除缓存</p>
+<p>**雪瞳  **</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/SickleSec/SnowEyes">https://github.com/SickleSec/SnowEyes</a></p>
+<p>下载:</p>
+<p>chrome打开开发者模式</p>
+<p>把 SnowEyes-v0.2.7.6-patch.zip 直接拖到chrome中即可完成安装</p>
+<h4 id="2-目录探测"><a href="#2-目录探测" class="headerlink" title="2 目录探测"></a>2 目录探测</h4><p>为了发现网站的目录、页面、接口、敏感文件泄露</p>
+<h5 id="1-目录爆破"><a href="#1-目录爆破" class="headerlink" title="1 目录爆破"></a>1 目录爆破</h5><p>字典：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/TheKingOfDuck/fuzzDicts/tree/master/directoryDicts">https://github.com/TheKingOfDuck/fuzzDicts/tree/master/directoryDicts</a></p>
+<p>工具：  dirsearch</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/maurosoria/dirsearch">https://github.com/maurosoria/dirsearch</a></p>
+<p>⚠️ ：运行python，一般会使用虚拟环境（conda），记得安装 python的依赖</p>
+<p> (<code>pip install -r requirements.txt</code> )</p>
+<pre><code class="hljs plain">python dirsearch.py -u &quot;http://testphp.vulnweb.com/&quot;</code></pre>
+
+<p> burp 插件  :  RouteVulScan</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/F6JO/RouteVulScan">https://github.com/F6JO/RouteVulScan</a></p>
+<p>怎么使用：</p>
+<p>确保 dashboard扫描打开</p>
+<p>打开 RouteVulScan</p>
+<p>只要是burpsuite抓包的网站，都会被自动丢进 RouteVulScan进行扫描</p>
+<h5 id="2-常见信息泄露"><a href="#2-常见信息泄露" class="headerlink" title="2 常见信息泄露"></a>2 常见信息泄露</h5><h6 id="1-备份文件泄露"><a href="#1-备份文件泄露" class="headerlink" title="1 备份文件泄露"></a>1 备份文件泄露</h6><p>开发者可能会在网站的目录中留下 .zip .tar .tar.gz 等文件格式的备份信息，可能 泄露源代码 或其 他敏感信息</p>
+<p>如果真实项目中，通过信息泄露拿到了别人服务器后端源代码，应该做什么？ ⚠️ ： 找敏感信息 （比如数据库密码， 一般数据库密码都在网站的配置文件中 [config 、 conf]）</p>
+<h6 id="2-git-泄露"><a href="#2-git-泄露" class="headerlink" title="2  git 泄露"></a>2  git 泄露</h6><p>开发者比较习惯把自己的代码上传到 github、 gitlab、gitea 中，如果开发者部署生产环境时，忘记删除当前目录中的 .git 文件，就可能造成 git 泄露，可能会产生后端源代码泄露</p>
+<p>发现git泄露后，需要使用工具尝试换源后端服务器源代码</p>
+<h6 id="3-敏感接口泄露"><a href="#3-敏感接口泄露" class="headerlink" title="3  敏感接口泄露"></a>3  敏感接口泄露</h6><h6 id="springboot-actuator-接口泄露："><a href="#springboot-actuator-接口泄露：" class="headerlink" title="springboot actuator 接口泄露："></a>springboot actuator 接口泄露：</h6><h6 id="actuator-env-泄露JVM环境变量和配置属性"><a href="#actuator-env-泄露JVM环境变量和配置属性" class="headerlink" title="&#x2F;actuator&#x2F;env 泄露JVM环境变量和配置属性"></a>&#x2F;actuator&#x2F;env 泄露JVM环境变量和配置属性</h6><h6 id="actuator-heapdump-下载jvm转储文件（heapdump可以看到-actuator-env中星号的明文）"><a href="#actuator-heapdump-下载jvm转储文件（heapdump可以看到-actuator-env中星号的明文）" class="headerlink" title="&#x2F;actuator&#x2F;heapdump 下载jvm转储文件（heapdump可以看到 &#x2F;actuator&#x2F;env中星号的明文）"></a>&#x2F;actuator&#x2F;heapdump 下载jvm转储文件（heapdump可以看到 &#x2F;actuator&#x2F;env中星号的明文）</h6><pre><code class="hljs plain">java -jar JDumpSpider-1.1-SNAPSHOT-full.jar D:\Download\heapdump</code></pre>
+
+<h6 id="4-API文档泄露"><a href="#4-API文档泄露" class="headerlink" title="4  API文档泄露"></a>4  API文档泄露</h6><p><a target="_blank" rel="noopener" href="https://swagger.org.cn/tools/swagger-ui/">https://swagger.org.cn/tools/swagger-ui/</a></p>
+<p>swagger-ui.html 泄露接口文档，属于低危漏洞。是否能够行成高危、严重漏洞，主要靠泄露的 api 是否有漏洞</p>
+<h5 id="3-爬虫"><a href="#3-爬虫" class="headerlink" title="3  爬虫"></a>3  爬虫</h5><p>爬虫就是burpsuite模拟点击，记录能够点击到的所有的页面</p>
+<p>结果：sitemap</p>
+<h5 id="4-JS-提取信息"><a href="#4-JS-提取信息" class="headerlink" title="4  JS 提取信息"></a>4  JS 提取信息</h5><p>前后端分离的网站中，js 中会留下很多后端的 api 接口信息，提取出 api 可以进一步继续渗透测试</p>
+<p>**浏览器插件 findsomething  **</p>
+<p>收集到的  PATH （接口），需要猜想接口的功能，并逐一测试是否有漏洞</p>
+<p>**浏览器插件 雪瞳  **</p>
+<h4 id="3-网站敏感信息提取"><a href="#3-网站敏感信息提取" class="headerlink" title="3  网站敏感信息提取"></a>3  网站敏感信息提取</h4><p>比如网站响应很多时候，会携带身份证号、手机号、密码、密钥等敏感信息</p>
+<h5 id="1-burpsuite-插件-Hae：自动标记敏感信息"><a href="#1-burpsuite-插件-Hae：自动标记敏感信息" class="headerlink" title="1 burpsuite 插件 Hae：自动标记敏感信息"></a>1 burpsuite 插件 Hae：自动标记敏感信息</h5><p><a target="_blank" rel="noopener" href="https://github.com/gh0stkey/HaE">https://github.com/gh0stkey/HaE</a></p>
+<h5 id="2-谷歌黑客语法"><a href="#2-谷歌黑客语法" class="headerlink" title="2 谷歌黑客语法"></a>2 谷歌黑客语法</h5><pre><code class="hljs plain">site 站点 site:baidu.com
+intext 正文搜索 intext:身份证号
+inurl 在url中搜索 inurl:news.php
+intitle 在标题中搜索 intitle:后台管理
+filetype 文件类型 filetype:pdf
+
+黑客语法大全：https://www.exploit-db.com/google-hacking-database</code></pre>
+
+<p>找清华大学的后台管理页面</p>
+<pre><code class="hljs plain">site:tsinghua.edu.cn intitle:后台</code></pre>
+
+<p>找中国哪些大学可能会泄露学生的身份证号表格文件</p>
+<pre><code class="hljs plain">site:edu.cn intext:身份证号 filetype:xls</code></pre>
+
+<p>找世界上哪些网站有git泄露</p>
+<pre><code class="hljs plain">intext:&quot;index of&quot; &quot;.git&quot;</code></pre>
+
+<h5 id="3-github-搜索语法"><a href="#3-github-搜索语法" class="headerlink" title="3 github 搜索语法"></a>3 github 搜索语法</h5><p> 企业的开发可能会把自己的源代码放到github仓库中，如果上传时，开发者忘记去除敏感信息， 就会造成大量的密钥泄露</p>
+<p> 信息泄露搜索语法大全：</p>
+<p><a target="_blank" rel="noopener" href="https://book.hacktricks.wiki/">https://book.hacktricks.wiki/</a></p>
+<p> 举例：白嫖openai api接口，github上一定有安全意识非常差的开发者，直接把自己的openai api 接口密钥放到github中</p>
+<p> 搜索语法：</p>
+<pre><code class="hljs plain">OPENAI_API_KEY=&quot;sk</code></pre>
+
+<p> 检测接口是否可用：</p>
+<p> curl   –location ‘   <a target="_blank" rel="noopener" href="https://api.openai.com/v1/models">https://api.openai.com/v1/models</a>‘   \   –header   ‘Authorization:  Bearer  sk-xxxxxxxx（示例密钥已脱敏）’</p>
+<h5 id="4-网站历史页面"><a href="#4-网站历史页面" class="headerlink" title="4  网站历史页面"></a>4  网站历史页面</h5><p>  <a target="_blank" rel="noopener" href="https://web.archive.org/">https://web.archive.org/</a></p>
+<h4 id="4-企业信息收集"><a href="#4-企业信息收集" class="headerlink" title="4  企业信息收集"></a>4  企业信息收集</h4><h5 id="1-企业基本信息"><a href="#1-企业基本信息" class="headerlink" title="1  企业基本信息"></a>1  企业基本信息</h5><p> 法人、供应链、子公司&#x2F;分公司、公司人数、知识产权</p>
+<p> 爱企查：  <a target="_blank" rel="noopener" href="https://www.aiqicha.com/">https://www.aiqicha.com/</a></p>
+<p> 企查查：  <a target="_blank" rel="noopener" href="https://www.qcc.com/">https://www.qcc.com/</a></p>
+<h5 id="2-移动资产"><a href="#2-移动资产" class="headerlink" title="2  移动资产"></a>2  移动资产</h5><p> 公司有哪些app、小程序、公众号</p>
+<p> 小程序  :  微信 “搜一搜”  ;   知识产权、经营状况</p>
+<p>APP</p>
+<p>七麦数据</p>
+<p><a target="_blank" rel="noopener" href="https://www.qimai.cn/">https://www.qimai.cn/</a></p>
+<p>公 众 号  :  微信搜一搜  ;  搜狗搜索</p>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"><span>信息收集</span></a>
+          
+            <a href="/tags/%E5%AD%90%E5%9F%9F%E5%90%8D/"><span>子域名</span></a>
+          
+            <a href="/tags/%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB/"><span>指纹识别</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/sql-injection-basics/">
+            <span>← 上一篇</span>
+            <strong>SQL 注入漏洞原理与利用</strong>
+          </a>
+        
+        
+          <span class="post-nav__next is-empty"></span>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

