@@ -2,42 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://blogbu2154.site/hexo-setup-optimized/</loc>
-    
-    <lastmod>2026-08-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/android-reverse-engineering/</loc>
-    
-    <lastmod>2026-08-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/ai-cli-tools/</loc>
-    
-    <lastmod>2026-08-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/ai-coding-agents-compare/</loc>
-    
-    <lastmod>2026-08-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://blogbu2154.site/ai-coding-agents-overview/</loc>
     
     <lastmod>2026-08-29</lastmod>
@@ -47,261 +11,18 @@
   </url>
   
   <url>
+    <loc>https://blogbu2154.site/ai-coding-agents-compare/</loc>
+    
+    <lastmod>2026-08-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blogbu2154.site/deepseek-harness-intro/</loc>
     
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/information-gathering/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/red-blue-teaming/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/security-products-and-devices/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/wechat-miniprogram-pentest/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/android-app-pentest/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/intranet-proxy-tunnels/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/c2-frameworks/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/persistence-techniques/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/privilege-escalation/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/lateral-movement/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/domain-penetration/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/ad-environment-setup/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/intranet-recon-windows-auth/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/frontend-encryption-analysis/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/java-web-vulnerabilities/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/waf-bypass-techniques/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/logic-vulnerabilities/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/ssrf-vulnerability/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/deserialization-vulnerability/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/file-inclusion-and-arbitrary-read/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/rce-vulnerability/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/xxe-injection/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/file-upload-bypass/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/csrf-and-file-upload/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/sql-getshell-and-xss/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/sql-injection-defense/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/sqlmap-usage-guide/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/sql-injection-basics/</loc>
-    
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-08-14</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -310,7 +31,7 @@
   <url>
     <loc>https://blogbu2154.site/blue-team-ops/</loc>
     
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-06-24</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -319,7 +40,7 @@
   <url>
     <loc>https://blogbu2154.site/blue-team-basics/</loc>
     
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-06-24</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -362,6 +83,15 @@
   </url>
   
   <url>
+    <loc>https://blogbu2154.site/ai-cli-tools/</loc>
+    
+    <lastmod>2026-06-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blogbu2154.site/ai-concepts/</loc>
     
     <lastmod>2026-03-19</lastmod>
@@ -371,7 +101,52 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/404.html</loc>
+    <loc>https://blogbu2154.site/red-blue-teaming/</loc>
+    
+    <lastmod>2026-02-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/security-products-and-devices/</loc>
+    
+    <lastmod>2026-02-02</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/domain-penetration/</loc>
+    
+    <lastmod>2026-02-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/lateral-movement/</loc>
+    
+    <lastmod>2026-01-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/ad-environment-setup/</loc>
+    
+    <lastmod>2026-01-28</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/persistence-techniques/</loc>
     
     <lastmod>2026-01-27</lastmod>
     
@@ -380,7 +155,7 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/contact/index.html</loc>
+    <loc>https://blogbu2154.site/privilege-escalation/</loc>
     
     <lastmod>2026-01-27</lastmod>
     
@@ -410,6 +185,222 @@
     <loc>https://blogbu2154.site/categories/index.html</loc>
     
     <lastmod>2026-01-27</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/intranet-recon-windows-auth/</loc>
+    
+    <lastmod>2026-01-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/intranet-proxy-tunnels/</loc>
+    
+    <lastmod>2026-01-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/c2-frameworks/</loc>
+    
+    <lastmod>2026-01-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/frontend-encryption-analysis/</loc>
+    
+    <lastmod>2026-01-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/wechat-miniprogram-pentest/</loc>
+    
+    <lastmod>2026-01-12</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/android-app-pentest/</loc>
+    
+    <lastmod>2026-01-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/android-reverse-engineering/</loc>
+    
+    <lastmod>2026-01-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/logic-vulnerabilities/</loc>
+    
+    <lastmod>2026-01-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/waf-bypass-techniques/</loc>
+    
+    <lastmod>2026-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/java-web-vulnerabilities/</loc>
+    
+    <lastmod>2025-12-28</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/deserialization-vulnerability/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/ssrf-vulnerability/</loc>
+    
+    <lastmod>2025-12-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/xxe-injection/</loc>
+    
+    <lastmod>2025-12-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/rce-vulnerability/</loc>
+    
+    <lastmod>2025-12-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/file-inclusion-and-arbitrary-read/</loc>
+    
+    <lastmod>2025-12-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/file-upload-bypass/</loc>
+    
+    <lastmod>2025-12-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/csrf-and-file-upload/</loc>
+    
+    <lastmod>2025-12-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/sql-getshell-and-xss/</loc>
+    
+    <lastmod>2025-12-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/sql-injection-defense/</loc>
+    
+    <lastmod>2025-12-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/sqlmap-usage-guide/</loc>
+    
+    <lastmod>2025-12-02</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/sql-injection-basics/</loc>
+    
+    <lastmod>2025-12-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/information-gathering/</loc>
+    
+    <lastmod>2025-11-25</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/hexo-setup-optimized/</loc>
+    
+    <lastmod>2025-11-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/404.html</loc>
+    
+    <lastmod>2018-09-30</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -460,7 +451,28 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/AI%E7%BC%96%E7%A8%8B/</loc>
+    <loc>https://blogbu2154.site/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/AD/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/AI%E5%B7%A5%E5%85%B7/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -468,6 +480,76 @@
   
   <url>
     <loc>https://blogbu2154.site/tags/Agent/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/CC-Switch/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/EchoBird/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Wireshark/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E7%A7%91%E6%9D%A5/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/MCP/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/tshark/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E6%8A%93%E5%8C%85/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/AI%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -530,48 +612,6 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/AD/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E5%AE%89%E5%8D%93/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/App%E6%B8%97%E9%80%8F/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E6%8A%93%E5%8C%85/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blogbu2154.site/tags/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -593,119 +633,14 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/Wireshark/</loc>
+    <loc>https://blogbu2154.site/tags/%E5%AE%89%E5%8D%93/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/%E7%A7%91%E6%9D%A5/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/MCP/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/tshark/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/C2/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Cobalt-Strike/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E8%BF%9C%E6%8E%A7/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/LFI/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E4%BC%AA%E5%8D%8F%E8%AE%AE/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Kerberoasting/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/PTH/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/AI%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/CC-Switch/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/EchoBird/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/</loc>
+    <loc>https://blogbu2154.site/tags/App%E6%B8%97%E9%80%8F/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -733,21 +668,35 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/%E5%89%8D%E7%AB%AF%E5%8A%A0%E8%A7%A3%E5%AF%86/</loc>
+    <loc>https://blogbu2154.site/tags/C2/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/Burp/</loc>
+    <loc>https://blogbu2154.site/tags/Cobalt-Strike/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/%E5%8A%A0%E5%AF%86%E7%BB%95%E8%BF%87/</loc>
+    <loc>https://blogbu2154.site/tags/%E8%BF%9C%E6%8E%A7/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Kerberoasting/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/PTH/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -775,27 +724,6 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/%E4%BB%A3%E7%90%86%E9%9A%A7%E9%81%93/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/FRP/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blogbu2154.site/tags/Webshell/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -810,21 +738,42 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/NTLM/</loc>
+    <loc>https://blogbu2154.site/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/Kerberos/</loc>
+    <loc>https://blogbu2154.site/tags/LFI/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/Fastjson/</loc>
+    <loc>https://blogbu2154.site/tags/%E4%BC%AA%E5%8D%8F%E8%AE%AE/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E5%89%8D%E7%AB%AF%E5%8A%A0%E8%A7%A3%E5%AF%86/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Burp/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E5%8A%A0%E5%AF%86%E7%BB%95%E8%BF%87/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -852,6 +801,48 @@
   </url>
   
   <url>
+    <loc>https://blogbu2154.site/tags/%E4%BB%A3%E7%90%86%E9%9A%A7%E9%81%93/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/FRP/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/NTLM/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Kerberos/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Fastjson/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blogbu2154.site/tags/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -873,20 +864,6 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/RCE/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blogbu2154.site/tags/%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -895,69 +872,6 @@
   
   <url>
     <loc>https://blogbu2154.site/tags/IPC/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E6%8F%90%E6%9D%83/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Windows/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Linux/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%AE%BE%E5%A4%87/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/WAF/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E6%80%81%E5%8A%BF%E6%84%9F%E7%9F%A5/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -985,6 +899,41 @@
   </url>
   
   <url>
+    <loc>https://blogbu2154.site/tags/RCE/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%AE%BE%E5%A4%87/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/WAF/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E6%80%81%E5%8A%BF%E6%84%9F%E7%9F%A5/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blogbu2154.site/tags/SQL%E6%B3%A8%E5%85%A5/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -1000,6 +949,27 @@
   
   <url>
     <loc>https://blogbu2154.site/tags/Getshell/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E6%8F%90%E6%9D%83/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Windows/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Linux/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1034,20 +1004,6 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/XXE/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/XML/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blogbu2154.site/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -1063,6 +1019,62 @@
   
   <url>
     <loc>https://blogbu2154.site/tags/AppSecret/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/SSRF/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Redis/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E5%86%85%E7%BD%91/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/XXE/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/XML/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/Hexo/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E5%8D%9A%E5%AE%A2/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/GitHub-Pages/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1104,48 +1116,6 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/Hexo/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E5%8D%9A%E5%AE%A2/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/GitHub-Pages/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/SSRF/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/Redis/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blogbu2154.site/tags/%E5%86%85%E7%BD%91/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blogbu2154.site/tags/Burp-Suite/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -1168,6 +1138,13 @@
   
   <url>
     <loc>https://blogbu2154.site/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1209,6 +1186,20 @@
   </url>
   
   <url>
+    <loc>https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blogbu2154.site/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blogbu2154.site/tags/DeepSeek-Harness/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -1237,7 +1228,7 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
+    <loc>https://blogbu2154.site/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1253,14 +1244,14 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/</loc>
+    <loc>https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/</loc>
+    <loc>https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1274,7 +1265,7 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Web-%E5%AE%89%E5%85%A8/</loc>
+    <loc>https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E7%A7%BB%E5%8A%A8%E5%AE%89%E5%85%A8/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1288,7 +1279,7 @@
   </url>
   
   <url>
-    <loc>https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E7%A7%BB%E5%8A%A8%E5%AE%89%E5%85%A8/</loc>
+    <loc>https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Web-%E5%AE%89%E5%85%A8/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

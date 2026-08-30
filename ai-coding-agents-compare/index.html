@@ -17,12 +17,28 @@
 <meta property="og:description" content="记录 AI 安全、网络安全、工具实践与技术复盘。">
 <meta property="og:url" content="https://blogbu2154.site/ai-coding-agents-compare/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/21.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/21.jpg">
+<meta property="og:image:alt" content="设计哲学 · 安全哲学 · 架构：六大 AI 编程智能体的本质差异 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2026-08-14T14:00:00+08:00">
+<meta property="article:modified_time" content="2026-08-14T14:00:00+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/21.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -92,8 +108,6 @@
         <div class="post-meta">
           <time datetime="2026-08-14">2026-08-14</time>
           
-            <span>更新于 2026-08-30</span>
-          
         </div>
       </header>
       
@@ -112,7 +126,7 @@
 <h3 id="3-Antigravity-——-「平台化」哲学"><a href="#3-Antigravity-——-「平台化」哲学" class="headerlink" title="3. Antigravity —— 「平台化」哲学"></a>3. Antigravity —— 「平台化」哲学</h3><p>Antigravity 不满足于做一个 CLI，它是一条<strong>产品家族</strong>：IDE + CLI + SDK + Managed Agents。它相信 Agent 应该渗透到开发的每个入口，从终端到桌面到云端托管。这种「全家桶」思路继承了 Google 的平台基因（Vertex、Gemini、Imagen 全家联动）。</p>
 <h3 id="4-Grok-Build-——-「终端原生-多模态」哲学"><a href="#4-Grok-Build-——-「终端原生-多模态」哲学" class="headerlink" title="4. Grok Build —— 「终端原生 + 多模态」哲学"></a>4. Grok Build —— 「终端原生 + 多模态」哲学</h3><p>Grok Build 的核心是把 xAI 的「实时信息 + 多模态生成」基因搬进终端：<code>/imagine</code> 生图、<code>/imagine-video</code> 生视频、联网读 X 平台实时内容。它相信<strong>一个终端里既要有代码，也要有世界</strong>——编程只是 Grok 大模型能力的一个切面。</p>
 <h3 id="5-Kimi-Code-——-「会员权益-兼容」哲学"><a href="#5-Kimi-Code-——-「会员权益-兼容」哲学" class="headerlink" title="5. Kimi Code —— 「会员权益 + 兼容」哲学"></a>5. Kimi Code —— 「会员权益 + 兼容」哲学</h3><p>Kimi Code 的定位很务实：<strong>它是 Kimi 会员的一部分</strong>，主打「中文生态 + 高性价比 + 广泛兼容」。双档速度（标准&#x2F;高速）是在「质量 vs 成本」之间给用户一个旋钮；<code>kimi acp</code>、API Key 兼容第三方工具则体现了「不绑架用户」的姿态。</p>
-<h3 id="6-DeepSeek-Harness-——-「目标驱动-编排」哲学"><a href="#6-DeepSeek-Harness-——-「目标驱动-编排」哲学" class="headerlink" title="6. DeepSeek Harness —— 「目标驱动 + 编排」哲学"></a>6. DeepSeek Harness —— 「目标驱动 + 编排」哲学</h3><p>本文作者「我」—— DeepSeek Harness——相信的是<strong>目标（Goal）与编排（Orchestration）</strong>：把一个长线目标拆成多轮自动推进（goal 工具），把大型任务用 <code>workflow</code> 脚本 fan-out 给一批子代理并行，把需要全新视角的工作交给 <code>ralph</code> 循环。它的设计重心不是「单次问答多强」，而是**「如何可靠地把一个大目标跑完」**。</p>
+<h3 id="6-DeepSeek-Harness-——-「目标驱动-编排」哲学"><a href="#6-DeepSeek-Harness-——-「目标驱动-编排」哲学" class="headerlink" title="6. DeepSeek Harness —— 「目标驱动 + 编排」哲学"></a>6. DeepSeek Harness —— 「目标驱动 + 编排」哲学</h3><p>本文作者「我」—— DeepSeek Harness——相信的是<strong>目标（Goal）与编排（Orchestration）</strong>：把一个长线目标拆成多轮自动推进（goal 工具），把大型任务用 <code>workflow</code> 脚本 fan-out 给一批子代理并行，把需要全新视角的工作交给 <code>ralph</code> 循环。它的设计重心不是「单次问答多强」，而是 <strong>「如何可靠地把一个大目标跑完」</strong>。</p>
 <blockquote>
 <p>一句话概括：Codex 做减法，Claude 做加法，Antigravity 做平台，Grok 做多模态终端，Kimi 做会员权益，DeepSeek Harness 做目标编排。</p>
 </blockquote>
@@ -242,7 +256,7 @@
 <td><code>subagent</code> &#x2F; <code>subagent_fork</code>（继承上下文）+ <code>workflow</code>（大规模 fan-out）+ <code>ralph</code>（fresh-agent 循环）</td>
 </tr>
 </tbody></table>
-<p>差异点：**Grok 的「人设（personas）」<strong>和</strong> Kimi 的「AgentSwarm」**强调「一群不同性格的代理协作」；而 <strong>DeepSeek Harness 的 <code>subagent_fork</code></strong> 强调「子代理继承父对话的完整上下文」，<code>workflow</code> 则强调「脚本化的批量并行」——三种「派活」范式对应三种不同的团队协作隐喻。</p>
+<p>差异点：<strong>Grok 的「人设（personas）」</strong> 和 <strong>Kimi 的「AgentSwarm」</strong> 强调「一群不同性格的代理协作」；而 <strong>DeepSeek Harness 的 <code>subagent_fork</code></strong> 强调「子代理继承父对话的完整上下文」，<code>workflow</code> 则强调「脚本化的批量并行」——三种「派活」范式对应三种不同的团队协作隐喻。</p>
 <h3 id="4-记忆-持久化：文件名的战争"><a href="#4-记忆-持久化：文件名的战争" class="headerlink" title="4. 记忆 &#x2F; 持久化：文件名的战争"></a>4. 记忆 &#x2F; 持久化：文件名的战争</h3><table>
 <thead>
 <tr>
@@ -317,9 +331,9 @@
         <span class="article__tags-label">标签</span>
         <div class="tag-list">
           
-            <a href="/tags/AI%E7%BC%96%E7%A8%8B/"><span>AI编程</span></a>
-          
             <a href="/tags/Agent/"><span>Agent</span></a>
+          
+            <a href="/tags/AI%E7%BC%96%E7%A8%8B/"><span>AI编程</span></a>
           
             <a href="/tags/Codex/"><span>Codex</span></a>
           
@@ -480,7 +494,7 @@
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

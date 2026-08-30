@@ -17,12 +17,28 @@
 <meta property="og:description" content="域名、子域名、端口、指纹、敏感信息等维度的收集工具与思路，以及企业信息与社工库入口。">
 <meta property="og:url" content="https://blogbu2154.site/information-gathering/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/9.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/9.jpg">
+<meta property="og:image:alt" content="渗透测试信息收集方法论 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2025-11-26T01:15:23+08:00">
+<meta property="article:modified_time" content="2025-11-26T01:15:23+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/9.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -92,8 +108,6 @@
         <div class="post-meta">
           <time datetime="2025-11-26">2025-11-26</time>
           
-            <span>更新于 2026-08-29</span>
-          
         </div>
       </header>
       
@@ -123,7 +137,7 @@
 <p> 站长之家：  <a target="_blank" rel="noopener" href="https://whois.chinaz.com/">https://whois.chinaz.com/</a></p>
 <pre><code class="hljs plain">whois   baidu.com</code></pre>
 
-<h5 id="3-域名-权重"><a href="#3-域名-权重" class="headerlink" title="3 域名 权重"></a>3 域名 权重</h5><p>** **<strong>域名权重</strong>：<strong>衡量一个网站在搜索引擎中的综合排名实力的指标，用于预测其在搜索结果中的排名能力</strong></p>
+<h5 id="3-域名-权重"><a href="#3-域名-权重" class="headerlink" title="3 域名 权重"></a>3 域名 权重</h5><p><strong>域名权重</strong>：<strong>衡量一个网站在搜索引擎中的综合排名实力的指标，用于预测其在搜索结果中的排名能力</strong></p>
 <p>SEO：Search Engine Optimization（搜索引擎优化）的英文缩写，它是一种数字营销做法， 旨在提高网站在搜索引擎（如谷歌、百度等）自然（非付费）搜索结果页面中的可见性和排名</p>
 <p>权重越高，相同类型漏洞的危害越大</p>
 <p><a target="_blank" rel="noopener" href="https://www.aizhan.com/cha">https://www.aizhan.com/cha</a></p>
@@ -164,14 +178,14 @@ site:.edu.cn</code></pre>
 <p>zoomeye  ：<a target="_blank" rel="noopener" href="https://www.zoomeye.ai/">https://www.zoomeye.ai/</a></p>
 <p>零零信安  ：<a target="_blank" rel="noopener" href="https://0.zone/">https://0.zone/</a></p>
 <p>shodan：  <a target="_blank" rel="noopener" href="https://www.shodan.io/">https://www.shodan.io/</a></p>
-<h5 id="5-自动化工具-oneforall"><a href="#5-自动化工具-oneforall" class="headerlink" title="5 自动化工具 oneforall"></a>5 自动化工具 oneforall</h5><p>**注意：**运行python一般都会使用虚拟环境</p>
+<h5 id="5-自动化工具-oneforall"><a href="#5-自动化工具-oneforall" class="headerlink" title="5 自动化工具 oneforall"></a>5 自动化工具 oneforall</h5><p><strong>注意：</strong> 运行python一般都会使用虚拟环境</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/shmilylty/OneForAll">https://github.com/shmilylty/OneForAll</a></p>
 <p>安装 （注意 python 版本 不要 太高）</p>
 <pre><code class="hljs plain">git clone https://github.com/shmilylty/OneForAll.git
 cd OneForAll
 pip install -r requirements.txt</code></pre>
 
-<p>**注意：**requirements.txt 是python的依赖模块，一般在运行python之前，都需要安装 pip install -r requirements.txt</p>
+<p><strong>注意：</strong> requirements.txt 是python的依赖模块，一般在运行python之前，都需要安装 pip install -r requirements.txt</p>
 <p>使用</p>
 <p>查看 oneforall 的帮助信息</p>
 <pre><code class="hljs plain">python oneforall.py</code></pre>
@@ -255,7 +269,7 @@ nmap 拓展脚本是 nse 脚本，nse 脚本涵盖漏洞扫描、敏感信息探
 filtered 未知，可能是被防火墙拦截
 closed 关闭</code></pre>
 
-<h3 id="3-网站信息收集"><a href="#3-网站信息收集" class="headerlink" title="3 网站信息收集"></a>3 网站信息收集</h3><h4 id="1-指纹信息"><a href="#1-指纹信息" class="headerlink" title="1 指纹信息"></a>1 指纹信息</h4><h5 id="收集指纹的作用"><a href="#收集指纹的作用" class="headerlink" title="收集指纹的作用"></a>收集指纹的作用</h5><p>攻击网站和服务一般都是使用历史漏洞，如 目标有1000 个网站，快速的判断 1000个网站中，有哪些网站是 thinkphp 框架写的，如有 就可以尝试** thinkphp** 的历史漏洞进行攻击</p>
+<h3 id="3-网站信息收集"><a href="#3-网站信息收集" class="headerlink" title="3 网站信息收集"></a>3 网站信息收集</h3><h4 id="1-指纹信息"><a href="#1-指纹信息" class="headerlink" title="1 指纹信息"></a>1 指纹信息</h4><h5 id="收集指纹的作用"><a href="#收集指纹的作用" class="headerlink" title="收集指纹的作用"></a>收集指纹的作用</h5><p>攻击网站和服务一般都是使用历史漏洞，如 目标有1000 个网站，快速的判断 1000个网站中，有哪些网站是 thinkphp 框架写的，如有 就可以尝试<strong>thinkphp</strong> 的历史漏洞进行攻击</p>
 <h4 id="什么是指纹"><a href="#什么是指纹" class="headerlink" title="什么是指纹"></a>什么是指纹</h4><p>1 网站使用了什么<strong>编程语言</strong>：前端（vue、flutter、react）、后端（php、java、python、go、asp.net）</p>
 <p>2 网站 <strong>web 服务器中间件</strong> ：tomcat、apache、nginx、jboss、weblogic、iis、caddy、tengine、</p>
 <p>东方通、宝兰德</p>
@@ -263,9 +277,9 @@ closed 关闭</code></pre>
 <p>4 网站使用了 什么<strong>后端开发框架</strong>：springboot、spring mvc、struts2、django、flask、fastapi、gin、thinkphp</p>
 <p>5 网站使用了什么<strong>CMS系统</strong>（内容管理系统）：discuz、wordpress、drupal、joomla、织梦cms</p>
 <p>6 网站使用了什么 <strong>开发组件、开发库</strong>：搜索引擎（Elasticsearch、solr）、JSON解析引擎（fastjson、jackson）、安全框架（Spring Security、Apache shiro）、日志记录（log4j2、logback）、数据库连接池（c3p0、Alibaba Druid）、ORM框架（mybatis、hibernate）、富文本编辑器（FCKeditor、Kindeditor、ueditor）</p>
-<p>7 网站使用了什么** dbms（数据库管理引擎）**：mysql、mssql、postgresql</p>
-<p>8 网站使用了什么** waf （web 应用防火墙）**：雷池、安全狗、云锁、G01、宝塔、云WAF</p>
-<p>9 网站使用了什么 **OA (**办公自动化)：（泛微、通达、用友、金碟、致远、金和、禅道、蓝凌）</p>
+<p>7 网站使用了什么<strong>dbms（数据库管理引擎）</strong>：mysql、mssql、postgresql</p>
+<p>8 网站使用了什么<strong>waf （web 应用防火墙）</strong>：雷池、安全狗、云锁、G01、宝塔、云WAF</p>
+<p>9 网站使用了什么 <strong>OA (办公自动化)</strong>：（泛微、通达、用友、金碟、致远、金和、禅道、蓝凌）</p>
 <h4 id="ELK日志管理与分析技术栈"><a href="#ELK日志管理与分析技术栈" class="headerlink" title="ELK日志管理与分析技术栈"></a>ELK日志管理与分析技术栈</h4><p>是一个由三个开源项目组成的日志管理与分析技术栈的简称，这三个项目分别是：</p>
 <p>Elasticsearch</p>
 <p>Logstash</p>
@@ -283,7 +297,7 @@ closed 关闭</code></pre>
 <p> <strong>浏览器插件  ：</strong></p>
 <p><strong>wappalyzer</strong></p>
 <p>⚠ wappalyzer 经常会被缓存影响，需要手动清除缓存</p>
-<p>**雪瞳  **</p>
+<p><strong>雪瞳</strong></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/SickleSec/SnowEyes">https://github.com/SickleSec/SnowEyes</a></p>
 <p>下载:</p>
 <p>chrome打开开发者模式</p>
@@ -314,9 +328,9 @@ closed 关闭</code></pre>
 <h5 id="3-爬虫"><a href="#3-爬虫" class="headerlink" title="3  爬虫"></a>3  爬虫</h5><p>爬虫就是burpsuite模拟点击，记录能够点击到的所有的页面</p>
 <p>结果：sitemap</p>
 <h5 id="4-JS-提取信息"><a href="#4-JS-提取信息" class="headerlink" title="4  JS 提取信息"></a>4  JS 提取信息</h5><p>前后端分离的网站中，js 中会留下很多后端的 api 接口信息，提取出 api 可以进一步继续渗透测试</p>
-<p>**浏览器插件 findsomething  **</p>
+<p><strong>浏览器插件 findsomething</strong></p>
 <p>收集到的  PATH （接口），需要猜想接口的功能，并逐一测试是否有漏洞</p>
-<p>**浏览器插件 雪瞳  **</p>
+<p><strong>浏览器插件 雪瞳</strong></p>
 <h4 id="3-网站敏感信息提取"><a href="#3-网站敏感信息提取" class="headerlink" title="3  网站敏感信息提取"></a>3  网站敏感信息提取</h4><p>比如网站响应很多时候，会携带身份证号、手机号、密码、密钥等敏感信息</p>
 <h5 id="1-burpsuite-插件-Hae：自动标记敏感信息"><a href="#1-burpsuite-插件-Hae：自动标记敏感信息" class="headerlink" title="1 burpsuite 插件 Hae：自动标记敏感信息"></a>1 burpsuite 插件 Hae：自动标记敏感信息</h5><p><a target="_blank" rel="noopener" href="https://github.com/gh0stkey/HaE">https://github.com/gh0stkey/HaE</a></p>
 <h5 id="2-谷歌黑客语法"><a href="#2-谷歌黑客语法" class="headerlink" title="2 谷歌黑客语法"></a>2 谷歌黑客语法</h5><pre><code class="hljs plain">site 站点 site:baidu.com
@@ -514,7 +528,7 @@ filetype 文件类型 filetype:pdf
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

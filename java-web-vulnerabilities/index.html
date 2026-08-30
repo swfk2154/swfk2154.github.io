@@ -17,12 +17,28 @@
 <meta property="og:description" content="Fastjson、Log4j2、Shiro、Spring 等典型 Java 组件漏洞的原理、探测与利用要点。">
 <meta property="og:url" content="https://blogbu2154.site/java-web-vulnerabilities/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/19.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/19.jpg">
+<meta property="og:image:alt" content="Java Web 常见漏洞 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2025-12-29T05:32:51+08:00">
+<meta property="article:modified_time" content="2025-12-29T05:32:51+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/19.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -91,8 +107,6 @@
         <h1>Java Web 常见漏洞</h1>
         <div class="post-meta">
           <time datetime="2025-12-29">2025-12-29</time>
-          
-            <span>更新于 2026-08-29</span>
           
         </div>
       </header>
@@ -233,7 +247,7 @@ List<span class="hljs-tag">&lt;<span class="hljs-name">User</span>&gt;</span> or
 </ul>
 <p> <code>netdoc:///etc/passwd</code></p>
 <h2 id="6-RCE"><a href="#6-RCE" class="headerlink" title="6 RCE"></a>6 RCE</h2><h3 id="Runtime-getRuntime-exec"><a href="#Runtime-getRuntime-exec" class="headerlink" title="Runtime.getRuntime().exec()"></a>Runtime.getRuntime().exec()</h3><h3 id="java-哪些类和方法能实现执行命令"><a href="#java-哪些类和方法能实现执行命令" class="headerlink" title="java 哪些类和方法能实现执行命令"></a>java 哪些类和方法能实现执行命令</h3><ul>
-<li><p>**Runtime.getRuntime().exec() [**反弹shell必须要预先base64编码]</p>
+<li><p><strong>Runtime.getRuntime().exec()</strong> [反弹shell必须要预先base64编码]</p>
 </li>
 <li><p><strong>ProcessBuilder</strong>类start方法 [反弹shell不需要base64编码]</p>
 </li>
@@ -590,7 +604,7 @@ InvokerTransformer.transform()</code></pre>
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

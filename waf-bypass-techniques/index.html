@@ -17,12 +17,28 @@
 <meta property="og:description" content="语法层、协议层、业务层 WAF 绕过思路：编码混淆、分块传输、HTTP 参数污染与真实业务场景绕过。">
 <meta property="og:url" content="https://blogbu2154.site/waf-bypass-techniques/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/12.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/12.jpg">
+<meta property="og:image:alt" content="WAF 绕过技术 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2026-01-04T01:16:49+08:00">
+<meta property="article:modified_time" content="2026-01-04T01:16:49+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/12.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -91,8 +107,6 @@
         <h1>WAF 绕过技术</h1>
         <div class="post-meta">
           <time datetime="2026-01-04">2026-01-04</time>
-          
-            <span>更新于 2026-08-29</span>
           
         </div>
       </header>
@@ -184,7 +198,7 @@ cat /et*/pass*</code></pre>
 </ul>
 <p> 都代表当前脚本的所有参数，默认为空</p>
 <p><code>c$*a$@t /e$*t$@c/pa$@ssw$@d</code></p>
-<h2 id="空格替换✨"><a href="#空格替换✨" class="headerlink" title="空格替换✨"></a>空格替换✨</h2><p>Linux shell 值为**空格的变量 ${IFS} **</p>
+<h2 id="空格替换✨"><a href="#空格替换✨" class="headerlink" title="空格替换✨"></a>空格替换✨</h2><p>Linux shell 值为<strong>空格的变量 ${IFS}</strong></p>
 <p><code>c$*at${IFS}/et$@c/pa$@sswd</code></p>
 <p>{} 包裹 (只有bash环境才能用)</p>
 <p><code>{cat,/etc/passwd} </code></p>
@@ -297,8 +311,8 @@ id</code></pre>
 <li>nginx 和 iis 对同一个参数名或参数值的解析会出现差异</li>
 </ul>
 <p><code>比如参数中出现 ord%er b%y ， nginx 写的waf 得到 ord%er b%y ，无危害，waf放行，进入到 iis 网站时，iis会把 % 自动去掉，变成原本的 order by 产生SQL注入  </code></p>
-<h2 id="脏数据-（缓冲区溢出"><a href="#脏数据-（缓冲区溢出" class="headerlink" title="脏数据 （缓冲区溢出)"></a>脏数据 （缓冲区溢出)</h2><h3 id="大量参数（数量溢出）"><a href="#大量参数（数量溢出）" class="headerlink" title="大量参数（数量溢出）"></a>大量参数（数量溢出）</h3><p>**很多waf有参数检测上线，比如 nginx lua waf默认检测参数的上限是100个，从101个参数开始， 就不会经过waf  **</p>
-<p>**可以用脚本随机生成几百个参数键值对  **</p>
+<h2 id="脏数据-（缓冲区溢出"><a href="#脏数据-（缓冲区溢出" class="headerlink" title="脏数据 （缓冲区溢出)"></a>脏数据 （缓冲区溢出)</h2><h3 id="大量参数（数量溢出）"><a href="#大量参数（数量溢出）" class="headerlink" title="大量参数（数量溢出）"></a>大量参数（数量溢出）</h3><p><strong>很多waf有参数检测上线，比如 nginx lua waf默认检测参数的上限是100个，从101个参数开始， 就不会经过waf</strong></p>
+<p><strong>可以用脚本随机生成几百个参数键值对</strong></p>
 <p><code>id=1&#39; order by 4--+ </code>是第 101 个参数，如果目标使用了 lua waf，则不会检测第101个参数</p>
 <h3 id="参数值溢出"><a href="#参数值溢出" class="headerlink" title="参数值溢出"></a>参数值溢出</h3><p>POST 数据太多，超过waf的检测范围 (waf 一般只会检测参数值的前几千个字符)</p>
 <h2 id="分块传输-只适用POST请求"><a href="#分块传输-只适用POST请求" class="headerlink" title="分块传输 ,只适用POST请求"></a>分块传输 ,只适用POST请求</h2><p>POST数据不限制大小，服务器怎么知道POST数据的具体大小？</p>
@@ -486,7 +500,7 @@ id=（具体数据）
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

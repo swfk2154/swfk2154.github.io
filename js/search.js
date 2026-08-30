@@ -34,9 +34,20 @@
     return out;
   }
 
+  // search.json（striptags 格式）会残留 HTML 实体与未渲染的 markdown 记号，摘要前统一清洗
+  function decodeEntities(s) {
+    var el = document.createElement('textarea');
+    el.innerHTML = String(s);
+    return el.value;
+  }
+  function cleanBodyText(s) {
+    return decodeEntities(s).replace(/[`*]/g, '').replace(/\s+/g, ' ');
+  }
+
   // 从正文中截取首个命中点附近的摘要
   function snippet(content, words) {
     if (!content) return '';
+    content = cleanBodyText(content);
     var pos = -1;
     for (var i = 0; i < words.length && pos < 0; i++) {
       pos = content.toLowerCase().indexOf(words[i].toLowerCase());
@@ -44,7 +55,7 @@
     if (pos < 0) pos = 0;
     var start = Math.max(0, pos - 30);
     var end = Math.min(content.length, start + 110);
-    var text = (start > 0 ? '…' : '') + content.slice(start, end).replace(/\s+/g, ' ') + (end < content.length ? '…' : '');
+    var text = (start > 0 ? '…' : '') + content.slice(start, end) + (end < content.length ? '…' : '');
     return highlight(escapeHtml(text), words);
   }
 

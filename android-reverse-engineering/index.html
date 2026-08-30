@@ -17,12 +17,28 @@
 <meta property="og:description" content="APK 结构、反编译工具链、Frida 动态调试与 Log 插桩，以及去广告、VIP 分析的实战记录。">
 <meta property="og:url" content="https://blogbu2154.site/android-reverse-engineering/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/14.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/14.jpg">
+<meta property="og:image:alt" content="安卓逆向学习笔记 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2026-01-11T23:00:00+08:00">
+<meta property="article:modified_time" content="2026-01-11T23:00:00+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/14.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -91,8 +107,6 @@
         <h1>安卓逆向学习笔记</h1>
         <div class="post-meta">
           <time datetime="2026-01-11">2026-01-11</time>
-          
-            <span>更新于 2026-08-30</span>
           
         </div>
       </header>
@@ -169,7 +183,8 @@
 </tr>
 </tbody></table>
 <h3 id="汉化APK"><a href="#汉化APK" class="headerlink" title="汉化APK"></a>汉化APK</h3><p> 汉化：使用专门的工具对外文版的软件资源进行读取、翻译、修改、回写等一系列处理，使软件的菜单、对话框、提示等用户界面显示为中文，而程序的内核和功能保持不变，这个过程即为软件汉化</p>
-<p>**基本上字符串都是在arsc里，建议一键汉化，然后再润色。<br>**<strong>少量没汉化到的字符串参考视频中的方法定位去逐个汉化</strong></p>
+<p><strong>基本上字符串都是在arsc里，建议一键汉化，然后再润色。</strong></p>
+<p><strong>少量没汉化到的字符串参考视频中的方法定位去逐个汉化</strong></p>
 <h4 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a><strong>流程图</strong></h4><p> 这里还需要注意的是，如果要直装应用，那就应该先签名安装，看看是否有签名校验导致的闪退</p>
 <h3 id="初识AndroidManifest-xml"><a href="#初识AndroidManifest-xml" class="headerlink" title="初识AndroidManifest.xml"></a>初识AndroidManifest.xml</h3><p> AndroidManifest.xml文件是整个应用程序的信息描述文件，定义了应用程序中包含的Activity,Service,Content provider和BroadcastReceiver组件信息。每个应用程序在根目录下必须包含一个AndroidManifest.xml文件，且文件名不能修改。它描述了package中暴露的组件，他们各自的实现类，各种能被处理的数据和启动位置。</p>
 <table>
@@ -880,7 +895,7 @@ raw_input(<span class="hljs-string">&quot;Enter to Exit...&quot;</span>)
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

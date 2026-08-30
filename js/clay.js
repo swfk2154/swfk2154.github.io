@@ -445,15 +445,25 @@
       box.querySelector('[data-mp-prev]').addEventListener('click', function () { ap.skipBack(); });
       box.querySelector('[data-mp-next]').addEventListener('click', function () { ap.skipForward(); });
 
+      // 进度条：支持点击与按住拖拽（pointer 事件兼容触屏）
       var bar = box.querySelector('[data-mp-bar]');
-      bar.addEventListener('click', function (e) {
+      var dragging = false;
+      function seekTo(clientX) {
         var d = ap.audio && ap.audio.duration;
-        if (!d) return;
+        if (!d || !isFinite(d)) return;
         var rect = bar.getBoundingClientRect();
-        var ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+        var ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
         ap.audio.currentTime = ratio * d;
         played.style.width = (ratio * 100) + '%';
+      }
+      bar.addEventListener('pointerdown', function (e) {
+        dragging = true;
+        if (bar.setPointerCapture) { try { bar.setPointerCapture(e.pointerId); } catch (err) {} }
+        seekTo(e.clientX);
       });
+      bar.addEventListener('pointermove', function (e) { if (dragging) seekTo(e.clientX); });
+      bar.addEventListener('pointerup', function () { dragging = false; });
+      bar.addEventListener('pointercancel', function () { dragging = false; });
 
       var head = document.createElement('div');
       head.className = 'mp-listhead';
@@ -466,6 +476,65 @@
       }
       updateCount();
       ap.on('listswitch', updateCount);
+
+      /* ---------- 曲目加载失败自动跳下一首（中转源部分曲目 404 的兜底） ---------- */
+      var errStreak = 0;
+      ap.on('play', function () { errStreak = 0; });
+      ap.on('error', function () {
+        errStreak += 1;
+        if (!ap.list || !ap.list.audios || ap.list.audios.length < 2) return;
+        if (errStreak > 2) {
+          if (ap.notice) ap.notice('连续多首曲目加载失败，已停止自动切换', 3000);
+          return;
+        }
+        if (ap.notice) ap.notice('当前曲目加载失败，已自动切换下一首', 2500);
+        ap.skipForward();
+        ap.play();
+      });
+
+      /* ---------- Media Session：系统媒体键 / 锁屏与系统媒体浮层控制 ---------- */
+      if ('mediaSession' in navigator) {
+        var siteNameMeta = document.querySelector('meta[property="og:site_name"]');
+        var siteName = siteNameMeta ? siteNameMeta.content : '';
+        function syncMediaMeta() {
+          try {
+            var audio = ap.list && ap.list.audios ? ap.list.audios[ap.list.index] : null;
+            if (!audio || typeof MediaMetadata !== 'function') return;
+            var meta = { title: audio.name || '', artist: audio.artist || '', album: siteName };
+            if (audio.cover) meta.artwork = [{ src: audio.cover, sizes: '512x512' }];
+            navigator.mediaSession.metadata = new MediaMetadata(meta);
+          } catch (e) {}
+        }
+        function bindMsAction(name, fn) {
+          try { navigator.mediaSession.setActionHandler(name, fn); } catch (e) {}
+        }
+        bindMsAction('play', function () { ap.play(); });
+        bindMsAction('pause', function () { ap.pause(); });
+        bindMsAction('previoustrack', function () { ap.skipBack(); });
+        bindMsAction('nexttrack', function () { ap.skipForward(); });
+        bindMsAction('seekto', function (details) {
+          if (details && details.seekTime != null && ap.audio && isFinite(ap.audio.duration)) {
+            ap.audio.currentTime = details.seekTime;
+          }
+        });
+        ap.on('listswitch', syncMediaMeta);
+        ap.on('play', function () { navigator.mediaSession.playbackState = 'playing'; });
+        ap.on('pause', function () { navigator.mediaSession.playbackState = 'paused'; });
+        ap.on('ended', function () { navigator.mediaSession.playbackState = 'paused'; });
+        ap.on('timeupdate', function () {
+          try {
+            var a = ap.audio;
+            if (a && isFinite(a.duration) && a.duration > 0) {
+              navigator.mediaSession.setPositionState({
+                duration: a.duration,
+                playbackRate: a.playbackRate || 1,
+                position: Math.min(a.currentTime, a.duration)
+              });
+            }
+          } catch (e) {}
+        });
+        syncMediaMeta();
+      }
 
       updateTime();
     }

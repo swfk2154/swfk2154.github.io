@@ -17,12 +17,28 @@
 <meta property="og:description" content="SQLMap 从安装、探测到脱库的常用参数与实战用法，包括 tamper、级别调整与常见问题。">
 <meta property="og:url" content="https://blogbu2154.site/sqlmap-usage-guide/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/7.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/7.jpg">
+<meta property="og:image:alt" content="SQLMap 使用指南 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2025-12-03T05:26:48+08:00">
+<meta property="article:modified_time" content="2025-12-03T05:26:48+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/7.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -92,8 +108,6 @@
         <div class="post-meta">
           <time datetime="2025-12-03">2025-12-03</time>
           
-            <span>更新于 2026-08-29</span>
-          
         </div>
       </header>
       
@@ -109,7 +123,7 @@
 <pre><code class="hljs plain">git clone https://github.com/sqlmapproject/sqlmap.git
 python sqlmap.py</code></pre>
 
-<p> ⚠️ ：如果使用 kali 的自带的sqlmap ，则<strong>不需要</strong>输入 python sqlmap.py **直接输入 sqlmap 即可使用  **</p>
+<p> ⚠️ ：如果使用 kali 的自带的sqlmap ，则<strong>不需要</strong>输入 python sqlmap.py <strong>直接输入 sqlmap 即可使用</strong></p>
 <h2 id="查看帮助信息"><a href="#查看帮助信息" class="headerlink" title="查看帮助信息"></a>查看帮助信息</h2><pre><code class="hljs plain">python sqlmap.py -h  查看部分帮助信息
 python sqlmap.py -hh 查看全部帮助信息</code></pre>
 
@@ -444,7 +458,7 @@ security=low&quot; --dbs --flush-session --random-agent</code></pre>
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

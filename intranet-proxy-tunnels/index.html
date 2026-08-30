@@ -17,12 +17,28 @@
 <meta property="og:description" content="FRP/NPS/reGeorg 等代理工具的配置用法，以及 DNS/ICMP/SSH 等隧道出网的手法。">
 <meta property="og:url" content="https://blogbu2154.site/intranet-proxy-tunnels/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/17.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/17.jpg">
+<meta property="og:image:alt" content="内网代理与隧道技术 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2026-01-21T01:22:22+08:00">
+<meta property="article:modified_time" content="2026-01-21T01:22:22+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/17.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -91,8 +107,6 @@
         <h1>内网代理与隧道技术</h1>
         <div class="post-meta">
           <time datetime="2026-01-21">2026-01-21</time>
-          
-            <span>更新于 2026-08-29</span>
           
         </div>
       </header>
@@ -203,7 +217,7 @@ plugin = socks5
 remote_port = 10080</code></pre>
 
 <p>作⽤：在云服务器上开启 10022 端⼝作为通向 192.168.22.x ⽹段 socks 代理服务</p>
-<h3 id="连接代理-（zero-omega）"><a href="#连接代理-（zero-omega）" class="headerlink" title="连接代理 （zero omega）"></a>连接代理 （zero omega）</h3><h3 id="通过代理访问到-192-168-22-22"><a href="#通过代理访问到-192-168-22-22" class="headerlink" title="通过代理访问到 192.168.22.22"></a>通过代理访问到 192.168.22.22</h3><h3 id="连接代理-（sqlmap）"><a href="#连接代理-（sqlmap）" class="headerlink" title="连接代理 （sqlmap）"></a>连接代理 （sqlmap）</h3><p><code>**sqlmap -u &quot;http://192.168.22.22/index.php?r=vul&amp;keyword=1&quot; --proxy=socks5://101.42.20.101:10080 -D bagecms -T bage_admin -C username,password --dump**</code></p>
+<h3 id="连接代理-（zero-omega）"><a href="#连接代理-（zero-omega）" class="headerlink" title="连接代理 （zero omega）"></a>连接代理 （zero omega）</h3><h3 id="通过代理访问到-192-168-22-22"><a href="#通过代理访问到-192-168-22-22" class="headerlink" title="通过代理访问到 192.168.22.22"></a>通过代理访问到 192.168.22.22</h3><h3 id="连接代理-（sqlmap）"><a href="#连接代理-（sqlmap）" class="headerlink" title="连接代理 （sqlmap）"></a>连接代理 （sqlmap）</h3><p><code>sqlmap -u &quot;http://192.168.22.22/index.php?r=vul&amp;keyword=1&quot; --proxy=socks5://101.42.20.101:10080 -D bagecms -T bage_admin -C username,password --dump</code></p>
 <p><strong>用户名：admin</strong></p>
 <p><strong>密码：123qwe</strong></p>
 <h3 id="连接代理-（dirsearch）"><a href="#连接代理-（dirsearch）" class="headerlink" title="连接代理 （dirsearch）"></a>连接代理 （dirsearch）</h3><p><code>python dirsearch.py -p **socks5://101.42.20.101:10080** -u &quot;http://192.168.22.22&quot; </code></p>
@@ -427,7 +441,7 @@ remote_port = 10033</code></pre>
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

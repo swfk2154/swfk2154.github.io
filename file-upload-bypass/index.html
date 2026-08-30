@@ -17,12 +17,28 @@
 <meta property="og:description" content="前端限制、MIME、后缀黑名单、.htaccess、条件竞争、二次渲染等上传限制的绕过手法汇总。">
 <meta property="og:url" content="https://blogbu2154.site/file-upload-bypass/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/11.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/11.jpg">
+<meta property="og:image:alt" content="文件上传漏洞常见限制与绕过 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2025-12-11T05:28:36+08:00">
+<meta property="article:modified_time" content="2025-12-11T05:28:36+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/11.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -92,8 +108,6 @@
         <div class="post-meta">
           <time datetime="2025-12-11">2025-12-11</time>
           
-            <span>更新于 2026-08-29</span>
-          
         </div>
       </header>
       
@@ -108,8 +122,8 @@
 <h2 id="upload-labs-靶场"><a href="#upload-labs-靶场" class="headerlink" title="upload labs 靶场"></a>upload labs 靶场</h2><p>github  :  <a target="_blank" rel="noopener" href="https://github.com/c0ny1/upload-labs">https://github.com/c0ny1/upload-labs</a></p>
 <p>作者提供的环境(Windows)  : <a target="_blank" rel="noopener" href="https://github.com/c0ny1/upload-labs/releases">https://github.com/c0ny1/upload-labs/releases</a></p>
 <h2 id="Pass-01-✨"><a href="#Pass-01-✨" class="headerlink" title="Pass-01 ✨"></a>Pass-01 ✨</h2><ul>
-<li>**防御方法：白名单  **</li>
-<li>**绕过方法：前端验证 （前端验证、过滤是无意义的）  **</li>
+<li><strong>防御方法：白名单</strong></li>
+<li><strong>绕过方法：前端验证 （前端验证、过滤是无意义的）</strong></li>
 </ul>
 <h3 id="绕过方法1-修改JS"><a href="#绕过方法1-修改JS" class="headerlink" title="绕过方法1 - 修改JS"></a>绕过方法1 - 修改JS</h3><pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">checkFile</span>(<span class="hljs-params"></span>) </span>&#123;
         <span class="hljs-keyword">var</span> file = document.<span class="hljs-title function_ invoke__">getElementsByName</span>(<span class="hljs-string">&#x27;upload_file&#x27;</span>)[<span class="hljs-number">0</span>].value;
@@ -132,7 +146,6 @@
 <p>在控制台中运行新的 js 代码</p>
 <p>重新上传 php 文件，即可绕过前端验证</p>
 <h3 id="绕过方法2-替换JS"><a href="#绕过方法2-替换JS" class="headerlink" title="绕过方法2 - 替换JS"></a>绕过方法2 - 替换JS</h3><h4 id="1-随意创建一个文件夹"><a href="#1-随意创建一个文件夹" class="headerlink" title="1  随意创建一个文件夹"></a>1  随意创建一个文件夹</h4><h4 id="2-设置-chrome的替换功能"><a href="#2-设置-chrome的替换功能" class="headerlink" title="2  设置 chrome的替换功能"></a>2  设置 chrome的替换功能</h4><h4 id="3-刷新网站，回到js位置，已经可以直接编辑，编辑代码后，按-“Ctrl-S”-保存"><a href="#3-刷新网站，回到js位置，已经可以直接编辑，编辑代码后，按-“Ctrl-S”-保存" class="headerlink" title="3  刷新网站，回到js位置，已经可以直接编辑，编辑代码后，按 “Ctrl S” 保存"></a>3  刷新网站，回到js位置，已经可以直接编辑，编辑代码后，按 “Ctrl S” 保存</h4><h4 id="4-在开发者工具打开时，会替换-js-代码为已修改的代码，是持久性的-（开发者工具需要一直打-开才能用"><a href="#4-在开发者工具打开时，会替换-js-代码为已修改的代码，是持久性的-（开发者工具需要一直打-开才能用" class="headerlink" title="4  在开发者工具打开时，会替换 js 代码为已修改的代码，是持久性的 （开发者工具需要一直打 开才能用"></a>4  在开发者工具打开时，会替换 js 代码为已修改的代码，是持久性的 （开发者工具需要一直打 开才能用</h4><p><strong>没有响应（可以采取bp 抓包）</strong></p>
-<hr>
 <h3 id="绕过方法3-禁用js"><a href="#绕过方法3-禁用js" class="headerlink" title="绕过方法3 - 禁用js"></a>绕过方法3 - 禁用js</h3><p>不推荐，因为很多依赖js渲染或异步加载的网站，如果禁用js，就无法打开</p>
 <h3 id="绕过方法4-burp抓包"><a href="#绕过方法4-burp抓包" class="headerlink" title="绕过方法4 - burp抓包"></a>绕过方法4 - burp抓包</h3><pre><code class="hljs xml">上传 jpg/png 文件
  burp 抓包，修改文件名</code></pre>
@@ -144,7 +157,7 @@ AddType application/x-httpd-php .php .php3 .phtml</code></pre>
 
 <p>此关卡拦截了 .php 文件，直接把后缀改为 .php3 或 .phtml 即可绕过</p>
 <h2 id="Pass-04-✨"><a href="#Pass-04-✨" class="headerlink" title="Pass-04  ✨"></a>Pass-04  ✨</h2><p>上传 png 文件，无法使用</p>
-<h3 id="绕过方法-apache-解析策略文件"><a href="#绕过方法-apache-解析策略文件" class="headerlink" title="绕过方法 - apache 解析策略文件"></a>绕过方法 - apache 解析策略文件</h3><p>** .htaccess** 是apache解析策略文件，规定了当前目录的文件怎么解析</p>
+<h3 id="绕过方法-apache-解析策略文件"><a href="#绕过方法-apache-解析策略文件" class="headerlink" title="绕过方法 - apache 解析策略文件"></a>绕过方法 - apache 解析策略文件</h3><p><strong>.htaccess</strong> 是apache解析策略文件，规定了当前目录的文件怎么解析</p>
 <h3 id="方法1：强制让当前目录的所有文件都当做php解析"><a href="#方法1：强制让当前目录的所有文件都当做php解析" class="headerlink" title="方法1：强制让当前目录的所有文件都当做php解析"></a>方法1：强制让当前目录的所有文件都当做php解析</h3><pre><code class="hljs xml">.htaccess 文件内容如下：
 SetHandler application/x-httpd-php</code></pre>
 
@@ -157,20 +170,20 @@ SetHandler application/x-httpd-php</code></pre>
 
 <p>上传 .htaccess 文件，只有当前目录的 webshell_eval.png 文件当做php解析，不会影响其他文件</p>
 <h2 id="Pass-05-10"><a href="#Pass-05-10" class="headerlink" title="Pass-05-10"></a>Pass-05-10</h2><ul>
-<li>Pass 05 ： windows大小写不敏感，后缀名从 <strong>.php</strong> 改为** .PHP** 即可</li>
-<li>Pass 06 ： windows认为文件的结尾有空格 &#x3D; 没有空格，后缀名从** .php <strong>改为</strong> .php空格** 即可</li>
+<li>Pass 05 ： windows大小写不敏感，后缀名从 <strong>.php</strong> 改为 <strong>.PHP</strong> 即可</li>
+<li>Pass 06 ： windows认为文件的结尾有空格 &#x3D; 没有空格，后缀名从 <strong>.php</strong> 改为 <strong>.php空格</strong> 即可</li>
 </ul>
-<p>**      如：”han.php” 改为 “han.php       “**</p>
+<p><strong>如：”han.php” 改为 “han.php       “</strong></p>
 <ul>
-<li>Pass 07 ： windows认为文件的结尾有 点 &#x3D; 没有点 ， 后缀名从 <strong>.php</strong> 改为 **.php. **即可</li>
+<li>Pass 07 ： windows认为文件的结尾有 点 &#x3D; 没有点 ， 后缀名从 <strong>.php</strong> 改为 <strong>.php.</strong> 即可</li>
 </ul>
-<p>**      如：”han.php” 改为 “han.php.”**</p>
+<p><strong>如：”han.php” 改为 “han.php.”</strong></p>
 <ul>
 <li><p>Pass 08 ：windows ntfs 文件流格式为 <strong>文件名:流名:$DATA</strong> ，<strong>流名可以为空</strong>，后缀名从 .php  改为        .php::$DATA 即可  <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/win32/fileio/file-streams">https://learn.microsoft.com/zh-cn/windows/win32/fileio/file-streams</a></p>
-<pre><code>如：&quot;**han.php**&quot; 改为 &quot;**han.php::$DATA**&quot;   ,  ** :流名:**
+<pre><code>如：&quot;**han.php**&quot; 改为 &quot;**han.php::$DATA**&quot;   ,  **:流名:**
 </code></pre>
 </li>
-<li><p>Pass 09：单纯的ctf题目， 后缀名从** .php 改为 .php.空格.** 即可</p>
+<li><p>Pass 09：单纯的ctf题目， 后缀名从 <strong>.php 改为 .php.空格.</strong> 即可</p>
 <pre><code>如：&quot;**han.php**&quot; 改为  &quot;**han.php.     .**&quot;
 </code></pre>
 </li>
@@ -377,7 +390,7 @@ php 配置 magic_quotes_gpc = Off</code></pre>
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

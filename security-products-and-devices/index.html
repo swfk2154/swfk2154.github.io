@@ -17,12 +17,28 @@
 <meta property="og:description" content="防火墙、WAF、IDS/IPS、EDR、态势感知、堡垒机等安全产品的定位、厂商与部署场景。">
 <meta property="og:url" content="https://blogbu2154.site/security-products-and-devices/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/21.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/21.jpg">
+<meta property="og:image:alt" content="安全产品与安全设备全景 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2026-02-03T01:14:43+08:00">
+<meta property="article:modified_time" content="2026-02-03T01:14:43+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/21.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -80,7 +96,7 @@
 <aside class="article__aside">
   <div class="toc-box">
     <div class="toc-box__title">目录</div>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%AA%E4%BA%9B%E5%B0%B1%E4%B8%9A%E5%B2%97%E4%BD%8D%E9%9C%80%E8%A6%81%E7%94%A8%E5%88%B0%E5%AE%89%E5%85%A8%E4%BA%A7%E5%93%81"><span class="toc-text">哪些就业岗位需要用到安全产品</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E4%BA%A7%E5%93%81%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="toc-text">安全产品有哪些</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E4%BF%A1%E5%8A%9E-%E7%BD%91%E7%BB%9C%E5%85%B3%E9%94%AE%E8%AE%BE%E5%A4%87%E5%92%8C%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E4%B8%93%E7%94%A8%E4%BA%A7%E5%93%81%E7%9B%AE%E5%BD%95"><span class="toc-text">网信办-网络关键设备和网络安全专用产品目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E5%8E%82%E5%95%86%E7%9A%84%E4%BA%A7%E5%93%81-%E2%AD%90%EF%B8%8F"><span class="toc-text">安全厂商的产品 ⭐️</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A5%87%E5%AE%89%E4%BF%A1"><span class="toc-text">奇安信</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E4%BF%A1%E6%9C%8D"><span class="toc-text">深信服</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%BF%E7%9B%9F"><span class="toc-text">绿盟</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E6%98%8E"><span class="toc-text">启明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A3%9E%E5%A1%94"><span class="toc-text">飞塔</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B4%BE%E6%8B%93"><span class="toc-text">派拓</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CrowdStrike"><span class="toc-text">CrowdStrike</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5%E7%9F%A5%E8%AF%86%E5%BA%93"><span class="toc-text">安全运营知识库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E5%AE%89%E5%85%A8%E4%BA%A7%E5%93%81%E3%80%81%E8%AE%BE%E5%A4%87"><span class="toc-text">重要安全产品、设备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3%E9%9B%B6%E4%BF%A1%E4%BB%BB"><span class="toc-text">1️⃣零信任</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3EDR"><span class="toc-text">2️⃣EDR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3VPN"><span class="toc-text">3️⃣VPN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VPN-%E5%92%8C%E9%9B%B6%E4%BF%A1%E4%BB%BB%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-text">VPN 和零信任的区别？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-IDS-IPS"><span class="toc-text">4️⃣ IDS &#x2F; IPS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%E9%98%B2%E7%81%AB%E5%A2%99-%E4%B8%8B%E4%B8%80%E4%BB%A3%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-text">5️⃣ 防火墙 &#x2F; 下一代防火墙</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6%EF%B8%8F%E2%83%A3-SIEM-%E5%AE%89%E5%85%A8%E4%BF%A1%E6%81%AF%E5%92%8C%E4%BA%8B%E4%BB%B6%E7%AE%A1%E7%90%86-%E6%97%A5%E5%BF%97%EF%BC%89"><span class="toc-text">6️⃣ SIEM  安全信息和事件管理 (日志）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7%EF%B8%8F%E2%83%A3-NDR-%E7%BD%91%E7%BB%9C%E6%A3%80%E6%B5%8B%E4%B8%8E%E5%93%8D%E5%BA%94%EF%BC%8C%E5%85%A8%E6%B5%81%E9%87%8F%E6%A3%80%E6%B5%8B"><span class="toc-text">7️⃣ NDR  网络检测与响应，全流量检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8%EF%B8%8F%E2%83%A3-%E5%A0%A1%E5%9E%92%E6%9C%BA-%E8%BF%90%E7%BB%B4%E7%BB%9F%E4%B8%80%E7%AE%A1%E7%90%86%E5%B9%B3%E5%8F%B0"><span class="toc-text">8️⃣ 堡垒机  运维统一管理平台</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9%EF%B8%8F%E2%83%A3-%E6%80%81%E5%8A%BF%E6%84%9F%E7%9F%A5"><span class="toc-text">9️⃣ 态势感知</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%94%9F-SOC-%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5%E4%B8%AD%E5%BF%83"><span class="toc-text">🔟  SOC 安全运营中心</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-SOAR-%E5%AE%89%E5%85%A8%E7%BC%96%E6%8E%92%E8%87%AA%E5%8A%A8%E5%8C%96%E5%93%8D%E5%BA%94"><span class="toc-text">11  SOAR 安全编排自动化响应</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-DAST-%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F"><span class="toc-text">12  DAST 漏洞扫描</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-SAST-%E9%9D%99%E6%80%81%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7"><span class="toc-text">13  SAST 静态应用程序检测工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5"><span class="toc-text">14  威胁情报</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#15-RASP-%E8%BF%90%E8%A1%8C%E6%97%B6%E7%A8%8B%E5%BA%8F%E8%87%AA%E6%88%91%E4%BF%9D%E6%8A%A4"><span class="toc-text">15  RASP 运行时程序自我保护</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%92%8C-waf-%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9A"><span class="toc-text">和 waf 的区别：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#16-%E8%9C%9C%E7%BD%90"><span class="toc-text">16. 蜜罐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#17-WAF"><span class="toc-text">17 WAF</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%AA%E4%BA%9B%E5%B0%B1%E4%B8%9A%E5%B2%97%E4%BD%8D%E9%9C%80%E8%A6%81%E7%94%A8%E5%88%B0%E5%AE%89%E5%85%A8%E4%BA%A7%E5%93%81"><span class="toc-text">哪些就业岗位需要用到安全产品</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E4%BA%A7%E5%93%81%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="toc-text">安全产品有哪些</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E4%BF%A1%E5%8A%9E-%E7%BD%91%E7%BB%9C%E5%85%B3%E9%94%AE%E8%AE%BE%E5%A4%87%E5%92%8C%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E4%B8%93%E7%94%A8%E4%BA%A7%E5%93%81%E7%9B%AE%E5%BD%95"><span class="toc-text">网信办-网络关键设备和网络安全专用产品目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E5%8E%82%E5%95%86%E7%9A%84%E4%BA%A7%E5%93%81-%E2%AD%90%EF%B8%8F"><span class="toc-text">安全厂商的产品 ⭐️</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A5%87%E5%AE%89%E4%BF%A1"><span class="toc-text">奇安信</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E4%BF%A1%E6%9C%8D"><span class="toc-text">深信服</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%BF%E7%9B%9F"><span class="toc-text">绿盟</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E6%98%8E"><span class="toc-text">启明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A3%9E%E5%A1%94"><span class="toc-text">飞塔</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B4%BE%E6%8B%93"><span class="toc-text">派拓</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CrowdStrike"><span class="toc-text">CrowdStrike</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5%E7%9F%A5%E8%AF%86%E5%BA%93"><span class="toc-text">安全运营知识库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E5%AE%89%E5%85%A8%E4%BA%A7%E5%93%81%E3%80%81%E8%AE%BE%E5%A4%87"><span class="toc-text">重要安全产品、设备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3%E9%9B%B6%E4%BF%A1%E4%BB%BB"><span class="toc-text">1️⃣零信任</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3EDR"><span class="toc-text">2️⃣EDR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3VPN"><span class="toc-text">3️⃣VPN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VPN-%E5%92%8C%E9%9B%B6%E4%BF%A1%E4%BB%BB%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-text">VPN 和零信任的区别？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-IDS-IPS"><span class="toc-text">4️⃣ IDS &#x2F; IPS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%E9%98%B2%E7%81%AB%E5%A2%99-%E4%B8%8B%E4%B8%80%E4%BB%A3%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-text">5️⃣ 防火墙 &#x2F; 下一代防火墙</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6%EF%B8%8F%E2%83%A3-SIEM-%E5%AE%89%E5%85%A8%E4%BF%A1%E6%81%AF%E5%92%8C%E4%BA%8B%E4%BB%B6%E7%AE%A1%E7%90%86-%E6%97%A5%E5%BF%97%EF%BC%89"><span class="toc-text">6️⃣ SIEM  安全信息和事件管理 (日志）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7%EF%B8%8F%E2%83%A3-NDR-%E7%BD%91%E7%BB%9C%E6%A3%80%E6%B5%8B%E4%B8%8E%E5%93%8D%E5%BA%94%EF%BC%8C%E5%85%A8%E6%B5%81%E9%87%8F%E6%A3%80%E6%B5%8B"><span class="toc-text">7️⃣ NDR  网络检测与响应，全流量检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8%EF%B8%8F%E2%83%A3-%E5%A0%A1%E5%9E%92%E6%9C%BA-%E8%BF%90%E7%BB%B4%E7%BB%9F%E4%B8%80%E7%AE%A1%E7%90%86%E5%B9%B3%E5%8F%B0"><span class="toc-text">8️⃣ 堡垒机  运维统一管理平台</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9%EF%B8%8F%E2%83%A3-%E6%80%81%E5%8A%BF%E6%84%9F%E7%9F%A5"><span class="toc-text">9️⃣ 态势感知</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%94%9F-SOC-%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5%E4%B8%AD%E5%BF%83"><span class="toc-text">SOC 安全运营中心</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-SOAR-%E5%AE%89%E5%85%A8%E7%BC%96%E6%8E%92%E8%87%AA%E5%8A%A8%E5%8C%96%E5%93%8D%E5%BA%94"><span class="toc-text">11  SOAR 安全编排自动化响应</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-DAST-%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F"><span class="toc-text">12  DAST 漏洞扫描</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-SAST-%E9%9D%99%E6%80%81%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7"><span class="toc-text">13  SAST 静态应用程序检测工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5"><span class="toc-text">14  威胁情报</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#15-RASP-%E8%BF%90%E8%A1%8C%E6%97%B6%E7%A8%8B%E5%BA%8F%E8%87%AA%E6%88%91%E4%BF%9D%E6%8A%A4"><span class="toc-text">15  RASP 运行时程序自我保护</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%92%8C-waf-%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9A"><span class="toc-text">和 waf 的区别：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#16-%E8%9C%9C%E7%BD%90"><span class="toc-text">16. 蜜罐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#17-WAF"><span class="toc-text">17 WAF</span></a></li></ol>
   </div>
 </aside>
 
@@ -91,8 +107,6 @@
         <h1>安全产品与安全设备全景</h1>
         <div class="post-meta">
           <time datetime="2026-02-03">2026-02-03</time>
-          
-            <span>更新于 2026-08-29</span>
           
         </div>
       </header>
@@ -220,9 +234,9 @@
 <li>微软知识库： <a target="_blank" rel="noopener" href="https://www.microsoft.com/zh-cn/security/business/security-101/what-is-soar">https://www.microsoft.com/zh-cn/security/business/security-101/what-is-soar</a></li>
 </ul>
 <h2 id="12-DAST-漏洞扫描"><a href="#12-DAST-漏洞扫描" class="headerlink" title="12  DAST 漏洞扫描"></a>12  DAST 漏洞扫描</h2><ul>
-<li>**绿盟 WVSS ： <a target="_blank" rel="noopener" href="https://www.nsfocus.com.cn/html/2019/206_0911/8.html">https://www.nsfocus.com.cn/html/2019/206_0911/8.html</a> **</li>
-<li>**安恒明鉴： <a target="_blank" rel="noopener" href="https://www.dbappsecurity.com.cn/product/cloud161.html">https://www.dbappsecurity.com.cn/product/cloud161.html</a> **</li>
-<li>**长亭洞鉴： <a target="_blank" rel="noopener" href="https://www.chaitin.cn/xray">https://www.chaitin.cn/xray</a> **</li>
+<li><strong>绿盟 WVSS ： <a target="_blank" rel="noopener" href="https://www.nsfocus.com.cn/html/2019/206_0911/8.html">https://www.nsfocus.com.cn/html/2019/206_0911/8.html</a></strong></li>
+<li><strong>安恒明鉴： <a target="_blank" rel="noopener" href="https://www.dbappsecurity.com.cn/product/cloud161.html">https://www.dbappsecurity.com.cn/product/cloud161.html</a></strong></li>
+<li><strong>长亭洞鉴： <a target="_blank" rel="noopener" href="https://www.chaitin.cn/xray">https://www.chaitin.cn/xray</a></strong></li>
 <li><strong>长亭无锋： <a target="_blank" rel="noopener" href="https://www.chaitin.cn/xblad">https://www.chaitin.cn/xblad</a></strong>e</li>
 </ul>
 <h2 id="13-SAST-静态应用程序检测工具"><a href="#13-SAST-静态应用程序检测工具" class="headerlink" title="13  SAST 静态应用程序检测工具"></a>13  SAST 静态应用程序检测工具</h2><p> 代码审计、安全开发工具</p>
@@ -233,11 +247,11 @@
 </ul>
 <h2 id="14-威胁情报"><a href="#14-威胁情报" class="headerlink" title="14  威胁情报"></a>14  威胁情报</h2><p> 态势感知的重要组成部分 <a target="_blank" rel="noopener" href="https://x.threatbook.com/">https://x.threatbook.com/</a></p>
 <h2 id="15-RASP-运行时程序自我保护"><a href="#15-RASP-运行时程序自我保护" class="headerlink" title="15  RASP 运行时程序自我保护"></a>15  RASP 运行时程序自我保护</h2><h3 id="和-waf-的区别："><a href="#和-waf-的区别：" class="headerlink" title="和 waf 的区别："></a>和 waf 的区别：</h3><ul>
-<li>**waf 是基于流量检测和匹配的，比如流量中有字符串 order by 9 ，waf 就认为是sql注入进行 拦截 **</li>
-<li>**rasp 是网站运行时进行的检测，比如用户输入了 order by 9 且真正发生了 sql注入，rsap 才 会拦截  **</li>
+<li><strong>waf 是基于流量检测和匹配的，比如流量中有字符串 order by 9 ，waf 就认为是sql注入进行 拦截</strong></li>
+<li><strong>rasp 是网站运行时进行的检测，比如用户输入了 order by 9 且真正发生了 sql注入，rsap 才 会拦截</strong></li>
 </ul>
 <p> 百度rasp ： <code>**https://github.com/baidu/openrasp  **</code></p>
-<p>** 1 修改配置文件  **</p>
+<p><strong>1 修改配置文件</strong></p>
 <p>2  启动网站时，使用 javaagent 加载 rasp.jar</p>
 <p><code>** java   -javaagent:rasp.jar所在绝对路径   -jar   javasec-1.15.jar  **</code></p>
 <p>3  攻击漏洞，被拦截</p>
@@ -422,7 +436,7 @@ threatbook/hfish-server:latest</code></pre>
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

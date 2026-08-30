@@ -17,12 +17,28 @@
 <meta property="og:description" content="当接口参数加密传输时，如何定位前端加密函数、配合 Burp 插件与 RPC 完成改包测试。">
 <meta property="og:url" content="https://blogbu2154.site/frontend-encryption-analysis/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/2.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/2.jpg">
+<meta property="og:image:alt" content="前端加解密场景下的渗透测试 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2026-01-14T01:45:55+08:00">
+<meta property="article:modified_time" content="2026-01-14T01:45:55+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/2.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -92,8 +108,6 @@
         <div class="post-meta">
           <time datetime="2026-01-14">2026-01-14</time>
           
-            <span>更新于 2026-08-29</span>
-          
         </div>
       </header>
       
@@ -110,8 +124,8 @@
 <li>作用：前端加密或签名不能防御漏洞，但是可以提高黑客的利用成本 （防重放、 防自动化扫 描工具、防爬虫）</li>
 </ul>
 <h2 id="前端签名"><a href="#前端签名" class="headerlink" title="前端签名"></a>前端签名</h2><h2 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h2><p>特征：在请求头或请求体中有 <strong>“签名” 同义词的参数，能防止数据包篡改</strong></p>
-<h2 id="分析签名逻辑"><a href="#分析签名逻辑" class="headerlink" title="分析签名逻辑"></a>分析签名逻辑</h2><p>在** js 中定位 签名逻辑**</p>
-<p>1 类似加密** **<code>**encrypto**</code> 函数名</p>
+<h2 id="分析签名逻辑"><a href="#分析签名逻辑" class="headerlink" title="分析签名逻辑"></a>分析签名逻辑</h2><p>在<strong>js 中定位 签名逻辑</strong></p>
+<p>1 类似加密 <code>encrypto</code> 函数名</p>
 <p>发现 Encrypt(word)</p>
 <p>2 找参数 是什么</p>
 <p>方法1：上下文 分析</p>
@@ -796,7 +810,7 @@ afterRequest = func(rsp)&#123;
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

