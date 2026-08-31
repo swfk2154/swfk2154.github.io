@@ -6,7 +6,7 @@
   <link href="https://blogbu2154.site/atom.xml" rel="self"/>
   
   <link href="https://blogbu2154.site/"/>
-  <updated>2026-03-19T06:01:00.000Z</updated>
+  <updated>2026-08-31T05:40:00.000Z</updated>
   <id>https://blogbu2154.site/</id>
   
   <author>
@@ -15,6 +15,52 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Agent Harness 架构大起底：14 款编程智能体的设计哲学对决</title>
+    <link href="https://blogbu2154.site/ai-agent-harness-architecture/"/>
+    <id>https://blogbu2154.site/ai-agent-harness-architecture/</id>
+    <published>2026-08-31T05:40:00.000Z</published>
+    <updated>2026-08-31T05:40:00.000Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;同一个模型，套上不同的身体和装备，干完全不一样的活。上一篇《AI 编程智能体七合一全景》盘了各家能干什么，这一篇拆它们&lt;strong&gt;内部怎么干&lt;/strong&gt;——14 款 Agent 的 harness</summary>
+        
+      
+    
+    
+    
+    <category term="AI工具" scheme="https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/"/>
+    
+    
+    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
+    
+    <category term="AI编程" scheme="https://blogbu2154.site/tags/AI%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="Codex" scheme="https://blogbu2154.site/tags/Codex/"/>
+    
+    <category term="Claude Code" scheme="https://blogbu2154.site/tags/Claude-Code/"/>
+    
+    <category term="Antigravity" scheme="https://blogbu2154.site/tags/Antigravity/"/>
+    
+    <category term="DeepSeek" scheme="https://blogbu2154.site/tags/DeepSeek/"/>
+    
+    <category term="Harness" scheme="https://blogbu2154.site/tags/Harness/"/>
+    
+    <category term="架构" scheme="https://blogbu2154.site/tags/%E6%9E%B6%E6%9E%84/"/>
+    
+    <category term="Grok Build" scheme="https://blogbu2154.site/tags/Grok-Build/"/>
+    
+    <category term="OpenCode" scheme="https://blogbu2154.site/tags/OpenCode/"/>
+    
+    <category term="OpenClaw" scheme="https://blogbu2154.site/tags/OpenClaw/"/>
+    
+  </entry>
   
   <entry>
     <title>AI 入门必看！一篇文章搞懂 LLM、Token、Prompt、Context、Agent、Tool、Workflow、RAG、Embedding</title>
@@ -623,33 +669,6 @@
     <category term="FRP" scheme="https://blogbu2154.site/tags/FRP/"/>
     
     <category term="内网渗透" scheme="https://blogbu2154.site/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>C2 工具</title>
-    <link href="https://blogbu2154.site/c2-frameworks/"/>
-    <id>https://blogbu2154.site/c2-frameworks/</id>
-    <published>2026-01-19T02:38:27.000Z</published>
-    <updated>2026-01-19T02:38:27.000Z</updated>
-    
-    
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
-    
-    
-    
-    <category term="网络安全" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
-    
-    <category term="内网渗透" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
-    
-    
-    <category term="C2" scheme="https://blogbu2154.site/tags/C2/"/>
-    
-    <category term="Cobalt Strike" scheme="https://blogbu2154.site/tags/Cobalt-Strike/"/>
-    
-    <category term="远控" scheme="https://blogbu2154.site/tags/%E8%BF%9C%E6%8E%A7/"/>
     
   </entry>
   
