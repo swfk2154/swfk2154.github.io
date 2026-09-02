@@ -68,6 +68,6 @@
 
 ## 站点页面
 
-- [全部分类](https://blogbu2154.site/categories/)
 - [全部标签](https://blogbu2154.site/tags/)
 - [关于作者](https://blogbu2154.site/about/)
+- [全部分类](https://blogbu2154.site/categories/)
