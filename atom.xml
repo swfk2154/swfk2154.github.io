@@ -38,9 +38,13 @@
     <category term="AI工具" scheme="https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/"/>
     
     
+    <category term="AI编程" scheme="https://blogbu2154.site/tags/AI%E7%BC%96%E7%A8%8B/"/>
+    
     <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
     
-    <category term="AI编程" scheme="https://blogbu2154.site/tags/AI%E7%BC%96%E7%A8%8B/"/>
+    <category term="Harness" scheme="https://blogbu2154.site/tags/Harness/"/>
+    
+    <category term="架构" scheme="https://blogbu2154.site/tags/%E6%9E%B6%E6%9E%84/"/>
     
     <category term="Codex" scheme="https://blogbu2154.site/tags/Codex/"/>
     
@@ -48,17 +52,13 @@
     
     <category term="Antigravity" scheme="https://blogbu2154.site/tags/Antigravity/"/>
     
-    <category term="DeepSeek" scheme="https://blogbu2154.site/tags/DeepSeek/"/>
-    
-    <category term="Harness" scheme="https://blogbu2154.site/tags/Harness/"/>
-    
-    <category term="架构" scheme="https://blogbu2154.site/tags/%E6%9E%B6%E6%9E%84/"/>
-    
     <category term="Grok Build" scheme="https://blogbu2154.site/tags/Grok-Build/"/>
     
     <category term="OpenCode" scheme="https://blogbu2154.site/tags/OpenCode/"/>
     
     <category term="OpenClaw" scheme="https://blogbu2154.site/tags/OpenClaw/"/>
+    
+    <category term="DeepSeek" scheme="https://blogbu2154.site/tags/DeepSeek/"/>
     
   </entry>
   
@@ -123,9 +123,9 @@
     <category term="AI工具" scheme="https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/"/>
     
     
-    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
-    
     <category term="AI编程" scheme="https://blogbu2154.site/tags/AI%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
     
     <category term="Codex" scheme="https://blogbu2154.site/tags/Codex/"/>
     
@@ -133,11 +133,11 @@
     
     <category term="Antigravity" scheme="https://blogbu2154.site/tags/Antigravity/"/>
     
+    <category term="DeepSeek" scheme="https://blogbu2154.site/tags/DeepSeek/"/>
+    
     <category term="Grok" scheme="https://blogbu2154.site/tags/Grok/"/>
     
     <category term="Kimi Code" scheme="https://blogbu2154.site/tags/Kimi-Code/"/>
-    
-    <category term="DeepSeek" scheme="https://blogbu2154.site/tags/DeepSeek/"/>
     
     <category term="ZCode" scheme="https://blogbu2154.site/tags/ZCode/"/>
     
@@ -167,9 +167,9 @@
     <category term="AI工具" scheme="https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/"/>
     
     
-    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
-    
     <category term="AI编程" scheme="https://blogbu2154.site/tags/AI%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
     
     <category term="Codex" scheme="https://blogbu2154.site/tags/Codex/"/>
     
@@ -177,11 +177,11 @@
     
     <category term="Antigravity" scheme="https://blogbu2154.site/tags/Antigravity/"/>
     
+    <category term="DeepSeek" scheme="https://blogbu2154.site/tags/DeepSeek/"/>
+    
     <category term="Grok" scheme="https://blogbu2154.site/tags/Grok/"/>
     
     <category term="Kimi Code" scheme="https://blogbu2154.site/tags/Kimi-Code/"/>
-    
-    <category term="DeepSeek" scheme="https://blogbu2154.site/tags/DeepSeek/"/>
     
     <category term="架构设计" scheme="https://blogbu2154.site/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"/>
     
@@ -209,9 +209,9 @@
     <category term="AI工具" scheme="https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/"/>
     
     
-    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
-    
     <category term="AI编程" scheme="https://blogbu2154.site/tags/AI%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
     
     <category term="DeepSeek" scheme="https://blogbu2154.site/tags/DeepSeek/"/>
     
@@ -300,6 +300,8 @@
     
     <category term="护网" scheme="https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/"/>
     
+    <category term="安全运营" scheme="https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/"/>
+    
     <category term="HVV" scheme="https://blogbu2154.site/tags/HVV/"/>
     
     <category term="蓝队" scheme="https://blogbu2154.site/tags/%E8%93%9D%E9%98%9F/"/>
@@ -307,8 +309,6 @@
     <category term="面试题" scheme="https://blogbu2154.site/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
     
     <category term="应急响应" scheme="https://blogbu2154.site/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/"/>
-    
-    <category term="安全运营" scheme="https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/"/>
     
   </entry>
   
@@ -337,9 +337,9 @@
     <category term="AI工具" scheme="https://blogbu2154.site/categories/AI%E5%B7%A5%E5%85%B7/"/>
     
     
-    <category term="AI工具" scheme="https://blogbu2154.site/tags/AI%E5%B7%A5%E5%85%B7/"/>
-    
     <category term="Agent" scheme="https://blogbu2154.site/tags/Agent/"/>
+    
+    <category term="AI工具" scheme="https://blogbu2154.site/tags/AI%E5%B7%A5%E5%85%B7/"/>
     
     <category term="CC Switch" scheme="https://blogbu2154.site/tags/CC-Switch/"/>
     
@@ -415,9 +415,9 @@
     
     <category term="AI安全" scheme="https://blogbu2154.site/tags/AI%E5%AE%89%E5%85%A8/"/>
     
-    <category term="MCP" scheme="https://blogbu2154.site/tags/MCP/"/>
-    
     <category term="Claude Code" scheme="https://blogbu2154.site/tags/Claude-Code/"/>
+    
+    <category term="MCP" scheme="https://blogbu2154.site/tags/MCP/"/>
     
     <category term="Burp Suite" scheme="https://blogbu2154.site/tags/Burp-Suite/"/>
     
@@ -448,11 +448,11 @@
     <category term="安全运营" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/"/>
     
     
+    <category term="红蓝对抗" scheme="https://blogbu2154.site/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/"/>
+    
     <category term="护网" scheme="https://blogbu2154.site/tags/%E6%8A%A4%E7%BD%91/"/>
     
     <category term="安全运营" scheme="https://blogbu2154.site/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/"/>
-    
-    <category term="红蓝对抗" scheme="https://blogbu2154.site/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/"/>
     
   </entry>
   
@@ -664,11 +664,11 @@
     <category term="内网渗透" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
     
     
+    <category term="内网渗透" scheme="https://blogbu2154.site/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
+    
     <category term="代理隧道" scheme="https://blogbu2154.site/tags/%E4%BB%A3%E7%90%86%E9%9A%A7%E9%81%93/"/>
     
     <category term="FRP" scheme="https://blogbu2154.site/tags/FRP/"/>
-    
-    <category term="内网渗透" scheme="https://blogbu2154.site/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
     
   </entry>
   
