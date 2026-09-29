@@ -67,7 +67,7 @@
     <link href="https://blogbu2154.site/ai-concepts/"/>
     <id>https://blogbu2154.site/ai-concepts/</id>
     <published>2026-08-14T07:00:00.000Z</published>
-    <updated>2026-03-19T06:01:00.000Z</updated>
+    <updated>2026-08-19T06:01:00.000Z</updated>
     
     
       
@@ -374,6 +374,8 @@
     <category term="工具实践" scheme="https://blogbu2154.site/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/"/>
     
     
+    <category term="抓包" scheme="https://blogbu2154.site/tags/%E6%8A%93%E5%8C%85/"/>
+    
     <category term="Wireshark" scheme="https://blogbu2154.site/tags/Wireshark/"/>
     
     <category term="科来" scheme="https://blogbu2154.site/tags/%E7%A7%91%E6%9D%A5/"/>
@@ -383,8 +385,6 @@
     <category term="网络分析" scheme="https://blogbu2154.site/tags/%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90/"/>
     
     <category term="tshark" scheme="https://blogbu2154.site/tags/tshark/"/>
-    
-    <category term="抓包" scheme="https://blogbu2154.site/tags/%E6%8A%93%E5%8C%85/"/>
     
   </entry>
   
@@ -437,9 +437,15 @@
     <updated>2026-02-04T06:56:25.000Z</updated>
     
     
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;红蓝对抗&quot;&gt;&lt;a href=&quot;#红蓝对抗&quot; class=&quot;headerlink&quot; title=&quot;红蓝对抗&quot;&gt;&lt;/a&gt;红蓝对抗&lt;/h2&gt;&lt;h3 id=&quot;参与方&quot;&gt;&lt;a href=&quot;#参与方&quot;</summary>
+        
+      
     
     
     
@@ -464,9 +470,15 @@
     <updated>2026-02-02T17:14:43.000Z</updated>
     
     
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;哪些就业岗位需要用到安全产品&quot;&gt;&lt;a href=&quot;#哪些就业岗位需要用到安全产品&quot; class=&quot;headerlink&quot;</summary>
+        
+      
     
     
     
@@ -491,9 +503,15 @@
     <updated>2026-02-01T17:29:39.000Z</updated>
     
     
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;PTT-攻击-（域内权限维持）&quot;&gt;&lt;a href=&quot;#PTT-攻击-（域内权限维持）&quot; class=&quot;headerlink&quot; title=&quot;PTT 攻击 （域内权限维持）&quot;&gt;&lt;/a&gt;PTT 攻击</summary>
+        
+      
     
     
     
@@ -518,9 +536,18 @@
     <updated>2026-01-29T17:32:31.000Z</updated>
     
     
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;p&gt;对同一网段的机器的渗透测试&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;内网存活探测&lt;/li&gt;
+&lt;li&gt;找漏洞 ，一般情况下内网中的网站服务、其他服务、设备</summary>
+        
+      
     
     
     
@@ -545,9 +572,16 @@
     <updated>2026-01-28T21:40:52.000Z</updated>
     
     
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;系统镜像安装&quot;&gt;&lt;a href=&quot;#系统镜像安装&quot; class=&quot;headerlink&quot; title=&quot;系统镜像安装&quot;&gt;&lt;/a&gt;系统镜像安装&lt;/h2&gt;&lt;p&gt;windows 7&lt;/p&gt;
+&lt;p&gt;windows</summary>
+        
+      
     
     
     
@@ -572,9 +606,16 @@
     <updated>2026-01-27T22:23:38.000Z</updated>
     
     
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;p&gt;&lt;strong&gt;权限维持是获取到操作系统最高管理员后进行的内网渗透操作 （实际工作中需要有明确授权才能进行该步骤）&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&quot;windows权限维持&quot;&gt;&lt;a</summary>
+        
+      
     
     
     
@@ -599,9 +640,15 @@
     <updated>2026-01-27T17:11:09.000Z</updated>
     
     
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h2&gt;&lt;h2 id=&quot;windows-提权限&quot;&gt;&lt;a href=&quot;#windows-提权限&quot;</summary>
+        
+      
     
     
     
@@ -626,9 +673,17 @@
     <updated>2026-01-26T18:43:53.000Z</updated>
     
     
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;p&gt;再通过历史漏洞，0day、钓鱼拿到 主机的shell、webshell、meterpreter、beacon、之后做的事情收集什么？&lt;/p&gt;
+&lt;p&gt;1 系统信息、权限信息、用户信息、进程信息、软件信息&lt;/p&gt;
+&lt;p&gt;2</summary>
+        
+      
     
     
     
@@ -653,9 +708,15 @@
     <updated>2026-01-20T17:22:22.000Z</updated>
     
     
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;内网靶场搭建&quot;&gt;&lt;a href=&quot;#内网靶场搭建&quot; class=&quot;headerlink&quot; title=&quot;内网靶场搭建&quot;&gt;&lt;/a&gt;内网靶场搭建&lt;/h2&gt;&lt;p&gt;添加两个 网络：vmnet 3</summary>
+        
+      
     
     
     
@@ -664,11 +725,11 @@
     <category term="内网渗透" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
     
     
-    <category term="内网渗透" scheme="https://blogbu2154.site/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
-    
     <category term="代理隧道" scheme="https://blogbu2154.site/tags/%E4%BB%A3%E7%90%86%E9%9A%A7%E9%81%93/"/>
     
     <category term="FRP" scheme="https://blogbu2154.site/tags/FRP/"/>
+    
+    <category term="内网渗透" scheme="https://blogbu2154.site/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
     
   </entry>
   

