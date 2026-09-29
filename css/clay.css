@@ -122,6 +122,23 @@ body::before {
   pointer-events: none;
 }
 
+/* 全站微网格底纹（工程蓝图与暖纸质感结合） */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -2;
+  background-image: radial-gradient(var(--border-strong) 0.85px, transparent 0.85px);
+  background-size: 24px 24px;
+  opacity: 0.28;
+}
+
+html[data-theme="dark"] body::after {
+  background-image: radial-gradient(rgba(240, 242, 246, 0.18) 0.85px, transparent 0.85px);
+  opacity: 0.2;
+}
+
 main {
   flex: 1;
   width: min(100% - 2.5rem, 76rem);
@@ -440,8 +457,56 @@ html[data-theme="dark"] .theme-toggle__sun { opacity: 1; rotate: 0deg; scale: 1;
 .post-content a:hover { text-decoration-color: var(--brand); }
 .post-content ul, .post-content ol { margin: 0.9rem 0; padding-left: 1.6rem; }
 .post-content li { margin: 0.35rem 0; }
-.post-content blockquote { margin: 1.3rem 0; padding: 0.7rem 1.1rem; border-left: 3px solid var(--brand); background: var(--surface-muted); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--text-muted); }
-.post-content blockquote p { margin: 0.3rem 0; }
+/* ---------- 呼出提示框（Callout）---------- */
+.post-content blockquote {
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 0.95rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--brand);
+  background: var(--surface-muted);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all var(--t-fast) var(--ease-out);
+}
+.post-content blockquote p { margin: 0.35rem 0; }
+.post-content blockquote p:first-child { margin-top: 0; }
+.post-content blockquote p:last-child { margin-bottom: 0; }
+
+.post-content blockquote.callout--warning {
+  border-color: rgba(217, 119, 6, 0.28);
+  border-left-color: #d97706;
+  background: rgba(245, 158, 11, 0.08);
+}
+html[data-theme="dark"] .post-content blockquote.callout--warning {
+  border-color: rgba(251, 191, 36, 0.25);
+  border-left-color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.post-content blockquote.callout--tip {
+  border-color: rgba(176, 83, 43, 0.28);
+  border-left-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.post-content blockquote.callout--security {
+  border-color: rgba(2, 132, 199, 0.28);
+  border-left-color: #0284c7;
+  background: rgba(14, 165, 233, 0.08);
+}
+html[data-theme="dark"] .post-content blockquote.callout--security {
+  border-color: rgba(56, 189, 248, 0.25);
+  border-left-color: #38bdf8;
+  background: rgba(14, 165, 233, 0.12);
+}
+
+.post-content blockquote.callout--note {
+  border-color: var(--border);
+  border-left-color: var(--text-faint);
+  background: var(--surface-muted);
+}
 .post-content img { border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); }
 .post-content hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
 .post-content .table-wrap { overflow-x: auto; margin: 1.3rem 0; border: 1px solid var(--border); border-radius: var(--radius-sm); }
@@ -458,23 +523,83 @@ html[data-theme="dark"] .theme-toggle__sun { opacity: 1; rotate: 0deg; scale: 1;
   font-size: 0.88em;
 }
 .post-content pre {
-  position: relative; margin: 1.3rem 0; padding: 1.1rem 1.2rem;
-  background: var(--code-bg); color: var(--code-text); border-radius: var(--radius-sm);
-  overflow-x: auto; line-height: 1.6;
-  /* 内侧发丝描边：暗色主题下代码块与页面底色更接近，用它拉开层次 */
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 0;
+  background: var(--code-bg);
+  color: var(--code-text);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
-.post-content pre code { font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace; font-size: 0.86rem; background: none; color: inherit; padding: 0; }
-.post-content pre::-webkit-scrollbar { height: 8px; }
-.post-content pre::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+.post-content pre code {
+  display: block;
+  padding: 1.1rem 1.3rem 1.25rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  background: none;
+  color: inherit;
+}
+.post-content pre code::-webkit-scrollbar { height: 7px; }
+.post-content pre code::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+
+/* 终端顶栏 */
+.code-terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.95rem;
+  background: rgba(0, 0, 0, 0.24);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  user-select: none;
+}
+.code-terminal-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 4.5rem;
+}
+.code-terminal-dots .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-red { background: #ff5f56; box-shadow: inset 0 0 2px rgba(0,0,0,0.3); }
+.dot-yellow { background: #ffbd2e; box-shadow: inset 0 0 2px rgba(0,0,0,0.3); }
+.dot-green { background: #27c93f; box-shadow: inset 0 0 2px rgba(0,0,0,0.3); }
+
+.code-terminal-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+}
 
 .copy-code-button {
-  position: absolute; top: 0.55rem; right: 0.55rem; padding: 0.25rem 0.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 7px;
-  background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.75);
-  font-size: 0.72rem; cursor: pointer; transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+  padding: 0.2rem 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-out);
 }
-.copy-code-button:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
+.copy-code-button:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+.copy-code-button.is-copied {
+  background: rgba(39, 201, 63, 0.18);
+  color: #5af078;
+  border-color: rgba(39, 201, 63, 0.4);
+}
 
 /* highlight.js 配色（适配深色代码背景） */
 .hljs-comment, .hljs-quote { color: #6a737d; }
@@ -854,19 +979,10 @@ html[data-theme="dark"] .theme-toggle__sun { opacity: 1; rotate: 0deg; scale: 1;
 .post-content h5:hover .headerlink,
 .post-content h6:hover .headerlink { opacity: 1; }
 
-/* 代码语言标签 */
-.post-content pre .code-lang {
-  position: absolute;
-  top: 0.6rem;
-  left: 0.85rem;
-  color: rgba(255, 255, 255, 0.5);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  text-transform: lowercase;
-  pointer-events: none;
+/* 终端代码块配套微调 */
+.post-content pre.is-terminal {
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
-.post-content pre.has-lang { padding-top: 2.2rem; }
 
 /* 列表标记 */
 .post-content ul > li::marker { color: var(--brand); }
@@ -1397,4 +1513,30 @@ html[data-theme="dark"] .float-orb::before {
 /* 小屏收起装饰层，把空间留给内容 */
 @media (max-width: 860px) {
   .hero-scene { display: none; }
+}
+
+/* ---------- 暗色模式细腻光效与层次增强 ---------- */
+html[data-theme="dark"] .pick-hero:hover .pick-hero__thumb {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(231, 163, 124, 0.16);
+  border-color: rgba(231, 163, 124, 0.35);
+}
+html[data-theme="dark"] .post-row a:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+html[data-theme="dark"] .toc-box {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* 移动端音乐悬浮按钮轻量避让 */
+@media (max-width: 640px) {
+  .music-player {
+    opacity: 0.88;
+    scale: 0.92;
+    transform-origin: bottom right;
+    transition: opacity var(--t-fast) var(--ease-out), scale var(--t-fast) var(--ease-out);
+  }
+  .music-player:hover, .music-player:focus-within {
+    opacity: 1;
+    scale: 1;
+  }
 }

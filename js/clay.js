@@ -194,20 +194,37 @@
       revealEls.forEach(function (el) { revealObserver.observe(el); });
     }
 
-    // 代码复制
+    // 终端风格代码块美化（macOS 三色小圆点 + 语言徽章 + 复制胶囊）
     document.querySelectorAll('.post-content pre').forEach(function (pre) {
-      if (pre.querySelector('[data-copy-code]')) return;
+      if (pre.querySelector('.code-terminal-header')) return;
       var code = pre.querySelector('code');
+
+      var header = document.createElement('div');
+      header.className = 'code-terminal-header';
+
+      var dots = document.createElement('div');
+      dots.className = 'code-terminal-dots';
+      dots.innerHTML = '<span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>';
+      header.appendChild(dots);
+
+      var m = code ? (code.className || '').match(/language-([\w#+-]+)/) : null;
+      var langName = (m && m[1] && m[1] !== 'plaintext') ? m[1].toUpperCase() : 'TERMINAL';
+      var title = document.createElement('span');
+      title.className = 'code-terminal-title';
+      title.textContent = langName;
+      header.appendChild(title);
+
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'copy-code-button';
       btn.textContent = '复制';
       btn.setAttribute('aria-label', '复制代码');
-      pre.appendChild(btn);
+      header.appendChild(btn);
+
       btn.addEventListener('click', function () {
-        var text = code ? code.innerText : pre.innerText.replace(btn.innerText, '');
+        var text = code ? code.innerText : pre.innerText;
         writeClipboard(text.trimEnd(), function (ok) {
-          btn.textContent = ok ? '已复制' : '复制失败';
+          btn.textContent = ok ? '✓ 已复制' : '复制失败';
           btn.classList.add('is-copied');
           window.setTimeout(function () {
             btn.textContent = '复制';
@@ -215,21 +232,9 @@
           }, 1800);
         });
       });
-    });
 
-    // 代码语言标签
-    document.querySelectorAll('.post-content pre').forEach(function (pre) {
-      var code = pre.querySelector('code');
-      if (!code || pre.querySelector('[data-code-lang]')) return;
-      var m = (code.className || '').match(/language-([\w#+-]+)/);
-      if (m && m[1] && m[1] !== 'plaintext') {
-        var lang = document.createElement('span');
-        lang.className = 'code-lang';
-        lang.setAttribute('data-code-lang', '');
-        lang.textContent = m[1];
-        pre.appendChild(lang);
-        pre.classList.add('has-lang');
-      }
+      pre.insertBefore(header, pre.firstChild);
+      pre.classList.add('is-terminal');
     });
 
     // 表格滚动包裹
@@ -239,6 +244,23 @@
       wrap.className = 'table-wrap';
       t.parentNode.insertBefore(wrap, t);
       wrap.appendChild(t);
+    });
+
+    // 现代 Callout 智能提示框
+    document.querySelectorAll('.post-content blockquote').forEach(function (bq) {
+      var text = bq.innerText || '';
+      var firstLine = text.trim().split('\n')[0] || '';
+      if (/⚠️|警告|注意|warning/i.test(firstLine)) {
+        bq.classList.add('callout', 'callout--warning');
+      } else if (/💡|提示|技巧|tip/i.test(firstLine)) {
+        bq.classList.add('callout', 'callout--tip');
+      } else if (/🛡️|安全|合规|security|边界/i.test(firstLine)) {
+        bq.classList.add('callout', 'callout--security');
+      } else if (/ℹ️|说明|参考|note|严谨性说明/i.test(firstLine)) {
+        bq.classList.add('callout', 'callout--note');
+      } else {
+        bq.classList.add('callout', 'callout--default');
+      }
     });
 
     // 阅读进度引用（当前页）
