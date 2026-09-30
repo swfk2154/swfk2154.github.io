@@ -82,6 +82,7 @@ html[data-theme="dark"] {
   --glass-rim-bottom: rgba(255, 255, 255, 0.06);
   --glass-backdrop: saturate(160%) blur(26px);
   --glass-inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 -1px 1px rgba(255, 255, 255, 0.05), inset 0 0 18px rgba(255, 255, 255, 0.05);
+  --nav-pill-bg: rgba(14, 17, 22, 0.85);
 }
 
 /* ---------- 基础 ---------- */
@@ -763,15 +764,46 @@ html[data-theme="dark"] .post-content blockquote.callout--security {
   .post-nav__next span { justify-content: flex-start; }
 }
 
+/* ---------- 汉堡菜单按钮（默认隐藏，仅小屏显示） ---------- */
+.site-nav__hamburger {
+  display: none; align-items: center; justify-content: center; flex: none;
+  width: 2.2rem; height: 2.2rem; padding: 0; border: 0; border-radius: 999px;
+  background: transparent; color: var(--text-muted); cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.site-nav__hamburger:hover { color: var(--text); background: var(--surface-muted); }
+.site-nav__links { display: contents; }
+/* 小屏 GitHub 图标默认隐藏（只在展开的菜单里才值得占位） */
+.site-nav__github-mobile { }
+
 @media (max-width: 560px) {
   .post-row a { grid-template-columns: 3.4rem minmax(0, 1fr); gap: 0.8rem; padding-block: 0.95rem; }
   .post-row__cat { display: none; }
   .hero__social { margin-left: 0; padding-left: 0; border-left: 0; }
   .post-content h2 { font-size: 1.35rem; }
-  /* 移动端导航：整宽 + 紧凑，避免胶囊拥挤误触（菜单 6 项 + 3 图标需在 375px 内放下） */
+
+  /* 移动端导航：汉堡菜单 + 折叠链接 */
   .site-nav { padding: 0.6rem 0.7rem; }
-  .site-nav__pill { width: 100%; justify-content: flex-start; gap: 0.05rem; padding: 0.22rem; }
-  .site-nav__pill a { padding: 0.36rem 0.55rem; font-size: 0.83rem; }
+  .site-nav__pill {
+    width: 100%; justify-content: flex-start; gap: 0.05rem; padding: 0.22rem;
+    flex-wrap: wrap;
+  }
+  .site-nav__hamburger { display: inline-flex; }
+  .site-nav__links {
+    display: none; flex-basis: 100%; order: 10;
+    flex-direction: column; gap: 0.15rem;
+    padding: 0.35rem 0.15rem 0.15rem;
+  }
+  .site-nav__pill.is-menu-open .site-nav__links { display: flex; }
+  .site-nav__pill .site-nav__links a {
+    padding: 0.5rem 0.85rem; font-size: 0.92rem; border-radius: var(--radius-sm);
+    justify-content: flex-start; width: 100%;
+  }
+  .site-nav__pill .site-nav__links a:hover { background: var(--surface-muted); }
+  .site-nav__pill .site-nav__links a.is-current { background: var(--accent-soft); }
+  /* GitHub 图标移入折叠菜单 */
+  .site-nav__github-mobile { display: none !important; }
+  .site-nav__pill.is-menu-open .site-nav__github-mobile { display: inline-flex !important; order: 11; }
   .site-nav__pill .site-nav__icon { width: 2rem; height: 2rem; }
 }
 

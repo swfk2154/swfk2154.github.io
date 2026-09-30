@@ -374,8 +374,6 @@
     <category term="工具实践" scheme="https://blogbu2154.site/categories/%E5%B7%A5%E5%85%B7%E5%AE%9E%E8%B7%B5/"/>
     
     
-    <category term="抓包" scheme="https://blogbu2154.site/tags/%E6%8A%93%E5%8C%85/"/>
-    
     <category term="Wireshark" scheme="https://blogbu2154.site/tags/Wireshark/"/>
     
     <category term="科来" scheme="https://blogbu2154.site/tags/%E7%A7%91%E6%9D%A5/"/>
@@ -385,6 +383,8 @@
     <category term="网络分析" scheme="https://blogbu2154.site/tags/%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90/"/>
     
     <category term="tshark" scheme="https://blogbu2154.site/tags/tshark/"/>
+    
+    <category term="抓包" scheme="https://blogbu2154.site/tags/%E6%8A%93%E5%8C%85/"/>
     
   </entry>
   
@@ -725,11 +725,11 @@
     <category term="内网渗透" scheme="https://blogbu2154.site/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
     
     
+    <category term="内网渗透" scheme="https://blogbu2154.site/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
+    
     <category term="代理隧道" scheme="https://blogbu2154.site/tags/%E4%BB%A3%E7%90%86%E9%9A%A7%E9%81%93/"/>
     
     <category term="FRP" scheme="https://blogbu2154.site/tags/FRP/"/>
-    
-    <category term="内网渗透" scheme="https://blogbu2154.site/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
     
   </entry>
   

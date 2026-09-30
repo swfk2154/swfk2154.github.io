@@ -39,6 +39,25 @@
     });
   }
 
+  /* ================= 移动端汉堡菜单 ================= */
+  var navToggle = document.querySelector('[data-nav-toggle]');
+  if (navToggle) {
+    navToggle.addEventListener('click', function () {
+      var pill = navToggle.closest('.site-nav__pill');
+      if (!pill) return;
+      var open = pill.classList.toggle('is-menu-open');
+      navToggle.setAttribute('aria-expanded', String(open));
+    });
+    // 点击菜单项后自动收起
+    document.querySelectorAll('[data-nav-links] a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        var pill = navToggle.closest('.site-nav__pill');
+        if (pill) pill.classList.remove('is-menu-open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
   /* ========== Hero 装饰微视差（Daydream 移植）：仅精确指针 + 允许动态 ========== */
   (function () {
     var scene = document.querySelector('.hero-scene');
