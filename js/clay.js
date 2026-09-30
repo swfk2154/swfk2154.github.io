@@ -366,15 +366,25 @@
     var mToggle = musicPlayer.querySelector('[data-music-toggle]');
     var mPanel = musicPlayer.querySelector('[data-music-panel]');
     var mClose = musicPlayer.querySelector('[data-music-close]');
+    var mBackdrop = musicPlayer.querySelector('[data-music-backdrop]');
     function setMusicOpen(open) {
       musicPlayer.classList.toggle('is-open', open);
       if (mPanel) mPanel.setAttribute('aria-hidden', String(!open));
       if (mToggle) mToggle.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('music-sheet-open', open && window.innerWidth <= 640);
     }
-    if (mToggle) mToggle.addEventListener('click', function () {
+    if (mToggle) mToggle.addEventListener('click', function (e) {
+      e.stopPropagation();
       setMusicOpen(!musicPlayer.classList.contains('is-open'));
     });
-    if (mClose) mClose.addEventListener('click', function () { setMusicOpen(false); });
+    if (mClose) mClose.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setMusicOpen(false);
+    });
+    if (mBackdrop) mBackdrop.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setMusicOpen(false);
+    });
     document.addEventListener('click', function (e) {
       if (musicPlayer.classList.contains('is-open') && !musicPlayer.contains(e.target)) setMusicOpen(false);
     });
@@ -391,6 +401,23 @@
 
     var discCover = musicPlayer.querySelector('[data-music-cover]');
     var discNote = musicPlayer.querySelector('.music-player__disc-note');
+    var toast = musicPlayer.querySelector('[data-music-toast]');
+    var toastTitle = musicPlayer.querySelector('[data-toast-title]');
+    var toastArtist = musicPlayer.querySelector('[data-toast-artist]');
+    var ambient = musicPlayer.querySelector('[data-music-ambient]');
+    var toastTimer = null;
+
+    function showMusicToast(title, artist) {
+      if (!toast || musicPlayer.classList.contains('is-open')) return;
+      if (toastTitle) toastTitle.textContent = title || '未知曲目';
+      if (toastArtist) toastArtist.textContent = artist || '未知歌手';
+      toast.classList.add('is-visible');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        toast.classList.remove('is-visible');
+      }, 3400);
+    }
+
     function getAplayer() {
       var arr = window.__CLAY_APLAYER__;
       if (arr && arr[0]) return arr[0];
@@ -409,6 +436,9 @@
       } else {
         if (discCover) discCover.hidden = true;
         if (discNote) discNote.hidden = false;
+      }
+      if (ambient && cover) {
+        ambient.style.backgroundImage = 'url(' + cover + ')';
       }
     }
     function addListCovers(ap) {
@@ -439,7 +469,11 @@
         play: '<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>',
         pause: '<svg viewBox="0 0 24 24"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z" fill="currentColor"/></svg>',
         prev: '<svg viewBox="0 0 24 24"><path d="M7 5h2.4v14H7zM18.5 5v14L9.5 12z" fill="currentColor"/></svg>',
-        next: '<svg viewBox="0 0 24 24"><path d="M14.6 5H17v14h-2.4zM5.5 5v14l9-7z" fill="currentColor"/></svg>'
+        next: '<svg viewBox="0 0 24 24"><path d="M14.6 5H17v14h-2.4zM5.5 5v14l9-7z" fill="currentColor"/></svg>',
+        volume: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>',
+        volumeMute: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>',
+        orderList: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+        orderRandom: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>'
       };
 
       var box = document.createElement('div');
@@ -451,9 +485,14 @@
           '<div class="mp-time"><span data-mp-ptime>0:00</span><span class="mp-sep">/</span><span data-mp-dtime>0:00</span></div>' +
         '</div>' +
         '<div class="mp-buttons">' +
+          '<button type="button" class="mp-btn mp-btn--sub" data-mp-order title="切换播放模式">' + icons.orderList + '</button>' +
           '<button type="button" class="mp-btn" data-mp-prev title="上一首">' + icons.prev + '</button>' +
           '<button type="button" class="mp-btn mp-play" data-mp-play title="播放">' + icons.play + '</button>' +
           '<button type="button" class="mp-btn" data-mp-next title="下一首">' + icons.next + '</button>' +
+          '<div class="mp-vol-wrap">' +
+            '<button type="button" class="mp-btn mp-btn--sub" data-mp-volbtn title="音量">' + icons.volume + '</button>' +
+            '<div class="mp-vol-slider" data-mp-volslider><div class="mp-vol-bar"><div class="mp-vol-fill" data-mp-volfill style="width: 70%"></div></div></div>' +
+          '</div>' +
         '</div>';
       list.parentNode.insertBefore(box, list);
 
@@ -486,6 +525,69 @@
       box.querySelector('[data-mp-prev]').addEventListener('click', function () { ap.skipBack(); });
       box.querySelector('[data-mp-next]').addEventListener('click', function () { ap.skipForward(); });
 
+      // 播放模式切换（顺序 / 随机）
+      var orderBtn = box.querySelector('[data-mp-order]');
+      if (orderBtn) {
+        var isRandom = (ap.options && ap.options.order === 'random');
+        function syncOrderUi() {
+          orderBtn.innerHTML = isRandom ? icons.orderRandom : icons.orderList;
+          orderBtn.setAttribute('title', isRandom ? '当前：随机播放' : '当前：顺序播放');
+          orderBtn.classList.toggle('is-random', isRandom);
+        }
+        syncOrderUi();
+        orderBtn.addEventListener('click', function () {
+          isRandom = !isRandom;
+          if (ap.options) ap.options.order = isRandom ? 'random' : 'list';
+          syncOrderUi();
+          if (ap.notice) ap.notice(isRandom ? '已切换至随机播放' : '已切换至顺序播放', 2000);
+        });
+      }
+
+      // 音量控制
+      var volBtn = box.querySelector('[data-mp-volbtn]');
+      var volSlider = box.querySelector('[data-mp-volslider]');
+      var volFill = box.querySelector('[data-mp-volfill]');
+      var lastVol = ap.audio ? (ap.audio.volume || 0.7) : 0.7;
+      function syncVolUi(v) {
+        if (volFill) volFill.style.width = Math.round(v * 100) + '%';
+        if (volBtn) {
+          volBtn.innerHTML = v <= 0.02 ? icons.volumeMute : icons.volume;
+        }
+      }
+      syncVolUi(lastVol);
+      if (volBtn) {
+        volBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (!ap.audio) return;
+          if (ap.audio.volume > 0.02) {
+            lastVol = ap.audio.volume;
+            ap.volume(0, true);
+            syncVolUi(0);
+          } else {
+            ap.volume(lastVol || 0.7, true);
+            syncVolUi(lastVol || 0.7);
+          }
+        });
+      }
+      if (volSlider) {
+        var volDrag = false;
+        function updateVol(clientX) {
+          var rect = volSlider.getBoundingClientRect();
+          var r = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+          ap.volume(r, true);
+          lastVol = r;
+          syncVolUi(r);
+        }
+        volSlider.addEventListener('pointerdown', function (e) {
+          volDrag = true;
+          if (volSlider.setPointerCapture) { try { volSlider.setPointerCapture(e.pointerId); } catch (err) {} }
+          updateVol(e.clientX);
+        });
+        volSlider.addEventListener('pointermove', function (e) { if (volDrag) updateVol(e.clientX); });
+        volSlider.addEventListener('pointerup', function () { volDrag = false; });
+        volSlider.addEventListener('pointercancel', function () { volDrag = false; });
+      }
+
       // 进度条：支持点击与按住拖拽（pointer 事件兼容触屏）
       var bar = box.querySelector('[data-mp-bar]');
       var dragging = false;
@@ -514,6 +616,11 @@
         var total = ap.list.audios ? ap.list.audios.length : 0;
         var cur = ap.list.index != null ? ap.list.index + 1 : 0;
         head.querySelector('[data-mp-count]').textContent = total ? (cur + '/' + total) : '';
+        // 切歌提示气泡
+        if (ap.list && ap.list.audios && ap.list.audios[ap.list.index]) {
+          var curAudio = ap.list.audios[ap.list.index];
+          showMusicToast(curAudio.name, curAudio.artist);
+        }
       }
       updateCount();
       ap.on('listswitch', updateCount);

@@ -495,18 +495,32 @@ filetype 文件类型 filetype:pdf
   
 
 <div class="music-player" data-music-player>
+  <!-- 移动端暗色遮罩层 -->
+  <div class="music-player__backdrop" data-music-backdrop aria-hidden="true"></div>
+
+  <!-- 切歌微气泡提示 -->
+  <aside class="music-player__toast" data-music-toast aria-live="polite">
+    <span class="music-player__toast-note">🎵</span>
+    <div class="music-player__toast-info">
+      <span class="music-player__toast-title" data-toast-title>未知曲目</span>
+      <span class="music-player__toast-artist" data-toast-artist>未知歌手</span>
+    </div>
+  </aside>
+
   <button type="button" class="music-player__toggle" data-music-toggle aria-expanded="false" aria-controls="music-player-panel" aria-label="打开音乐播放器" title="音乐">
     <span class="music-player__disc" aria-hidden="true">
       <img class="music-player__disc-cover" data-music-cover alt="" hidden referrerpolicy="no-referrer">
       <svg class="music-player__disc-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
     </span>
-    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="music-player__pulse" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
   </button>
 
   <section class="music-player__panel" id="music-player-panel" data-music-panel aria-hidden="true">
+    <div class="music-player__ambient" data-music-ambient aria-hidden="true"></div>
+    <div class="music-player__mobile-handle" aria-hidden="true"></div>
     <div class="music-player__panel-head">
       <div class="music-player__head-copy">
-        <span class="music-player__eyebrow">MUSIC</span>
+        <span class="music-player__eyebrow">MUSIC PLAYING</span>
         <h2>BGM</h2>
       </div>
       <button type="button" class="music-player__close" data-music-close aria-label="收起">&#215;</button>
