@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="<%= config.language || 'zh-CN' %>">
+<%- partial('_partial/head') %>
+<body class="<%= page.path === '' || is_home() ? 'home-page' : '' %>">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <%- partial('_partial/nav') %>
+  <main id="main">
+    <%- body %>
+  </main>
+  <%- partial('_partial/footer') %>
+  <%- partial('_partial/search') %>
+  <button type="button" class="to-top" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  <%- partial('_partial/music') %>
+  <%- partial('_partial/scripts') %>
+</body>
+</html>

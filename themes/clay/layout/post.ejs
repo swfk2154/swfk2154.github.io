@@ -1,0 +1,95 @@
+<%
+var tocMax = (theme.toc && theme.toc.max_depth) ? theme.toc.max_depth + 1 : 4;
+var hasToc = !!(theme.toc && theme.toc.enable !== false) && !!toc(page.content, { class: 'toc', list_number: false, min_depth: 2, max_depth: tocMax });
+var firstCat = (page.categories && page.categories.length) ? page.categories.first().name : '';
+var _cv = page.coverImg || page.img || page.cover;
+var cover = (typeof _cv === 'string' && _cv) ? _cv : '';
+
+var cleanText = strip_html(page.content || '').replace(/\s+/g, '');
+var wordCount = cleanText.length;
+var readTime = Math.max(1, Math.round(wordCount / 380));
+var wordCountText = wordCount >= 10000 ? (wordCount / 10000).toFixed(1) + 'w' : (wordCount >= 1000 ? (wordCount / 1000).toFixed(1) + 'k' : wordCount);
+%>
+<div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+<article class="article <%= hasToc ? 'article--toc' : '' %>">
+  <div class="article__body">
+    <% if (hasToc) { %><%- partial('_partial/toc') %><% } %>
+    <div class="article__main">
+      <header class="article__header reveal">
+        <% if (firstCat) { %><p class="eyebrow"><%= firstCat %></p><% } %>
+        <h1><%= page.title %></h1>
+        <div class="post-meta">
+          <time datetime="<%= date(page.date, 'YYYY-MM-DD') %>"><%= date(page.date, 'YYYY-MM-DD') %></time>
+          <% if (page.updated && date(page.updated, 'YYYY-MM-DD') !== date(page.date, 'YYYY-MM-DD')) { %>
+            <span>更新于 <%= date(page.updated, 'YYYY-MM-DD') %></span>
+          <% } %>
+          <span class="post-meta__count">全篇 <%= wordCountText %> 字</span>
+          <span class="post-meta__time">阅读约 <%= readTime %> 分钟</span>
+        </div>
+      </header>
+      <% if (cover) { %>
+        <figure class="article__cover reveal"><img src="<%- url_for(cover) %>" alt="<%= page.title %>" loading="eager" onerror="this.parentElement.style.display='none'"></figure>
+      <% } %>
+      <div class="post-content reveal">
+        <%- page.content %>
+      </div>
+
+      <% if (page.tags && page.tags.length) { %>
+      <div class="article__tags reveal">
+        <span class="article__tags-label">标签</span>
+        <div class="tag-list">
+          <% page.tags.each(function(tag) { %>
+            <a href="<%- url_for(tag.path) %>"><span><%= tag.name %></span></a>
+          <% }); %>
+        </div>
+      </div>
+      <% } %>
+
+      <nav class="post-nav reveal" aria-label="前后文章">
+        <% if (page.prev) { %>
+          <a class="post-nav__prev" href="<%- url_for(page.prev.path) %>">
+            <span>← 上一篇</span>
+            <strong><%= page.prev.title %></strong>
+          </a>
+        <% } else { %>
+          <span class="post-nav__prev is-empty"></span>
+        <% } %>
+        <% if (page.next) { %>
+          <a class="post-nav__next" href="<%- url_for(page.next.path) %>">
+            <span>下一篇 →</span>
+            <strong><%= page.next.title %></strong>
+          </a>
+        <% } else { %>
+          <span class="post-nav__next is-empty"></span>
+        <% } %>
+      </nav>
+
+      <% if (theme.reward && theme.reward.enable) { %>
+      <div class="reward reveal">
+        <button type="button" class="reward__toggle" data-reward-toggle>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 7h20v10H2z"/><path d="M12 2a7 7 0 0 1 0 10M12 12a7 7 0 0 0 0 10"/></svg>
+          打赏
+        </button>
+        <div class="reward__box" data-reward-box>
+          <p class="reward__title"><%= theme.reward.title %></p>
+          <div class="reward__qrs">
+            <% if (theme.reward.wechat) { %>
+              <figure><img src="<%- url_for(theme.reward.wechat) %>" alt="微信赞赏码" loading="lazy"><figcaption>微信</figcaption></figure>
+            <% } %>
+            <% if (theme.reward.alipay) { %>
+              <figure><img src="<%- url_for(theme.reward.alipay) %>" alt="支付宝收款码" loading="lazy"><figcaption>支付宝</figcaption></figure>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <% if (theme.comments && theme.comments.giscus && theme.comments.giscus.enable) { %>
+      <div class="cbox reveal" id="comments">
+        <div class="cbox__head"><span class="cbox__title">评论</span></div>
+        <div id="gitalk-container"></div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</article>

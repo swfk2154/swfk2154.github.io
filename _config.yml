@@ -84,7 +84,8 @@ meta_generator: true
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
 ## updated_option supports 'mtime', 'date', 'empty'
-updated_option: 'mtime'
+# 用 date：避免每次重新生成把所有文章的「更新于」刷成当天；需要标注更新时在 front-matter 里显式写 updated
+updated_option: 'date'
 
 # Pagination
 ## Set per_page to 0 to disable pagination
@@ -100,7 +101,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: hexo-theme-matery
+theme: clay
 
 # Sitemap
 sitemap:
@@ -108,6 +109,13 @@ sitemap:
   rel: false
 baidusitemap:
   path: baidusitemap.xml
+
+# 站内搜索索引（供主题搜索框使用）
+search:
+  path: search.json
+  field: post
+  content: true
+  format: striptags
 
 # Feed
 feed:

@@ -1,0 +1,24 @@
+<%
+// post-row: 排版式文章行（日期 · 标题 · 分类）
+// 用法: partial('_partial/post-row', { post: post })
+var p = typeof post !== 'undefined' ? post : page;
+var desc = p.summary || (p.excerpt ? strip_html(p.excerpt) : '') || strip_html(p.content || '');
+if (desc.length > 120) desc = desc.slice(0, 120) + '…';
+var firstCat = '';
+if (p.categories && p.categories.length) firstCat = p.categories.first().name;
+%>
+<article class="post-row reveal">
+  <a href="<%- url_for(p.path) %>">
+    <div class="post-row__date">
+      <time class="post-row__md" datetime="<%= date(p.date, 'YYYY-MM-DD') %>"><%= date(p.date, 'MM-DD') %></time>
+      <span class="post-row__yy"><%= date(p.date, 'YYYY') %></span>
+    </div>
+    <div class="post-row__main">
+      <div class="post-row__line">
+        <h3><%= p.title %></h3>
+        <% if (firstCat) { %><span class="post-row__cat"><%= firstCat %></span><% } %>
+      </div>
+      <% if (desc) { %><p><%= desc %></p><% } %>
+    </div>
+  </a>
+</article>

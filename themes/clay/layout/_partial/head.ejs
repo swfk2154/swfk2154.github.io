@@ -1,0 +1,81 @@
+<%
+var pageTitle = page.title && page.title !== config.title ? page.title + ' - ' + config.title : config.title;
+var description = page.description || page.summary || config.description || '';
+var _pgImg = page.coverImg || page.img || page.cover;
+var pageImage = (typeof _pgImg === 'string' && _pgImg) ? _pgImg : '';
+// og:image 必须是绝对 URL，社交平台才能抓到图
+var ogImage = '';
+if (pageImage) {
+  var _imgUrl = url_for(pageImage);
+  ogImage = /^https?:\/\//i.test(_imgUrl) ? _imgUrl : (config.url || '').replace(/\/+$/, '') + _imgUrl;
+}
+var pageUrl = (page.permalink || url).replace(/\/index\.html$/, '/');
+var ogType = is_post() ? 'article' : 'website';
+%>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Hexo">
+<title><%= pageTitle %></title>
+<meta name="description" content="<%= description %>">
+<meta name="author" content="<%= config.author %>">
+<meta name="keywords" content="<%= page.keywords || config.keywords || '' %>">
+<meta name="theme-color" id="theme-color" content="#f8f7f4">
+<link rel="icon" type="image/svg+xml" href="<%- url_for(theme.avatar || '/images/clay-avatar.svg') %>">
+<link rel="icon" type="image/png" sizes="192x192" href="<%- url_for('/icon.png') %>">
+<link rel="apple-touch-icon" href="<%- url_for('/icon.png') %>">
+<link rel="canonical" href="<%- pageUrl %>">
+<meta property="og:type" content="<%= ogType %>">
+<meta property="og:title" content="<%= pageTitle %>">
+<meta property="og:description" content="<%= description %>">
+<meta property="og:url" content="<%- pageUrl %>">
+<meta property="og:site_name" content="<%= config.title %>">
+<meta property="og:locale" content="zh_CN">
+<% if (ogImage) { %>
+<meta property="og:image" content="<%= ogImage %>">
+<meta property="og:image:alt" content="<%= pageTitle %>">
+<% } %>
+<% if (is_post()) { %>
+<meta property="article:published_time" content="<%= date(page.date, 'YYYY-MM-DD[T]HH:mm:ssZ') %>">
+<% if (page.updated) { %><meta property="article:modified_time" content="<%= date(page.updated, 'YYYY-MM-DD[T]HH:mm:ssZ') %>"><% } %>
+<% } %>
+<meta name="twitter:card" content="<%= ogImage ? 'summary_large_image' : 'summary' %>">
+<% if (ogImage) { %><meta name="twitter:image" content="<%= ogImage %>"><% } %>
+<link rel="alternate" type="application/atom+xml" title="<%= config.title %>" href="<%- url_for('/atom.xml') %>">
+<link rel="stylesheet" href="<%- url_for('/css/clay.css') %>">
+<% if (theme.music && theme.music.enable) { %>
+<link rel="stylesheet" href="<%- url_for('/aplayer/APlayer.min.css') %>">
+<% } %>
+<% if (theme.comments && theme.comments.giscus && theme.comments.giscus.enable) { %>
+<link rel="dns-prefetch" href="https://giscus.app">
+<link rel="preconnect" href="https://giscus.app" crossorigin>
+<% } %>
+<% if (theme.footer && theme.footer.busuanzi) { %>
+<link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
+<% } %>
+<script>
+  // 尽早恢复主题，避免首屏闪烁
+  (function () {
+    try {
+      var t = localStorage.getItem('clay-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+<% if (is_home()) { %>
+<script>
+  // 首屏入场编排标记：首页且允许动态时才启用（禁 JS / 减少动态偏好自动降级）
+  (function () {
+    try {
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('js');
+        document.documentElement.classList.add('boot');
+      }
+    } catch (e) {}
+  })();
+</script>
+<% } %>
+</head>

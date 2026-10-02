@@ -1,0 +1,17 @@
+<%
+var tocMax = (theme.toc && theme.toc.max_depth) ? theme.toc.max_depth + 1 : 4;
+var tocHtml = toc(page.content, { class: 'toc', list_number: false, min_depth: 2, max_depth: tocMax });
+// 标题里的装饰性 emoji（⭐⚠️❌ 等）在目录里是噪音，只对目录条目展示文本做剥离，正文标题不受影响
+if (tocHtml) {
+  // hexo 的 toc 输出为 <a ...><span class="toc-text">文本</span></a>，emoji 在 span 内
+  tocHtml = tocHtml.replace(/(<a\s[^>]*>(?:<span[^>]*>)?)[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{2190}-\u{21FF}\u{2300}-\u{23FF}\u{FE0F}\u{200D}]+\s*/gu, '$1');
+}
+%>
+<% if (tocHtml) { %>
+<aside class="article__aside">
+  <div class="toc-box">
+    <div class="toc-box__title">目录</div>
+    <%- tocHtml %>
+  </div>
+</aside>
+<% } %>

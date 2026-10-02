@@ -1,0 +1,19 @@
+<%
+var tags = site.tags.toArray().sort(function(a, b) { return b.length - a.length; });
+%>
+<div class="archive-page">
+  <header class="page-header reveal">
+    <p class="eyebrow">标签</p>
+    <h1>标签</h1>
+    <p>共 <%= tags.length %> 个标签</p>
+  </header>
+  <div class="term-list reveal">
+    <% tags.forEach(function(t) { %>
+      <a href="<%- url_for(t.path) %>">
+        <span><%= t.name %></span>
+        <small><%= t.length %></small>
+      </a>
+    <% }); %>
+  </div>
+  <% if (!tags.length) { %><p class="empty">暂无标签。</p><% } %>
+</div>

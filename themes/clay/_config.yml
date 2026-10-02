@@ -1,0 +1,121 @@
+# Clay —— 粘土拟态风格的 Hexo 博客主题
+# 视觉语言参考 clay-blog（laogou717/clay-blog）：暖纸底色、陶土点缀色、
+# 圆角 + 柔和阴影、液态玻璃导航胶囊、排版式文章列表、明暗双主题。
+# 针对「swfk 的安全笔记」做了安全向的细节适配（盾牌头像、终端/代码元素）。
+
+# ------------------------------------------------------------------
+# 导航菜单（name 显示名，url 路径）
+# ------------------------------------------------------------------
+menu:
+  - name: 首页
+    url: /
+  - name: 归档
+    url: /archives
+  - name: 分类
+    url: /categories
+  - name: 标签
+    url: /tags
+  - name: 关于
+    url: /about
+
+# ------------------------------------------------------------------
+# 站点身份（首页 Hero）
+# ------------------------------------------------------------------
+avatar: /images/clay-avatar.svg          # 头像路径（也可放 /medias/xxx.png）
+eyebrow: AI 安全 · 网络安全 · 工程实践     # Hero 上方小字
+greeting: swfk 的安全笔记                  # Hero 大标题
+bio: >-                                    # Hero 简介
+  记录 AI 安全、网络安全与工程实践。把每一次排查、验证与复盘，
+  沉淀成以后还能复用的笔记。
+
+# 社交按钮（留空即不显示）
+social:
+  github: https://github.com/swfk2154
+  email: ''
+  rss: true                                # 显示 RSS 按钮（需 hexo-generator-feed）
+
+# ------------------------------------------------------------------
+# 悬浮音乐播放器（APlayer + 多源 Meting 容灾，右下角，读网易云歌单）
+# ------------------------------------------------------------------
+music:
+  enable: true                             # 是否启用右下角悬浮播放器
+  # 多源容灾：加载时依次探测下方 api 列表，返回有效歌单的第一个胜出；
+  # 全部失效时面板显示占位提示。api 必须含 :server/:type/:id 占位符。
+  # 2026-08 实测：injahow 每日限额（超限返回 message 而非歌单）；
+  # i-meto 列表可用但部分曲目 url 404；qjqq/wuenci/mikus.ink 已宕机。
+  apis:
+    - https://api.injahow.cn/meting/?server=:server&type=:type&id=:id
+    - https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id
+  order: list                              # list（顺序）/ random（随机）
+  maxHeight: 320px                         # 播放列表最大高度
+  autoplay: false                          # 是否自动播放（浏览器一般会拦截）
+  sources:                                 # 音乐源列表（可增删；id 留空则不显示该项）
+    - name: BGM
+      server: netease                      # 平台：netease / tencent / kugou / xiami / baidu
+      type: playlist
+      id: '8792942606'                     # 「blog」by 神烦老狗 https://music.163.com/#/playlist?id=8792942606（injahow 源实测可播）
+
+# ------------------------------------------------------------------
+# 首页精选：优先展示带 top/sticky 标记的文章，不足则用最新文章补足
+# ------------------------------------------------------------------
+featured:
+  count: 5                                 # 精选区最多显示几篇（1 大图 + 若干侧栏）
+
+# ------------------------------------------------------------------
+# 文章目录 TOC
+# ------------------------------------------------------------------
+toc:
+  enable: true
+  max_depth: 3                             # 1=h2 2=h3 3=h4
+
+# ------------------------------------------------------------------
+# 代码块
+# ------------------------------------------------------------------
+code:
+  copy: true                               # 显示「复制」按钮
+
+# ------------------------------------------------------------------
+# 打赏
+# ------------------------------------------------------------------
+reward:
+  enable: true
+  title: 你的赏识是我前进的动力
+  wechat: /medias/reward/wechat.png
+  alipay: /medias/reward/alipay.jpg
+
+# ------------------------------------------------------------------
+# 评论（giscus，基于 GitHub Discussions，无需 secret）
+# repoId / categoryId 可在 https://giscus.app 生成，或用 GraphQL API 查询
+# ------------------------------------------------------------------
+comments:
+  giscus:
+    enable: true
+    repo: swfk2154/swfk2154.github.io
+    repoId: R_kgDORBu9qA
+    category: Announcements            # 建议用 Announcements：仅维护者能建讨论，访客只能回复
+    categoryId: DIC_kwDORBu9qM4DEDSm    # Announcements 分类的 GraphQL ID
+    mapping: pathname                  # 按路径匹配讨论串，与原 Gitalk Issue 标题一致便于迁移
+    reactionsEnabled: true             # 显示表情回应
+    inputPosition: top                 # 输入框位置 top / bottom
+    theme: light                       # 亮色主题名；暗色自动切换为 dark
+    lang: zh-CN
+
+# ------------------------------------------------------------------
+# 页脚
+# ------------------------------------------------------------------
+footer:
+  since: 2025                              # 建站年份
+  busuanzi: true                           # 不蒜子访问统计
+  icp:
+    enable: false
+    text: ''
+    url: ''
+
+# ------------------------------------------------------------------
+# 关于页
+# ------------------------------------------------------------------
+about:
+  career: Security Researcher
+  intro: >-
+    关注 AI 安全、网络安全与工程化实践，尽量把每一次排查、验证和复盘
+    写成以后还能复用的资料。

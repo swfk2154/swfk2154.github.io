@@ -1,0 +1,17 @@
+<div class="about">
+  <header class="about__intro reveal">
+    <img class="about__avatar" src="<%- url_for(theme.avatar || '/images/clay-avatar.svg') %>" alt="<%= config.author %>" width="64" height="64">
+    <p class="eyebrow">关于</p>
+    <h1 class="about__lead">你好，我是 <%= config.author %></h1>
+    <p class="about__sub"><%= (theme.about && theme.about.intro) || config.description %></p>
+    <div class="about__facts">
+      <% if (theme.about && theme.about.career) { %><span class="about__fact"><%= theme.about.career %></span><% } %>
+      <span class="about__fact"><%= site.posts.length %> 篇文章</span>
+      <span class="about__fact"><%= site.tags.length %> 个标签</span>
+      <span class="about__fact"><%= site.categories.length %> 个分类</span>
+    </div>
+  </header>
+  <% if (page.content && page.content.trim()) { %>
+    <div class="post-content about__body reveal"><%- page.content %></div>
+  <% } %>
+</div>

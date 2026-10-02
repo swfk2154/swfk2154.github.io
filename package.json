@@ -6,7 +6,10 @@
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo clean && hexo generate && hexo deploy",
-    "server": "hexo server"
+    "server": "hexo server",
+    "baidu:push": "hexo generate && node tools/baidu-push.js",
+    "indexnow:push": "hexo generate && node tools/indexnow-push.js",
+    "deploy:push": "hexo clean && hexo generate && hexo deploy && node tools/indexnow-push.js"
   },
   "hexo": {
     "version": "8.1.1"
@@ -19,6 +22,7 @@
     "hexo-generator-category": "^2.0.0",
     "hexo-generator-feed": "^3.0.0",
     "hexo-generator-index": "^4.0.0",
+    "hexo-generator-searchdb": "^1.5.0",
     "hexo-generator-sitemap": "^3.0.1",
     "hexo-generator-tag": "^2.0.0",
     "hexo-renderer-ejs": "^2.0.0",

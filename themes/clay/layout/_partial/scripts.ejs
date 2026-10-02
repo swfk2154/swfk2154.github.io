@@ -1,0 +1,14 @@
+<% if (theme.comments && theme.comments.giscus && theme.comments.giscus.enable) { %>
+<script>
+  window.__giscusConfig = <%- JSON.stringify(theme.comments.giscus) %>;
+</script>
+<% } %>
+<script src="<%- url_for('/js/clay.js') %>"></script>
+<script src="<%- url_for('/js/search.js') %>"></script>
+<% if (theme.music && theme.music.enable) { %>
+<script src="<%- url_for('/aplayer/APlayer.min.js') %>"></script>
+<script src="<%- url_for('/js/music-loader.js') %>"></script>
+<% } %>
+<% if (theme.footer && theme.footer.busuanzi) { %>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<% } %>

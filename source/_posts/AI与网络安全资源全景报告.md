@@ -1,6 +1,7 @@
 ---
 title: AI 与网络安全资源全景报告：中国、欧美、俄罗斯教程、工具与文档
-date: 2026-06-04 12:45:00
+permalink: ai-security-atlas/
+date: 2025-11-20 12:00:00
 updated: 2026-06-04 12:45:00
 tags:
   - AI安全
@@ -13,9 +14,7 @@ categories:
 keywords: AI安全,大模型安全,LLM安全,网络安全,PyRIT,garak,OWASP,MITRE ATLAS,AI-Infra-Guard
 summary: 系统整理中国、欧美、俄罗斯 AI 与网络安全结合方向的教程、视频、工具、文档和文章，并给出学习路线与落地建议。
 top: true
-cover: true
-coverImg: /images/ai-security-hero.png
-img: /images/ai-security-hero.png
+img: /medias/featureimages/15.jpg
 ---
 
 > 本文整理的是 AI 与网络安全结合方向的学习与实践入口，覆盖中国、欧美、俄罗斯三类生态。资料链接基于 2026-06-04 前后公开信息整理；正式引用或落地前，建议重新打开原始链接核对。

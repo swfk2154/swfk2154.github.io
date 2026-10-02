@@ -1,0 +1,13 @@
+<div class="archive-page">
+  <header class="page-header reveal">
+    <p class="eyebrow">标签</p>
+    <h1>#<%= page.tag %></h1>
+    <p>共 <%= (page.posts || []).length %> 篇文章</p>
+  </header>
+  <div class="post-list">
+    <% (page.posts || []).forEach(function(p) { %>
+      <%- partial('_partial/post-row', { post: p }) %>
+    <% }); %>
+  </div>
+  <%- partial('_partial/pagination') %>
+</div>

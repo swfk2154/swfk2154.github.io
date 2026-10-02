@@ -1,0 +1,37 @@
+<%
+/* 分类页：按「父分类 → 子分类」层级展示（如 网络安全 → Web 安全/内网渗透/…） */
+var cats = site.categories.toArray();
+var byId = {};
+cats.forEach(function (c) { byId[String(c._id)] = c; });
+var roots = [], childrenOf = {};
+cats.forEach(function (c) {
+  var pid = c.parent != null && byId[String(c.parent)] ? String(c.parent) : null;
+  if (pid === null) roots.push(c);
+  else (childrenOf[pid] = childrenOf[pid] || []).push(c);
+});
+function byName(a, b) { return String(a.name).localeCompare(String(b.name), 'zh'); }
+roots.sort(byName);
+Object.keys(childrenOf).forEach(function (k) { childrenOf[k].sort(byName); });
+%>
+<div class="archive-page">
+  <header class="page-header reveal">
+    <p class="eyebrow">分类</p>
+    <h1>分类</h1>
+    <p>共 <%= roots.length %> 个分类目录</p>
+  </header>
+  <div class="term-list reveal">
+    <% roots.forEach(function (r) { %>
+      <a href="<%- url_for(r.path) %>">
+        <span><%= r.name %></span>
+        <small><%= r.length %></small>
+      </a>
+      <% (childrenOf[String(r._id)] || []).forEach(function (k) { %>
+        <a class="cat-child" href="<%- url_for(k.path) %>">
+          <span>↳ <%= k.name %></span>
+          <small><%= k.length %></small>
+        </a>
+      <% }); %>
+    <% }); %>
+  </div>
+  <% if (!cats.length) { %><p class="empty">暂无分类。</p><% } %>
+</div>

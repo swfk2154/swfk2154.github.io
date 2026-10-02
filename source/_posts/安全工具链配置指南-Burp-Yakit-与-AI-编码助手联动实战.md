@@ -1,6 +1,7 @@
 ---
 title: 安全工具链配置指南：Burp、Yakit 与 AI 编码助手联动实战
-date: 2026-06-04 15:00:00
+permalink: security-tools/
+date: 2026-06-01 16:00:00
 updated: 2026-06-04 15:00:00
 tags:
   - Burp Suite
@@ -15,7 +16,7 @@ categories:
 keywords: Burp Suite, Yakit, Claude Code, Codex Desktop, MCP, AI安全, 渗透测试工具链, PortSwigger
 summary: 真实记录 Burp Suite（PortSwigger 官方 MCP Server）与 Yakit 在 Claude Code / Codex Desktop 中的 MCP 配置全过程，包含踩坑记录、验证方法与可用工具速查。
 top: false
-cover: false
+img: /medias/featureimages/0.jpg
 ---
 
 > 本文基于真实配置经验撰写，环境为 Windows 11 + bash shell。所有命令和路径均经过实际验证，目的是把"AI + 安全工具"的联动配置讲清楚、踩过的坑标出来。
@@ -234,7 +235,50 @@ query_yak_script
 
 ---
 
-## 五、可用工具速查
+## 五、Burp Suite 与 Yakit 对比
+
+在配置之前，先厘清两者的定位和差异，方便按需选择或组合使用。
+
+### 5.1 相同点
+
+| 维度 | 说明 |
+|------|------|
+| **核心能力** | 都支持 HTTP/HTTPS 代理抓包、请求重放、主动/被动扫描 |
+| **扩展生态** | 都有插件/脚本机制（Burp BApp / Yak 脚本） |
+| **MCP 支持** | 都提供官方 MCP Server，可与 Claude Code / Codex Desktop 联动 |
+| **工作模式** | 都支持拦截代理模式，可在浏览器与目标之间插入做分析 |
+| **版本策略** | 都有免费版（Community / 社区版）和付费版（Professional / 企业版） |
+| **目标场景** | 主要面向 Web 应用安全测试、API 测试、渗透测试 |
+
+### 5.2 不同点
+
+| 维度 | Burp Suite | Yakit |
+|------|-----------|-------|
+| **开发商** | PortSwigger（英国） | 源鉴科技 / yaklang.io（中国） |
+| **开源程度** | 闭源商业软件 | yaklang 核心开源，Yakit 为开源客户端 |
+| **语言与文档** | 英文为主，文档体系成熟 | 中文原生，中文社区活跃 |
+| **协议覆盖** | 聚焦 Web（HTTP/HTTPS/WebSocket） | 除 Web 外，还集成端口扫描、SSH、DNS、POC 等 |
+| **扫描引擎** | Scanner 成熟稳定，规则库由 PortSwigger 维护 | 基于 Yak 脚本，内置大量国产漏洞 POC，可自定义 |
+| **国产适配** | 对国内框架、中间件、CMS 识别一般 | 对国产应用、中间件、IoT 协议支持更好 |
+| **附加功能** | Repeater、Intruder、Sequencer、Decoder 分立 | 集成 MITM、Fuzzer、Codec、SSA 代码分析、Web Fuzzer 于一体 |
+| **价格** | Professional 年费较高（约 $449/年） | 社区版免费，企业版价格相对亲民 |
+| **插件开发** | Java / Kotlin（BApp） | Yak 语言（类 Go 语法，内置安全函数库） |
+| **数据存储** | 项目文件（.burp） | SQLite 项目数据库（.db），便于查询 |
+
+### 5.3 选型建议
+
+| 场景 | 推荐工具 | 原因 |
+|------|---------|------|
+| 国际标准渗透测试、合规报告 | **Burp Suite** | 行业标杆，报告认可度高，Scanner 稳定 |
+| 国产应用测试、IoT/工控场景 | **Yakit** | 国产协议支持好，POC 库覆盖国内漏洞 |
+| 快速一站式安全测试 | **Yakit** | 工具集成度高，一个平台覆盖多类测试 |
+| 深度 Web 漏洞研究 | **Burp Suite** | Repeater/Intruder 精细控制，插件生态丰富 |
+| 预算有限、个人学习 | **Yakit 社区版** | 免费，中文资料多，社区活跃 |
+| **最佳实践** | **两者互补** | Burp 做标准 Web 测试，Yakit 做扩展扫描和国产场景 |
+
+---
+
+## 六、可用工具速查
 
 ### Burp Suite（27 个工具）
 
@@ -261,7 +305,7 @@ HTTP 请求、Repeater、Intruder、编解码、代理历史（含正则/WebSock
 
 ---
 
-## 六、敏感数据约束
+## 七、敏感数据约束
 
 Yakit HTTPFlow 和项目库中可能包含 Cookie、Token、私密 URL 等敏感数据。
 
@@ -271,7 +315,7 @@ Yakit HTTPFlow 和项目库中可能包含 Cookie、Token、私密 URL 等敏感
 
 ---
 
-## 七、故障排查
+## 八、故障排查
 
 ### MCP 工具未出现
 1. 检查对应服务是否已启动（Burp MCP Server 是否运行、Yakit 引擎是否正常）
@@ -291,7 +335,7 @@ Yakit HTTPFlow 和项目库中可能包含 Cookie、Token、私密 URL 等敏感
 
 ---
 
-## 八、实战工作流示例
+## 九、实战工作流示例
 
 ### 场景一：分析 Burp 代理历史
 
@@ -319,7 +363,7 @@ Claude Code / Codex Desktop 构造 fuzz 请求，通过 `mcp__yaklang__http_fuzz
 
 ---
 
-## 九、安全与合规提醒
+## 十、安全与合规提醒
 
 1. **授权边界**：所有扫描和测试行为必须在授权范围内进行，严禁对非自有资产进行探测
 2. **数据隐私**：Burp 抓包和 Yakit HTTPFlow 可能包含敏感信息，注意本地存储安全
@@ -328,7 +372,7 @@ Claude Code / Codex Desktop 构造 fuzz 请求，通过 `mcp__yaklang__http_fuzz
 
 ---
 
-## 十、参考链接
+## 十一、参考链接
 
 - [PortSwigger/mcp-server](https://github.com/PortSwigger/mcp-server) — Burp Suite 官方 MCP Server
 - [Claude Code MCP 文档](https://docs.anthropic.com/en/docs/claude-code/mcp)

@@ -1,15 +1,19 @@
 ---
 title: 如何搭建 Hexo 博客 - 完整教程
-date: 2026-01-29 20:50:20
+permalink: hexo-setup-optimized/
+date: 2025-11-15 12:00:00
 tags:
   - Hexo
   - 博客
   - GitHub Pages
+categories:
+  - 工具实践
+img: /medias/featureimages/10.jpg
 ---
 
 > ⚠️ **说明**：本文由本人原创编写，手把手教你搭建 Hexo 博客。
 
-> 📚 **配套阅读**：[如何搭建 OpenClaw](/2026/03/19/如何搭建OpenClaw/)
+> 📚 **配套阅读**：[AI 编程智能体六合一全景](/ai-coding-agents-overview/)
 
 ---
 
@@ -231,8 +235,8 @@ url: https://你的用户名.github.io
 # SEO 优化
 npm install hexo-generator-sitemap hexo-generator-baidu-sitemap --save
 
-# 评论系统
-npm install gitalk --save
+# 站内搜索（本站同款）
+npm install hexo-generator-searchdb --save
 ```
 
 ### 常用命令速查

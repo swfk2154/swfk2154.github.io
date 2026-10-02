@@ -1,0 +1,35 @@
+<%
+var posts = page.posts || [];
+var byYear = {};
+posts.forEach(function(p) {
+  var y = date(p.date, 'YYYY');
+  if (!byYear[y]) byYear[y] = [];
+  byYear[y].push(p);
+});
+var years = Object.keys(byYear).sort().reverse();
+var title = page.year ? (page.month ? page.year + ' 年 ' + page.month + ' 月' : page.year + ' 年') : '归档';
+%>
+<div class="archive-page">
+  <header class="page-header reveal">
+    <p class="eyebrow">归档</p>
+    <h1><%= title %></h1>
+    <p>共 <%= posts.length %> 篇文章</p>
+  </header>
+
+  <% years.forEach(function(y) { %>
+  <section class="archive-year reveal">
+    <div class="archive-year__head">
+      <h2 class="archive-year__num"><%= y %></h2>
+      <span class="archive-year__count"><%= byYear[y].length %> 篇</span>
+    </div>
+    <div class="post-list">
+      <% byYear[y].forEach(function(p) { %>
+        <%- partial('_partial/post-row', { post: p }) %>
+      <% }); %>
+    </div>
+  </section>
+  <% }); %>
+
+  <% if (!years.length) { %><p class="empty">暂无文章。</p><% } %>
+  <%- partial('_partial/pagination') %>
+</div>
