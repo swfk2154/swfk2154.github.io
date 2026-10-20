@@ -9,3 +9,10 @@ _multiconfig.yml
 .verify/
 ui-check-*.png
 .baidu-token
+
+# 构建产物与部署缓存（源码分支不需要）
+.deploy_git/
+.deploy*/
+public/
+db.json
+.verify/
