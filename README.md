@@ -1,9 +1,9 @@
 # swfk 的安全笔记
 
 基于 [Hexo](https://hexo.io/) 的个人博客，记录 AI 安全、网络安全与工程实践。
-线上地址：<https://blogbu2154.site>
+线上地址：<https://www.blogbu2154.site>
 
-> 🌐 **在线阅读：<https://blogbu2154.site>** ｜ 关注 AI 安全 / 网络安全 / 大模型安全 / 渗透测试 / 护网攻防 的技术笔记与实战复盘。
+> 🌐 **在线阅读：<https://www.blogbu2154.site>** ｜ 关注 AI 安全 / 网络安全 / 大模型安全 / 渗透测试 / 护网攻防 的技术笔记与实战复盘。
 
 ## 站点概况
 
@@ -67,14 +67,14 @@ hexo clean && hexo s      # 本地预览确认
 
 1. **Google Search Console**（<https://search.google.com/search-console>）
    - 验证站点（域名属性最佳，需在 DNS 加 TXT；文件验证用仓库里的 `googlef6796c*.html` 亦可）
-   - `Sitemaps` 提交 `https://blogbu2154.site/sitemap.xml`
+   - `Sitemaps` 提交 `https://www.blogbu2154.site/sitemap.xml`
    - `网址检查` 逐条对首页与重点文章点「请求编索引」
 2. **Bing Webmaster Tools**（<https://bingwebmasters.microsoft.com>）
    - 站点与 `sitemap.xml` 已提交并在正常抓取（已发现 400+ URL）。
    - ⚠️ Bing 索引供 ChatGPT 搜索 / Copilot / DuckDuckGo / 多数 AI 使用，**想被 AI 搜到这条最关键**。
 3. **IndexNow（推荐给 Bing/AI 的秒级推送，本仓库已配好）**
    - 密钥文件已放在 `source/9dd80d14ed52001ca4926eb6f79c2552.txt`，部署后线上地址为
-     `https://blogbu2154.site/9dd80d14ed52001ca4926eb6f79c2552.txt`（IndexNow 靠它校验 key 属于本站，**必须先部署再推送**）。
+     `https://www.blogbu2154.site/9dd80d14ed52001ca4926eb6f79c2552.txt`（IndexNow 靠它校验 key 属于本站，**必须先部署再推送**）。
    - 每次发/改文章后，先部署再推送：
 
      ```bash
@@ -91,5 +91,5 @@ hexo clean && hexo s      # 本地预览确认
    `llms.txt`，供大模型爬虫读取全站文章清单，文章增删自动同步，无需手工维护。
 6. **外链**：新域名信任度低，在 GitHub 主页/README、掘金、CSDN、知乎、V2EX 等处放博客链接，
    是提升收录与排名最有效的杠杆。
-7. **验证是否收录**：在 Google / Bing 搜 `site:blogbu2154.site`，能看到页面数持续增长即生效。
+7. **验证是否收录**：在 Google / Bing 搜 `site:www.blogbu2154.site`，能看到页面数持续增长即生效。
    Google 一般数天到数周，需耐心。

@@ -7,7 +7,7 @@
  *
  * 前置（本仓库已配好，无需去 Bing 控制台拿 key）：
  *   1) 密钥文件已放在 source/9dd80d14ed52001ca4926eb6f79c2552.txt
- *      —— 部署后线上地址为 https://blogbu2154.site/9dd80d14ed52001ca4926eb6f79c2552.txt
+ *      —— 部署后线上地址为 https://www.blogbu2154.site/9dd80d14ed52001ca4926eb6f79c2552.txt
  *      IndexNow 服务器会抓取该文件来验证 key 属于本站，因此必须先部署再推送。
  *   2) 密钥值同时写在脚本同目录的 .indexnow-key（可选）；默认用上面文件名里的 key。
  *
@@ -27,7 +27,7 @@ const { execFile } = require('child_process');
 const { URL } = require('url');
 
 const ROOT = path.resolve(__dirname, '..');
-const HOST = 'blogbu2154.site';
+const HOST = 'www.blogbu2154.site';
 const KEY = '9dd80d14ed52001ca4926eb6f79c2552';
 const KEY_LOCATION = `https://${HOST}/${KEY}.txt`;
 // 可选：走本地代理（这台机器直连 api.indexnow.org 会被代理拦截时很有用）
