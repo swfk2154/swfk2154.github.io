@@ -24,12 +24,17 @@
 # 本地预览（http://localhost:4000）
 hexo clean && hexo server
 
-# 生成静态页面到 public/
+# 生成静态页面到 public/（仅本地预览用）
 hexo generate        # 简写 hexo g
 
-# 部署到 GitHub Pages（部署的是 public/ 内容，非源码）
-hexo deploy          # 简写 hexo d
+# 发布上线：把源码推到 source 分支，Cloudflare Pages 自动构建部署
+git add -A && git commit -m "post: 文章标题"
+git push             # 已配置 push.default=upstream，推到 origin/source
 ```
+
+> 部署链路：`source 分支` → Cloudflare Pages（`npm run build`，输出 `public`）→
+> `blogbu2154.site` / `www.blogbu2154.site`。
+> `hexo deploy` 已不再需要；若仍执行，产物会 force push 到 `main` 分支（仅作 GitHub Pages 备份，不参与线上发布）。
 
 ## 目录结构
 
