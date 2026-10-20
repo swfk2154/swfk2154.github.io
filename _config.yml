@@ -134,8 +134,12 @@ feed:
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
-deploy:
-  type: git
-  repo: git@github.com:swfk2154/swfk2154.github.io.git
-  branch: main
-  # 如果想绑定自定义域名，部署时会在 CNAME 文件中体现
+#
+# 已迁移至 Cloudflare Pages（构建配置见仓库 README）：
+#   源码 push 到 source 分支 → CF Pages 执行 npm run build → 输出 public → 部署
+# 因此 hexo deploy 已停用，避免它把 public/ force push 回远程、覆盖源码分支。
+#
+# deploy:
+#   type: git
+#   repo: git@github.com:swfk2154/swfk2154.github.io.git
+#   branch: main
